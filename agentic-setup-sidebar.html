@@ -11717,9 +11717,9 @@ html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
 .ag-telcard{
   position:fixed !important; z-index:39; left:14px; top:50%; transform:translateY(-50%); width:56px !important; flex:none !important; margin:0 !important; border-radius:28px; overflow:visible !important;
 }
-.ag-telcard .ag-tel-orbit{ min-height:0 !important; height:360px; flex:none; }
+.ag-telcard .ag-tel-orbit{ min-height:0 !important; height:308px; flex:none; }
 .ag-telcard .ag-tel-nav, .ag-telcard .ag-tel-path, .ag-telcard .ag-tel-cap{ display:none !important; }
-.ag-telcard .ag-tel-track{ height:360px; overflow:visible; }
+.ag-telcard .ag-tel-track{ height:308px; overflow:visible; }
 .ag-telcard .ag-tel-track::before{ content:""; position:absolute; left:calc(50% - .75px); top:24px; bottom:24px; width:1.5px; border-radius:2px; background:#e3eaf6; }
 .ag-telcard .ag-tel-track::after{ content:""; position:absolute; left:calc(50% - .75px); top:24px; width:1.5px; border-radius:2px; height:calc(var(--prog, 24) * 1px - 24px); background:linear-gradient(180deg,rgba(156,194,255,.35),rgba(37,99,235,.45)); transition:height 700ms var(--tel-ease); }
 .ag-telcard .ag-tel-ico{ width:34px; height:34px; }
@@ -11762,6 +11762,27 @@ body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welco
   -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
   mask-image:linear-gradient(180deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
 }
+
+/* ---- Agreements gate: pop-up over a blurred app ---- */
+body.ag-gate::before{ content:""; position:fixed; inset:0; z-index:70; background:radial-gradient(60% 50% at 50% 40%, rgba(96,150,255,.16), transparent 70%), rgba(30,41,80,.18); -webkit-backdrop-filter:blur(18px) saturate(1.3); backdrop-filter:blur(18px) saturate(1.3); animation:ag-pill-in 520ms var(--cv-ease) both; }
+body.ag-gate .setup-layout .cl-overview::before, body.ag-gate .setup-layout .cl-overview .cl-overview-brand, body.ag-gate .setup-layout .cl-overview .cl-overview-foot, body.ag-gate .ag-telcard{ pointer-events:none; }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card{
+  position:fixed !important; z-index:80; left:50% !important; top:50% !important; right:auto !important; bottom:auto !important; transform:translate(-50%, -50%);
+  width:min(860px, calc(100vw - 48px)) !important; height:min(700px, calc(100vh - 48px)) !important; margin:0 !important;
+  border-radius:26px !important; overflow:hidden !important; display:flex; flex-direction:column;
+  background:linear-gradient(165deg, #fff, #f6f9ff) !important; border:1px solid rgba(255,255,255,.9) !important;
+  box-shadow:0 40px 90px rgba(15,23,42,.28), 0 4px 16px rgba(15,23,42,.08) !important;
+  animation:ag-gate-in 560ms var(--cv-ease) both;
+}
+@keyframes ag-gate-in{ from{ opacity:0; transform:translate(-50%, calc(-50% + 18px)) scale(.985); } to{ opacity:1; transform:translate(-50%, -50%); } }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{ display:none !important; }
+body.ag-gate .ag-brief-prose{ font-size:15px; line-height:1.65; margin-bottom:12px; }
+body.ag-gate .cl-detail .ag-step-title{ padding-top:6px; }
+body.ag-gate .setup-layout::before, body.ag-gate .setup-layout::after{ display:none; }
+body.ag-gate .setup-layout .cl-detail .ag-actions{ padding:26px 28px 18px !important; background:linear-gradient(180deg, rgba(255,255,255,0), #fff 62%) !important; }
+body.ag-gate .ag-brief-read{ background:linear-gradient(180deg, rgba(255,255,255,.96) 70%, rgba(255,255,255,0)) !important; }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card:has(.ag-success){ opacity:0 !important; transform:translate(-50%, calc(-50% - 10px)) scale(.99); transition:opacity 260ms ease, transform 320ms ease; pointer-events:none; animation:none !important; }
+@media (prefers-reduced-motion:reduce){ body.ag-gate::before, body.ag-gate .shell:has(.setup-layout) .cl-detail-card{ animation:none !important; } }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14304,7 +14325,7 @@ body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welco
     "e2": { loader: "match", title: "Map your templates", icon: "list", subs: ["Templates fetched", "Lines of business loaded", "Mapping suggestions drafted"] },
     "m": { loader: "", title: "Kick off migration", icon: "migration", subs: [] },
   };
-  const AG_TEL_ORDER = ["0", "1", "2", "e0", "e1", "e2", "m"];
+  const AG_TEL_ORDER = ["1", "2", "e0", "e1", "e2", "m"];
   const AG_TEL_ARC_STEP = 0.6;
   let agTelEl = null;
   
@@ -14420,7 +14441,14 @@ body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welco
     next.disabled = !nk || !agTelViewable(nk);
   }
 
+  /* Agreements are a gate: a pop-up over the blurred app until both documents are accepted. */
+  function agGateSync() {
+    const gate = String(state.ag.focus) === "0" && !!document.querySelector(".setup-layout");
+    document.body.classList.toggle("ag-gate", gate);
+  }
+
   function agTelCardRender() {
+    agGateSync();
     const rail = document.querySelector(".setup-layout .cl-overview");
     if (!rail) return;
     const m = agTelCardModel();
