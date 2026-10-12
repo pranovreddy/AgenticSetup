@@ -12026,6 +12026,55 @@ body.ag-gate .ag-brief{ background:none !important; border:0 !important; border-
 @media (max-width:900px){ .ag-trace-main{ flex-wrap:wrap; } .ag-trace-facts{ flex-basis:100%; flex-wrap:wrap; } }
 @media (prefers-reduced-motion:reduce){ .ag-trace-row, .ag-trace-list::before, .ag-trace-bars i::after, .ag-trace-lobbar i{ animation:none !important; } }
 
+/* ---- Summary as a premium pop-up over the blurred details page; "Summary" brings it back ---- */
+body:has(#agSummary:not(.is-leaving)) .cl-detail-card > :not(.ag-sum){ visibility:visible !important; }
+.ag-sum{
+  position:fixed !important; inset:0 !important; z-index:85 !important; display:grid !important; place-items:center; padding:28px; overflow:hidden;
+  background:rgba(15,23,42,.26) !important; -webkit-backdrop-filter:blur(12px) saturate(1.2); backdrop-filter:blur(12px) saturate(1.2);
+  transition:background 520ms var(--cv-ease), backdrop-filter 520ms var(--cv-ease), -webkit-backdrop-filter 520ms var(--cv-ease), opacity 520ms var(--cv-ease);
+  animation:ag-sum-backdrop 520ms var(--cv-ease) both;
+}
+@keyframes ag-sum-backdrop{ from{ opacity:0; -webkit-backdrop-filter:blur(0); backdrop-filter:blur(0); } to{ opacity:1; } }
+.ag-sum.is-leaving{ opacity:0 !important; transform:none !important; background:rgba(15,23,42,0) !important; -webkit-backdrop-filter:blur(0) !important; backdrop-filter:blur(0) !important; pointer-events:none; transition:opacity 560ms var(--cv-ease) 80ms, background 560ms var(--cv-ease), backdrop-filter 560ms var(--cv-ease), -webkit-backdrop-filter 560ms var(--cv-ease) !important; }
+.ag-sum-card{
+  position:relative; display:flex; flex-direction:column; width:min(940px, 100%); max-height:min(760px, calc(100vh - 56px)); overflow:hidden; border-radius:30px;
+  background:linear-gradient(180deg, #e8f0ff 0, #f4f8ff 150px, #fff 340px); border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 50px 110px rgba(15,23,42,.34), 0 4px 18px rgba(15,23,42,.10), inset 0 1px 0 #fff;
+  animation:ag-sum-card-in 640ms var(--cv-ease) 60ms both;
+}
+@keyframes ag-sum-card-in{ from{ opacity:0; transform:translateY(26px) scale(.975); } to{ opacity:1; transform:none; } }
+.ag-sum.is-leaving .ag-sum-card{ transform:translateY(18px) scale(.97); opacity:0; transition:transform 520ms var(--cv-ease), opacity 420ms ease; animation:none; }
+body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-ease) both; }
+@keyframes ag-page-settle{ from{ transform:scale(.985); opacity:.7; } to{ transform:none; opacity:1; } }
+.ag-sum-top{ display:flex; align-items:center; gap:16px; padding:26px 32px 8px; margin:0 !important; }
+.ag-sum-orb{ flex:none; display:grid; place-items:center; width:48px; height:48px; border-radius:50%; background:linear-gradient(155deg,#6aa0ff,#2563eb 70%); box-shadow:0 0 0 7px rgba(37,99,235,.10), 0 12px 26px rgba(37,99,235,.32), inset 0 1px 0 rgba(255,255,255,.4); }
+.ag-sum-orb .ai-mark, .ag-sum-orb svg{ width:22px; height:22px; }
+.ag-sum-top .ag-sum-kicker{ margin:0 0 4px; }
+.ag-sum-top .ag-sum-head{ margin:0; max-width:none; font-size:21px; line-height:1.3; }
+.ag-sum-scroll{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:0; }
+.ag-sum-page{ padding:6px 32px 18px !important; max-width:none !important; }
+.ag-sum-bar{ position:static !important; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 32px 22px !important; background:linear-gradient(180deg, rgba(255,255,255,0), #fff 40%) !important; border-top:1px solid #eef2f9; }
+.ag-sum-go{ min-width:230px; background:linear-gradient(135deg,#3b82f6,#1d4ed8) !important; box-shadow:0 12px 26px rgba(37,99,235,.32) !important; }
+.ag-sum-reopen{
+  position:fixed; z-index:41; top:22px; right:28px; display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px 0 12px; border:1px solid rgba(255,255,255,.8); border-radius:999px; cursor:pointer;
+  background:linear-gradient(160deg, rgba(255,255,255,.85), rgba(255,255,255,.55)); -webkit-backdrop-filter:blur(16px) saturate(1.5); backdrop-filter:blur(16px) saturate(1.5);
+  box-shadow:0 10px 26px rgba(37,99,235,.14), inset 0 1px 0 #fff; color:#1d4ed8; font:inherit; font-size:13.5px; font-weight:620; animation:ag-pill-in 500ms var(--cv-ease) both; transition:transform 200ms var(--cv-ease), box-shadow 200ms;
+}
+.ag-sum-reopen:hover{ transform:translateY(-1px); box-shadow:0 14px 30px rgba(37,99,235,.22), inset 0 1px 0 #fff; }
+.ag-sum-reopen i{ display:grid; place-items:center; width:22px; height:22px; border-radius:50%; background:linear-gradient(155deg,#6aa0ff,#2563eb); color:#fff; font-style:normal; }
+.ag-sum-reopen i svg{ width:12px; height:12px; }
+/* premium finish on the findings */
+.ag-trace-root{ display:none; }
+.ag-trace-list{ padding-left:14px; } .ag-trace-list::before{ left:13px; top:20px; }
+.ag-trace-row{ padding:12px 0 2px 30px; } .ag-trace-row::before{ left:-1px; top:34px; width:26px; } .ag-trace-node{ top:28px; left:-6px; }
+.ag-trace-main{ background:linear-gradient(180deg,#fff,#fbfcff); border:1px solid #e3eaf7; border-radius:18px; box-shadow:0 1px 2px rgba(15,23,42,.04), 0 10px 24px rgba(37,99,235,.05), inset 0 1px 0 #fff; }
+.ag-trace-row:nth-child(4n+1) .ag-sum-av{ background:linear-gradient(155deg,#6aa0ff,#2563eb); } .ag-trace-row:nth-child(4n+2) .ag-sum-av{ background:linear-gradient(155deg,#b69cff,#7c4dff); } .ag-trace-row:nth-child(4n+3) .ag-sum-av{ background:linear-gradient(155deg,#34d3b0,#0f9e86); } .ag-trace-row:nth-child(4n+4) .ag-sum-av{ background:linear-gradient(155deg,#fbbf68,#e98a1d); }
+.ag-sum-av{ box-shadow:0 6px 14px rgba(37,99,235,.20), inset 0 1px 0 rgba(255,255,255,.4); }
+.ag-trace-note{ margin:6px 0 0 4px; font-size:12px; color:var(--cv-mute); } .ag-trace-note b{ color:var(--cv-ink-2); }
+.ag-trace .ag-sum-seg{ margin-left:4px; }
+.ag-trace .ag-sum-legend{ margin-left:4px; }
+@media (prefers-reduced-motion:reduce){ .ag-sum, .ag-sum-card, .ag-sum-reopen, body.ag-sum-landing .cl-detail-card{ animation:none !important; transition:none !important; } }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -14764,19 +14813,37 @@ body.ag-gate .ag-brief{ background:none !important; border:0 !important; border-
     }
     return null;
   }
+  function agSummaryReopenSync(show, key) {
+    let b = document.getElementById("agSumReopen");
+    if (!show) { b?.remove(); return; }
+    if (b && b.dataset.key === key) return;
+    b?.remove();
+    b = document.createElement("button");
+    b.id = "agSumReopen";
+    b.type = "button";
+    b.className = "ag-sum-reopen";
+    b.dataset.key = key;
+    b.innerHTML = `<i>${I("spark")}</i>Summary`;
+    b.addEventListener("click", () => {
+      agSumDone.delete(key);
+      b.remove();
+      agSummarySync();
+    });
+    document.body.appendChild(b);
+  }
   function agSummarySync() {
     const key = String(state.ag.focus);
-    const card = document.querySelector(".cl-detail-card");
     const have = document.getElementById("agSummary");
-    const want = !!card
-      && ["2", "e0", "e1", "e2"].includes(key)
-      && !agSumDone.has(key)
+    const ready = ["2", "e0", "e1", "e2"].includes(key)
       && stepAiDone.has(key)
       && !agStepIsComplete(key)
       && !document.body.classList.contains("ag-gate")
-      && !document.querySelector(".ag-step-ai, .ag-step-intro, .ag-gtm-intro");
+      && !document.querySelector(".ag-step-ai, .ag-step-intro, .ag-gtm-intro")
+      && !document.getElementById("agNextUp");
+    const want = ready && !agSumDone.has(key);
+    agSummaryReopenSync(ready && agSumDone.has(key) && !(have && have.dataset.leaving === "1"), key);
     if (!want) { if (have && have.dataset.leaving !== "1") have.remove(); return; }
-    if (have && have.dataset.key === key && have.parentElement === card) return;
+    if (have && have.dataset.key === key) return;
     have?.remove();
     const d = agSummaryData(key);
     if (!d) return;
@@ -14786,26 +14853,26 @@ body.ag-gate .ag-brief{ background:none !important; border:0 !important; border-
     el.id = "agSummary";
     el.className = "ag-sum";
     el.dataset.key = key;
-    el.setAttribute("role", "region");
+    el.setAttribute("role", "dialog");
     el.setAttribute("aria-label", `${d.kicker} summary`);
-    el.innerHTML = `<div class="ag-sum-scroll"><div class="ag-sum-page">
+    el.innerHTML = `<div class="ag-sum-card">
       <header class="ag-sum-top">
-        <p class="ag-sum-kicker"><span class="ag-sum-dot"></span>Agent summary · ${agSumEsc(d.kicker)}</p>
-        <h2 class="ag-sum-head">${agSumEsc(tele ? tele.did() : d.kicker)}</h2>
-        <p class="ag-sum-sub">${agSumEsc(tele ? tele.next() : "")}</p>
+        <span class="ag-sum-orb">${bootAiMark()}</span>
+        <div><p class="ag-sum-kicker">Agent summary · ${agSumEsc(d.kicker)}</p>
+        <h2 class="ag-sum-head">${agSumEsc(tele ? tele.did() : d.kicker)}</h2></div>
       </header>
-      ${d.body}
-    </div></div>
-    <footer class="ag-sum-bar"><span>${agSumEsc(d.count)}</span><button type="button" class="ag-btn is-primary ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button></footer>`;
+      <div class="ag-sum-scroll"><div class="ag-sum-page">${d.body}</div></div>
+      <footer class="ag-sum-bar"><span>${agSumEsc(d.count)}</span><button type="button" class="ag-btn is-primary ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button></footer>
+    </div>`;
     el.addEventListener("click", (ev) => {
       if (!ev.target.closest("[data-sum-go]")) return;
       agSumDone.add(key);
       el.dataset.leaving = "1";
       el.classList.add("is-leaving");
-      document.body.classList.add("ag-revealing");
-      setTimeout(() => { el.remove(); document.body.classList.remove("ag-revealing"); agPopSig = ""; }, 700);
+      document.body.classList.add("ag-sum-landing");
+      setTimeout(() => { el.remove(); document.body.classList.remove("ag-sum-landing"); agSummarySync(); }, 620);
     });
-    card.appendChild(el);
+    document.body.appendChild(el);
   }
 
   /* Agreements are a gate: a pop-up over the blurred app until both documents are accepted. */
