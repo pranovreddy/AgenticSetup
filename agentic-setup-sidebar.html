@@ -11572,8 +11572,8 @@ body.ag-app-ready .setup-layout .cl-overview{
 /* ==========================================================================
    Sidebar version: the rail carries the agent telemetry (blob, orbit, log)
    ========================================================================== */
-.setup-layout .cl-workspace{ grid-template-columns:72px minmax(0, 1fr) !important; }
-.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:72px !important; min-width:72px !important; max-width:72px !important; }
+.setup-layout .cl-workspace{ grid-template-columns:150px minmax(0, 1fr) !important; }
+.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:150px !important; min-width:150px !important; max-width:150px !important; border-right:0 !important; box-shadow:none !important; }
 .setup-layout .cl-overview .stages, .setup-layout .cl-overview .cl-overview-head{ display:none !important; }
 .ag-telcard{
   --tel-ease:cubic-bezier(.22,1,.36,1);
@@ -11592,8 +11592,8 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-tel-nav:disabled{ opacity:.25; cursor:default; }
 .ag-tel-nav:focus-visible, .ag-tel-ico:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }
 .ag-tel-track{ position:relative; width:100%; height:100%; overflow:visible; user-select:none; }
-.ag-tel-path{ display:none; position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:0; }
-.ag-tel-rail{ fill:none; stroke:url(#agTelRailG); stroke-width:1.25; stroke-linecap:round; }
+.ag-tel-path{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:0; }
+.ag-tel-rail{ fill:none; stroke:url(#agTelRailG); stroke-width:1.5; stroke-linecap:round; }
 .ag-tel-icons{ position:absolute; inset:0; z-index:2; }
 .ag-tel-ico{
   position:absolute; left:0; top:0; display:grid; place-items:center; width:36px; height:36px; margin:0; padding:0; cursor:pointer;
@@ -11610,7 +11610,7 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-tel-ico svg{ position:relative; z-index:1; width:16px; height:16px; }
 .ag-tel-ico.is-focus{ color:#fff; border-color:transparent; }
 .ag-tel-ico:hover:not(:disabled):not(.is-focus){ border-color:#a9c2f7; color:#2563eb; }
-.ag-tel-ico:disabled{ cursor:not-allowed; opacity:calc(var(--arc-o,1) * .9); background:#f6f8fb; border-style:dashed; border-color:#d5deea; color:#a6b1c4; box-shadow:none; }
+.ag-tel-ico:disabled{ cursor:not-allowed; opacity:max(.55, calc(var(--arc-o,1) * .95)); background:#f6f8fb; border-style:dashed; border-color:#d5deea; color:#a6b1c4; box-shadow:none; }
 .ag-tel-ico.is-done:not(.is-focus){ color:#2563eb; border-color:#cfdcf7; }
 .ag-tel-badge{ position:absolute; z-index:2; right:-3px; bottom:-3px; display:none; place-items:center; width:14px; height:14px; border-radius:50%; background:#16a34a; color:#fff; box-shadow:0 0 0 2px #fff; }
 .ag-tel-ico.is-done .ag-tel-badge{ display:grid; }
@@ -11643,13 +11643,14 @@ body.ag-app-ready .setup-layout .cl-overview{
 
 .setup-layout .cl-overview .cl-rail-logout{ display:none !important; }
 
-.setup-layout .cl-overview{ overflow:visible !important; z-index:6; }
+.setup-layout .cl-overview{ overflow:visible !important; z-index:6; border-right:0 !important; }
+.setup-layout .cl-workspace, .setup-layout .cl-detail{ border-left:0 !important; }
 .ag-tel-ico{ box-shadow:0 0 0 4px #f8fafd, 0 1px 2px rgba(15,23,42,.04); }
 
 /* ---- Step done: a temporary pop-up instead of a success page ---- */
 .ag-donetoast{
-  position:fixed; z-index:60; left:calc(72px + (100vw - 72px) / 2); bottom:104px; transform:translate(-50%, 16px); opacity:0; pointer-events:none;
-  display:flex; align-items:center; gap:12px; min-width:320px; max-width:min(520px, calc(100vw - 112px)); padding:12px 12px 12px 14px; overflow:hidden;
+  position:fixed; z-index:60; left:calc(150px + (100vw - 150px) / 2); bottom:104px; transform:translate(-50%, 16px); opacity:0; pointer-events:none;
+  display:flex; align-items:center; gap:12px; min-width:320px; max-width:min(520px, calc(100vw - 190px)); padding:12px 12px 12px 14px; overflow:hidden;
   border-radius:14px; background:rgba(255,255,255,.96); border:1px solid #e3eaf5; box-shadow:0 18px 44px rgba(15,23,42,.14), 0 2px 6px rgba(15,23,42,.06);
   -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
   transition:opacity 320ms var(--cv-ease), transform 420ms var(--cv-ease);
@@ -11680,7 +11681,7 @@ body.ag-app-ready .setup-layout .cl-overview{
 .setup-layout .cl-overview .cl-overview-brand{ overflow:hidden; width:100% !important; padding-left:24px !important; padding-right:0 !important; display:flex; justify-content:flex-start; }
 .setup-layout .cl-overview .cl-overview-logo{ flex:none; max-width:none !important; width:132px !important; margin-right:-98px; clip-path:inset(0 112px 0 0); }
 .setup-layout .cl-overview .cl-overview-user-meta{ display:none !important; }
-.setup-layout .cl-overview .cl-overview-user-btn{ justify-content:center; padding-left:0 !important; padding-right:0 !important; }
+.setup-layout .cl-overview .cl-overview-user-btn{ justify-content:flex-start; padding-left:16px !important; padding-right:0 !important; }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14293,20 +14294,18 @@ body.ag-app-ready .setup-layout .cl-overview{
     const track = el.querySelector(".ag-tel-track");
     const w = track.clientWidth || 180;
     const h = track.clientHeight || 320;
-    const fx = w;
-    const pad = 46;
-    const bow = 18;
-    const gap = Math.max(52, (h / 2 - pad) / 3);
-    const kc = 80 / Math.pow(Math.max(60, h / 2 - pad), 2);
-    const xAt = (y) => fx - kc * (y - h / 2) * (y - h / 2);
-    const yAt = (i) => h / 2 + (i - m.pos) * gap;
-    const pt = (i) => [xAt(yAt(i)), yAt(i)];
+    const fx = w - 28;
+    const STEP = 0.4;
+    const rx = Math.min(112, w - 52);
+    const ry = Math.max(120, (h / 2 - 34) / Math.sin(3 * STEP));
+    const pt = (i) => { const th = (i - m.pos) * STEP; return [fx - rx * (1 - Math.cos(th)), h / 2 + ry * Math.sin(th)]; };
     const svg = el.querySelector(".ag-tel-path");
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     const g = el.querySelector("#agTelRailG");
     g.setAttribute("x1", "0"); g.setAttribute("x2", "0"); g.setAttribute("y1", "0"); g.setAttribute("y2", String(h));
     let d = "";
-    for (let k = 0; k <= 60; k++) { const y = 8 + k * (h - 16) / 60; d += (k ? " L " : "M ") + xAt(y).toFixed(1) + " " + y.toFixed(1); }
+    const thMax = Math.min(Math.PI / 2, Math.asin(Math.min(1, (h / 2 - 8) / ry)), 3.5 * STEP);
+    for (let k = 0; k <= 80; k++) { const th = -thMax + 2 * thMax * k / 80; d += (k ? " L " : "M ") + (fx - rx * (1 - Math.cos(th))).toFixed(1) + " " + (h / 2 + ry * Math.sin(th)).toFixed(1); }
     el.querySelector(".ag-tel-rail").setAttribute("d", d);
     const cap = el.querySelector(".ag-tel-cap");
     const [fcx, fcy] = pt(m.pos);
