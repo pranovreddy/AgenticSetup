@@ -11570,92 +11570,112 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-brief-prose .ag-brief-pt:hover, .ag-brief-prose .ag-brief-pt:focus-visible, .ag-brief-prose .ag-brief-pt.is-peek{ background:var(--cv-blue-wash); text-decoration-color:var(--cv-blue); }
 
 /* ==========================================================================
-   Sidebar version: the rail carries the agent telemetry
+   Sidebar version: the rail carries the agent telemetry (blob, orbit, log)
    ========================================================================== */
-.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:300px !important; min-width:300px !important; max-width:300px !important; }
 .setup-layout .cl-workspace{ grid-template-columns:300px minmax(0, 1fr) !important; }
-.setup-layout .cl-overview .stages{ flex:1 1 0 !important; min-height:120px !important; overflow-y:auto !important; overflow-x:hidden !important; width:100%; scrollbar-width:thin; }
-.ag-tel-orb{ width:84px !important; height:84px !important; margin-left:-42px !important; top:2px !important; }
-.ag-tel-core{ top:30px !important; }
+.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:300px !important; min-width:300px !important; max-width:300px !important; }
+.setup-layout .cl-overview .stages, .setup-layout .cl-overview .cl-overview-head{ display:none !important; }
 .ag-telcard{
-  position:relative; flex:none; width:calc(100% - 24px); margin:8px 12px 10px; padding:0 0 14px; text-align:left;
-  border:1px solid #dfe8f7; border-radius:20px; overflow:hidden;
-  background:radial-gradient(120% 70% at 50% -10%, rgba(59,130,246,.10), transparent 55%), #fff;
-  box-shadow:0 14px 34px -18px rgba(30,58,138,.28);
+  --tel-ease:cubic-bezier(.22,1,.36,1);
+  position:relative; flex:1 1 0; min-height:0; width:100%; margin:0; padding:0; text-align:left;
+  display:flex; flex-direction:column; overflow:hidden; background:none; border:0; box-shadow:none;
 }
 .ag-tel-live, .ag-tel-idle{
-  position:absolute; top:12px; right:14px; z-index:3; display:inline-flex; align-items:center; gap:5px;
+  position:absolute; top:12px; right:16px; z-index:6; display:inline-flex; align-items:center; gap:5px;
   font-family:"Geist Mono", ui-monospace, monospace; font-size:9.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
 }
 .ag-tel-live{ color:#118252; } .ag-tel-idle{ color:#8b97ae; }
 .ag-tel-live i, .ag-tel-idle i{ width:5px; height:5px; border-radius:50%; background:currentColor; }
 .ag-tel-live i{ background:#16a34a; animation:ag-tel-pulse 1.9s ease-out infinite; }
 @keyframes ag-tel-pulse{ 0%{ box-shadow:0 0 0 0 rgba(22,163,74,.45); } 70%,100%{ box-shadow:0 0 0 6px rgba(22,163,74,0); } }
-.ag-tel-viz{ position:relative; height:128px; border-bottom:1px solid #eef2f9; margin-bottom:12px; }
-.ag-tel-orb{ position:absolute; left:50%; top:10px; width:64px; height:64px; margin-left:-32px; z-index:2; filter:drop-shadow(0 0 12px rgba(59,130,246,.35)); }
-.ag-tel-core{ position:absolute; left:50%; top:30px; width:24px; height:24px; margin-left:-12px; z-index:3; border-radius:50%; background:#2f62e8; box-shadow:0 0 0 4px #fff, 0 0 18px rgba(59,130,246,.55); }
-.ag-tel-core .ai-mark{ position:absolute; inset:0; width:100%; height:100%; display:block; }
-.ag-tel-core{ top:29px !important; width:26px !important; height:26px !important; margin-left:-13px !important; background:transparent !important; box-shadow:0 0 0 4px #fff, 0 0 20px rgba(59,130,246,.55) !important; }
-.ag-tel-beam{
-  position:absolute; left:50%; top:62px; width:70px; height:42px; margin-left:-35px; z-index:1;
-  clip-path:polygon(40% 0, 60% 0, 100% 100%, 0 100%);
-  background:linear-gradient(180deg, rgba(96,150,255,.55), rgba(37,99,235,.08)); opacity:.55; transition:opacity 500ms;
+.ag-tel-orbit{ position:relative; flex:none; --hub-y:50px; }
+.ag-tel-nav{
+  position:absolute; top:calc(var(--hub-y) - 14px); z-index:5; display:grid; place-items:center; width:30px; height:30px; margin:0; padding:0; cursor:pointer;
+  border:1px solid rgba(255,255,255,.8); border-radius:50%; background:rgba(255,255,255,.85); color:#5b6b86;
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 6px 16px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.85);
+  transition:transform 220ms var(--tel-ease), color 220ms, border-color 220ms, opacity 220ms;
 }
-.ag-telcard.is-working .ag-tel-beam{ opacity:1; animation:ag-tel-beam 2.2s ease-in-out infinite alternate; }
-@keyframes ag-tel-beam{ from{ filter:brightness(.9); } to{ filter:brightness(1.3); } }
-.ag-tel-arc{ position:absolute; left:0; right:0; bottom:6px; width:100%; height:56px; z-index:0; }
+.ag-tel-nav.is-prev{ left:10px; transform:scaleX(-1); } .ag-tel-nav.is-next{ right:10px; }
+.ag-tel-nav:hover:not(:disabled){ color:#2563eb; border-color:rgba(37,99,235,.3); }
+.ag-tel-nav.is-prev:hover:not(:disabled){ transform:scaleX(-1) scale(1.06); } .ag-tel-nav.is-next:hover:not(:disabled){ transform:scale(1.06); }
+.ag-tel-nav:disabled{ opacity:.28; cursor:default; box-shadow:none; }
+.ag-tel-nav:focus-visible, .ag-tel-ico:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }
+.ag-tel-track{
+  position:relative; width:100%; height:196px; overflow:hidden; user-select:none;
+  background:radial-gradient(40% 44% at 50% var(--hub-y), rgba(96,150,255,.16), transparent 72%), radial-gradient(70% 36% at 50% 100%, rgba(37,99,235,.06), transparent 70%);
+}
+.ag-tel-path, .ag-tel-beam{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+.ag-tel-path{ z-index:0; } .ag-tel-beam{ z-index:1; opacity:.6; transition:opacity 500ms; }
+.ag-telcard.is-working .ag-tel-beam{ opacity:1; }
+.ag-tel-rail{ fill:none; stroke:url(#agTelRailG); stroke-width:1.25; stroke-linecap:round; }
+.ag-tel-pool{ fill:url(#agTelPoolG); } .ag-tel-cone{ fill:url(#agTelBeamG); filter:blur(1.2px); }
+.ag-tel-hub{ position:absolute; left:50%; top:var(--hub-y); z-index:3; width:80px; height:80px; transform:translate(-50%,-50%); pointer-events:none; }
+.ag-tel-hub::before{ content:""; position:absolute; inset:-14px; border-radius:50%; background:radial-gradient(circle, rgba(96,150,255,.22), transparent 66%); z-index:-1; }
+.ag-tel-blob{ position:relative; display:block; width:80px; height:80px; filter:drop-shadow(0 10px 24px rgba(37,99,235,.28)); }
+.ag-tel-orb{ display:block; width:80px; height:80px; }
+.ag-tel-blob::before{ content:""; position:absolute; inset:-6px; border-radius:50%; border:1px solid rgba(37,99,235,.14); opacity:.7; pointer-events:none; }
+.ag-telcard.is-working .ag-tel-blob::before{ animation:ag-tel-ring 1.8s ease-out infinite; }
+@keyframes ag-tel-ring{ 0%{ transform:scale(.92); opacity:.55; } 70%,100%{ transform:scale(1.08); opacity:0; } }
+.ag-telcard.is-working .ag-tel-blob{ animation:ag-tel-float 2.4s ease-in-out infinite; }
+@keyframes ag-tel-float{ 50%{ transform:translateY(-2px); } }
+.ag-tel-core.agent-core{ width:28px; height:28px; box-shadow:0 0 0 3px rgba(255,255,255,.92), 0 4px 12px rgba(37,99,235,.32); }
+.ag-tel-core .ai-mark{ width:16px; height:16px; background:none; box-shadow:none; border-radius:0; padding:0; }
+.ag-telcard.is-working .ag-tel-core{ animation:ag-tel-breathe 1.4s ease-in-out infinite; }
+@keyframes ag-tel-breathe{ 50%{ filter:drop-shadow(0 0 8px rgba(59,130,246,.6)); } }
+.ag-tel-icons{ position:absolute; inset:0; z-index:2; }
 .ag-tel-ico{
-  position:absolute; left:50%; bottom:6px; width:46px; height:46px; margin-left:-23px; z-index:3; display:grid; place-items:center; color:#fff; border-radius:50%;
-  background:linear-gradient(180deg,#4f86f7,#2a58e0); box-shadow:0 0 0 4px rgba(255,255,255,.95), 0 0 0 5px rgba(59,130,246,.35), 0 10px 22px -6px rgba(37,99,235,.6);
+  position:absolute; left:0; top:0; display:grid; place-items:center; width:46px; height:46px; margin:0; padding:0; cursor:pointer;
+  border:1px solid #dbe3ef; border-radius:50%; background:linear-gradient(180deg,#fff,#f5f8fc); color:#6b7a94;
+  opacity:var(--arc-o,1); transform:translate3d(-50%,-50%,0);
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 6px 14px rgba(15,23,42,.06), inset 0 1px 0 #fff;
+  transition:transform 700ms var(--tel-ease), opacity 500ms var(--tel-ease), color 260ms, border-color 260ms;
 }
-.ag-tel-ico svg{ width:20px; height:20px; }
-.ag-telcard.is-working .ag-tel-ico{ animation:ag-tel-ico 2s ease-in-out infinite; }
-@keyframes ag-tel-ico{ 50%{ transform:scale(1.06); } }
-.ag-tel-body{ padding:0 16px; }
-.ag-tel-kicker{ margin:0 0 4px; font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:#8b97ae; }
-.ag-tel-title{ margin:0 0 12px; font-size:15.5px; line-height:1.3; font-weight:650; letter-spacing:-.2px; color:var(--cv-ink); }
-.ag-tel-log{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; position:relative; }
-.ag-tel-log li{ position:relative; display:flex; gap:10px; align-items:flex-start; animation:cv-rise 420ms var(--cv-ease) both; }
-.ag-tel-log li:not(:last-child)::before{ content:""; position:absolute; left:10px; top:24px; bottom:-14px; width:1.5px; background:#dbe4f5; }
+.ag-tel-ico::before{
+  content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(155deg,#5b95ff 0%,#2563eb 52%,#1d4ed8 100%); box-shadow:0 12px 26px rgba(37,99,235,.34), inset 0 1px 0 rgba(255,255,255,.35);
+  opacity:var(--arc-f,0); transition:opacity 500ms var(--tel-ease);
+}
+.ag-tel-ico svg{ position:relative; z-index:1; width:17px; height:17px; }
+.ag-tel-ico.is-focus{ color:#fff; border-color:transparent; }
+.ag-tel-ico:hover:not(:disabled):not(.is-focus){ border-color:#a9c2f7; color:#2563eb; }
+.ag-tel-ico:disabled{ cursor:not-allowed; opacity:calc(var(--arc-o,1) * .55); background:#f6f8fb; border-style:dashed; border-color:#d5deea; color:#a6b1c4; box-shadow:none; }
+.ag-tel-ico.is-done:not(.is-focus){ color:#2563eb; border-color:#cfdcf7; }
+.ag-tel-badge{ position:absolute; z-index:2; right:-3px; bottom:-3px; display:none; place-items:center; width:16px; height:16px; border-radius:50%; background:#16a34a; color:#fff; box-shadow:0 0 0 2px #fff; }
+.ag-tel-ico.is-done .ag-tel-badge{ display:grid; }
+.ag-tel-badge svg{ width:9px !important; height:9px !important; stroke-width:3; }
+.ag-tel-ico.is-active::after{
+  content:""; position:absolute; inset:-6px; border-radius:50%; padding:1.5px; pointer-events:none;
+  background:conic-gradient(from 0deg, rgba(37,99,235,0), rgba(37,99,235,.9) 300deg, rgba(37,99,235,0));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:ag-tel-spin 1.4s linear infinite;
+}
+@keyframes ag-tel-spin{ to{ transform:rotate(360deg); } }
+.ag-tel-panel{ flex:1 1 0; min-height:0; margin:0 20px; padding:12px 0 14px; border-top:1px solid #eef2f8; overflow-y:auto; scrollbar-width:none; }
+.ag-tel-panel::-webkit-scrollbar{ display:none; }
+.ag-tel-panel.is-swap > *{ animation:ag-tel-swap 420ms var(--tel-ease) both; }
+@keyframes ag-tel-swap{ from{ opacity:0; transform:translateY(6px); filter:blur(3px); } to{ opacity:1; transform:none; filter:none; } }
+.ag-tel-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.ag-tel-titles{ min-width:0; }
+.ag-tel-kicker{ margin:0 0 4px; font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:500; letter-spacing:.09em; text-transform:uppercase; color:#8b97ae; }
+.ag-tel-title{ margin:0; font-size:16px; line-height:1.3; font-weight:650; letter-spacing:-.2px; color:var(--cv-ink); }
+.ag-tel-thinking{ flex:none; display:inline-flex; align-items:center; gap:3px; height:18px; padding:0 8px; border-radius:99px; background:#eef4ff; box-shadow:inset 0 0 0 1px rgba(37,99,235,.12); }
+.ag-tel-thinking i{ width:4px; height:4px; border-radius:50%; background:#2563eb; animation:ag-tel-dot 1.2s ease-in-out infinite; }
+.ag-tel-thinking i:nth-child(2){ animation-delay:.15s; } .ag-tel-thinking i:nth-child(3){ animation-delay:.3s; }
+@keyframes ag-tel-dot{ 0%,80%,100%{ opacity:.25; transform:translateY(0); } 40%{ opacity:1; transform:translateY(-2px); } }
+.ag-tel-log{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+.ag-tel-log li{ position:relative; display:flex; gap:10px; align-items:flex-start; min-width:0; }
+.ag-tel-log li:not(:last-child)::before{ content:""; position:absolute; left:10px; top:24px; bottom:-14px; width:1.5px; background:linear-gradient(180deg,#c9d8fb,#e6edf9); }
 .ag-tel-dot{ position:relative; flex:none; width:21px; height:21px; border-radius:50%; display:grid; place-items:center; font-style:normal; }
 .ag-tel-log .is-done .ag-tel-dot{ background:#e8efff; color:#2563eb; }
 .ag-tel-log .is-active .ag-tel-dot{ border:2px solid #cfdcf8; border-top-color:#2563eb; animation:ag-tel-spin 900ms linear infinite; }
 .ag-tel-log .is-active .ag-tel-dot b{ width:7px; height:7px; border-radius:50%; background:#2563eb; animation:ag-tel-spin 900ms linear infinite reverse; }
-@keyframes ag-tel-spin{ to{ transform:rotate(360deg); } }
-.ag-tel-txt{ display:flex; flex-direction:column; min-width:0; }
+.ag-tel-txt{ display:flex; flex-direction:column; min-width:0; overflow-wrap:anywhere; }
 .ag-tel-lbl{ font-size:13.5px; line-height:1.35; color:#4a5878; }
 .ag-tel-log .is-active .ag-tel-lbl{ color:var(--cv-ink); font-weight:620; }
 .ag-tel-sub{ font-size:12px; line-height:1.4; color:#98a3bb; margin-top:1px; }
-@media (prefers-reduced-motion:reduce){ .ag-telcard *{ animation:none !important; } }
+@media (max-height:760px){ .ag-tel-track{ height:176px; } }
+@media (prefers-reduced-motion:reduce){ .ag-telcard *{ animation:none !important; transition:none !important; } }
 
-/* ---- rail v2: only the agent telemetry, directly on the nav ---- */
-.setup-layout .cl-overview .stages{ display:none !important; }
-.setup-layout .cl-overview .cl-overview-head{ display:none; }
-.ag-telcard{
-  flex:1 1 0; min-height:0; width:100%; margin:0; padding:20px 24px 12px;
-  border:0; border-radius:0; background:none; box-shadow:none; overflow-x:hidden; overflow-y:auto; scrollbar-width:none;
-}
-.ag-telcard::-webkit-scrollbar{ display:none; }
-.ag-tel-live, .ag-tel-idle{ top:22px; right:24px; }
-.ag-tel-viz{ margin:0 -24px 14px; border-bottom:0; height:132px; }
-.ag-tel-body{ padding:0; }
-.ag-tel-seg{ display:flex; gap:4px; margin:0 0 12px; }
-.ag-tel-seg i{ flex:1; height:3px; border-radius:3px; background:#dfe6f4; transition:background 400ms var(--cv-ease); }
-.ag-tel-seg i.is-done{ background:#2563eb; }
-.ag-tel-seg i.is-now{ background:linear-gradient(90deg,#2563eb,#9db8f6); animation:ag-seg 1.6s ease-in-out infinite alternate; }
-@keyframes ag-seg{ from{ opacity:.55; } to{ opacity:1; } }
-.ag-tel-title{ font-size:17px; margin-bottom:14px; }
-.ag-tel-lbl{ font-size:14px; }
-.ag-tel-log li{ min-width:0; }
-.ag-tel-txt{ overflow-wrap:anywhere; }
-@media (max-height:760px){
-  .ag-telcard{ padding-top:12px; }
-  .ag-tel-viz{ height:122px; margin-bottom:8px; }
-  .ag-tel-orb{ transform:scale(.78); transform-origin:50% 0; top:0 !important; }
-  .ag-tel-core{ top:23px !important; }
-  .ag-tel-log{ gap:9px; }
-  .ag-tel-title{ margin-bottom:10px; }
-}
 /* ---- Motion: one calm swap between steps */
 .shell:has(.setup-layout) .cl-detail-card.is-swap-out{
   opacity:0; transform:translateY(4px); filter:blur(2px);
@@ -14147,19 +14167,34 @@ body.ag-app-ready .setup-layout .cl-overview{
     setTimeout(() => vis.forEach((el) => { el.classList.remove("cv-pop"); el.style.removeProperty("--pi"); }), 520 + vis.length * 38 + 120);
   }
 
-  /* ---- Agent telemetry card in the left rail ---------------------------------- */
+  /* ---- Agent telemetry in the left rail: blob, orbit of steps, live log ------- */
   const AG_TEL_CARD = {
     "0": { loader: "agreements", title: "Review and accept your agreements", icon: "file", subs: ["Platform agreements", "Terms and conditions", "Privacy policy", "Three key points each"] },
     "1": { loader: "kyc", title: "Complete your business profile", icon: "building", subs: ["DLT registry", "MCA, GSTIN and RBI", "Trademark and public records", "Business details prepared"] },
     "2": { loader: "team", title: "Invite team mates to the platform", icon: "users", subs: ["Reading your DLT registration", "Matching people to DLT records", "Roles and permissions per person", "Suggestions ready to invite"] },
     "e0": { loader: "brand", title: "Set up your brands and LOBs", icon: "layers", subs: ["DLT registrations", "Brands found in your headers", "Lines of business per brand", "Drafts ready to confirm"] },
-    "e1": { loader: "gtm", title: "Confirm your GTM partners", icon: "users", subs: ["Four partners available", "Rate cards compared", "Best two selected", "Volume split by phase", "Review prepared"] },
+    "e1": { loader: "gtm", title: "Confirm your GTM partners", icon: "phone", subs: ["Four partners available", "Rate cards compared", "Best two selected", "Volume split by phase", "Review prepared"] },
     "e2": { loader: "match", title: "Map your templates", icon: "list", subs: ["Templates fetched", "Lines of business loaded", "Mapping suggestions drafted"] },
     "m": { loader: "", title: "Kick off migration", icon: "migration", subs: [] },
   };
   const AG_TEL_ORDER = ["0", "1", "2", "e0", "e1", "e2", "m"];
-  let agTelCardRaf = 0;
-  let agTelCardPaint = null;
+  const AG_TEL_ARC_STEP = 0.6;
+  let agTelEl = null;
+  let agTelRaf = 0;
+  let agTelPanelSig = "";
+
+  function agTelViewable(key) {
+    if (AG_NAV_FREE) return true;
+    if (key === "0" || key === "1" || key === "2") {
+      const i = Number(key);
+      return !(agStepLockReason(i) && !agStepDone(i));
+    }
+    if (key.startsWith("e")) {
+      const i = Number(key.slice(1));
+      return !(agEstateLockReason(i) && !state.done.estate[i]);
+    }
+    return agEstateAll() || !!state.done.migration;
+  }
 
   function agTelCardModel() {
     const key = String(state.ag.focus);
@@ -14169,75 +14204,168 @@ body.ag-app-ready .setup-layout .cl-overview{
     const complete = agStepIsComplete(key);
     let working = false;
     let active = -1;
-    let n = def ? def.steps.length : 0;
-    if (def && agTele && agTele.focus === key && !agTele.done && !complete) {
-      working = true;
-      active = agTele.step;
-    }
-    const doneUpTo = working ? active : n;
-    return { key, cfg, def, working, active, doneUpTo, complete, n, idx: AG_TEL_ORDER.indexOf(key) + 1 };
+    if (def && agTele && agTele.focus === key && !agTele.done && !complete) { working = true; active = agTele.step; }
+    return { key, cfg, def, working, active, doneUpTo: working ? active : (def ? def.steps.length : 0), complete, pos: AG_TEL_ORDER.indexOf(key) };
+  }
+
+  function agTelBuild() {
+    const el = document.createElement("section");
+    el.id = "agTelCard";
+    el.className = "ag-telcard";
+    el.setAttribute("aria-label", "Agent activity");
+    const chev = `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l4.5 4.5L6 12.5"/></svg>`;
+    el.innerHTML = `
+      <span class="ag-tel-live" hidden><i></i>live</span>
+      <span class="ag-tel-idle"><i></i>ready</span>
+      <div class="ag-tel-orbit">
+        <button type="button" class="ag-tel-nav is-prev" data-tel-nav="-1" aria-label="Previous step">${chev}</button>
+        <div class="ag-tel-track" role="tablist" aria-label="Setup steps">
+          <svg class="ag-tel-path" aria-hidden="true"><defs>
+            <linearGradient id="agTelRailG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="300" y2="0"><stop offset="0" stop-color="#b9c9e8" stop-opacity="0"/><stop offset=".22" stop-color="#b9c9e8" stop-opacity=".9"/><stop offset=".5" stop-color="#93b2f2"/><stop offset=".78" stop-color="#b9c9e8" stop-opacity=".9"/><stop offset="1" stop-color="#b9c9e8" stop-opacity="0"/></linearGradient>
+          </defs><path class="ag-tel-rail"></path></svg>
+          <svg class="ag-tel-beam" aria-hidden="true"><defs>
+            <linearGradient id="agTelBeamG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9cc2ff" stop-opacity=".92"/><stop offset=".42" stop-color="#3b82f6" stop-opacity=".5"/><stop offset="1" stop-color="#2563eb" stop-opacity=".12"/></linearGradient>
+            <radialGradient id="agTelPoolG"><stop offset="0" stop-color="#60a5fa" stop-opacity=".5"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></radialGradient>
+          </defs><ellipse class="ag-tel-pool"></ellipse><polygon class="ag-tel-cone" points=""></polygon></svg>
+          <div class="ag-tel-hub" aria-hidden="true"><span class="ag-tel-blob"><canvas class="ag-tel-orb" width="80" height="80"></canvas><span class="agent-core ag-tel-core">${bootAiMark()}</span></span></div>
+          <div class="ag-tel-icons">${AG_TEL_ORDER.map((k) => `<button type="button" class="ag-tel-ico" role="tab" data-tel-go="${k}" aria-label="${agTeleEsc(AG_TEL_CARD[k].title)}">${I(AG_TEL_CARD[k].icon)}<i class="ag-tel-badge">${I("check")}</i></button>`).join("")}</div>
+        </div>
+        <button type="button" class="ag-tel-nav is-next" data-tel-nav="1" aria-label="Next step">${chev}</button>
+      </div>
+      <div class="ag-tel-panel"></div>`;
+    el.addEventListener("click", (ev) => {
+      const nav = ev.target.closest("[data-tel-nav]");
+      const go = ev.target.closest("[data-tel-go]");
+      const m = agTelCardModel();
+      if (!m) return;
+      let key = null;
+      if (nav) key = AG_TEL_ORDER[m.pos + Number(nav.dataset.telNav)];
+      else if (go) key = go.dataset.telGo;
+      if (!key || key === m.key || !agTelViewable(key)) return;
+      agSelect(key);
+    });
+    new ResizeObserver(() => agTelLayout()).observe(el);
+    return el;
+  }
+
+  function agTelLayout() {
+    const el = agTelEl;
+    if (!el || !el.isConnected) return;
+    const m = agTelCardModel();
+    if (!m) return;
+    const track = el.querySelector(".ag-tel-track");
+    const w = track.clientWidth || 300;
+    const h = track.clientHeight || 196;
+    const cx = w / 2;
+    const hubY = 50;
+    const focusY = h - 42;
+    const STEP = AG_TEL_ARC_STEP;
+    const rx = Math.max(140, w * 0.62);
+    const ry = 24 / (1 - Math.cos(STEP));
+    const cy = focusY - ry;
+    const pt = (th) => [cx + rx * Math.cos(th), cy + ry * Math.sin(th)];
+    track.style.setProperty("--hub-y", hubY + "px");
+    el.querySelector(".ag-tel-orbit").style.setProperty("--hub-y", hubY + "px");
+    const svg = el.querySelector(".ag-tel-path");
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    el.querySelector("#agTelRailG").setAttribute("x2", String(w));
+    let d = "";
+    for (let k = 0; k <= 72; k++) { const [x, y] = pt(Math.PI - Math.PI * (k / 72)); d += (k ? " L " : "M ") + x.toFixed(1) + " " + y.toFixed(1); }
+    el.querySelector(".ag-tel-rail").setAttribute("d", d);
+    el.querySelectorAll(".ag-tel-ico").forEach((btn, i) => {
+      const dd = i - m.pos;
+      const ad = Math.abs(dd);
+      const [x, y] = pt(Math.PI / 2 - dd * STEP);
+      const s = Math.max(0.66, 1 - 0.2 * ad);
+      const o = Math.max(0, Math.min(1, 1 - Math.max(0, ad - 0.95) / 0.65));
+      const key = AG_TEL_ORDER[i];
+      const locked = !agTelViewable(key) && i !== m.pos;
+      btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${s.toFixed(3)})`;
+      btn.style.setProperty("--arc-o", o.toFixed(3));
+      btn.style.setProperty("--arc-f", ad < 0.5 ? "1" : "0");
+      btn.style.zIndex = String(10 - Math.round(ad * 3));
+      btn.style.visibility = o > 0.02 ? "visible" : "hidden";
+      btn.classList.toggle("is-focus", i === m.pos);
+      btn.classList.toggle("is-active", i === m.pos && m.working);
+      btn.classList.toggle("is-done", agStepIsComplete(key));
+      btn.disabled = locked;
+      btn.setAttribute("aria-selected", i === m.pos ? "true" : "false");
+    });
+    const beam = el.querySelector(".ag-tel-beam");
+    beam.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const top = hubY + 10;
+    const bot = focusY - 20;
+    beam.querySelector(".ag-tel-cone").setAttribute("points", [[cx - 7, top], [cx + 7, top], [cx + 22, bot], [cx - 22, bot]].map(([a, b]) => `${a.toFixed(1)},${b.toFixed(1)}`).join(" "));
+    const grad = beam.querySelector("#agTelBeamG");
+    grad.setAttribute("x1", cx.toFixed(1)); grad.setAttribute("x2", cx.toFixed(1)); grad.setAttribute("y1", String(top)); grad.setAttribute("y2", String(bot));
+    const pool = beam.querySelector(".ag-tel-pool");
+    pool.setAttribute("cx", cx.toFixed(1)); pool.setAttribute("cy", String(focusY)); pool.setAttribute("rx", "46"); pool.setAttribute("ry", "30");
+    const prev = el.querySelector(".is-prev");
+    const next = el.querySelector(".is-next");
+    const pk = AG_TEL_ORDER[m.pos - 1];
+    const nk = AG_TEL_ORDER[m.pos + 1];
+    prev.disabled = !pk || !agTelViewable(pk);
+    next.disabled = !nk || !agTelViewable(nk);
   }
 
   function agTelCardRender() {
     const rail = document.querySelector(".setup-layout .cl-overview");
     if (!rail) return;
     const m = agTelCardModel();
-    let card = rail.querySelector("#agTelCard");
-    if (!m) { if (card) card.remove(); return; }
-    if (!card) {
-      card = document.createElement("section");
-      card.id = "agTelCard";
-      card.className = "ag-telcard";
-      card.setAttribute("aria-label", "Agent activity");
+    if (!m) { if (agTelEl) agTelEl.remove(); return; }
+    let fresh = false;
+    if (!agTelEl) { agTelEl = agTelBuild(); fresh = true; }
+    if (!agTelEl.isConnected || agTelEl.parentElement !== rail) {
       const anchor = rail.querySelector(".cl-rail-logout") || rail.querySelector(".cl-overview-foot");
-      rail.insertBefore(card, anchor);
+      rail.insertBefore(agTelEl, anchor);
+      void agTelEl.offsetWidth;
     }
+    const el = agTelEl;
+    el.classList.toggle("is-working", m.working);
+    el.querySelector(".ag-tel-live").hidden = !m.working;
+    const idle = el.querySelector(".ag-tel-idle");
+    idle.hidden = m.working;
+    idle.lastChild.textContent = m.complete ? "done" : "ready";
+    agTelLayout();
     const check = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
     const items = m.def ? m.def.steps.map(([now, did], i) => {
       if (i > m.doneUpTo) return "";
-      const isActive = m.working && i === m.active;
-      const sub = !isActive && m.cfg.subs[i] ? `<span class="ag-tel-sub">${agTeleEsc(m.cfg.subs[i])}</span>` : "";
-      return `<li class="${isActive ? "is-active" : "is-done"}"><i class="ag-tel-dot">${isActive ? "<b></b>" : check}</i><span class="ag-tel-txt"><span class="ag-tel-lbl">${agTeleEsc(isActive ? now : did)}</span>${sub}</span></li>`;
+      const on = m.working && i === m.active;
+      const sub = !on && m.cfg.subs[i] ? `<span class="ag-tel-sub">${agTeleEsc(m.cfg.subs[i])}</span>` : "";
+      return `<li class="${on ? "is-active" : "is-done"}"><i class="ag-tel-dot">${on ? "<b></b>" : check}</i><span class="ag-tel-txt"><span class="ag-tel-lbl">${agTeleEsc(on ? now : did)}</span>${sub}</span></li>`;
     }).join("") : "";
-    const badge = m.working ? `<span class="ag-tel-live"><i></i>live</span>` : `<span class="ag-tel-idle"><i></i>${m.complete ? "done" : "ready"}</span>`;
     const sig = [m.key, m.working, m.active, m.complete].join("|");
-    card.classList.toggle("is-working", m.working);
-    if (card.dataset.sig === sig) return;
-    card.dataset.sig = sig;
-    card.innerHTML = `
-      ${badge}
-      <div class="ag-tel-viz" aria-hidden="true">
-        <canvas class="ag-tel-orb" width="84" height="84"></canvas>
-        <span class="ag-tel-core">${aiMark("ag-tel-mark")}</span>
-        <span class="ag-tel-beam"></span>
-        <svg class="ag-tel-arc" viewBox="0 0 280 60" preserveAspectRatio="none"><path d="M0 14 Q140 78 280 14" fill="none" stroke="url(#agTelArcG)" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="agTelArcG" x1="0" x2="1"><stop offset="0" stop-color="#93b4ff" stop-opacity="0"/><stop offset=".5" stop-color="#3b6cf0"/><stop offset="1" stop-color="#93b4ff" stop-opacity="0"/></linearGradient></defs></svg>
-        <span class="ag-tel-ico">${I(m.cfg.icon)}</span>
-      </div>
-      <div class="ag-tel-body">
-        <p class="ag-tel-kicker">Step ${m.idx} of ${AG_TEL_ORDER.length}</p>
-        <div class="ag-tel-seg" aria-hidden="true">${AG_TEL_ORDER.map((k, i) => `<i class="${agStepIsComplete(k) ? "is-done" : i + 1 === m.idx ? "is-now" : ""}"></i>`).join("")}</div>
-        <h4 class="ag-tel-title">${agTeleEsc(m.cfg.title)}</h4>
-        ${items ? `<ol class="ag-tel-log">${items}</ol>` : ""}
-      </div>`;
-    agTelCardOrb(card);
+    if (sig !== agTelPanelSig) {
+      agTelPanelSig = sig;
+      const panel = el.querySelector(".ag-tel-panel");
+      panel.innerHTML = `
+        <div class="ag-tel-head">
+          <div class="ag-tel-titles"><p class="ag-tel-kicker">Step ${m.pos + 1} of ${AG_TEL_ORDER.length}</p><h4 class="ag-tel-title">${agTeleEsc(m.cfg.title)}</h4></div>
+          ${m.working ? `<span class="ag-tel-thinking" aria-hidden="true"><i></i><i></i><i></i></span>` : ""}
+        </div>
+        ${items ? `<ol class="ag-tel-log">${items}</ol>` : ""}`;
+      panel.classList.remove("is-swap"); void panel.offsetWidth; panel.classList.add("is-swap");
+    }
+    if (fresh) agTelCardOrb(el);
   }
 
   function agTelCardOrb(card) {
-    cancelAnimationFrame(agTelCardRaf);
+    cancelAnimationFrame(agTelRaf);
     const canvas = card.querySelector(".ag-tel-orb");
     if (!canvas) return;
-    const paint = sphereCanvas(canvas, 84, 220, 0.85);
+    const paint = sphereCanvas(canvas, 80, 240, 0.85);
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let rotY = 0.4;
     const frame = () => {
-      if (!document.body.contains(canvas)) return;
+      if (!canvas.isConnected && !document.contains(card)) { agTelRaf = requestAnimationFrame(frame); return; }
       const working = card.classList.contains("is-working");
       rotY += working ? 0.03 : 0.008;
-      paint(rotY, 0.55, 20 + (working ? Math.sin(performance.now() / 300) * 0.9 : 0), 1);
-      if (!reduce) agTelCardRaf = requestAnimationFrame(frame);
+      paint(rotY, 0.55, 22 + (working ? Math.sin(performance.now() / 300) * 0.9 : 0), 1);
+      if (!reduce) agTelRaf = requestAnimationFrame(frame);
     };
     frame();
   }
+
   let agTele = null;
   const agTeleEsc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   function agTeleStart(id, focus) {
