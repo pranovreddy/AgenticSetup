@@ -11680,19 +11680,28 @@ body.ag-app-ready .setup-layout .cl-overview{
 
 /* ---- Not a bar: logo top-left, user top-right, the step curve floats on the canvas ---- */
 .setup-layout .cl-overview{ padding-top:68px !important; padding-bottom:12px !important; background:none !important; }
+.setup-layout .cl-overview{ padding-top:128px !important; }
+.setup-layout .cl-overview::before{
+  display:block !important; content:""; position:fixed; z-index:39; left:14px; top:14px; width:52px; height:104px; border-radius:26px;
+  background:rgba(255,255,255,.92); border:1px solid #e6ecf5; box-shadow:0 10px 28px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+}
 .setup-layout .cl-overview .cl-overview-brand{
-  position:fixed !important; top:10px; left:22px; z-index:40; width:auto !important; height:44px; padding:0 !important; margin:0 !important; border:0 !important; background:none !important; display:flex; align-items:center;
+  position:fixed !important; top:22px; left:22px; z-index:40; width:36px !important; height:36px; padding:0 !important; margin:0 !important; border:0 !important;
+  border-radius:50%; background:#f1f4fa !important; overflow:hidden; display:block;
 }
-.setup-layout .cl-overview .cl-overview-logo{ height:26px; width:auto !important; max-width:none !important; }
+.setup-layout .cl-overview .cl-overview-logo{ position:absolute; left:9px; top:50%; transform:translateY(-50%); height:20px; width:auto !important; max-width:none !important; clip-path:inset(0 82% 0 0); }
 .setup-layout .cl-overview .cl-overview-foot{
-  position:fixed !important; top:8px; right:24px; left:auto; bottom:auto; z-index:40; width:auto !important; height:48px; margin:0 !important; padding:0 !important; border:0 !important; background:none !important; display:flex; align-items:center;
+  position:fixed !important; top:64px; left:20px; right:auto; bottom:auto; z-index:40; width:40px !important; height:40px; margin:0 !important; padding:0 !important; border:0 !important; background:none !important; display:block;
 }
-.setup-layout .cl-overview .cl-overview-user{ width:auto !important; }
-.setup-layout .cl-overview .cl-overview-user-btn{ width:auto !important; padding:4px 8px 4px 4px !important; border-radius:999px; gap:10px; }
-.setup-layout .cl-overview .cl-overview-user-btn:hover{ background:rgba(255,255,255,.7); }
-.setup-layout .cl-overview .cl-overview-user-menu{ top:calc(100% + 6px) !important; bottom:auto !important; right:0 !important; left:auto !important; }
-.setup-layout .cl-detail .cl-detail-card{ padding-top:0; }
-
+.setup-layout .cl-overview .cl-overview-user{ width:40px !important; }
+.setup-layout .cl-overview .cl-overview-user-meta{ display:none !important; }
+.setup-layout .cl-overview .cl-overview-user-btn{
+  width:40px !important; height:40px; padding:3px !important; margin:0; border-radius:50% !important; justify-content:center; align-items:center; cursor:pointer; border:0;
+  background:conic-gradient(#16a34a calc(var(--ag-prog, 0) * 1%), #dfe6f1 0) !important;
+}
+.setup-layout .cl-overview .cl-overview-user-avatar{ width:34px !important; height:34px !important; border:2px solid #fff; box-sizing:border-box; }
+.setup-layout .cl-overview .cl-overview-user-menu{ top:calc(100% + 10px) !important; bottom:auto !important; left:0 !important; right:auto !important; }
 body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{ padding:64px 32px 40px 28px !important; background:none !important; }
 .setup-layout::before{
   content:""; position:fixed; z-index:0; left:0; right:0; top:0; height:190px; pointer-events:none;
@@ -11702,7 +11711,7 @@ body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{ paddi
     linear-gradient(180deg, rgba(37,99,235,.09) 0%, rgba(37,99,235,.04) 55%, rgba(37,99,235,0) 100%);
 }
 html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
-.setup-layout .cl-overview::before, .setup-layout .cl-overview::after{ display:none !important; }
+.setup-layout .cl-overview::after{ display:none !important; }
 .setup-layout .cl-detail{ background:transparent !important; }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
@@ -14373,6 +14382,10 @@ html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
     }
     const el = agTelEl;
     agTelLayout();
+    const doneN = AG_TEL_ORDER.filter((k) => agStepIsComplete(k)).length;
+    document.documentElement.style.setProperty("--ag-prog", String(Math.round((doneN / AG_TEL_ORDER.length) * 100)));
+    const ub = document.querySelector(".cl-overview-user-btn");
+    if (ub) ub.title = (ub.querySelector(".cl-overview-user-meta")?.textContent || "").replace(/\s+/g, " ").trim() + ` · ${doneN} of ${AG_TEL_ORDER.length} steps done`;
     el.querySelector(".ag-tel-kicker").textContent = `${m.pos + 1} / ${AG_TEL_ORDER.length}`;
     el.querySelector(".ag-tel-title").textContent = m.cfg.title;
   }
