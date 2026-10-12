@@ -11208,6 +11208,236 @@ body.ag-app-ready .cl-overview-user-role{
 .setup-layout .cl-overview .cl-rail-ticket.is-done:not(.is-locked) button{ cursor:pointer; }
 .setup-layout .cl-overview .cl-rail-ticket.is-done .cl-rail-ticket-label{ color:#3c4762; }
 
+
+/* ==========================================================================
+   Single canvas
+   One continuous background for the rail and the workspace. Structure comes
+   from type, whitespace and hairlines, not from nested boxes.
+   ========================================================================== */
+:root{
+  --cv-bg:#F8FAFD;
+  --cv-ink:#0B1A33;
+  --cv-ink-2:#3C4762;
+  --cv-mute:#6B7690;
+  --cv-faint:#9AA5BA;
+  --cv-line:rgba(15,30,60,.08);
+  --cv-blue:#2563EB;
+  --cv-blue-wash:rgba(37,99,235,.08);
+  --cv-ease:cubic-bezier(.16,1,.3,1);
+}
+.shell:has(.setup-layout),
+.shell:has(.setup-layout) .content,
+.shell:has(.setup-layout) #main.content{
+  background:
+    radial-gradient(900px 520px at 88% -8%, rgba(37,99,235,.075), transparent 62%),
+    radial-gradient(760px 440px at -4% 104%, rgba(16,163,127,.045), transparent 62%),
+    var(--cv-bg);
+}
+.shell:has(.setup-layout) .content,
+.shell:has(.setup-layout) #main.content{ padding:0 !important; }
+
+/* the white card becomes the canvas itself */
+.shell:has(.setup-layout) .cl-detail-card,
+.setup-layout.is-app-ready .cl-detail-card,
+body.ag-app-ready .setup-layout .cl-detail-card{
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.setup-layout .cl-detail .ag-step{ background:transparent; }
+
+/* ---- Migration Manager: a line of speech on the canvas, not a blue banner */
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
+  background:none !important;
+  box-shadow:none !important;
+  border:0 !important;
+  padding:22px 40px 6px !important;
+  min-height:0;
+}
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-glow{ display:none; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai{ align-items:flex-start; gap:14px; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-avatar{ width:40px; height:40px; margin-top:2px; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-who{
+  font-size:11px; font-weight:650; letter-spacing:.09em; text-transform:uppercase; color:var(--cv-mute);
+}
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-line{
+  font-size:19px; font-weight:560; letter-spacing:-.25px; line-height:1.38; color:var(--cv-ink);
+  max-width:62ch; text-wrap:balance;
+}
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-status{
+  background:transparent !important; padding:0 !important; font-size:11px; letter-spacing:.09em;
+}
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-line.is-fresh{
+  animation:cv-rise 520ms var(--cv-ease) both;
+}
+@keyframes cv-rise{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+
+/* ---- Step headings and chrome */
+.cl-detail .ag-step-title{ padding:20px 40px 0; font-size:30px; line-height:1.15; letter-spacing:-.6px; font-weight:650; }
+.setup-layout .cl-detail .ag-actions{
+  background:rgba(248,250,253,.84) !important;
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  box-shadow:none !important;
+  border-top:1px solid var(--cv-line) !important;
+  padding:20px 40px 22px !important;
+}
+
+/* ---- Agreements: brief beside the document, on the canvas */
+.ag-agree--canvas{ padding:6px 0 40px; }
+.ag-agree--canvas .ag-atabs{
+  gap:28px; margin:8px 0 28px;
+  border-bottom:1px solid var(--cv-line);
+}
+.ag-agree--canvas .ag-atab{
+  position:relative; height:auto; padding:0 0 12px; border:0; border-radius:0; background:none;
+  font-size:14px; font-weight:560; color:var(--cv-mute);
+  transition:color 200ms var(--cv-ease);
+}
+.ag-agree--canvas .ag-atab::after{
+  content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; border-radius:2px;
+  background:var(--cv-ink); transform:scaleX(0); transform-origin:left; transition:transform 360ms var(--cv-ease);
+}
+.ag-agree--canvas .ag-atab:hover{ color:var(--cv-ink); }
+.ag-agree--canvas .ag-atab.is-on{ background:none; color:var(--cv-ink); }
+.ag-agree--canvas .ag-atab.is-on::after{ transform:scaleX(1); }
+.ag-agree--canvas .ag-atab.is-signed:not(.is-on){ background:none; border:0; color:#15814c; }
+.ag-acols{
+  display:grid; grid-template-columns:minmax(260px,340px) minmax(0,1fr); gap:64px; align-items:start;
+}
+.ag-brief{ position:sticky; top:4px; display:flex; flex-direction:column; gap:0; }
+.ag-brief-eyebrow{
+  display:flex; align-items:center; gap:8px; margin:0 0 14px;
+  font-size:11px; font-weight:650; letter-spacing:.09em; text-transform:uppercase; color:var(--cv-blue);
+}
+.ag-brief-spark{ flex:none; }
+.ag-brief-eyebrow i{ margin-left:auto; font-style:normal; font-weight:560; letter-spacing:.02em; text-transform:none; color:var(--cv-faint); }
+.ag-brief-title{ margin:0 0 18px; font-size:22px; line-height:1.2; letter-spacing:-.4px; font-weight:650; color:var(--cv-ink); text-wrap:balance; }
+.ag-brief-list{ list-style:none; margin:0; padding:0; counter-reset:pt; }
+.ag-brief-list li{ animation:cv-rise 640ms var(--cv-ease) both; animation-delay:calc(120ms + var(--i) * 110ms); }
+.ag-brief-pt{
+  display:flex; flex-direction:column; align-items:flex-start; gap:6px; width:100%;
+  padding:14px 0 14px 18px; margin:0; border:0; background:none; text-align:left; cursor:pointer;
+  position:relative; font:inherit; color:inherit;
+  border-top:1px solid var(--cv-line);
+}
+.ag-brief-pt::before{
+  content:""; position:absolute; left:0; top:20px; width:7px; height:7px; border-radius:50%;
+  background:var(--cv-blue); opacity:.35; transition:opacity 200ms, transform 300ms var(--cv-ease);
+}
+.ag-brief-pt:hover::before, .ag-brief-pt:focus-visible::before{ opacity:1; transform:scale(1.35); }
+.ag-brief-pt:focus-visible{ outline:2px solid var(--cv-blue); outline-offset:2px; border-radius:6px; }
+.ag-brief-text{ font-size:15.5px; line-height:1.5; font-weight:500; color:var(--cv-ink); }
+.ag-brief-ref{
+  display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:var(--cv-blue);
+  opacity:.75; transition:opacity 200ms, gap 300ms var(--cv-ease);
+}
+.ag-brief-pt:hover .ag-brief-ref, .ag-brief-pt:focus-visible .ag-brief-ref{ opacity:1; gap:9px; }
+.ag-brief-map{ display:flex; gap:5px; margin:20px 0 10px; padding-top:18px; border-top:1px solid var(--cv-line); }
+.ag-tick{
+  flex:1 1 0; max-width:34px; height:22px; padding:0; border:0; border-radius:3px; cursor:pointer;
+  background:linear-gradient(var(--cv-line), var(--cv-line)) center/100% 4px no-repeat;
+  position:relative;
+}
+.ag-tick::after{
+  content:""; position:absolute; left:0; right:0; top:50%; height:4px; margin-top:-2px; border-radius:2px;
+  background:var(--cv-blue); transform:scaleX(0); transform-origin:left; transition:transform 420ms var(--cv-ease);
+}
+.ag-tick.is-read::after{ transform:scaleX(1); }
+.ag-tick:hover::before{ content:""; position:absolute; inset:0; background:var(--cv-blue-wash); border-radius:3px; }
+.ag-tick:focus-visible{ outline:2px solid var(--cv-blue); outline-offset:2px; }
+.ag-brief-meter{ margin:0; font-size:12.5px; color:var(--cv-mute); font-variant-numeric:tabular-nums; }
+.ag-brief-meter b{ color:var(--cv-ink); font-weight:650; }
+
+.ag-paper{ min-width:0; max-width:700px; padding-left:56px; border-left:1px solid var(--cv-line); }
+.ag-paper-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:0 0 8px; }
+.ag-paper-head h3{ margin:0; font-size:20px; letter-spacing:-.3px; font-weight:650; color:var(--cv-ink); }
+.ag-paper-head p{ margin:0; font-size:12.5px; color:var(--cv-faint); }
+.ag-sec{
+  display:grid; grid-template-columns:34px minmax(0,1fr); gap:6px; padding:22px 12px 22px 0;
+  scroll-margin-top:12px; border-top:1px solid var(--cv-line);
+  position:relative; transition:background 700ms var(--cv-ease);
+}
+.ag-sec:first-of-type{ margin-top:12px; }
+.ag-sec-n{ font-size:12px; font-weight:650; color:var(--cv-faint); font-variant-numeric:tabular-nums; padding-top:2px; transition:color 300ms; }
+.ag-sec.is-read .ag-sec-n{ color:var(--cv-blue); }
+.ag-sec h4{ margin:0 0 6px; font-size:15px; font-weight:650; letter-spacing:-.15px; color:var(--cv-ink); }
+.ag-sec p{ margin:0; font-size:14.5px; line-height:1.75; color:var(--cv-ink-2); }
+.ag-sec.is-ref{
+  background:linear-gradient(90deg, var(--cv-blue-wash), rgba(37,99,235,0) 85%);
+  box-shadow:-18px 0 0 var(--cv-blue-wash);
+}
+@media (max-width:1100px){
+  .ag-acols{ grid-template-columns:minmax(0,1fr); gap:28px; }
+  .ag-brief{ position:static; }
+  .ag-paper{ padding-left:0; border-left:0; }
+}
+
+/* signed copies: rows on the canvas */
+.setup-layout .cl-detail .ag-doc{ background:transparent; border:0; border-bottom:1px solid var(--cv-line); border-radius:0; box-shadow:none; }
+.setup-layout .cl-detail .ag-doc:hover{ background:var(--cv-blue-wash); box-shadow:none; }
+
+/* ---- Rail: one timeline instead of tiles */
+.setup-layout .cl-overview,
+body.ag-app-ready .setup-layout .cl-overview{
+  background:transparent !important;
+  border-right:1px solid var(--cv-line) !important;
+}
+.setup-layout .cl-overview .cl-rail-progress{ display:none; }
+.setup-layout .cl-overview .cl-rail-e-body{ padding-left:6px; gap:14px; }
+.setup-layout .cl-overview .cl-rail-icon-row{ grid-template-columns:24px minmax(0,1fr); gap:8px; padding:6px 8px; background:none !important; box-shadow:none !important; }
+.setup-layout .cl-overview .cl-rail-icon{ width:24px; height:24px; background:none !important; border:0 !important; box-shadow:none !important; color:var(--cv-faint); }
+.setup-layout .cl-overview .cl-rail-icon-wrap.is-current .cl-rail-icon{ color:var(--cv-blue); }
+.setup-layout .cl-overview .cl-rail-icon-glyph svg{ width:18px; height:18px; }
+.setup-layout .cl-overview .cl-rail-icon-meta{ flex-direction:row; align-items:baseline; justify-content:space-between; gap:8px; width:100%; }
+.setup-layout .cl-overview .cl-rail-icon-label{ font-size:11px; font-weight:650; letter-spacing:.09em; text-transform:uppercase; color:var(--cv-mute); }
+.setup-layout .cl-overview .cl-rail-icon-wrap.is-current .cl-rail-icon-label{ color:var(--cv-ink); }
+.setup-layout .cl-overview .cl-rail-icon-count{ font-size:11.5px; font-weight:560; color:var(--cv-faint); font-variant-numeric:tabular-nums; }
+.setup-layout .cl-overview .cl-rail-e .cl-rail-tickets{ padding:2px 4px 4px 12px; gap:0; }
+.setup-layout .cl-overview .cl-rail-e .cl-rail-ticket button{ padding:8px 10px 8px 8px; border-radius:10px; transition:background 260ms var(--cv-ease), color 200ms; }
+.setup-layout .cl-overview .cl-rail-e .cl-rail-ticket-mark{ position:relative; z-index:1; transition:background 300ms var(--cv-ease), border-color 300ms; }
+.setup-layout .cl-overview .cl-rail-e .cl-rail-ticket:not(:last-child) .cl-rail-ticket-mark::after{
+  content:""; position:absolute; left:50%; top:100%; width:1.5px; height:26px; margin-left:-.75px;
+  background:#dbe3f1; z-index:-1; transition:background 400ms var(--cv-ease);
+}
+.setup-layout .cl-overview .cl-rail-e .cl-rail-ticket.is-done:not(:last-child) .cl-rail-ticket-mark::after{ background:var(--cv-blue); }
+.setup-layout .cl-overview .cl-rail-e .cl-rail-ticket.is-on button{
+  background:linear-gradient(90deg, var(--cv-blue-wash), rgba(37,99,235,0)) !important; color:var(--cv-ink);
+}
+.setup-layout .cl-overview .cl-rail-e .cl-rail-ticket button:hover{ background:rgba(15,30,60,.04); }
+
+.setup-layout .cl-detail .ag-step,
+.setup-layout .cl-detail .ag-step.is-focused,
+.setup-layout .cl-detail .ag-step-ai,
+.setup-layout .cl-detail .ag-step-intro{ background:transparent !important; }
+.setup-layout .cl-overview .cl-rail-icon-label{ font-size:13px; letter-spacing:-.1px; text-transform:none; font-weight:650; white-space:nowrap; }
+.setup-layout .cl-overview .cl-rail-icon-count .icon{ display:none; }
+.setup-layout .cl-overview .cl-rail-icon-count.is-locked{ font-weight:500; }
+
+/* lists that used to be stacks of cards become rows separated by hairlines */
+.setup-layout .ag-recap-row,
+.setup-layout .ag-success-list li,
+.setup-layout .ag-step.is-success-settled .ag-success-list li,
+.setup-layout .ag-success-pair > div{
+  background:transparent !important; border:0 !important; border-bottom:1px solid var(--cv-line) !important;
+  border-radius:0 !important; box-shadow:none !important;
+}
+.setup-layout .ag-recap-row:last-child, .setup-layout .ag-success-list li:last-child{ border-bottom:0 !important; }
+.setup-layout .ag-recap-row{ padding:14px 2px; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-line{ max-width:84ch; }
+.setup-layout .cl-detail .ag-title-add, .setup-layout .cl-detail .ag-title-icon, .setup-layout .cl-detail .ag-doc-dl{ background:transparent; border-color:transparent; }
+.setup-layout .cl-detail .ag-title-add:hover, .setup-layout .cl-detail .ag-title-icon:hover, .setup-layout .cl-detail .ag-doc-dl:hover{ background:var(--cv-blue-wash); }
+
+/* ---- Motion: one calm swap between steps */
+.shell:has(.setup-layout) .cl-detail-card.is-swap-out{
+  opacity:0; transform:translateY(4px); filter:blur(2px);
+  transition:opacity 180ms var(--cv-ease), transform 180ms var(--cv-ease), filter 180ms var(--cv-ease);
+}
+.shell:has(.setup-layout) .cl-detail-card.is-swap-in{ animation:cv-pane-in 480ms var(--cv-ease) both; }
+@keyframes cv-pane-in{ from{ opacity:0; transform:translateY(10px); filter:blur(3px); } to{ opacity:1; transform:none; filter:none; } }
+@media (prefers-reduced-motion:reduce){
+  .ag-brief-list li, .ag-sec, .ag-tick::after, .cl-detail-card .welcome-ai-line.is-fresh{ animation:none !important; transition:none !important; }
+}
 </style>
 </head>
 <body>
@@ -12879,6 +13109,7 @@ body.ag-app-ready .cl-overview-user-role{
       if (strip) welcomeSay(strip, { instant: true });
     }
     agMaybeStepIntro();
+    agReaderSync();
     agPlaySeal();
     agPlayGtmWalk();
     successAutoBind();
@@ -13657,7 +13888,7 @@ body.ag-app-ready .cl-overview-user-role{
     const key = String(focus);
     if (agStepAiReady(key) || agStepIsComplete(key) || stepAiPending.has(key)) return;
     const live = document.querySelector(".ag-step.is-focused .ag-live");
-    if (key === "1" && !agStepLoader("1")) {
+    if (!agStepLoader(key)) {
       stepAiDone.add(key);
       return;
     }
@@ -13688,12 +13919,23 @@ body.ag-app-ready .cl-overview-user-role{
     if (agStepIsComplete(focus)) { agRevealStepTitle(); return; }
     if (!AG_STEP_INTRO[focus]) { agRevealStepTitle(); return; }
     if (!agStepAiReady(focus)) {
-      agDeferStepTitle(true);
       agEnsureStepAi(focus);
-      return;
+      if (!agStepAiReady(focus)) {
+        agDeferStepTitle(true);
+        return;
+      }
     }
     agClearStepAi();
     stepAiDone.add(focus);
+    /* No blob, typed line or progress bar: the Migration Manager bar already says it. */
+    if (!stepIntroPlayed.has(focus)) {
+      stepIntroPlayed.add(focus);
+      agRevealStepTitle();
+      const pane = document.querySelector(".ag-step.is-focused .ag-live");
+      if (pane) pane.classList.add("is-revealed");
+      agMaybeProfileFill();
+      return;
+    }
     const line = AG_STEP_INTRO[focus];
     const live = document.querySelector(".ag-step.is-focused .ag-live");
     if (!line || !live) return;
@@ -17769,6 +18011,47 @@ function agMigRow() {
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
 
+  /* Which clauses back each summary point. */
+  const AG_DOC_REFS = { terms: [[5], [2], [3, 4]], privacy: [[1], [4], [5]] };
+
+  function agBriefJump(secs) {
+    const scroller = document.querySelector(".ag-agree");
+    if (!scroller) return;
+    const list = String(secs || "").split(",").filter((s) => s !== "").map(Number);
+    document.querySelectorAll(".ag-sec.is-ref").forEach((el) => el.classList.remove("is-ref"));
+    const targets = list.map((i) => scroller.querySelector(`.ag-sec[data-sec="${i}"]`)).filter(Boolean);
+    if (!targets.length) return;
+    targets.forEach((el) => el.classList.add("is-ref"));
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const top = targets[0].getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop - 12;
+    scroller.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+    clearTimeout(agBriefJump.t);
+    agBriefJump.t = setTimeout(() => targets.forEach((el) => el.classList.remove("is-ref")), 2600);
+  }
+
+  /* Marks each clause as read once it has scrolled past the reading line. */
+  function agReaderSync() {
+    const sc = document.querySelector(".ag-agree");
+    if (!sc) return;
+    const secs = [...sc.querySelectorAll(".ag-sec")];
+    if (!secs.length) return;
+    const line = sc.getBoundingClientRect().top + sc.clientHeight * 0.7;
+    const atEnd = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 6 && sc.scrollTop > 0;
+    let read = 0;
+    secs.forEach((el, i) => {
+      const on = atEnd || el.getBoundingClientRect().top < line;
+      el.classList.toggle("is-read", on);
+      const tick = sc.querySelector(`.ag-tick[data-secs="${i}"]`);
+      if (tick) tick.classList.toggle("is-read", on);
+      if (on) read += 1;
+    });
+    const count = document.getElementById("agReadCount");
+    if (count) count.textContent = String(read);
+  }
+  document.addEventListener("scroll", (e) => {
+    if (e.target && e.target.classList && e.target.classList.contains("ag-agree")) agReaderSync();
+  }, true);
+
   function agAgreementsMarkup(d, summary, sources, ctas) {
     if (state.done.agreements) {
       return `${agInsight(
@@ -17786,27 +18069,41 @@ function agMigRow() {
     const say = state.docSigned.terms
       ? "Terms and conditions are signed. Review the privacy policy, then accept it."
       : "Two agreements to accept, one after the other. Start with the terms and conditions.";
+    const refs = AG_DOC_REFS[doc.id] || [];
+    const arrow = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>`;
+    const points = doc.summary.map((line, i) => {
+      const r = refs[i] || [];
+      return `<li style="--i:${i}"><button type="button" class="ag-brief-pt" data-action="ag-brief-jump" data-secs="${r.join(",")}">
+          <span class="ag-brief-text">${line}</span>
+          ${r.length ? `<span class="ag-brief-ref">Clause ${r.map((n) => n + 1).join(" and ")}${arrow}</span>` : ""}
+        </button></li>`;
+    }).join("");
+    const ticks = doc.sections.map(([head], i) => `<button type="button" class="ag-tick" data-action="ag-brief-jump" data-secs="${i}" title="${agEsc(head)}" aria-label="Go to ${agEsc(head)}" style="--i:${i}"></button>`).join("");
+    const clauses = doc.sections.map(([head, text], i) => {
+      const m = /^(\d+)\.\s*(.*)$/.exec(head);
+      return `<section class="ag-sec" data-sec="${i}"><span class="ag-sec-n">${m ? m[1] : i + 1}</span><div><h4>${m ? m[2] : head}</h4><p>${text}</p></div></section>`;
+    }).join("");
     return `${agInsight(say, "Read the summary and full text, then accept this document.")}
-    <div class="ag-agree">
+    <div class="ag-agree ag-agree--canvas" data-doc="${doc.id}">
       <div class="ag-atabs" role="tablist">
         ${AG_DOCS.map((item) => `<button type="button" class="ag-atab${item.id === doc.id ? " is-on" : ""}${state.docSigned[item.id] ? " is-signed" : ""}" role="tab" aria-selected="${item.id === doc.id}" data-action="ag-doc-tab" data-doc="${item.id}">${state.docSigned[item.id] ? "✓ " : ""}${item.name}</button>`).join("")}
       </div>
-      <section class="ag-asum" aria-label="Summary of ${doc.name}">
-        <p class="ag-asum-kicker">Summary · ${doc.version}</p>
-        <ul>${doc.summary.map((line) => `<li>${line}</li>`).join("")}</ul>
-      </section>
-      <section class="ag-abody" aria-label="Full text of ${doc.name}">
-        <div class="ag-abody-head">
-          <p class="ag-abody-kicker">Full text</p>
-          <span class="ag-abody-meta">${doc.pages} pages · ${doc.version}</span>
-        </div>
-        <div class="ag-abody-frame">
-          <div class="ag-abody-scroll">
+      <div class="ag-acols">
+        <aside class="ag-brief" aria-label="Summary of ${doc.name}">
+          <p class="ag-brief-eyebrow"><svg class="ag-brief-spark" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg><span>Read for you</span><i>${doc.version}</i></p>
+          <h3 class="ag-brief-title">What you're agreeing to</h3>
+          <ol class="ag-brief-list">${points}</ol>
+          <div class="ag-brief-map" role="group" aria-label="Clauses in this document">${ticks}</div>
+          <p class="ag-brief-meter"><b id="agReadCount">0</b> of ${doc.sections.length} clauses read</p>
+        </aside>
+        <article class="ag-paper" aria-label="Full text of ${doc.name}">
+          <header class="ag-paper-head">
             <h3>${doc.name}</h3>
-            ${doc.sections.map(([head, text]) => `<section><h4>${head}</h4><p>${text}</p></section>`).join("")}
-          </div>
-        </div>
-      </section>
+            <p>${doc.pages} pages · ${doc.version}</p>
+          </header>
+          ${clauses}
+        </article>
+      </div>
     </div>
     <div class="ag-actions is-approve">
       <p class="ag-approve-note">You are approving <b>${agEsc(next.name)}</b> on behalf of <b>${agEsc(company)}</b>. Select <b>Accept ${agEsc(next.name)}</b> to record your acceptance of the terms above. Your approval is saved to the audit log.</p>
@@ -19075,6 +19372,10 @@ function agMigRow() {
           agFileIntoFolder("2");
           render();
         });
+        return;
+      }
+      if (act.dataset.action === "ag-brief-jump") {
+        agBriefJump(act.dataset.secs);
         return;
       }
       if (act.dataset.action === "ag-doc-tab") {
