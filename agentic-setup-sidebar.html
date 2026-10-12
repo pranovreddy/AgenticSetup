@@ -11676,6 +11676,34 @@ body.ag-app-ready .setup-layout .cl-overview{
 @media (max-height:760px){ .ag-tel-track{ height:176px; } }
 @media (prefers-reduced-motion:reduce){ .ag-telcard *{ animation:none !important; transition:none !important; } }
 
+
+/* ---- Agent feedback is the headline: a review card at the top of the workspace ---- */
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic.is-review{
+  margin:16px 32px 6px !important; width:auto !important; padding:18px 24px 18px 20px !important; border-radius:22px;
+  background:linear-gradient(120deg, #eaf1ff 0%, #f3f6ff 55%, #ffffff 100%) !important;
+  border:1px solid #cddcfb !important;
+  box-shadow:0 18px 44px -22px rgba(37,99,235,.5), 0 1px 0 rgba(255,255,255,.9) inset !important;
+  overflow:hidden; animation:rv-in 700ms var(--cv-ease) both;
+}
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-review::after{
+  content:""; position:absolute; top:0; bottom:0; width:40%; left:-50%; pointer-events:none;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent); animation:rv-sheen 1500ms 350ms var(--cv-ease) both;
+}
+@keyframes rv-in{ from{ opacity:0; transform:translateY(-10px) scale(.985); } to{ opacity:1; transform:none; } }
+@keyframes rv-sheen{ to{ left:120%; } }
+.welcome-card.is-review .welcome-ai{ gap:18px; align-items:center; }
+.welcome-card.is-review .welcome-ai-avatar{ flex:0 0 52px; width:52px; height:52px; filter:drop-shadow(0 6px 14px rgba(37,99,235,.35)); }
+.welcome-card.is-review .welcome-ai-head{ margin-bottom:6px; }
+.welcome-card.is-review .welcome-ai-who{ color:#3b5fb0; }
+.welcome-card.is-review .ag-tele-did{ margin:0 0 8px; font-size:19px; line-height:1.35; font-weight:650; letter-spacing:-.25px; color:var(--cv-ink); animation:cv-rise 560ms var(--cv-ease) 150ms both; }
+.welcome-card.is-review .ag-tele-next{
+  display:flex; align-items:center; gap:10px; margin:0; font-size:15px; line-height:1.4; color:#223052; animation:cv-rise 560ms var(--cv-ease) 280ms both;
+}
+.welcome-card.is-review .ag-tele-next b{
+  flex:none; margin:0; padding:5px 11px; border-radius:999px; font-size:10.5px; letter-spacing:.09em; color:#fff; background:linear-gradient(180deg,#3b82f6,#2563eb);
+  box-shadow:0 6px 14px -6px rgba(37,99,235,.7);
+}
+@media (prefers-reduced-motion:reduce){ .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-review, .welcome-card.is-review::after{ animation:none !important; } }
 /* ---- Motion: one calm swap between steps */
 .shell:has(.setup-layout) .cl-detail-card.is-swap-out{
   opacity:0; transform:translateY(4px); filter:blur(2px);
@@ -14386,7 +14414,7 @@ body.ag-app-ready .setup-layout .cl-overview{
   function agTeleClear() {
     agTele = null;
     document.querySelectorAll(".ag-tele").forEach((el) => el.remove());
-    document.querySelector(".welcome-card")?.classList.remove("has-tele");
+    document.querySelector(".welcome-card")?.classList.remove("has-tele", "is-review");
   }
   function agTeleRender() {
     agTelCardRender();
@@ -14411,6 +14439,7 @@ body.ag-app-ready .setup-layout .cl-overview{
     if (box.dataset.sig !== html) { box.innerHTML = html; box.dataset.sig = html; }
     box.classList.toggle("is-done", !!agTele.done);
     card.classList.add("has-tele");
+    card.classList.toggle("is-review", !!agTele.done);
     const status = card.querySelector(".welcome-ai-status");
     if (status) status.textContent = agTele.done ? "Ready" : "Working";
   }
