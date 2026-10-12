@@ -1554,30 +1554,30 @@ main {
    Agreements — two agreements are read clause by clause, key terms are
    marked, then condensed through the agent into three points per document
    ========================================================================== */
-.ag-doc { width: 128px; height: 154px; padding: 12px; overflow: hidden; z-index: 2; opacity: 0; transform: translateX(-16px) scale(.96); filter: blur(4px);
+.ag-doc { width: 128px; height: 128px; padding: 11px 12px; overflow: hidden; z-index: 2; opacity: 0; transform: translateX(-16px) scale(.96); filter: blur(4px);
   transition: opacity 560ms var(--ease), transform 760ms var(--ease), filter 560ms var(--ease), border-color var(--t2) var(--ease), box-shadow var(--t2) var(--ease); }
 .ag-doc.in { opacity: 1; transform: none; filter: none; }
-.ag-doc .card-h { gap: 8px; margin-bottom: 11px; }
+.ag-doc .card-h { gap: 8px; margin-bottom: 9px; }
 .ag-doc .card-h .hic { width: 26px; height: 26px; border-radius: 8px; flex: none; }
 .ag-doc .card-h .hic svg { width: 13px; height: 13px; }
 .ag-doc .card-h .lines { gap: 5px; }
 .ag-doc.read { border-color: var(--blue-line); }
-.ag-body { display: flex; flex-direction: column; gap: 6px; }
-.ag-cl { position: relative; z-index: 1; height: 10px; display: flex; align-items: center; gap: 6px; padding: 0 4px; margin: 0 -4px; border-radius: 4px; transition: background 360ms var(--ease); }
+.ag-body { display: flex; flex-direction: column; gap: 5px; }
+.ag-cl { position: relative; z-index: 1; height: 8px; display: flex; align-items: center; gap: 6px; padding: 0 4px; margin: 0 -4px; border-radius: 4px; transition: background 360ms var(--ease); }
 .ag-cl .sk { height: 5px; flex: none; transition: background-color 360ms var(--ease); }
 .ag-sec { width: 4px; height: 4px; border-radius: 1.5px; flex: none; background: var(--line-2); transition: background 320ms var(--ease); }
 .ag-cl.read .ag-sec { background: var(--blue-line); }
-.ag-cl.key { background: color-mix(in srgb, var(--blue) 11%, transparent); }
-.ag-cl.key .sk { background-image: none; background-color: var(--blue-4); animation: none; }
-.ag-cl.key .ag-sec { background: var(--blue); }
+.ag-cl.ag-key { background: color-mix(in srgb, var(--blue) 11%, transparent); }
+.ag-cl.ag-key .sk { background-image: none; background-color: var(--blue-4); animation: none; }
+.ag-cl.ag-key .ag-sec { background: var(--blue); }
 .ag-cl.taken { background: color-mix(in srgb, var(--blue) 6%, transparent); }
 .ag-cl.taken .sk { background-color: color-mix(in srgb, var(--blue-4) 55%, var(--sk-a)); }
 .ag-spk { position: absolute; right: 3px; top: 50%; width: 10px; height: 10px; margin-top: -5px; color: var(--blue); opacity: 0; transform: scale(.5);
   transition: opacity 200ms var(--ease), transform var(--t2) var(--ease); }
 .ag-spk svg { display: block; width: 10px; height: 10px; stroke-width: 2.2; }
-.ag-cl.key .ag-spk { opacity: 1; transform: none; }
+.ag-cl.ag-key .ag-spk { opacity: 1; transform: none; }
 /* the reading line: a soft wash that trails a crisp glowing rule, clause to clause */
-.ag-read { position: absolute; left: 7px; right: 7px; top: 0; height: 16px; border-radius: 5px; pointer-events: none; opacity: 0; z-index: 0;
+.ag-read { position: absolute; left: 7px; right: 7px; top: 0; height: 14px; border-radius: 5px; pointer-events: none; opacity: 0; z-index: 0;
   background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--blue) 10%, transparent));
   transition: transform 240ms var(--ease-io), opacity 280ms var(--ease); }
 .ag-read::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px;
@@ -1585,14 +1585,14 @@ main {
   box-shadow: 0 0 8px 1px color-mix(in srgb, var(--blue) 45%, transparent); }
 .ag-doc.reading .ag-read { opacity: 1; }
 
-.ag-sum { position: absolute; width: 144px; padding: 10px; border-radius: 14px; display: flex; flex-direction: column; gap: 9px; z-index: 2;
+.ag-sum { position: absolute; width: 144px; height: 128px; padding: 9px 10px; border-radius: 14px; display: flex; flex-direction: column; gap: 8px; z-index: 2;
   border: 1px dashed var(--line-2); background: color-mix(in srgb, var(--surface-2) 55%, transparent);
   opacity: 0; transform: translateX(12px) scale(.97);
   transition: opacity 480ms var(--ease), transform 600ms var(--ease), border-color 420ms var(--ease), background 420ms var(--ease), box-shadow 480ms var(--ease); }
 .ag-sum.ghost { opacity: 1; transform: none; }
 .ag-sum.live { border: 1px solid var(--edge); background: linear-gradient(180deg, var(--tile-a), color-mix(in srgb, var(--tile-b) 55%, var(--tile-a))); box-shadow: var(--sh-card); }
 .ag-sum.ready { border-color: var(--blue-line); box-shadow: 0 0 0 3px var(--blue-soft), var(--sh-card); }
-.ag-sh { display: flex; align-items: center; gap: 8px; height: 28px; }
+.ag-sh { display: flex; align-items: center; gap: 8px; height: 26px; }
 .ag-sh .ls { flex: 1; display: flex; flex-direction: column; gap: 5px; }
 .ag-si { position: relative; width: 26px; height: 26px; border-radius: 8px; flex: none; display: grid; place-items: center; background: var(--surface-3); color: var(--faint);
   transition: background 420ms var(--ease), color 420ms var(--ease), box-shadow 420ms var(--ease); }
@@ -1606,8 +1606,8 @@ main {
   transition: opacity 200ms var(--ease), transform var(--t2) var(--ease), background var(--t3) var(--ease); }
 .ag-ok svg { width: 9px; height: 9px; stroke-width: 3.2; }
 .ag-sum.ready .ag-ok { opacity: 1; transform: none; }
-.ag-pts { display: flex; flex-direction: column; gap: 6px; }
-.ag-pt { height: 24px; border-radius: 8px; display: flex; align-items: center; gap: 7px; padding: 0 8px; border: 1px dashed var(--line-2);
+.ag-pts { display: flex; flex-direction: column; gap: 5px; }
+.ag-pt { height: 22px; border-radius: 7px; display: flex; align-items: center; gap: 7px; padding: 0 8px; border: 1px dashed var(--line-2);
   transition: border-color 280ms var(--ease), background 280ms var(--ease), box-shadow 280ms var(--ease); }
 .ag-pt > * { opacity: 0; transition: opacity 240ms var(--ease) 80ms; }
 .ag-pt.in { border-style: solid; border-color: var(--edge); background: var(--tile-a); box-shadow: 0 4px 10px -8px rgba(11,18,32,.28); animation: pill-land 420ms var(--ease) both; }
@@ -1624,7 +1624,7 @@ main {
    Team — DLT registry → people on record → roles + permissions → invite list
    ========================================================================== */
 .tm-reg > .badge { background: var(--green); }
-.tm-card { position: absolute; z-index: 2; width: 156px; height: 46px; padding: 0 10px; display: flex; align-items: center; gap: 10px; border-radius: 12px;
+.tm-card { position: absolute; z-index: 2; width: 156px; height: 44px; padding: 0 10px; display: flex; align-items: center; gap: 10px; border-radius: 12px;
   border: 1px solid var(--edge); background: linear-gradient(180deg, var(--tile-a), color-mix(in srgb, var(--tile-b) 55%, var(--tile-a))); box-shadow: var(--sh-card);
   opacity: 0; transition: opacity 420ms var(--ease), border-color var(--t2) var(--ease), box-shadow var(--t2) var(--ease), filter 420ms var(--ease), translate 320ms var(--ease); }
 .tm-card.in { opacity: 1; }
@@ -1647,11 +1647,15 @@ main {
   background: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--blue) 16%, transparent) 50%, transparent 65%) 0 0 / 300% 100%;
   animation: tm-sweep 820ms var(--ease-io) both; }
 @keyframes tm-sweep { from { background-position: 100% 0; } to { background-position: 0% 0; } }
-.tm-card.moved { opacity: .36; filter: saturate(.5); }
-.tm-card.skip { opacity: .55; }
-.tm-card.skip .tm-role { filter: grayscale(1); opacity: .5; }
+.tm-card > * { transition: opacity 420ms var(--ease); }
+/* moved into the invite list: only the outline stays behind */
+.tm-card.moved { background: transparent; border-style: dashed; border-color: var(--line-2); box-shadow: none; }
+.tm-card.moved > *, .tm-card.moved.typed > * { opacity: .3; }
+/* checked but not suggested: stays on record, quietly */
+.tm-card.skip { opacity: .62; }
+.tm-card.skip .tm-role { filter: grayscale(1); opacity: .55; }
 
-.tm-list { position: absolute; width: 156px; padding: 10px; border-radius: 14px; display: flex; flex-direction: column; gap: 9px; z-index: 2;
+.tm-list { position: absolute; width: 164px; padding: 10px; border-radius: 14px; display: flex; flex-direction: column; gap: 9px; z-index: 2;
   border: 1px dashed var(--line-2); background: color-mix(in srgb, var(--surface-2) 55%, transparent);
   opacity: 0; transform: translateX(12px) scale(.97);
   transition: opacity 480ms var(--ease), transform 600ms var(--ease), border-color 420ms var(--ease), background 420ms var(--ease), box-shadow 480ms var(--ease); }
@@ -1669,14 +1673,14 @@ main {
 .tm-send svg { width: 12px; height: 12px; }
 .tm-list.ready .tm-send { color: #fff; border-color: transparent; background: var(--g-shine), var(--g-blue); box-shadow: var(--sh-pop); }
 .tm-rows { display: flex; flex-direction: column; gap: 6px; }
-.tm-row { height: 40px; border-radius: 10px; display: flex; align-items: center; gap: 8px; padding: 0 8px; border: 1px dashed var(--line-2);
+.tm-row { height: 40px; border-radius: 10px; display: flex; align-items: center; gap: 7px; padding: 0 7px; border: 1px dashed var(--line-2);
   transition: border-color 280ms var(--ease), background 280ms var(--ease), box-shadow 280ms var(--ease); }
 .tm-row > * { opacity: 0; transition: opacity 240ms var(--ease) 60ms; }
 .tm-row.in { border-style: solid; border-color: var(--edge); background: var(--tile-a); box-shadow: 0 4px 10px -8px rgba(11,18,32,.28); animation: pill-land 420ms var(--ease) both; }
 .tm-row.in > * { opacity: 1; }
 .tm-row .tm-av { width: 22px; height: 22px; background: var(--blue-soft); color: var(--blue); }
 .tm-row .tm-av > .ic { width: 11px; height: 11px; }
-.tm-row .ls { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.tm-row .ls { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
 .tm-mini { width: 20px; height: 14px; border-radius: 5px; flex: none; display: grid; place-items: center; color: #fff; background: var(--g-shine), var(--c); }
 .tm-mini svg { width: 8px; height: 8px; stroke-width: 2.4; }
 .tm-add { position: relative; width: 22px; height: 22px; border-radius: 7px; flex: none; display: grid; place-items: center; color: var(--blue);
@@ -4200,11 +4204,11 @@ Object.assign(ICON, {
   plus: '<path d="M12 5v14M5 12h14"/>',
 });
 addScene((() => {
-  const BX = 300, BY = 181;
+  const BX = 300, BY = 224;
   /* clause widths per page; `k` marks the key terms the agent picks out */
   const DOCS = [
-    { id: 'agT', sid: 'agST', icon: 'scale', y: 20, cl: [{ w: 84 }, { w: 70, k: 1 }, { w: 90 }, { w: 62 }, { w: 80, k: 1 }, { w: 74, k: 1 }] },
-    { id: 'agP', sid: 'agSP', icon: 'shieldLock', y: 186, cl: [{ w: 76, k: 1 }, { w: 88 }, { w: 66 }, { w: 82, k: 1 }, { w: 58 }, { w: 78, k: 1 }] },
+    { id: 'agT', sid: 'agST', icon: 'scale', y: 12, cl: [{ w: 84 }, { w: 70, k: 1 }, { w: 90 }, { w: 62 }, { w: 80, k: 1 }, { w: 74, k: 1 }] },
+    { id: 'agP', sid: 'agSP', icon: 'shieldLock', y: 150, cl: [{ w: 76, k: 1 }, { w: 88 }, { w: 66 }, { w: 82, k: 1 }, { w: 58 }, { w: 78, k: 1 }] },
   ];
   const PTS = [[70, 52, 62], [64, 72, 48]];
   return {
@@ -4219,12 +4223,12 @@ addScene((() => {
           <div class="card-h"><span class="hic">${ic(d.icon)}</span><span class="lines">${sk(i ? 46 : 58, 't')}${sk(i ? 30 : 36)}</span></div>
           <div class="ag-body">${d.cl.map(c => `<div class="ag-cl"${c.k ? ' data-k="1"' : ''}><i class="ag-sec"></i>${sk(c.w)}${c.k ? `<span class="ag-spk">${ic('spark')}</span>` : ''}</div>`).join('')}</div>
         </div>
-        <div class="ag-sum" id="${d.sid}" style="left:440px;top:${d.y + 7}px">
+        <div class="ag-sum" id="${d.sid}" style="left:440px;top:${d.y}px">
           <div class="ag-sh"><span class="ag-si">${ic(d.icon)}</span><span class="ls">${sk(i ? 50 : 58, 't')}${sk(i ? 28 : 34)}</span><span class="bai">${ic('spark')}</span></div>
           <div class="ag-pts">${PTS[i].map(w => `<div class="ag-pt"><span class="ag-pb">${ic('check')}</span>${sk(w)}</div>`).join('')}</div>
           <span class="ag-ok">${ic('check')}</span>
         </div>`).join('')}
-      ${core(BX, BY, 88)}`,
+      ${core(BX, BY, 84)}`,
     async run(c) {
       const t0 = performance.now(), END = 10000;   /* + the 420ms lead-in ≈ 10.4s */
       const blob = c.$('#core'), docs = DOCS.map(d => c.$(`#${d.id}`)), sums = DOCS.map(d => c.$(`#${d.sid}`));
@@ -4243,6 +4247,12 @@ addScene((() => {
       await light.to(docs, 360);
       c.focus(docs, 8);
       sums.forEach((s, i) => setTimeout(() => !c.signal.aborted && s.classList.add('ghost'), i * 110));
+      /* each agreement is linked through the agent to the summary that will sit beside it */
+      const tr = docs.flatMap((d, k) => [
+        c.curve(d, blob, { from: 'r', to: 'l', pad: 13, cls: 'trace' }),
+        c.curve(blob, sums[k], { from: 'r', to: 'l', pad: 13, cls: 'trace' }),
+      ]);
+      tr.forEach((p, i) => c.anim(p, [{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: 120 + i * 70, fill: 'both' }).catch(() => {}));
       await c.wait(420);
       docs.forEach(d => c.ripple(d, 'var(--blue)', { scaleTo: 1.05 }));
       await c.wait(240);
@@ -4263,7 +4273,7 @@ addScene((() => {
           await c.wait(170);
           cl.classList.add('read');
           if (cl.dataset.k) {
-            cl.classList.add('key');
+            cl.classList.add('ag-key');
             c.ripple(cl, 'var(--blue)', { scaleTo: 1.25, round: '5px' });
             c.kick();
             await c.wait(160);
@@ -4281,17 +4291,17 @@ addScene((() => {
       c.step(3); c.state('tool');
       light.off();
       for (const [k, d] of docs.entries()) {
-        const s = sums[k], keys = $$('.ag-cl.key', d), pts = $$('.ag-pt', s);
+        const s = sums[k], keys = $$('.ag-cl.ag-key', d), pts = $$('.ag-pt', s);
         c.focus(d, 8);
         s.classList.add('live');
         await Promise.all(keys.map((cl, i) => c.wait(i * 90).then(() =>
           c.fly(cl, blob, { html: frag, ms: 460, scaleFrom: .9, scaleTo: .5, arc: k ? -10 : 12 }))));
-        keys.forEach(cl => { cl.classList.remove('key'); cl.classList.add('taken'); });
+        keys.forEach(cl => { cl.classList.remove('ag-key'); cl.classList.add('taken'); });
         c.kick();
         c.ripple(blob, 'var(--blue)', { scaleTo: 1.25 });
         c.focus(s, 6);
         await Promise.all(pts.map((p, i) => c.wait(i * 150).then(async () => {
-          await c.fly(blob, p, { html: '<span class="bdrop sm" style="--c:var(--blue)"></span>', ms: 420, scaleFrom: .6, scaleTo: 1.1, arc: k ? -8 : 10 });
+          await c.fly(blob, p, { html: '<span class="bdrop" style="--c:var(--blue)"></span>', ms: 420, scaleFrom: .5, scaleTo: 1, arc: k ? -8 : 10 });
           p.classList.add('in');
           c.kick();
         })));
@@ -4301,6 +4311,7 @@ addScene((() => {
       }
       c.focus(blob, 4);
       await c.wait(Math.max(260, END - (performance.now() - t0)));
+      tr.forEach(p => p.classList.add('ok'));
     },
   };
 })());
@@ -4311,7 +4322,7 @@ addScene((() => {
    invite: those cards settle into an invite list and are approved one by one.
    ========================================================================== */
 addScene((() => {
-  const BX = 300, BY = 150, CX = 20, CY = 74, CH = 54;
+  const BX = 300, BY = 206, CX = 20, CY = 66, CH = 50;
   const PEOPLE = [
     { role: 'shieldCheck', perm: 'key', c: 'var(--blue-3)', ok: true, w: [56, 34] },
     { role: 'id', perm: 'shieldLock', c: 'var(--blue)', ok: true, w: [48, 30] },
@@ -4325,18 +4336,18 @@ addScene((() => {
     steps: ['Looking up your DLT registration', 'Finding people on record', 'Matching roles and permissions', 'Suggesting people to invite'],
     html: () => `
       <svg class="cone" id="vCone" viewBox="0 0 720 360" aria-hidden="true"><defs><linearGradient id="vConeG" gradientUnits="userSpaceOnUse"><stop offset="0" class="s0"/><stop offset=".3" class="s1"/><stop offset="1" class="s2"/></linearGradient></defs><polygon id="vConeP" points="0,0 0,0 0,0" fill="url(#vConeG)"/></svg>
-      ${nd('database', CX + 78, 40, { s: 44, k: 'reg', cls: 'tm-reg' })}
+      ${nd('database', CX + 78, 32, { s: 42, k: 'reg', cls: 'tm-reg' })}
       ${PEOPLE.map((p, i) => `
         <div class="tm-card" data-i="${i}" style="left:${CX}px;top:${CY + i * CH}px">
           <span class="tm-av">${ic('user')}<span class="tm-perm">${ic(p.perm)}</span></span>
           <span class="ls">${sk(p.w[0])}${sk(p.w[1])}</span>
           <span class="tm-role" style="--c:${p.c}">${ic(p.role)}</span>
         </div>`).join('')}
-      ${core(BX, BY, 88)}
-      <div class="tm-list" id="tmList" style="left:428px;top:58px">
+      ${core(BX, BY, 84)}
+      <div class="tm-list" id="tmList" style="left:420px;top:52px">
         <div class="tm-lh"><span class="tm-li">${ic('users')}</span><span class="ls">${sk(54, 't')}${sk(30)}</span><span class="tm-send">${ic('send')}</span></div>
         <div class="tm-rows">${INV.map(p => `
-          <div class="tm-row"><span class="tm-av">${ic('user')}</span><span class="ls">${sk(Math.round(p.w[0] * .8))}${sk(Math.round(p.w[1] * .8))}</span>
+          <div class="tm-row"><span class="tm-av">${ic('user')}</span><span class="ls">${sk(Math.round(p.w[0] * .7))}${sk(Math.round(p.w[1] * .7))}</span>
             <span class="tm-mini" style="--c:${p.c}">${ic(p.role)}</span><span class="tm-add">${ic('plus', 'tm-pl')}${ic('check', 'tm-ck')}</span></div>`).join('')}
         </div>
       </div>`,
@@ -4401,12 +4412,15 @@ addScene((() => {
       c.focus(list, 6);
       const ok = cards.filter((_, i) => PEOPLE[i].ok);
       cards.forEach((card, i) => { if (!PEOPLE[i].ok) card.classList.add('skip'); });
+      /* each suggestion passes through the agent on its way into the list */
       await Promise.all(ok.map(async (card, j) => {
-        await c.wait(j * 170);
-        await c.fly(card, rows[j], { ms: 640, arc: 16, scaleTo: .88 });
+        await c.wait(j * 200);
+        const html = card.outerHTML;
+        await c.fly(card, blob, { ms: 440, scaleTo: .3, arc: 10 - j * 6 });
         card.classList.add('moved');
-        rows[j].classList.add('in');
         c.kick();
+        await c.fly(blob, rows[j], { html, ms: 480, scaleFrom: .3, scaleTo: .86, arc: 10 - j * 8 });
+        rows[j].classList.add('in');
       }));
       await c.wait(160);
       c.state('verify');
