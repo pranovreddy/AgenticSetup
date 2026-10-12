@@ -11984,6 +11984,48 @@ body.ag-gate .ag-brief{ background:none !important; border:0 !important; border-
 .ag-nextup-ico{ box-shadow:0 0 0 1px #d4e1f8 !important; }
 .ag-nextup-go{ background:var(--cv-blue) !important; box-shadow:none !important; }
 
+/* ---- Agentic trace: the agent's findings as a branching trail from its source ---- */
+.ag-trace{ position:relative; max-width:980px; }
+.ag-trace-root{ display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+.ag-trace-orb{ position:relative; display:grid; place-items:center; width:38px; height:38px; border-radius:50%; background:linear-gradient(155deg,#5b95ff,#2563eb); box-shadow:0 0 0 6px rgba(37,99,235,.10), 0 8px 18px rgba(37,99,235,.28); }
+.ag-trace-orb .ai-mark, .ag-trace-orb svg{ width:18px; height:18px; }
+.ag-trace-root > span:last-child{ display:flex; flex-direction:column; } .ag-trace-root b{ font-size:14.5px; font-weight:650; color:var(--cv-ink); } .ag-trace-root span span{ font-size:12.5px; color:var(--cv-mute); }
+.ag-trace-list{ list-style:none; margin:0; padding:0 0 0 19px; position:relative; }
+.ag-trace-list::before{ content:""; position:absolute; left:18px; top:0; bottom:26px; width:2px; border-radius:2px; background:linear-gradient(180deg,#a9c4f7,#dbe6fb); transform-origin:top; animation:ag-trace-draw 900ms var(--cv-ease) 150ms both; }
+@keyframes ag-trace-draw{ from{ transform:scaleY(0); } to{ transform:none; } }
+.ag-trace-row{ position:relative; padding:18px 0 4px 34px; animation:cv-rise 520ms var(--cv-ease) calc(260ms + var(--n) * 140ms) both; }
+.ag-trace-row::before{ content:""; position:absolute; left:-1px; top:42px; width:30px; height:2px; background:linear-gradient(90deg,#a9c4f7,#dbe6fb); }
+.ag-trace-node{ position:absolute; left:-6px; top:36px; width:12px; height:12px; border-radius:50%; background:#fff; border:3px solid #2563eb; box-shadow:0 0 0 4px rgba(37,99,235,.12); }
+.ag-trace-row.is-dim .ag-trace-node{ border-color:#c3cee3; box-shadow:none; }
+.ag-trace-main{ display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:16px; background:#fff; border:1px solid #e6ecf6; transition:border-color 200ms, box-shadow 200ms; min-width:0; }
+.ag-trace-row:hover .ag-trace-main{ border-color:#cfdcf5; box-shadow:0 8px 22px rgba(37,99,235,.08); }
+.ag-trace-row.is-picked .ag-trace-main{ border-color:rgba(37,99,235,.30); }
+.ag-trace-row.is-dim .ag-trace-main{ opacity:.78; }
+.ag-trace-main .ag-sum-who{ flex:0 1 210px; min-width:130px; }
+.ag-trace-facts{ flex:1; display:flex; gap:22px; margin:0; min-width:0; }
+.ag-trace-facts div{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.ag-trace-facts dt{ font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--cv-mute); }
+.ag-trace-facts dd{ margin:0; font-size:13px; font-weight:540; color:var(--cv-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ag-trace-note{ display:flex; align-items:flex-start; gap:8px; margin:8px 0 0 4px; font-size:12.5px; line-height:1.45; color:var(--cv-ink-2); }
+.ag-trace-note i{ flex:none; display:grid; place-items:center; width:16px; height:16px; margin-top:1px; color:#2563eb; font-style:normal; }
+.ag-trace-note i svg{ width:13px; height:13px; }
+.ag-trace-note b{ font-weight:620; color:var(--cv-ink); }
+.ag-trace-chips{ flex:1; list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:6px; }
+.ag-trace-chips li{ display:flex; align-items:baseline; gap:6px; padding:4px 11px; border-radius:99px; background:#f1f5fd; }
+.ag-trace-chips b{ font-size:12.5px; font-weight:600; color:var(--cv-ink); } .ag-trace-chips span{ font-size:11px; color:var(--cv-mute); }
+.ag-sum-rank{ flex:none; display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:#eef4ff; color:#2563eb; font-size:13px; font-weight:700; }
+.ag-trace-bars{ flex:1; display:flex; flex-direction:column; gap:6px; min-width:200px; }
+.ag-trace-bars div{ display:grid; grid-template-columns:84px 1fr 52px; align-items:center; gap:10px; font-size:12px; color:var(--cv-mute); }
+.ag-trace-bars i{ position:relative; height:6px; border-radius:99px; background:#e6edf9; overflow:hidden; }
+.ag-trace-bars i::after{ content:""; position:absolute; inset:0; width:var(--w, 50%); border-radius:99px; background:linear-gradient(90deg,#60a5fa,#2563eb); transform-origin:left; animation:ag-sum-grow 800ms var(--cv-ease) 500ms both; }
+.ag-trace-row.is-dim .ag-trace-bars i::after{ background:#c3cee3; }
+.ag-trace-bars b{ text-align:right; font-weight:640; color:var(--cv-ink); }
+.ag-trace-share{ flex:none; display:flex; flex-direction:column; align-items:flex-end; min-width:70px; } .ag-trace-share b{ font-size:20px; font-weight:700; letter-spacing:-.3px; color:var(--cv-ink); } .ag-trace-share span{ font-size:11.5px; color:var(--cv-mute); }
+.ag-trace-lobbar{ flex:1; height:8px; border-radius:99px; background:#fde7c2; overflow:hidden; } .ag-trace-lobbar i{ display:block; height:100%; border-radius:99px; background:#16a34a; transform-origin:left; animation:ag-sum-grow 800ms var(--cv-ease) 500ms both; }
+.ag-trace .ag-sum-seg{ margin:14px 0 10px 53px; max-width:520px; } .ag-trace .ag-sum-legend{ margin:0 0 4px 53px; }
+@media (max-width:900px){ .ag-trace-main{ flex-wrap:wrap; } .ag-trace-facts{ flex-basis:100%; flex-wrap:wrap; } }
+@media (prefers-reduced-motion:reduce){ .ag-trace-row, .ag-trace-list::before, .ag-trace-bars i::after, .ag-trace-lobbar i{ animation:none !important; } }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -14644,54 +14686,80 @@ body.ag-gate .ag-brief{ background:none !important; border:0 !important; border-
   const agSumDone = new Set();
   const agSumEsc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   function agSummaryData(key) {
-    const rows = (list) => list.join("");
+    const root = (label, sub) => `<div class="ag-trace-root"><span class="ag-trace-orb">${bootAiMark()}</span><span><b>${agSumEsc(label)}</b><span>${agSumEsc(sub)}</span></span></div>`;
+    const note = (t) => `<p class="ag-trace-note"><i>${I("spark")}</i>${t}</p>`;
     if (key === "2") {
       const people = agTeamPeople();
-      const roles = [...new Set(people.map((p) => p.platformRole))];
       return {
         kicker: "Team", cta: "Review and invite", count: `${people.length} suggested users`,
-        tiles: [[people.length, "people found"], [roles.length, "roles matched"], ["DLT", "source record"]],
-        body: `<div class="ag-sum-grid is-people">${rows(people.map((p, n) => `<article class="ag-sum-person" style="--n:${n}">
-          <header><span class="ag-sum-av">${agSumEsc(p.initials)}</span><span class="ag-sum-who"><b>${agSumEsc(p.name)}</b><span>${agSumEsc(p.designation || "")}</span></span><span class="ag-sum-role">${agSumEsc(p.platformRole)}</span></header>
-          <dl><div><dt>Email</dt><dd>${agSumEsc(p.email)}</dd></div><div><dt>Mobile</dt><dd>${agSumEsc(p.mobile)}</dd></div><div><dt>Department</dt><dd>${agSumEsc(p.department || "")}</dd></div></dl>
-        </article>`))}</div>`,
+        body: `<div class="ag-trace">${root("DLT registration", "HDFC Bank Limited")}
+          <ol class="ag-trace-list">${people.map((p, n) => `<li class="ag-trace-row" style="--n:${n}">
+            <span class="ag-trace-node"></span>
+            <div class="ag-trace-main">
+              <span class="ag-sum-av">${agSumEsc(p.initials)}</span>
+              <span class="ag-sum-who"><b>${agSumEsc(p.name)}</b><span>${agSumEsc(p.designation || "")}</span></span>
+              <dl class="ag-trace-facts"><div><dt>Email</dt><dd>${agSumEsc(p.email)}</dd></div><div><dt>Mobile</dt><dd>${agSumEsc(p.mobile)}</dd></div><div><dt>Department</dt><dd>${agSumEsc(p.department || "")}</dd></div></dl>
+              <span class="ag-sum-role">${agSumEsc(p.platformRole)}</span>
+            </div>
+            ${note(`Found on your DLT record. Role <b>${agSumEsc(p.platformRole)}</b> suggested from the designation “${agSumEsc(p.designation || "")}”.`)}
+          </li>`).join("")}</ol></div>`,
       };
     }
     if (key === "e0") {
       return {
         kicker: "Brands and LOBs", cta: "Review brands", count: `${AG_BRANDS.length} brands · ${agLobTotal()} LOBs`,
-        tiles: [[AG_BRANDS.length, "brands"], [agLobTotal(), "lines of business"], ["All", "bound to DLT"]],
-        body: `<div class="ag-sum-grid is-brands">${rows(AG_BRANDS.map((b, n) => `<article class="ag-sum-brand" style="--n:${n}">
-          <header><span class="ag-sum-logo"><img src="${b.logo}" alt=""></span><b>${agSumEsc(b.name)}</b><span class="ag-sum-pill">${b.lobs.length} LOBs</span></header>
-          <ul>${b.lobs.map((l) => `<li><b>${agSumEsc(l.name)}</b><span>${(l.promos || []).slice(0, 2).map((x) => `<i>${agSumEsc(x)}</i>`).join("")}</span></li>`).join("")}</ul>
-        </article>`))}</div>`,
+        body: `<div class="ag-trace">${root("DLT registrations", "Sender headers and templates read")}
+          <ol class="ag-trace-list">${AG_BRANDS.map((b, n) => `<li class="ag-trace-row" style="--n:${n}">
+            <span class="ag-trace-node"></span>
+            <div class="ag-trace-main is-brand">
+              <span class="ag-sum-logo"><img src="${b.logo}" alt=""></span>
+              <span class="ag-sum-who"><b>${agSumEsc(b.name)}</b><span>${b.lobs.length} lines of business</span></span>
+              <ul class="ag-trace-chips">${b.lobs.map((l) => `<li><b>${agSumEsc(l.name)}</b>${(l.promos || []).length ? `<span>${(l.promos || []).length} promo types</span>` : ""}</li>`).join("")}</ul>
+            </div>
+            ${note(`Brand found in your sender headers. ${b.lobs.length} LOBs drafted and bound to the DLT entity.`)}
+          </li>`).join("")}</ol></div>`,
       };
     }
     if (key === "e1") {
-      const chosen = AG_PARTNERS.filter((p) => p.share > 0);
+      const picked = AG_PARTNERS.filter((p) => p.share > 0);
+      const maxReg = Math.max(...AG_PARTNERS.map((p) => parseFloat(String(p.reg).replace(/[^\d.]/g, ""))));
       return {
-        kicker: "GTM partners", cta: "Review partners", count: `${chosen.length} of ${AG_PARTNERS.length} partners selected`,
-        tiles: [[AG_PARTNERS.length, "partners compared"], [(AG_PARTNERS.find((p) => p.best) || AG_PARTNERS[0]).reg, "best registration rate"], [chosen.map((p) => p.share + "%").join(" / "), "volume split"]],
-        body: `<div class="ag-sum-split" role="img" aria-label="Volume split">${chosen.map((p) => `<span style="flex:${p.share}"><b>${agSumEsc(p.name)}</b><i>${p.share}% of volume</i></span>`).join("")}</div>
-        <div class="ag-sum-grid is-partners">${rows(AG_PARTNERS.map((p, n) => `<article class="ag-sum-partner${p.share > 0 ? " is-picked" : ""}" style="--n:${n}">
-          <header><b>${agSumEsc(p.name)}</b><span class="ag-sum-pill${p.share > 0 ? " is-on" : ""}">${p.share > 0 ? (p.best ? "Best rate" : "Selected") : "Not selected"}</span></header>
-          <div class="ag-sum-rate"><b>${agSumEsc(p.reg)}</b><span>registration</span></div>
-          <div class="ag-sum-rate"><b>${agSumEsc(p.mig)}</b><span>migration</span></div>
-          <div class="ag-sum-share"><i style="width:${p.share}%"></i></div><small>${p.share > 0 ? p.share + "% of your volume" : "Higher rates, no volume"}</small>
-        </article>`))}</div>`,
+        kicker: "GTM partners", cta: "Review partners", count: `${picked.length} of ${AG_PARTNERS.length} partners selected`,
+        body: `<div class="ag-trace">${root("Rate cards compared", `${AG_PARTNERS.length} telecom partners`)}
+          <ol class="ag-trace-list">${AG_PARTNERS.map((p, n) => {
+            const reg = parseFloat(String(p.reg).replace(/[^\d.]/g, ""));
+            return `<li class="ag-trace-row${p.share > 0 ? " is-picked" : " is-dim"}" style="--n:${n}">
+            <span class="ag-trace-node"></span>
+            <div class="ag-trace-main is-partner">
+              <span class="ag-sum-rank">${n + 1}</span>
+              <span class="ag-sum-who"><b>${agSumEsc(p.name)}</b><span>${p.share > 0 ? (p.best ? "Selected · best rate" : "Selected") : "Not selected"}</span></span>
+              <div class="ag-trace-bars">
+                <div><span>Registration</span><i style="--w:${Math.round((1 - (reg - 0.1) / (maxReg || 1)) * 100) + 25}%"></i><b>${agSumEsc(p.reg)}</b></div>
+                <div><span>Migration</span><i style="--w:${Math.round((1 - (parseFloat(String(p.mig).replace(/[^\d.]/g, "")) - 0.03) / 0.1) * 100)}%"></i><b>${agSumEsc(p.mig)}</b></div>
+              </div>
+              <span class="ag-trace-share"><b>${p.share}%</b><span>of volume</span></span>
+            </div>
+            ${note(p.share > 0 ? `${p.best ? "Lowest rates of the four" : "Competitive rates"}, so I gave it <b>${p.share}%</b> of your volume.` : "Higher rates than the selected partners, so it gets no volume for now.")}
+          </li>`; }).join("")}</ol></div>`,
       };
     }
     if (key === "e2") {
-      const tot = AG_TM_LOBS.reduce((a, l) => a + l.suggested + l.review, 0);
       return {
         kicker: "Templates", cta: "Review mappings", count: "98 of 100 templates mapped",
-        tiles: [["98%", "mapped"], [25, "high confidence"], [71, "to review"], [2, "left for you"]],
-        body: `<div class="ag-sum-seg" role="img" aria-label="25 high confidence, 71 to review, 2 unmapped"><span class="is-hi" style="flex:25"></span><span class="is-mid" style="flex:71"></span><span class="is-lo" style="flex:2"></span></div>
-        <div class="ag-sum-grid is-lobs">${rows(AG_TM_LOBS.map((l, n) => `<article class="ag-sum-lob" style="--n:${n}">
-          <header><b>${agSumEsc(l.name)}</b><span class="ag-sum-pill">${agSumEsc(l.brand)}</span></header>
-          <div class="ag-sum-lobcount"><b>${l.suggested + l.review}</b><span>templates · ${l.review} to review</span></div>
-          <ul>${(AG_TM_SEED[l.id] || []).slice(0, 3).map((t) => `<li><span>${agSumEsc(t[0])}</span><i class="is-${t[4] === "high" ? "hi" : "mid"}">${t[3]}%</i></li>`).join("")}</ul>
-        </article>`))}</div>`,
+        body: `<div class="ag-trace">${root("Your templates", "100 read · 98 mapped · 2 left for you")}
+          <div class="ag-sum-seg" role="img" aria-label="25 high confidence, 71 to review, 2 unmapped"><span class="is-hi" style="flex:25"></span><span class="is-mid" style="flex:71"></span><span class="is-lo" style="flex:2"></span></div>
+          <ul class="ag-sum-legend"><li><i class="is-hi"></i>25 high confidence</li><li><i class="is-mid"></i>71 to review</li><li><i class="is-lo"></i>2 unmapped</li></ul>
+          <ol class="ag-trace-list">${AG_TM_LOBS.map((l, n) => {
+            const total = l.suggested + l.review;
+            return `<li class="ag-trace-row" style="--n:${n}">
+            <span class="ag-trace-node"></span>
+            <div class="ag-trace-main is-lob">
+              <span class="ag-sum-who"><b>${agSumEsc(l.name)}</b><span>${agSumEsc(l.brand)}</span></span>
+              <div class="ag-trace-lobbar"><i style="width:${Math.round((l.suggested / total) * 100)}%"></i></div>
+              <span class="ag-trace-share"><b>${total}</b><span>templates</span></span>
+            </div>
+            ${note(`${l.suggested} confidently matched, <b>${l.review}</b> need a quick look. e.g. “${agSumEsc(((AG_TM_SEED[l.id] || [])[0] || [""])[0])}”.`)}
+          </li>`; }).join("")}</ol></div>`,
       };
     }
     return null;
@@ -14726,7 +14794,6 @@ body.ag-gate .ag-brief{ background:none !important; border:0 !important; border-
         <h2 class="ag-sum-head">${agSumEsc(tele ? tele.did() : d.kicker)}</h2>
         <p class="ag-sum-sub">${agSumEsc(tele ? tele.next() : "")}</p>
       </header>
-      <div class="ag-sum-tiles">${d.tiles.map(([v, l], n) => `<div style="--n:${n}"><b>${agSumEsc(v)}</b><span>${agSumEsc(l)}</span></div>`).join("")}</div>
       ${d.body}
     </div></div>
     <footer class="ag-sum-bar"><span>${agSumEsc(d.count)}</span><button type="button" class="ag-btn is-primary ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button></footer>`;
