@@ -15024,7 +15024,7 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
       && !document.getElementById("agNextUp");
     const want = ready && !agSumDone.has(key);
     agSummaryReopenSync(ready && agSumDone.has(key) && agSumHold !== key && !(have && have.dataset.leaving === "1"), key);
-    if (!want) { if (have && have.dataset.leaving !== "1") have.remove(); return; }
+    if (!want) { if (have && have.dataset.leaving !== "1" && have.dataset.flow !== "1") have.remove(); return; }
     if (have && have.dataset.key === key) return;
     have?.remove();
     const d = agSummaryData(key);
