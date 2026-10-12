@@ -11655,6 +11655,61 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-agree--canvas, .ag-rates--canvas{ padding-bottom:24px; }
 .setup-layout .cl-detail .ag-live > :not(.ag-actions):not(.ag-lead):not(.ag-team):not(.ag-profile):not(.ag-success):not(.ag-docs):not(.ag-handoff):not(.ag-tm):not(.ag-kyc-owners):not(.ag-step-ai){ padding-bottom:24px; }
 .setup-layout .kyc-footer{ position:static !important; background:none !important; border:0 !important; box-shadow:none !important; padding:22px 0 10px !important; -webkit-backdrop-filter:none; backdrop-filter:none; }
+
+/* ==========================================================================
+   Dock v2: hidden while the agent works; the blob flies down and opens a tray
+   ========================================================================== */
+:root{ --dock-h:64px; }
+.shell:has(.setup-layout) .cl-detail-card::after{ display:none; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
+  right:auto !important; width:fit-content; max-width:calc(100% - var(--dock-x) * 2 - 360px);
+  border-radius:32px; padding:0 22px 0 8px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.76)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(1.4); backdrop-filter:blur(22px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.95) !important;
+  box-shadow:0 18px 46px -12px rgba(30,58,138,.3), 0 0 0 1px rgba(37,99,235,.07) !important;
+  transition:opacity 420ms var(--cv-ease), transform 600ms var(--cv-ease);
+}
+.shell:has(.setup-layout) .cl-detail-card:has(.ag-step-ai) > .welcome-card.is-agentic,
+.shell:has(.setup-layout) .cl-detail-card:has(.ag-step-ai) > .ag-actions{
+  opacity:0; transform:translateY(36px) scale(.9); pointer-events:none;
+}
+.shell:has(.setup-layout) .cl-detail-card:has(.ag-step-ai) > .welcome-card.is-agentic .welcome-ai-avatar{ transform:none; opacity:1; margin-right:0; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai{ width:auto; gap:12px; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-avatar{ flex:0 0 48px; width:48px; height:48px; }
+/* one line of speech; the log toggle becomes a small chevron after it */
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-bubble{ display:flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center; gap:10px; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .ag-tele{ flex:0 1 auto; margin:0; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-head{ order:2; margin:0; gap:0; position:relative; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-who,
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-status{ display:none; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-expand{ padding:6px; border-radius:50%; opacity:.55; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-expand:hover{ opacity:1; background:rgba(37,99,235,.08); }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic #welcomeAiLines,
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .ag-tele{ order:1; min-width:0; }
+.ag-tele-did, .shell:has(.setup-layout) .welcome-card.is-agentic .welcome-ai-line{ margin:0; font-size:15px; font-weight:560; line-height:1.3; color:var(--cv-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ag-tele-next{ display:none; }
+
+/* the tray opens out of the blob */
+@keyframes tray-open{
+  0%{ clip-path:inset(0 calc(100% - 64px) 0 0 round 32px); opacity:.0; transform:translateY(8px); }
+  18%{ opacity:1; }
+  100%{ clip-path:inset(0 0 0 0 round 32px); opacity:1; transform:none; }
+}
+.dock-reveal > .welcome-card.is-agentic{ animation:tray-open 820ms var(--cv-ease) both; }
+.dock-reveal > .welcome-card.is-agentic .welcome-ai-bubble{ animation:cv-rise 520ms var(--cv-ease) 380ms both; }
+.dock-reveal > .ag-actions{ animation:cv-rise 560ms var(--cv-ease) 520ms both; }
+
+.ag-fly-blob{
+  position:fixed; z-index:60; width:72px; height:72px; border-radius:50%; pointer-events:none; opacity:0;
+  background:
+    radial-gradient(circle at 50% 50%, #fff 0 15%, #2f62e8 16% 26%, transparent 27%),
+    radial-gradient(rgba(255,255,255,.7) 1px, transparent 1.6px) 0 0/7px 7px,
+    radial-gradient(circle at 35% 30%, #a9c1ff, #4d7cf3 55%, #2a4fcf);
+  box-shadow:0 0 46px 10px rgba(59,130,246,.55), 0 0 90px 24px rgba(124,92,255,.28);
+}
+/* CTAs ride beside the tray, never inside it */
+.setup-layout .cl-detail .ag-actions{ height:var(--dock-h); max-width:380px; }
 /* the agent hands over: content rises out of the dock */
 @keyframes dock-rise{ from{ opacity:0; transform:translateY(26px) scale(.985); filter:blur(5px); } to{ opacity:1; transform:none; filter:none; } }
 .ag-live.is-revealed > .ag-agree--canvas, .ag-live.is-revealed > .ag-rates--canvas{ animation:dock-rise 700ms var(--cv-ease) both; transform-origin:50% 100%; }
@@ -14160,6 +14215,45 @@ body.ag-app-ready .setup-layout .cl-overview{
     vis.forEach((el, i) => { el.style.setProperty("--pi", i); el.classList.add("cv-pop"); });
     setTimeout(() => vis.forEach((el) => { el.classList.remove("cv-pop"); el.style.removeProperty("--pi"); }), 520 + vis.length * 38 + 120);
   }
+  /* The agent blob leaves the animation and lands in the dock, which then opens as a tray. */
+  function agFlyBlobToDock(frame) {
+    const card = document.querySelector(".cl-detail-card");
+    if (!card || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const fr = frame.getBoundingClientRect();
+    let from = { x: fr.left + fr.width / 2, y: fr.top + fr.height / 2 };
+    try {
+      const core = frame.contentDocument.querySelector("#core");
+      if (core) {
+        const r = core.getBoundingClientRect();
+        const s = fr.width / frame.offsetWidth || 1;
+        from = { x: fr.left + (r.left + r.width / 2) * s, y: fr.top + (r.top + r.height / 2) * s };
+      }
+    } catch (e) { /* cross-origin frame: fall back to the centre */ }
+    const cr = card.getBoundingClientRect();
+    const to = { x: cr.left + 28 + 8 + 28, y: cr.bottom - 16 - 32 };
+    const fly = document.createElement("div");
+    fly.className = "ag-fly-blob";
+    fly.style.left = from.x - 36 + "px";
+    fly.style.top = from.y - 36 + "px";
+    document.body.appendChild(fly);
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const anim = fly.animate([
+      { transform: "translate(0,0) scale(1.1)", opacity: 0.0, offset: 0 },
+      { transform: "translate(0,0) scale(1.25)", opacity: 1, offset: 0.12 },
+      { transform: `translate(${dx * 0.35}px, ${dy * 0.55 - 40}px) scale(1.0)`, opacity: 1, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy}px) scale(.72)`, opacity: 1, offset: 1 },
+    ], { duration: 840, easing: "cubic-bezier(.65,0,.35,1)", fill: "forwards" });
+    anim.onfinish = () => {
+      fly.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 320, fill: "forwards", delay: 120 }).onfinish = () => fly.remove();
+    };
+  }
+  function agDockReveal() {
+    const card = document.querySelector(".cl-detail-card");
+    if (!card) return;
+    card.classList.add("dock-reveal");
+    setTimeout(() => card.classList.remove("dock-reveal"), 1500);
+  }
   let agTele = null;
   const agTeleEsc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   function agTeleStart(id, focus) {
@@ -14200,7 +14294,7 @@ body.ag-app-ready .setup-layout .cl-overview{
       lines.insertAdjacentElement("afterend", box);
     }
     const now = agTele.done ? "" : `<p class="ag-tele-now"><i aria-hidden="true"></i>${agTeleEsc(def.steps[agTele.step][0])}…</p>`;
-    const result = agTele.done ? `<p class="ag-tele-did">${agTeleEsc(def.did())}</p><p class="ag-tele-next"><b>Your turn</b>${agTeleEsc(def.next())}</p>` : "";
+    const result = agTele.done ? `<p class="ag-tele-did">${agTeleEsc(def.did())}</p>` : "";
     const html = `${now}${result}`;
     if (box.dataset.sig !== html) { box.innerHTML = html; box.dataset.sig = html; }
     box.classList.toggle("is-done", !!agTele.done);
@@ -14232,11 +14326,13 @@ body.ag-app-ready .setup-layout .cl-overview{
       stepAiTimer = setTimeout(() => {
         const box = document.querySelector(".ag-step-ai .ag-loader-frame");
         if (String(state.ag.focus) !== focus || !box) return;
-        box.closest(".ag-step-ai").classList.add("is-leaving");
+        const host = box.closest(".ag-step-ai");
+        host.classList.add("is-leaving");
+        agFlyBlobToDock(box);
         stepAiTimer = setTimeout(() => {
-          if (focus === "e1" && gtmLoaderMode) { agGtmLoaderFinish(); return; }
-          if (String(state.ag.focus) === focus && document.querySelector(".ag-step-ai .ag-loader-frame")) agMarkStepAiDone(focus);
-        }, 420);
+          if (focus === "e1" && gtmLoaderMode) { agGtmLoaderFinish(); agDockReveal(); return; }
+          if (String(state.ag.focus) === focus && document.querySelector(".ag-step-ai .ag-loader-frame")) { agMarkStepAiDone(focus); agDockReveal(); }
+        }, 860);
       }, 900);
     });
   }
