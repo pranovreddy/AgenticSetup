@@ -12536,6 +12536,25 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
 .ag-lsteps li.is-todo i{ color:#a9b8d4; }
 @media (max-width:760px){ .ag-lsteps li.is-active span{ max-width:150px; } }
 
+/* more telemetry up top: what is being read now, elapsed, and an expandable log */
+.ag-lnow{ display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px 12px; margin:12px auto 0; font-size:12.5px; color:#5f7396; }
+.ag-lnow.is-swap > *{ animation:cv-rise 380ms var(--cv-ease) both; }
+.ag-lnow-k{ font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#2563eb; }
+.ag-lnow-v{ font-weight:600; color:#0f1f3d; }
+.ag-lnow-t{ color:#8aa0c4; } .ag-lnow-t b{ font-weight:600; color:#5f7396; font-variant-numeric:tabular-nums; }
+.ag-ldet-btn{ display:inline-flex; align-items:center; gap:5px; margin:8px auto 0; padding:3px 10px; border:0; border-radius:99px; background:none; color:#2563eb; font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+.ag-ldet-btn:hover{ background:rgba(37,99,235,.08); } .ag-ldet-btn svg{ transition:transform 250ms var(--cv-ease); } .ag-ldet-btn.is-open svg{ transform:rotate(180deg); }
+.ag-ltop{ display:flex; flex-direction:column; align-items:center; }
+.ag-ldet{ width:min(560px, 100%); margin-top:8px; padding:6px; border-radius:18px; background:#fff; border:1px solid #e1eafb; box-shadow:0 18px 40px -22px rgba(37,99,235,.28); animation:cv-rise 360ms var(--cv-ease) both; text-align:left; }
+.ag-ldet ol{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+.ag-ldet li{ display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:12px; min-width:0; }
+.ag-ldet li.is-active{ background:#f1f6ff; }
+.ag-ldet li i{ flex:none; display:grid; place-items:center; width:22px; height:22px; border-radius:50%; border:1.5px solid #cfdcf3; font-style:normal; font-size:10.5px; font-weight:700; color:#8aa0c4; background:#fff; } .ag-ldet li i svg{ width:11px; height:11px; }
+.ag-ldet li.is-done i{ background:#2563eb; border-color:#2563eb; color:#fff; } .ag-ldet li.is-active i{ border-color:#2563eb; color:#2563eb; }
+.ag-ldet-t{ flex:1; min-width:0; display:flex; flex-direction:column; } .ag-ldet-t b{ font-size:12.5px; font-weight:600; line-height:1.3; color:#0f1f3d; } .ag-ldet-t span{ font-size:11.5px; color:#8aa0c4; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ag-ldet li em{ flex:none; font-style:normal; font-size:11px; font-weight:600; color:#8aa0c4; } .ag-ldet li.is-done em{ color:#2563eb; } .ag-ldet li.is-active em{ color:#0f1f3d; }
+@media (max-width:760px){ .ag-ldet ol{ grid-template-columns:1fr; } }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -15653,7 +15672,7 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
   const agTeleEsc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   function agTeleStart(id, focus) {
     if (!AG_TELE[id]) return;
-    agTele = { id, focus: String(focus), step: 0, done: false };
+    agTele = { id, focus: String(focus), step: 0, done: false, t0: Date.now() };
     agTeleRender();
   }
   function agTeleStep(n) {
@@ -15743,7 +15762,7 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
     const w = AG_LOADER_WHY[id];
     if (!host || !w) return;
     host.querySelector(".ag-ltop")?.remove();
-    host.insertAdjacentHTML("afterbegin", `<div class="ag-ltop" aria-live="polite"><b>${w[0]}</b><span>${w[1]}</span><ol class="ag-lsteps" aria-label="Progress"></ol></div>`);
+    host.insertAdjacentHTML("afterbegin", `<div class="ag-ltop" aria-live="polite"><b>${w[0]}</b><span>${w[1]}</span><ol class="ag-lsteps" aria-label="Progress"></ol><div class="ag-lnow"></div><button type="button" class="ag-ldet-btn" aria-expanded="false">Show details<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></button><div class="ag-ldet" hidden></div></div>`);
     agLsRender();
   }
   function agLsRender() {
@@ -15757,6 +15776,50 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
       return `<li class="is-${st}" title="${agTeleEsc(st === "done" ? did : now)}"><i>${st === "done" ? check : st === "active" ? "<b></b>" : i + 1}</i><span>${agTeleEsc(st === "done" ? did : now)}</span></li>`;
     }).join("");
     if (list.dataset.sig !== html) { list.innerHTML = html; list.dataset.sig = html; }
+    const cfg = AG_TEL_CARD[agTele.focus];
+    const subs = (cfg && cfg.subs) || [];
+    const cur = Math.min(agTele.step, def.steps.length - 1);
+    const now = document.querySelector(".ag-step-ai--loader .ag-lnow");
+    if (now) {
+      const total = def.steps.length;
+      const sig = [agTele.step, agTele.done].join("|");
+      if (now.dataset.sig !== sig) {
+        now.dataset.sig = sig;
+        now.innerHTML = agTele.done
+          ? `<span class="ag-lnow-k">All ${total} checks complete</span><span class="ag-lnow-t">Preparing your review…</span>`
+          : `<span class="ag-lnow-k">Now reading</span><span class="ag-lnow-v">${agTeleEsc(subs[cur] || def.steps[cur][0])}</span><span class="ag-lnow-t"><b data-ag-elapsed>0:00</b> elapsed · ${total - cur - 1} to go</span>`;
+        now.classList.remove("is-swap"); void now.offsetWidth; now.classList.add("is-swap");
+      }
+    }
+    const det = document.querySelector(".ag-step-ai--loader .ag-ldet");
+    if (det) {
+      const dh = def.steps.map(([nw, did], i) => {
+        const st = agTele.done || i < agTele.step ? "done" : i === agTele.step ? "active" : "todo";
+        return `<li class="is-${st}"><i>${st === "done" ? check : i + 1}</i><span class="ag-ldet-t"><b>${agTeleEsc(st === "done" ? did : nw)}</b><span>${agTeleEsc(subs[i] || "")}</span></span><em>${st === "done" ? "done" : st === "active" ? "working" : "queued"}</em></li>`;
+      }).join("");
+      const ol = `<ol>${dh}</ol>`;
+      if (det.dataset.sig !== ol) { det.dataset.sig = ol; det.innerHTML = ol; }
+    }
+  }
+  if (!window.__agLsBound) {
+    window.__agLsBound = true;
+    document.addEventListener("click", (ev) => {
+      const btn = ev.target.closest(".ag-ldet-btn");
+      if (!btn) return;
+      const det = btn.parentElement.querySelector(".ag-ldet");
+      const open = det.hidden;
+      det.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      btn.firstChild.textContent = open ? "Hide details" : "Show details";
+      btn.classList.toggle("is-open", open);
+      agFitLoaders();
+    });
+    setInterval(() => {
+      const el = document.querySelector("[data-ag-elapsed]");
+      if (!el || !agTele || !agTele.t0) return;
+      const sec = Math.floor((Date.now() - agTele.t0) / 1000);
+      el.textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+    }, 500);
   }
 
   function agShowStepAi(live, focus) {
