@@ -4685,9 +4685,11 @@ addScene((() => {
         rc.classList.remove('reading');
         /* the price chip rides back into its partner while the card tucks away */
         const slot = card.querySelector('.gp-slot');
-        tucks.push(c.fly(pc, slot, { html: `<span class="gp-fchip">${ic('tag')}</span>`, ms: 380, arc: 8 }).then(() => {
+        const tuck = c.fly(pc, slot, { html: `<span class="gp-fchip">${ic('tag')}</span>`, ms: 380, arc: 8 }).then(() => {
           card.classList.remove('open'); card.classList.add('rated');
-        }));
+        });
+        tuck.catch(() => {});   /* a tab switch mid-flight must not surface as an unhandled rejection */
+        tucks.push(tuck);
         await c.wait(40);
         rc.classList.remove('out');
         await c.wait(30);
