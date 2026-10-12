@@ -11578,11 +11578,11 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-telcard{
   --tel-ease:cubic-bezier(.22,1,.36,1);
   position:relative; flex:1 1 0; min-height:0; width:100%; margin:8px 0 0; padding:0; text-align:left;
-  display:flex; flex-direction:column; overflow:hidden; background:none; border:0; box-shadow:none;
+  display:flex; flex-direction:column; overflow:visible; background:none; border:0; box-shadow:none;
 }
 .ag-tel-orbit{ position:relative; flex:1 1 0; min-height:330px; --fx:34px; }
 .ag-tel-nav{
-  position:absolute; left:calc(var(--fx) - 11px); z-index:5; display:grid; place-items:center; width:22px; height:22px; margin:0; padding:0; cursor:pointer;
+  position:absolute; left:calc(100% - 22px); z-index:5; display:grid; place-items:center; width:22px; height:22px; margin:0; padding:0; cursor:pointer;
   border:0; border-radius:50%; background:none; color:#8b97ae;
   transition:transform 220ms var(--tel-ease), color 220ms, opacity 220ms;
 }
@@ -11591,8 +11591,8 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-tel-nav:hover:not(:disabled){ color:#2563eb; }
 .ag-tel-nav:disabled{ opacity:.25; cursor:default; }
 .ag-tel-nav:focus-visible, .ag-tel-ico:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }
-.ag-tel-track{ position:relative; width:100%; height:100%; overflow:hidden; user-select:none; }
-.ag-tel-path{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:0; }
+.ag-tel-track{ position:relative; width:100%; height:100%; overflow:visible; user-select:none; }
+.ag-tel-path{ display:none; position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:0; }
 .ag-tel-rail{ fill:none; stroke:url(#agTelRailG); stroke-width:1.25; stroke-linecap:round; }
 .ag-tel-icons{ position:absolute; inset:0; z-index:2; }
 .ag-tel-ico{
@@ -11622,7 +11622,7 @@ body.ag-app-ready .setup-layout .cl-overview{
   animation:ag-tel-spin 1.4s linear infinite;
 }
 @keyframes ag-tel-spin{ to{ transform:rotate(360deg); } }
-.ag-tel-cap{ position:absolute; left:70px; right:6px; top:50%; margin:0; padding:0; text-align:left; display:flex; flex-direction:column; gap:2px; transform:translateY(-50%); pointer-events:none; transition:top 700ms var(--tel-ease), left 700ms var(--tel-ease); }
+.ag-tel-cap{ position:absolute; left:16px; right:60px; top:50%; margin:0; padding:0; text-align:left; display:flex; flex-direction:column; gap:2px; transform:translateY(-50%); pointer-events:none; transition:top 700ms var(--tel-ease), left 700ms var(--tel-ease); }
 .ag-tel-cap > *{ animation:ag-tel-swap 420ms var(--tel-ease) both; }
 .ag-tel-kicker{ font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:500; letter-spacing:.09em; color:#8b97ae; }
 .ag-tel-title{ font-size:12.5px; line-height:1.3; font-weight:600; color:var(--cv-ink); }
@@ -11642,6 +11642,9 @@ body.ag-app-ready .setup-layout .cl-overview{
 .setup-layout .cl-detail .ag-actions > *, .setup-layout .cl-detail .ag-profile .kyc-footer > *{ pointer-events:auto; }
 
 .setup-layout .cl-overview .cl-rail-logout{ display:none !important; }
+
+.setup-layout .cl-overview{ overflow:visible !important; z-index:6; }
+.ag-tel-ico{ box-shadow:0 0 0 4px #f8fafd, 0 1px 2px rgba(15,23,42,.04); }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14254,11 +14257,11 @@ body.ag-app-ready .setup-layout .cl-overview{
     const track = el.querySelector(".ag-tel-track");
     const w = track.clientWidth || 180;
     const h = track.clientHeight || 320;
-    const fx = 34;
+    const fx = w;
     const pad = 46;
     const bow = 18;
     const gap = Math.min(64, (h - 2 * pad) / 6);
-    const xAt = (y) => { const t = (y - h / 2) / (h / 2 - pad); return fx + bow * (1 - Math.min(1, t * t)); };
+    const xAt = (y) => fx - 0.0036 * (y - h / 2) * (y - h / 2);
     const yAt = (i) => h / 2 + (i - m.pos) * gap;
     const pt = (i) => [xAt(yAt(i)), yAt(i)];
     const svg = el.querySelector(".ag-tel-path");
@@ -14271,7 +14274,7 @@ body.ag-app-ready .setup-layout .cl-overview{
     const cap = el.querySelector(".ag-tel-cap");
     const [fcx, fcy] = pt(m.pos);
     cap.style.top = fcy.toFixed(1) + "px";
-    cap.style.left = (fcx + 32).toFixed(1) + "px";
+    cap.style.left = "16px"; cap.style.right = (w - fcx + 30).toFixed(1) + "px";
     el.querySelectorAll(".ag-tel-ico").forEach((btn, i) => {
       const dd = i - m.pos;
       const ad = Math.abs(dd);
