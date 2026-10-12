@@ -8,7 +8,7 @@ A **clickable HTML prototype** of "agentic onboarding" for DigiConsent (a consen
 
 The user is a designer / product owner. They iterate by sending short, spoken-style feedback (often transcribed, with filler words) and by leaving **comments on the published artifacts**. They care about: fewer boxes, a single canvas look, professional / subtle / "intelligent" feel, smooth transitions, no overlap, correct alignment of animations, and the agent doing the heavy lifting while the user only reviews.
 
-## 2. Repo layout (branch `claude/bold-mccarthy-bls1vj`, repo `pranovreddy/AgenticSetup`)
+## 2. Repo layout (session 1 branch `claude/bold-mccarthy-bls1vj`; session 2 branch `claude/dazzling-wozniak-oqrxqs`; repo `pranovreddy/AgenticSetup`)
 
 | File | What it is |
 |---|---|
@@ -91,12 +91,55 @@ Brands and LOBs in review hold up the journey; templates in review do not; Team 
 - Walkthrough, return opening, logout confirmation and other requirement items exist from the original prototype but were not re-verified after the redesign.
 - Wake subscriptions for the Blob and Sidebar artifacts are not registered, so new comments on them do not wake a session automatically.
 
-## 8b. Latest state (end of this session)
+## 8b. Session 2 update (read this first; it supersedes older notes above where they conflict)
 
-- Latest published versions: Main v12, Blob v4, Sidebar v9. All three embed the same loader document (v35) and the same `AG_LOADER_BOX`:
-  `agreements [5,0,604,345]`, `kyc [120,3,710,306]`, `team [6,0,655,340]`, `brand [14,0,700,440]` (tall frame), `match [8,0,613,360]`, `gtm [14,0,712,340]`.
-- Most recent user requests, all done: sidebar telemetry layout matching the reference (blob, beam, arc, prev/next icons, chevrons); agent summary as a gradient wash at the top of the workspace; blob alignment in Team and GTM; summary first then full text in the sidebar version.
-- The very last thing asked before this handoff was only to produce and update this document. No change request is pending.
+Branch is now `claude/dazzling-wozniak-oqrxqs` (all session 2 work is pushed there; the older `claude/bold-mccarthy-bls1vj` holds session 1). Four prototypes live at the repo root, all single self-contained HTML files (~2 MB) built by appending override CSS blocks and JS to the same big file:
+
+| File | What it is | Published artifact |
+|---|---|---|
+| `agentic-setup.html` | v1 main (top Migration Manager bar) | https://claude.ai/artifact/Yb6WJetu4541wBjjH372YP |
+| `full-agentic-setup-blob.html` | Variation A blob dock | https://claude.ai/artifact/Aqrdou8ZTJxoWoiDaPyCDw |
+| `agentic-setup-sidebar.html` | Variation B, **now the "pills + pop-ups" version** (no sidebar bar any more) | https://claude.ai/artifact/U35bpo3CuUv3YJtUu3tsJS (comments reach the session) |
+| `agentic-setup-telemetry.html` | Copy of the sidebar version with **telemetry in the loader header and summaries on the page** | https://claude.ai/artifact/KASiXjMGtNJYSg9EZHqyTa (its comment URL form is `claude.ai/code/artifact/931609b2-...`; wake subscription failed to register, so comments must be sent into the session) |
+
+Update an artifact by calling `Artifact` with the same file path (no `icon`). Reply to and resolve comment threads with `ArtifactComments` (reply text must end with the Claude Code footer).
+
+### Current flow (both sidebar and telemetry versions)
+1. Opening cover ("I'm fetching information...") then straight to the **Agreements gate**: a pop-up over a blurred, dimmed app (body class `ag-gate`). No loader, no title. Blue-tinted top gradient, centred glossy hero ("Review and accept"), centred segmented tabs (Terms / Privacy), thin reading-progress line, "In short" summary text, numbered clauses, Accept button (disabled until scrolled to end). Logo, user and steps pills are hidden here.
+2. **"What happens next"** screen (`#agNextUp`, `agNextUpShow`): numbered timeline of the 5 areas, "Nothing goes live until you accept it", Continue. Pills visible from here on.
+3. Business profile (KYC) loader, then the profile form (no summary for KYC, it is a form).
+4. Team, Brands and LOBs, GTM partners, Templates each: loader, then a **summary**, then Approve/Skip, then a **summary success state**, then straight into the next loader (the detail step is never shown in between). "View details" opens the full step; "View summary" pill (top right) returns to the summary. Skip exists only for Team ("Do it later") and Templates ("Skip for now"). Brands/LOBs cannot be skipped (requirements say it holds up the journey).
+5. Kick off migration keeps its full page (old success/handoff screens).
+
+Key code anchors in the files (search these names): `agSummaryData`, `agSumTable` (telemetry only), `agSummarySync`, `agSummaryApprove`, `agSummarySkip`, `agSumSuccessData`, `agSumFlowUntil`, `successAutoArm`, `AG_DONE_TOAST`, `agDoneToastShow`, `agNextUpShow`, `AG_NEXTUP`, `agGateSync`, `AG_LOADER_WHY` + `agLoaderNote` + `agLsRender` (loader copy/stepper, telemetry file), `rtBuild/rtLayout/rtRender` (ported Home reference agent card, now unused in the UI), `AG_TEL_ORDER` (6 steps, agreements removed), `AG_TEL_CARD`, `AG_TELE`.
+
+### Sidebar version specifics
+- Left side is three floating glass pills, not a bar: logo mark in a circle + user avatar with a progress ring (top), steps pill (vertical, centred, icons only, names on hover, thin progress line, green ticks). `.setup-layout .cl-overview` is only a container; its logo/user/footer are `position:fixed`.
+- Summary = pop-up card over the blurred details page (dark pill CTA was rejected, CTA is blue), rows in the trendy list style from the user's reference image (large pastel avatars turned blue shades, verified tick, grey email/mobile, pill on the right).
+- Agent telemetry card (arc, beam, blob, log) was removed from the rail at the user's request (see Telemetry version).
+
+### Telemetry version specifics
+- No right-hand panel any more (it was built, matched the Home reference, then the user asked to remove it). Instead, each loader has a header block at the top: title, one-sentence "what/why", a **dynamic stepper** (finished steps = ticks, current step expands into a labelled pill with spinner, others numbered dots joined by lines), a "Now reading <source> · elapsed · N to go" line, and a "Show details" toggle that opens a 2-column list of all steps with their source and state. The animation scales to the space below (`agFitLoaders` subtracts `.ag-ltop` height). There is no "Next:" line.
+- Summaries are **on the page** (fixed layer on `document.body`, z-index 50, left padding 134px to clear the pills): compact header bar (tag, source chips, headline, next-step line, 2 big numbers), then ONE white table (column headers, hairline rows, footer with count, View details, optional skip, primary button). Mounted on the body, not inside `.cl-detail-card`, because `render()` rebuilds the card and would delete it.
+
+### Design lessons from the user's feedback (do not repeat these mistakes)
+- Too many colours (green, pink, purple, maroon, orange) looked childish: use **shades of blue only**; green only for the tiny success tick.
+- Too many boxes and cards: prefer hairlines, one surface, one gradient washing down from the top edge. Do not put a card or a different background behind a summary; do not make a second card around the same content.
+- Heavy blue header bands and strong glassmorphism felt "too much"; the user asked to *reduce* glass behind pop-ups. Backdrops are a plain dim plus light blur. Glass is only for the small left pills and the "View summary" pill.
+- Do not invent a stats-tile row, branching trails, or decorative stat cards; they were rejected as "too much" / "lacking character". What worked: trendy list rows (see reference image style), centred glossy hero icon, large numbers used sparingly.
+- Text sizes must match the rest of UI: loader animations are drawn at natural size (max scale 1), status pill ~12.5px.
+- The user does not like explanatory text sitting in the same place twice (the stepper and the pill under the blob said the same thing; hence the "Now reading" line and the details list).
+- Never claim something was checked unless a screenshot was viewed. Always state what was not tested.
+
+### Things still unverified / open ideas
+- Loaders other than the business-profile one were not re-viewed after the header/stepper change; narrow window widths untested; the "View summary" pill in the telemetry version's table layout was not re-tested; the in-page summary was seen for Team, Brands, GTM and Templates but only the Team one after the compact header.
+- The Brands/GTM/Templates detail pages still contain many boxes (original prototype), and GTM "Edit partners allocation" was not touched.
+- Kick off migration still has no loader or telemetry.
+- Telemetry artifact has no wake subscription (mint_failed); retry `ArtifactComments` action `watch` with its url if wanted.
+- The user may continue this work on another account (possibly with Opus). Everything needed is in this folder and the repo root files.
+
+### How to test (Playwright, headless Chromium)
+Scripts used this session are in `references/tools/session2/`. They open the file with `file://`, wait for `.ag-sec` (agreements), scroll `.ag-agree` to the bottom and click `#agAcceptBtn` twice, click `[data-nextup-go]`, wait for the profile form (`.ag-profile input[type=checkbox]`), tick it and click Submit, then wait for `#agSummary` and click `[data-sum-go]` / `[data-sum-skip]`. Takes 60-120 s per run because of the opening cover and loaders. Use `--no-sandbox`. Do not run two browsers at once on slow steps.
 
 ## 9. User preferences for how to respond
 
