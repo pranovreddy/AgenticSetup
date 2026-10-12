@@ -12075,6 +12075,12 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
 .ag-trace .ag-sum-legend{ margin-left:4px; }
 @media (prefers-reduced-motion:reduce){ .ag-sum, .ag-sum-card, .ag-sum-reopen, body.ag-sum-landing .cl-detail-card{ animation:none !important; transition:none !important; } }
 
+.ag-trace-main{ flex-wrap:wrap; row-gap:10px; }
+.ag-trace-main .ag-sum-who{ flex:0 0 172px; min-width:0; }
+.ag-trace-facts{ flex:1 1 380px; gap:20px; }
+.ag-trace-facts dd{ overflow:visible; text-overflow:clip; }
+.ag-trace-main .ag-sum-role{ margin-left:auto; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
