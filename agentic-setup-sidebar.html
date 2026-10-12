@@ -11627,6 +11627,35 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-tel-log .is-active .ag-tel-lbl{ color:var(--cv-ink); font-weight:620; }
 .ag-tel-sub{ font-size:12px; line-height:1.4; color:#98a3bb; margin-top:1px; }
 @media (prefers-reduced-motion:reduce){ .ag-telcard *{ animation:none !important; } }
+
+/* ---- rail v2: only the agent telemetry, directly on the nav ---- */
+.setup-layout .cl-overview .stages{ display:none !important; }
+.setup-layout .cl-overview .cl-overview-head{ display:none; }
+.ag-telcard{
+  flex:1 1 0; min-height:0; width:100%; margin:0; padding:20px 24px 12px;
+  border:0; border-radius:0; background:none; box-shadow:none; overflow-x:hidden; overflow-y:auto; scrollbar-width:none;
+}
+.ag-telcard::-webkit-scrollbar{ display:none; }
+.ag-tel-live, .ag-tel-idle{ top:22px; right:24px; }
+.ag-tel-viz{ margin:0 -24px 14px; border-bottom:0; height:132px; }
+.ag-tel-body{ padding:0; }
+.ag-tel-seg{ display:flex; gap:4px; margin:0 0 12px; }
+.ag-tel-seg i{ flex:1; height:3px; border-radius:3px; background:#dfe6f4; transition:background 400ms var(--cv-ease); }
+.ag-tel-seg i.is-done{ background:#2563eb; }
+.ag-tel-seg i.is-now{ background:linear-gradient(90deg,#2563eb,#9db8f6); animation:ag-seg 1.6s ease-in-out infinite alternate; }
+@keyframes ag-seg{ from{ opacity:.55; } to{ opacity:1; } }
+.ag-tel-title{ font-size:17px; margin-bottom:14px; }
+.ag-tel-lbl{ font-size:14px; }
+.ag-tel-log li{ min-width:0; }
+.ag-tel-txt{ overflow-wrap:anywhere; }
+@media (max-height:760px){
+  .ag-telcard{ padding-top:12px; }
+  .ag-tel-viz{ height:122px; margin-bottom:8px; }
+  .ag-tel-orb{ transform:scale(.78); transform-origin:50% 0; top:0 !important; }
+  .ag-tel-core{ top:23px !important; }
+  .ag-tel-log{ gap:9px; }
+  .ag-tel-title{ margin-bottom:10px; }
+}
 /* ---- Motion: one calm swap between steps */
 .shell:has(.setup-layout) .cl-detail-card.is-swap-out{
   opacity:0; transform:translateY(4px); filter:blur(2px);
@@ -14186,6 +14215,7 @@ body.ag-app-ready .setup-layout .cl-overview{
       </div>
       <div class="ag-tel-body">
         <p class="ag-tel-kicker">Step ${m.idx} of ${AG_TEL_ORDER.length}</p>
+        <div class="ag-tel-seg" aria-hidden="true">${AG_TEL_ORDER.map((k, i) => `<i class="${agStepIsComplete(k) ? "is-done" : i + 1 === m.idx ? "is-now" : ""}"></i>`).join("")}</div>
         <h4 class="ag-tel-title">${agTeleEsc(m.cfg.title)}</h4>
         ${items ? `<ol class="ag-tel-log">${items}</ol>` : ""}
       </div>`;
