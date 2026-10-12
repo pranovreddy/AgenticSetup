@@ -12330,6 +12330,117 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
 .ag-sum-card.is-success .ag-sum-hero{ position:relative; }
 @media (max-width:980px){ .ag-sum-layout{ grid-template-columns:1fr; gap:28px; padding-top:76px; } .ag-sum-aside{ position:static; } }
 
+.rt-card{
+  --tel-ease:cubic-bezier(.22,1,.36,1);
+  position:relative; flex:1 1 0; min-height:0; width:100%; margin:0; padding:0; text-align:left;
+  display:flex; flex-direction:column; overflow:hidden; background:none; border:0; box-shadow:none;
+}
+.rt-live, .rt-idle{
+  position:absolute; top:12px; right:16px; z-index:6; display:inline-flex; align-items:center; gap:5px;
+  font-family:"Geist Mono", ui-monospace, monospace; font-size:9.5px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
+}
+.rt-live{ color:#118252; } .rt-idle{ color:#8b97ae; }
+.rt-live i, .rt-idle i{ width:5px; height:5px; border-radius:50%; background:currentColor; }
+.rt-live i{ background:#16a34a; animation:rt-pulse 1.9s ease-out infinite; }
+@keyframes rt-pulse{ 0%{ box-shadow:0 0 0 0 rgba(22,163,74,.45); } 70%,100%{ box-shadow:0 0 0 6px rgba(22,163,74,0); } }
+.rt-orbit{ position:relative; flex:none; --hub-y:50px; }
+.rt-nav{
+  position:absolute; top:calc(var(--hub-y) - 14px); z-index:5; display:grid; place-items:center; width:30px; height:30px; margin:0; padding:0; cursor:pointer;
+  border:1px solid rgba(255,255,255,.8); border-radius:50%; background:rgba(255,255,255,.85); color:#5b6b86;
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 6px 16px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.85);
+  transition:transform 220ms var(--tel-ease), color 220ms, border-color 220ms, opacity 220ms;
+}
+.rt-nav.is-prev{ left:10px; transform:scaleX(-1); } .rt-nav.is-next{ right:10px; }
+.rt-nav:hover:not(:disabled){ color:#2563eb; border-color:rgba(37,99,235,.3); }
+.rt-nav.is-prev:hover:not(:disabled){ transform:scaleX(-1) scale(1.06); } .rt-nav.is-next:hover:not(:disabled){ transform:scale(1.06); }
+.rt-nav:disabled{ opacity:.28; cursor:default; box-shadow:none; }
+.rt-nav:focus-visible, .rt-ico:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }
+.rt-track{
+  position:relative; width:100%; height:196px; overflow:hidden; user-select:none;
+  background:radial-gradient(40% 44% at 50% var(--hub-y), rgba(96,150,255,.16), transparent 72%), radial-gradient(70% 36% at 50% 100%, rgba(37,99,235,.06), transparent 70%);
+}
+.rt-path, .rt-beam{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+.rt-path{ z-index:0; } .rt-beam{ z-index:1; opacity:.6; transition:opacity 500ms; }
+.rt-card.is-working .rt-beam{ opacity:1; }
+.rt-rail{ fill:none; stroke:url(#rtRailG); stroke-width:1.25; stroke-linecap:round; }
+.rt-pool{ fill:url(#rtPoolG); } .rt-cone{ fill:url(#rtBeamG); filter:blur(1.2px); }
+.rt-hub{ position:absolute; left:50%; top:var(--hub-y); z-index:3; width:80px; height:80px; transform:translate(-50%,-50%); pointer-events:none; }
+.rt-hub::before{ content:""; position:absolute; inset:-14px; border-radius:50%; background:radial-gradient(circle, rgba(96,150,255,.22), transparent 66%); z-index:-1; }
+.rt-blob{ position:relative; display:block; width:80px; height:80px; filter:drop-shadow(0 10px 24px rgba(37,99,235,.28)); }
+.rt-orb{ display:block; width:80px; height:80px; }
+.rt-blob::before{ content:""; position:absolute; inset:-6px; border-radius:50%; border:1px solid rgba(37,99,235,.14); opacity:.7; pointer-events:none; }
+.rt-card.is-working .rt-blob::before{ animation:rt-ring 1.8s ease-out infinite; }
+@keyframes rt-ring{ 0%{ transform:scale(.92); opacity:.55; } 70%,100%{ transform:scale(1.08); opacity:0; } }
+.rt-card.is-working .rt-blob{ animation:rt-float 2.4s ease-in-out infinite; }
+@keyframes rt-float{ 50%{ transform:translateY(-2px); } }
+.rt-core.agent-core{ width:28px; height:28px; box-shadow:0 0 0 3px rgba(255,255,255,.92), 0 4px 12px rgba(37,99,235,.32); }
+.rt-core .ai-mark{ width:16px; height:16px; background:none; box-shadow:none; border-radius:0; padding:0; }
+.rt-card.is-working .rt-core{ animation:rt-breathe 1.4s ease-in-out infinite; }
+@keyframes rt-breathe{ 50%{ filter:drop-shadow(0 0 8px rgba(59,130,246,.6)); } }
+.rt-icons{ position:absolute; inset:0; z-index:2; }
+.rt-ico{
+  position:absolute; left:0; top:0; display:grid; place-items:center; width:46px; height:46px; margin:0; padding:0; cursor:pointer;
+  border:1px solid #dbe3ef; border-radius:50%; background:linear-gradient(180deg,#fff,#f5f8fc); color:#6b7a94;
+  opacity:var(--arc-o,1); transform:translate3d(-50%,-50%,0);
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 6px 14px rgba(15,23,42,.06), inset 0 1px 0 #fff;
+  transition:transform 700ms var(--tel-ease), opacity 500ms var(--tel-ease), color 260ms, border-color 260ms;
+}
+.rt-ico::before{
+  content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(155deg,#5b95ff 0%,#2563eb 52%,#1d4ed8 100%); box-shadow:0 12px 26px rgba(37,99,235,.34), inset 0 1px 0 rgba(255,255,255,.35);
+  opacity:var(--arc-f,0); transition:opacity 500ms var(--tel-ease);
+}
+.rt-ico svg{ position:relative; z-index:1; width:17px; height:17px; }
+.rt-ico.is-focus{ color:#fff; border-color:transparent; }
+.rt-ico:hover:not(:disabled):not(.is-focus){ border-color:#a9c2f7; color:#2563eb; }
+.rt-ico:disabled{ cursor:not-allowed; opacity:calc(var(--arc-o,1) * .55); background:#f6f8fb; border-style:dashed; border-color:#d5deea; color:#a6b1c4; box-shadow:none; }
+.rt-ico.is-done:not(.is-focus){ color:#2563eb; border-color:#cfdcf7; }
+.rt-badge{ position:absolute; z-index:2; right:-3px; bottom:-3px; display:none; place-items:center; width:16px; height:16px; border-radius:50%; background:#16a34a; color:#fff; box-shadow:0 0 0 2px #fff; }
+.rt-ico.is-done .rt-badge{ display:grid; }
+.rt-badge svg{ width:9px !important; height:9px !important; stroke-width:3; }
+.rt-ico.is-active::after{
+  content:""; position:absolute; inset:-6px; border-radius:50%; padding:1.5px; pointer-events:none;
+  background:conic-gradient(from 0deg, rgba(37,99,235,0), rgba(37,99,235,.9) 300deg, rgba(37,99,235,0));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:rt-spin 1.4s linear infinite;
+}
+@keyframes rt-spin{ to{ transform:rotate(360deg); } }
+.rt-panel{ flex:1 1 0; min-height:0; margin:0 20px; padding:12px 0 14px; border-top:1px solid #eef2f8; overflow-y:auto; scrollbar-width:none; }
+.rt-panel::-webkit-scrollbar{ display:none; }
+.rt-panel.is-swap > *{ animation:rt-swap 420ms var(--tel-ease) both; }
+@keyframes rt-swap{ from{ opacity:0; transform:translateY(6px); filter:blur(3px); } to{ opacity:1; transform:none; filter:none; } }
+.rt-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.rt-titles{ min-width:0; }
+.rt-kicker{ margin:0 0 4px; font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:500; letter-spacing:.09em; text-transform:uppercase; color:#8b97ae; }
+.rt-title{ margin:0; font-size:16px; line-height:1.3; font-weight:650; letter-spacing:-.2px; color:var(--cv-ink); }
+.rt-thinking{ flex:none; display:inline-flex; align-items:center; gap:3px; height:18px; padding:0 8px; border-radius:99px; background:#eef4ff; box-shadow:inset 0 0 0 1px rgba(37,99,235,.12); }
+.rt-thinking i{ width:4px; height:4px; border-radius:50%; background:#2563eb; animation:rt-dot 1.2s ease-in-out infinite; }
+.rt-thinking i:nth-child(2){ animation-delay:.15s; } .rt-thinking i:nth-child(3){ animation-delay:.3s; }
+@keyframes rt-dot{ 0%,80%,100%{ opacity:.25; transform:translateY(0); } 40%{ opacity:1; transform:translateY(-2px); } }
+.rt-log{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+.rt-log li{ position:relative; display:flex; gap:10px; align-items:flex-start; min-width:0; }
+.rt-log li:not(:last-child)::before{ content:""; position:absolute; left:10px; top:24px; bottom:-14px; width:1.5px; background:linear-gradient(180deg,#c9d8fb,#e6edf9); }
+.rt-dot{ position:relative; flex:none; width:21px; height:21px; border-radius:50%; display:grid; place-items:center; font-style:normal; }
+.rt-log .is-done .rt-dot{ background:#e8efff; color:#2563eb; }
+.rt-log .is-active .rt-dot{ border:2px solid #cfdcf8; border-top-color:#2563eb; animation:rt-spin 900ms linear infinite; }
+.rt-log .is-active .rt-dot b{ width:7px; height:7px; border-radius:50%; background:#2563eb; animation:rt-spin 900ms linear infinite reverse; }
+.rt-txt{ display:flex; flex-direction:column; min-width:0; overflow-wrap:anywhere; }
+.rt-lbl{ font-size:13.5px; line-height:1.35; color:#4a5878; }
+.rt-log .is-active .rt-lbl{ color:var(--cv-ink); font-weight:620; }
+.rt-sub{ font-size:12px; line-height:1.4; color:#98a3bb; margin-top:1px; }
+@media (max-height:760px){ .rt-track{ height:176px; } }
+@media (prefers-reduced-motion:reduce){ .rt-card *{ animation:none !important; transition:none !important; } }
+
+/* ---- Reference agent card inside the right panel ---- */
+.ag-tp-card{ padding:0 !important; width:300px !important; border-radius:22px !important; background:radial-gradient(120% 70% at 50% -10%, rgba(59,130,246,.08), transparent 55%), #fff !important; border:1px solid #e1e9f8 !important; box-shadow:0 24px 60px rgba(30,41,80,.14), 0 2px 8px rgba(30,41,80,.05) !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; overflow:hidden !important; }
+.ag-tp-min{ position:absolute; top:10px; left:10px; z-index:7; }
+.rt-card{ --tel-ease:cubic-bezier(.22,1,.36,1); flex:none !important; min-height:0; }
+.rt-live, .rt-idle{ top:12px !important; right:16px !important; }
+.rt-track{ height:196px; }
+.rt-card{ display:block !important; height:auto !important; overflow:visible !important; padding-bottom:6px; }
+.rt-panel{ flex:none !important; margin:0 18px !important; max-height:none; min-height:0; overflow:visible !important; }
+.rt-min{ display:none; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -15224,9 +15335,164 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
     el.querySelector(".ag-tel-title").textContent = m.cfg.title;
   }
 
-  /* ---- Live agent telemetry on the right: opens while the agent works, tucks away when there is something to review ---- */
+  /* ---- Live agent telemetry on the right (the Home reference agent card): opens while the agent works, tucks away when there is something to review ---- */
+  let rtEl = null;
+  let rtRaf = 0;
+  let rtSig = "";
+  function rtBuild() {
+    const el = document.createElement("section");
+    el.id = "agTelCard";
+    el.className = "rt-card";
+    el.setAttribute("aria-label", "Agent activity");
+    const chev = `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5l4.5 4.5L6 12.5"/></svg>`;
+    el.innerHTML = `
+      <span class="rt-live" hidden><i></i>live</span>
+      <span class="rt-idle"><i></i>ready</span>
+      <div class="rt-orbit">
+        <button type="button" class="rt-nav is-prev" data-tel-nav="-1" aria-label="Previous step">${chev}</button>
+        <div class="rt-track" role="tablist" aria-label="Setup steps">
+          <svg class="rt-path" aria-hidden="true"><defs>
+            <linearGradient id="rtRailG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="300" y2="0"><stop offset="0" stop-color="#b9c9e8" stop-opacity="0"/><stop offset=".22" stop-color="#b9c9e8" stop-opacity=".9"/><stop offset=".5" stop-color="#93b2f2"/><stop offset=".78" stop-color="#b9c9e8" stop-opacity=".9"/><stop offset="1" stop-color="#b9c9e8" stop-opacity="0"/></linearGradient>
+          </defs><path class="rt-rail"></path></svg>
+          <svg class="rt-beam" aria-hidden="true"><defs>
+            <linearGradient id="rtBeamG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9cc2ff" stop-opacity=".92"/><stop offset=".42" stop-color="#3b82f6" stop-opacity=".5"/><stop offset="1" stop-color="#2563eb" stop-opacity=".12"/></linearGradient>
+            <radialGradient id="rtPoolG"><stop offset="0" stop-color="#60a5fa" stop-opacity=".5"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></radialGradient>
+          </defs><ellipse class="rt-pool"></ellipse><polygon class="rt-cone" points=""></polygon></svg>
+          <div class="rt-hub" aria-hidden="true"><span class="rt-blob"><canvas class="rt-orb" width="80" height="80"></canvas><span class="agent-core rt-core">${bootAiMark()}</span></span></div>
+          <div class="rt-icons">${AG_TEL_ORDER.map((k) => `<button type="button" class="rt-ico" role="tab" data-tel-go="${k}" aria-label="${agTeleEsc(AG_TEL_CARD[k].title)}">${I(AG_TEL_CARD[k].icon)}<i class="rt-badge">${I("check")}</i></button>`).join("")}</div>
+        </div>
+        <button type="button" class="rt-nav is-next" data-tel-nav="1" aria-label="Next step">${chev}</button>
+      </div>
+      <div class="rt-panel"></div>`;
+    el.addEventListener("click", (ev) => {
+      const nav = ev.target.closest("[data-tel-nav]");
+      const go = ev.target.closest("[data-tel-go]");
+      const m = agTelCardModel();
+      if (!m) return;
+      let key = null;
+      if (nav) key = AG_TEL_ORDER[m.pos + Number(nav.dataset.telNav)];
+      else if (go) key = go.dataset.telGo;
+      if (!key || key === m.key || !agTelViewable(key)) return;
+      agSelect(key);
+    });
+    new ResizeObserver(() => rtLayout()).observe(el);
+    return el;
+  }
+
+  function rtLayout() {
+    const el = rtEl;
+    if (!el || !el.isConnected) return;
+    const m = agTelCardModel();
+    if (!m) return;
+    const track = el.querySelector(".rt-track");
+    const w = track.clientWidth || 300;
+    const h = track.clientHeight || 196;
+    const cx = w / 2;
+    const hubY = 50;
+    const focusY = h - 42;
+    const STEP = AG_TEL_ARC_STEP;
+    const rx = Math.max(140, w * 0.62);
+    const ry = 24 / (1 - Math.cos(STEP));
+    const cy = focusY - ry;
+    const pt = (th) => [cx + rx * Math.cos(th), cy + ry * Math.sin(th)];
+    track.style.setProperty("--hub-y", hubY + "px");
+    el.querySelector(".rt-orbit").style.setProperty("--hub-y", hubY + "px");
+    const svg = el.querySelector(".rt-path");
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    el.querySelector("#rtRailG").setAttribute("x2", String(w));
+    let d = "";
+    for (let k = 0; k <= 72; k++) { const [x, y] = pt(Math.PI - Math.PI * (k / 72)); d += (k ? " L " : "M ") + x.toFixed(1) + " " + y.toFixed(1); }
+    el.querySelector(".rt-rail").setAttribute("d", d);
+    el.querySelectorAll(".rt-ico").forEach((btn, i) => {
+      const dd = i - m.pos;
+      const ad = Math.abs(dd);
+      const [x, y] = pt(Math.PI / 2 - dd * STEP);
+      const s = Math.max(0.66, 1 - 0.2 * ad);
+      const o = Math.max(0, Math.min(1, 1 - Math.max(0, ad - 0.95) / 0.65));
+      const key = AG_TEL_ORDER[i];
+      const locked = !agTelViewable(key) && i !== m.pos;
+      btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${s.toFixed(3)})`;
+      btn.style.setProperty("--arc-o", o.toFixed(3));
+      btn.style.setProperty("--arc-f", ad < 0.5 ? "1" : "0");
+      btn.style.zIndex = String(10 - Math.round(ad * 3));
+      btn.style.visibility = o > 0.02 ? "visible" : "hidden";
+      btn.classList.toggle("is-focus", i === m.pos);
+      btn.classList.toggle("is-active", i === m.pos && m.working);
+      btn.classList.toggle("is-done", agStepIsComplete(key));
+      btn.disabled = locked;
+      btn.setAttribute("aria-selected", i === m.pos ? "true" : "false");
+    });
+    const beam = el.querySelector(".rt-beam");
+    beam.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const top = hubY + 10;
+    const bot = focusY - 20;
+    beam.querySelector(".rt-cone").setAttribute("points", [[cx - 7, top], [cx + 7, top], [cx + 22, bot], [cx - 22, bot]].map(([a, b]) => `${a.toFixed(1)},${b.toFixed(1)}`).join(" "));
+    const grad = beam.querySelector("#rtBeamG");
+    grad.setAttribute("x1", cx.toFixed(1)); grad.setAttribute("x2", cx.toFixed(1)); grad.setAttribute("y1", String(top)); grad.setAttribute("y2", String(bot));
+    const pool = beam.querySelector(".rt-pool");
+    pool.setAttribute("cx", cx.toFixed(1)); pool.setAttribute("cy", String(focusY)); pool.setAttribute("rx", "46"); pool.setAttribute("ry", "30");
+    const prev = el.querySelector(".is-prev");
+    const next = el.querySelector(".is-next");
+    const pk = AG_TEL_ORDER[m.pos - 1];
+    const nk = AG_TEL_ORDER[m.pos + 1];
+    prev.disabled = !pk || !agTelViewable(pk);
+    next.disabled = !nk || !agTelViewable(nk);
+  }
+
+  function rtRender() {
+    const host = document.getElementById("rtHost");
+    if (!host) return;
+    const m = agTelCardModel();
+    if (!m) return;
+    let fresh = false;
+    if (!rtEl) { rtEl = rtBuild(); fresh = true; }
+    if (rtEl.parentElement !== host) host.appendChild(rtEl);
+    const el = rtEl;
+    el.classList.toggle("is-working", m.working);
+    el.querySelector(".rt-live").hidden = !m.working;
+    const idle = el.querySelector(".rt-idle");
+    idle.hidden = m.working;
+    idle.lastChild.textContent = m.complete ? "done" : "ready";
+    rtLayout();
+    const check = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
+    const items = m.def ? m.def.steps.map(([now, did], i) => {
+      if (i > m.doneUpTo) return "";
+      const on = m.working && i === m.active;
+      const sub = !on && m.cfg.subs[i] ? `<span class="rt-sub">${agTeleEsc(m.cfg.subs[i])}</span>` : "";
+      return `<li class="${on ? "is-active" : "is-done"}"><i class="rt-dot">${on ? "<b></b>" : check}</i><span class="rt-txt"><span class="rt-lbl">${agTeleEsc(on ? now : did)}</span>${sub}</span></li>`;
+    }).join("") : "";
+    const sig = [m.key, m.working, m.active, m.complete].join("|");
+    if (sig !== rtSig) {
+      rtSig = sig;
+      const panel = el.querySelector(".rt-panel");
+      panel.innerHTML = `
+        <div class="rt-head">
+          <div class="rt-titles"><p class="rt-kicker">Step ${m.pos + 1} of ${AG_TEL_ORDER.length}</p><h4 class="rt-title">${agTeleEsc(m.cfg.title)}</h4></div>
+          ${m.working ? `<span class="rt-thinking" aria-hidden="true"><i></i><i></i><i></i></span>` : ""}
+        </div>
+        ${items ? `<ol class="rt-log">${items}</ol>` : ""}`;
+      panel.classList.remove("is-swap"); void panel.offsetWidth; panel.classList.add("is-swap");
+    }
+    if (fresh) rtOrb(el);
+  }
+
+  function rtOrb(card) {
+    cancelAnimationFrame(rtRaf);
+    const canvas = card.querySelector(".rt-orb");
+    if (!canvas) return;
+    const paint = sphereCanvas(canvas, 80, 240, 0.85);
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let rotY = 0.4;
+    const frame = () => {
+      const working = card.classList.contains("is-working");
+      rotY += working ? 0.03 : 0.008;
+      paint(rotY, 0.55, 22 + (working ? Math.sin(performance.now() / 300) * 0.9 : 0), 1);
+      if (!reduce) rtRaf = requestAnimationFrame(frame);
+    };
+    frame();
+  }
+
   let agTpEl = null;
-  let agTpRaf = 0;
   let agTpTimer = 0;
   let agTpSig = "";
   let agTpMode = "";
@@ -15236,27 +15502,10 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
     el.id = "agTelPanel";
     el.className = "ag-tp is-hidden";
     el.innerHTML = `<button type="button" class="ag-tp-tab" aria-label="Show agent activity"><i></i><span>Agent</span></button>
-      <section class="ag-tp-card" aria-label="Agent activity" aria-live="polite">
-        <header class="ag-tp-top"><span class="ag-tp-live"><i></i><b>live</b></span><span class="ag-tp-idle"><i></i><b>done</b></span><button type="button" class="ag-tp-min" aria-label="Minimise"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5l4.5 4.5L6 12.5"/></svg></button></header>
-        <div class="ag-tp-stage"><span class="ag-tp-blob"><canvas class="ag-tp-orb" width="80" height="80"></canvas><span class="agent-core ag-tp-core">${bootAiMark()}</span></span></div>
-        <p class="ag-tp-kicker"></p>
-        <h4 class="ag-tp-title"></h4>
-        <ol class="ag-tp-log"></ol>
-      </section>`;
+      <div class="ag-tp-card"><button type="button" class="ag-tp-min" aria-label="Minimise"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5l4.5 4.5L6 12.5"/></svg></button><div id="rtHost"></div></div>`;
     el.querySelector(".ag-tp-tab").addEventListener("click", () => { agTpUser = "open"; agTelPanelRender(); });
     el.querySelector(".ag-tp-min").addEventListener("click", () => { agTpUser = "min"; agTelPanelRender(); });
     document.body.appendChild(el);
-    const canvas = el.querySelector(".ag-tp-orb");
-    const paint = sphereCanvas(canvas, 80, 240, 0.85);
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let rot = 0.4;
-    const frame = () => {
-      const working = el.classList.contains("is-working");
-      rot += working ? 0.03 : 0.008;
-      paint(rot, 0.55, 22 + (working ? Math.sin(performance.now() / 300) * 0.9 : 0), 1);
-      if (!reduce) agTpRaf = requestAnimationFrame(frame);
-    };
-    frame();
     return el;
   }
   function agTelPanelRender() {
@@ -15265,28 +15514,15 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
     const blocked = document.body.classList.contains("ag-gate") || !!document.getElementById("agNextUp") || !!document.querySelector("#agSummary:not(.is-leaving)") || !document.querySelector(".setup-layout") || document.body.classList.contains("ag-greeting");
     const t = agTele;
     if (!t || blocked) { el.className = "ag-tp is-hidden"; agTpMode = "hidden"; return; }
-    const cfg = AG_TEL_CARD[t.focus];
-    const def = AG_TELE[t.id];
     const working = !t.done;
+    rtRender();
     const sig = [t.id, t.step, t.done].join("|");
     if (sig !== agTpSig) {
       agTpSig = sig;
       agTpUser = "";
       clearTimeout(agTpTimer);
-      if (t.done) agTpTimer = setTimeout(() => { agTpUser = agTpUser || ""; agTpMode = "min"; agTelPanelRender(); }, 2200);
-      const check = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
-      const last = t.done ? def.steps.length - 1 : t.step;
-      const items = def.steps.map(([now, did], i) => {
-        if (i > last) return "";
-        const on = working && i === t.step;
-        const sub = !on && cfg && cfg.subs[i] ? `<span class="ag-tp-sub">${agTeleEsc(cfg.subs[i])}</span>` : "";
-        return `<li class="${on ? "is-active" : "is-done"}"><i class="ag-tp-dot">${on ? "<b></b>" : check}</i><span class="ag-tp-txt"><span class="ag-tp-lbl">${agTeleEsc(on ? now : did)}</span>${sub}</span></li>`;
-      }).join("");
-      el.querySelector(".ag-tp-kicker").textContent = working ? "Migration Manager is working" : "Migration Manager is ready";
-      el.querySelector(".ag-tp-title").textContent = cfg ? cfg.title : "";
-      el.querySelector(".ag-tp-log").innerHTML = items;
+      if (t.done) agTpTimer = setTimeout(() => { agTpMode = "min"; agTelPanelRender(); }, 2600);
     }
-    el.classList.toggle("is-working", working);
     const mode = agTpUser || (working ? "open" : (agTpMode === "min" ? "min" : "open"));
     agTpMode = mode;
     el.className = `ag-tp is-${mode}${working ? " is-working" : ""}${t.done ? " is-done" : ""}`;
