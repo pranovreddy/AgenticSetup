@@ -11677,24 +11677,27 @@ body.ag-app-ready .setup-layout .cl-overview{
 @media (prefers-reduced-motion:reduce){ .ag-telcard *{ animation:none !important; transition:none !important; } }
 
 
-/* ---- Agent feedback: a quiet, tinted strip at the top of the workspace ---- */
-.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic.is-review{
-  margin:12px 32px 2px !important; width:auto !important; padding:10px 18px 10px 14px !important; border-radius:14px;
-  background:linear-gradient(90deg, rgba(37,99,235,.075), rgba(37,99,235,.025) 70%, rgba(37,99,235,0)) !important;
-  border:1px solid rgba(37,99,235,.16) !important; box-shadow:none !important;
-  overflow:hidden; animation:rv-in 520ms var(--cv-ease) both;
+/* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
+  margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
+  background:
+    radial-gradient(60% 120% at 12% 0%, rgba(59,130,246,.20), transparent 70%),
+    radial-gradient(50% 110% at 72% -10%, rgba(139,112,255,.12), transparent 70%),
+    linear-gradient(180deg, rgba(37,99,235,.09) 0%, rgba(37,99,235,.04) 55%, rgba(37,99,235,0) 100%) !important;
+  pointer-events:none;
 }
-@keyframes rv-in{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:none; } }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic > *{ pointer-events:auto; }
+.shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic.is-review{ animation:rv-in 640ms var(--cv-ease) both; }
+@keyframes rv-in{ from{ opacity:0; } to{ opacity:1; } }
+.cl-detail .ag-step-title{ position:relative; z-index:2; }
 .welcome-card.is-review .welcome-ai{ gap:12px; align-items:center; }
 .welcome-card.is-review .welcome-ai-avatar{ flex:0 0 34px; width:34px; height:34px; filter:none; }
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-review .welcome-ai-head{ display:none !important; }
-.welcome-card.is-review .ag-tele-did{ margin:0; font-size:15px; line-height:1.35; font-weight:620; letter-spacing:-.15px; color:var(--cv-ink); animation:cv-rise 420ms var(--cv-ease) 80ms both; }
-.welcome-card.is-review .ag-tele-next{ display:flex; align-items:baseline; gap:8px; margin:1px 0 0; font-size:13.5px; line-height:1.4; color:#4a5878; animation:cv-rise 420ms var(--cv-ease) 160ms both; }
-.welcome-card.is-review .ag-tele-next b{
-  flex:none; margin:0; padding:0; border-radius:0; background:none; box-shadow:none;
-  font-size:10.5px; font-weight:700; letter-spacing:.09em; color:#2563eb;
-}
+.welcome-card.is-review .ag-tele-did{ margin:0; font-size:15.5px; line-height:1.35; font-weight:630; letter-spacing:-.15px; color:var(--cv-ink); animation:cv-rise 420ms var(--cv-ease) 80ms both; }
+.welcome-card.is-review .ag-tele-next{ display:flex; align-items:baseline; gap:8px; margin:1px 0 0; font-size:13.5px; line-height:1.4; color:#43527a; animation:cv-rise 420ms var(--cv-ease) 160ms both; }
+.welcome-card.is-review .ag-tele-next b{ flex:none; margin:0; padding:0; border-radius:0; background:none; box-shadow:none; font-size:10.5px; font-weight:700; letter-spacing:.09em; color:#2563eb; }
 @media (prefers-reduced-motion:reduce){ .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-review{ animation:none !important; } }
+
 /* while the agent works, the rail already narrates it; the workspace shows only the animation */
 .shell:has(.setup-layout) .cl-detail-card:has(.ag-step-ai) > .welcome-card.is-agentic{ display:none !important; }
 /* ---- Motion: one calm swap between steps */
