@@ -11819,49 +11819,18 @@ body.ag-gate .shell:has(.setup-layout) .cl-detail-card:has(.ag-success){ opacity
 .ag-nextup-go{ width:100%; justify-content:center; height:46px; font-size:15px; }
 @media (prefers-reduced-motion:reduce){ .ag-nextup, .ag-nextup-card, .ag-nextup-list li{ animation:none !important; } }
 
-/* ---- next-up: stronger frosted backdrop and a glass card ---- */
-.ag-nextup{
-  background:
-    radial-gradient(40% 36% at 18% 22%, rgba(96,150,255,.55), transparent 70%),
-    radial-gradient(38% 34% at 84% 30%, rgba(167,139,250,.42), transparent 70%),
-    radial-gradient(44% 38% at 62% 88%, rgba(56,189,248,.38), transparent 70%),
-    rgba(120,140,200,.16);
-  -webkit-backdrop-filter:blur(30px) saturate(1.7); backdrop-filter:blur(30px) saturate(1.7);
-}
-.ag-nextup-card{
-  background:linear-gradient(160deg, rgba(255,255,255,.78), rgba(255,255,255,.52)) !important;
-  border:1px solid rgba(255,255,255,.75) !important;
-  box-shadow:0 40px 90px rgba(30,41,80,.30), 0 2px 10px rgba(30,41,80,.08), inset 0 1px 0 rgba(255,255,255,.9) !important;
-  -webkit-backdrop-filter:blur(34px) saturate(1.6); backdrop-filter:blur(34px) saturate(1.6);
-}
-.ag-nextup-list li:hover{ background:rgba(255,255,255,.55); }
-.ag-nextup-ico{ background:rgba(255,255,255,.75); box-shadow:inset 0 0 0 1px rgba(37,99,235,.10); }
-body.ag-gate::before{ background:radial-gradient(40% 36% at 18% 22%, rgba(96,150,255,.40), transparent 70%), radial-gradient(38% 34% at 84% 30%, rgba(167,139,250,.30), transparent 70%), rgba(30,41,80,.18) !important; }
-
-/* reading row: a soft gradient panel that sets it apart */
-.ag-brief-read, body.ag-gate .ag-brief-read{
-  background:linear-gradient(135deg, rgba(37,99,235,.09), rgba(139,112,255,.06) 60%, rgba(37,99,235,.02)) !important;
-  border:1px solid rgba(37,99,235,.12) !important; border-radius:14px !important; padding:12px 16px !important; margin-top:14px !important; margin-bottom:10px !important;
-}
-
 /* ---- Agent summary: a full page of its own on the canvas; the CTA lifts it away to reveal the details ---- */
-.ag-sum{
-  position:absolute; inset:0; z-index:30; display:flex; flex-direction:column; overflow:hidden;
-  background:
-    radial-gradient(50% 36% at 12% 0%, rgba(96,150,255,.14), transparent 70%),
-    radial-gradient(40% 30% at 86% 2%, rgba(139,112,255,.10), transparent 70%),
-    #f8fafd;
-  animation:ag-pill-in 420ms var(--cv-ease) both;
-}
+.ag-sum{ position:absolute; inset:0; z-index:30; display:flex; flex-direction:column; overflow:hidden; background:none; animation:ag-pill-in 420ms var(--cv-ease) both; }
+body:has(#agSummary:not(.is-leaving)) .cl-detail-card > :not(.ag-sum){ visibility:hidden; }
 .ag-sum-scroll{ flex:1 1 0; min-height:0; overflow-y:auto; scrollbar-width:thin; }
-.ag-sum-page{ padding:64px 32px 110px 28px; max-width:1180px; }
+.ag-sum-page{ padding:76px 32px 110px 28px; max-width:1180px; }
 .ag-sum.is-leaving{ pointer-events:none; opacity:0; transform:translateY(-44px); transition:opacity 520ms var(--cv-ease), transform 620ms var(--cv-ease); }
 body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:ag-details-rise 680ms var(--cv-ease) both; }
 @keyframes ag-details-rise{ from{ opacity:0; transform:translateY(42px); } to{ opacity:1; transform:none; } }
 .ag-sum-top{ margin-bottom:22px; }
 .ag-sum-kicker{ display:flex; align-items:center; gap:8px; margin:0 0 10px; font-family:"Geist Mono", ui-monospace, monospace; font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#2563eb; }
 .ag-sum-dot{ width:7px; height:7px; border-radius:50%; background:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,.14); }
-.ag-sum-head{ margin:0 0 6px; max-width:62ch; font-size:26px; line-height:1.25; font-weight:690; letter-spacing:-.5px; color:var(--cv-ink); }
+.ag-sum-head{ margin:0 0 6px; max-width:62ch; font-size:24px; line-height:1.25; font-weight:690; letter-spacing:-.5px; color:var(--cv-ink); }
 .ag-sum-sub{ margin:0; font-size:15px; line-height:1.5; color:var(--cv-ink-2); }
 .ag-sum-tiles{ display:flex; gap:12px; margin-bottom:22px; flex-wrap:wrap; }
 .ag-sum-tiles > div{ flex:1 1 150px; max-width:240px; padding:14px 16px; border-radius:16px; background:rgba(255,255,255,.7); border:1px solid rgba(37,99,235,.08); box-shadow:0 1px 2px rgba(15,23,42,.04); animation:cv-rise 480ms var(--cv-ease) calc(120ms + var(--n) * 70ms) both; }
@@ -11922,6 +11891,74 @@ body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:ag-details-rise 680
 .ag-sum-bar > span{ font-size:13px; color:var(--cv-mute); }
 .ag-sum-go{ min-width:220px; justify-content:center; height:46px; font-size:15px; }
 @media (prefers-reduced-motion:reduce){ .ag-sum, .ag-sum-person, .ag-sum-brand, .ag-sum-partner, .ag-sum-lob, .ag-sum-split span, .ag-sum-seg span, .ag-sum-tiles > div, body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:none !important; } .ag-sum.is-leaving{ transition:none; } }
+
+/* ---- Agreements pop-up: blue header with tabs, thin progress, gradient summary ---- */
+body.ag-gate::before{ background:rgba(15,23,42,.30) !important; -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px); }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card .ag-agree{ -webkit-mask-image:none; mask-image:none; padding:0 !important; margin:0 !important; width:100% !important; }
+body.ag-gate .ag-atabs{
+  position:sticky; top:0; z-index:8; display:flex; align-items:flex-end; gap:6px; height:64px; min-height:64px; flex:none; margin:0 !important; padding:0 28px 12px !important; box-sizing:border-box; border:0 !important;
+  background:linear-gradient(120deg, #1d4ed8 0%, #2563eb 45%, #5b95ff 100%) !important;
+  box-shadow:0 8px 24px rgba(37,99,235,.18);
+}
+body.ag-gate .ag-atab{
+  height:36px; padding:0 16px !important; border:0 !important; border-radius:999px !important; background:rgba(255,255,255,.16) !important; color:rgba(255,255,255,.9) !important; font-weight:600; box-shadow:none !important;
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); transition:background 220ms, color 220ms;
+}
+body.ag-gate .ag-atab:hover{ background:rgba(255,255,255,.26) !important; }
+body.ag-gate .ag-atab.is-on{ background:#fff !important; color:#1d4ed8 !important; }
+body.ag-gate .ag-atab::after, body.ag-gate .ag-atab::before{ display:none !important; }
+body.ag-gate .ag-acols{ display:flex !important; flex-direction:column; gap:0 !important; padding:0 28px 8px !important; max-width:none; }
+body.ag-gate .ag-brief-read{
+  position:sticky; top:61px; z-index:9; order:-1; display:block !important; flex:none; align-self:stretch; width:calc(100% + 56px) !important; height:3px; margin:0 -28px 16px !important; padding:0 !important; border:0 !important; background:rgba(37,99,235,.12) !important; border-radius:0 !important;
+}
+body.ag-gate .ag-brief-read .ag-brief-bar{ display:block; width:100%; height:3px !important; border-radius:0; background:transparent !important; box-shadow:none; }
+body.ag-gate .ag-brief-read .ag-brief-bar i{ border-radius:0; background:linear-gradient(90deg,rgba(255,255,255,.75),#fff) !important; box-shadow:0 0 8px rgba(255,255,255,.7); }
+body.ag-gate .ag-brief-read.is-read .ag-brief-bar i{ background:linear-gradient(90deg,#86efac,#34d399) !important; }
+body.ag-gate .ag-brief-read .ag-brief-readtxt{ display:none; }
+body.ag-gate .ag-brief{
+  position:static !important; display:block !important; margin:0 0 20px; padding:18px 22px 6px; border-radius:20px;
+  background:linear-gradient(135deg, rgba(37,99,235,.11), rgba(139,112,255,.09) 55%, rgba(56,189,248,.07)); border:1px solid rgba(37,99,235,.14);
+}
+body.ag-gate .ag-brief-title{ margin-top:2px; }
+
+/* ---- Next-up: a clearer card with a blue header, calmer backdrop ---- */
+.ag-nextup{ background:rgba(15,23,42,.34) !important; -webkit-backdrop-filter:blur(7px) !important; backdrop-filter:blur(7px) !important; }
+.ag-nextup-card{ padding:0 !important; overflow:hidden; background:#fff !important; border:0 !important; box-shadow:0 40px 90px rgba(15,23,42,.35), 0 4px 16px rgba(15,23,42,.10) !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+.ag-nextup-head{ position:relative; padding:28px 36px 26px; color:#fff; background:linear-gradient(125deg, #1d4ed8 0%, #2563eb 45%, #6aa0ff 100%); overflow:hidden; }
+.ag-nextup-head::after{ content:""; position:absolute; right:-60px; top:-70px; width:240px; height:240px; border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.28), transparent 68%); pointer-events:none; }
+.ag-nextup-head .ag-nextup-mark{ background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 1px rgba(255,255,255,.35); margin:0 0 14px; }
+.ag-nextup-head .ag-nextup-kicker{ display:inline-flex; align-items:center; gap:7px; padding:4px 10px 4px 6px; border-radius:99px; background:rgba(255,255,255,.18); color:#fff; letter-spacing:.07em; }
+.ag-nextup-head .ag-nextup-kicker i{ display:grid; place-items:center; width:16px; height:16px; border-radius:50%; background:#34d399; color:#064e3b; font-style:normal; }
+.ag-nextup-head .ag-nextup-kicker svg{ width:10px; height:10px; stroke-width:3; }
+.ag-nextup-head .ag-nextup-title{ margin:12px 0 6px; color:#fff; }
+.ag-nextup-head .ag-nextup-sub{ margin:0; color:rgba(255,255,255,.88); }
+.ag-nextup-body{ padding:20px 36px 28px; }
+.ag-nextup-list{ position:relative; margin-bottom:14px !important; }
+.ag-nextup-list::before{ content:""; position:absolute; left:30px; top:26px; bottom:26px; width:2px; background:linear-gradient(180deg,#bcd3fb,#e6eefc); }
+.ag-nextup-list li{ position:relative; }
+.ag-nextup-ico{ position:relative; background:#fff !important; box-shadow:0 0 0 1px #d4e1f8, 0 2px 6px rgba(37,99,235,.10) !important; }
+.ag-nextup-ico em{ position:absolute; right:-5px; bottom:-5px; display:grid; place-items:center; width:16px; height:16px; border-radius:50%; background:#2563eb; color:#fff; font-style:normal; font-size:9.5px; font-weight:700; box-shadow:0 0 0 2px #fff; }
+.ag-nextup-list li:hover{ background:#f3f7ff !important; }
+.ag-nextup-note{ display:flex; align-items:center; gap:8px; margin:0 0 18px !important; color:#15663f !important; }
+.ag-nextup-note svg{ width:14px; height:14px; stroke-width:2.6; flex:none; }
+.ag-nextup-go{ background:linear-gradient(135deg,#2563eb,#1d4ed8) !important; box-shadow:0 10px 24px rgba(37,99,235,.30); }
+
+.ag-sum-tiles{ display:none !important; }
+.ag-sum-top{ margin-bottom:26px !important; }
+.ag-sum-person, .ag-sum-brand, .ag-sum-partner, .ag-sum-lob{ background:#fff !important; border:1px solid #e6ecf6 !important; border-radius:16px !important; box-shadow:0 1px 2px rgba(15,23,42,.03) !important; padding:18px 20px !important; transition:border-color 200ms, box-shadow 200ms, transform 200ms; }
+.ag-sum-person:hover, .ag-sum-brand:hover, .ag-sum-partner:hover, .ag-sum-lob:hover{ border-color:#cfdcf5 !important; box-shadow:0 8px 22px rgba(37,99,235,.08) !important; transform:translateY(-1px); }
+.ag-sum-person dl{ border-top:0 !important; padding-top:0 !important; gap:9px !important; }
+.ag-sum-person dl div{ flex-direction:column; gap:1px !important; }
+.ag-sum-person dt{ font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; }
+.ag-sum-person dd{ text-align:left !important; font-size:13.5px; }
+.ag-sum-role{ background:#f1f5fd !important; }
+.ag-sum-bar{ background:linear-gradient(180deg, rgba(248,250,253,0), rgba(248,250,253,.9) 60%) !important; }
+
+/* ---- plain-language note under every loader ---- */
+.ag-loader-note{ position:absolute; left:0; right:0; bottom:34px; margin:0 auto; width:min(560px, calc(100% - 48px)); text-align:center; animation:cv-rise 600ms var(--cv-ease) 500ms both; }
+.ag-loader-note b{ display:block; font-size:16px; font-weight:640; color:var(--cv-ink); letter-spacing:-.2px; }
+.ag-loader-note span{ display:block; margin-top:4px; font-size:13.5px; line-height:1.5; color:var(--cv-mute); }
+.ag-loader-note em{ display:block; margin-top:8px; font-style:normal; font-size:12.5px; color:#2563eb; font-weight:560; }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14791,6 +14828,20 @@ body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:ag-details-rise 680
     });
   }
 
+  const AG_LOADER_WHY = {
+    kyc: ["Getting your company details", "I'm collecting your company's details from official registries (DLT, GSTIN, MCA) so you don't have to type them.", "Next: you check the details and submit."],
+    team: ["Finding your team", "I'm looking up the people already on your DLT registration and suggesting a role for each.", "Next: you choose who to invite."],
+    brand: ["Mapping your brands", "I'm reading your DLT registrations to work out your brands and their lines of business.", "Next: you confirm or edit the drafts."],
+    gtm: ["Choosing your SMS partners", "I'm comparing telecom partners' rate cards and picking the best ones for your volume.", "Next: you review and approve."],
+    match: ["Matching your templates", "I'm sorting your message templates into the right line of business.", "Next: you review the suggestions."],
+  };
+  function agLoaderNote(host, id) {
+    const w = AG_LOADER_WHY[id];
+    if (!host || !w) return;
+    host.querySelector(".ag-loader-note")?.remove();
+    host.insertAdjacentHTML("beforeend", `<div class="ag-loader-note" aria-live="polite"><b>${w[0]}</b><span>${w[1]}</span><em>${w[2]}</em></div>`);
+  }
+
   function agShowStepAi(live, focus) {
     if (!live || live.querySelector(".ag-step-ai") || live.querySelector(".ag-step-intro")) return;
     agDeferStepTitle(true);
@@ -14800,6 +14851,7 @@ body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:ag-details-rise 680
       live.insertAdjacentHTML("beforeend", `<div class="ag-step-ai ag-step-ai--loader" role="status" aria-label="${ld.label}"><div class="ag-loader-crop" data-loader="${ld.id}"><iframe class="ag-loader-frame" data-loader="${ld.id}" title="${ld.label}" tabindex="-1" width="720" height="360"></iframe></div></div>`);
       live.querySelector(".ag-loader-frame").srcdoc = AG_LOADER_DOC.replace("__AG_ID__", ld.id).replace("__AG_VI__", String(ld.vi));
       agFitLoaders();
+      agLoaderNote(live.querySelector(".ag-step-ai--loader"), ld.id);
       agTeleStart(ld.id, focus);
       return;
     }
@@ -16178,13 +16230,17 @@ body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:ag-details-rise 680
     el.setAttribute("aria-modal", "true");
     el.setAttribute("aria-label", "What happens next");
     el.innerHTML = `<div class="ag-nextup-card">
-      <span class="ag-nextup-mark ai-mark-wrap">${bootAiMark()}</span>
-      <p class="ag-nextup-kicker">Agreements accepted</p>
-      <h2 class="ag-nextup-title">Next, your agent sets everything up</h2>
-      <p class="ag-nextup-sub">I'll work through each area and prepare your DigiConsent workspace. You only review and accept.</p>
-      <ol class="ag-nextup-list">${AG_NEXTUP.map(([ic, t, d], n) => `<li style="--n:${n}"><span class="ag-nextup-ico">${I(ic)}</span><span class="ag-nextup-txt"><b>${t}</b><span>${d}</span></span></li>`).join("")}</ol>
-      <p class="ag-nextup-note">Nothing goes live until you accept it.</p>
-      <button type="button" class="ag-btn is-primary ag-nextup-go" data-nextup-go>Continue${I("arrow", "sm")}</button>
+      <header class="ag-nextup-head">
+        <span class="ag-nextup-mark ai-mark-wrap">${bootAiMark()}</span>
+        <p class="ag-nextup-kicker"><i>${I("check")}</i>Agreements accepted</p>
+        <h2 class="ag-nextup-title">Next, your agent sets everything up</h2>
+        <p class="ag-nextup-sub">I'll work through each area and prepare your DigiConsent workspace. You only review and accept.</p>
+      </header>
+      <div class="ag-nextup-body">
+        <ol class="ag-nextup-list">${AG_NEXTUP.map(([ic, t, d], n) => `<li style="--n:${n}"><span class="ag-nextup-ico">${I(ic)}<em>${n + 1}</em></span><span class="ag-nextup-txt"><b>${t}</b><span>${d}</span></span></li>`).join("")}</ol>
+        <p class="ag-nextup-note">${I("check")}Nothing goes live until you accept it.</p>
+        <button type="button" class="ag-btn is-primary ag-nextup-go" data-nextup-go>Continue${I("arrow", "sm")}</button>
+      </div>
     </div>`;
     el.addEventListener("click", (ev) => {
       if (!ev.target.closest("[data-nextup-go]")) return;
@@ -19215,14 +19271,14 @@ function agMigRow() {
         ${AG_DOCS.map((item) => `<button type="button" class="ag-atab${item.id === doc.id ? " is-on" : ""}${state.docSigned[item.id] ? " is-signed" : ""}" role="tab" aria-selected="${item.id === doc.id}" data-action="ag-doc-tab" data-doc="${item.id}">${state.docSigned[item.id] ? "✓ " : ""}${item.name}</button>`).join("")}
       </div>
       <div class="ag-acols">
+        <div class="ag-brief-read${state.docRead[doc.id] ? " is-read" : ""}" id="agReadState" data-doc="${doc.id}" role="status">
+          <span class="ag-brief-bar"><i style="width:${state.docRead[doc.id] ? 100 : 0}%"></i></span>
+          <span class="ag-brief-readtxt">${state.docRead[doc.id] ? "You've read it all" : "Scroll to the end to accept"}</span>
+        </div>
         <aside class="ag-brief" aria-label="Summary of ${doc.name}">
           <p class="ag-brief-eyebrow"><svg class="ag-brief-spark" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg><span>Read for you</span><i>${doc.version}</i></p>
           <h3 class="ag-brief-title">In short</h3>
           <p class="ag-brief-prose">${(AG_DOC_PROSE[doc.id] || []).map((seg) => typeof seg === "string" ? agEsc(seg) : `<span role="button" tabindex="0" class="ag-brief-pt" data-action="ag-brief-jump" data-secs="${seg.c.join(",")}" title="Clause ${seg.c.map((n) => n + 1).join(" and ")}">${agEsc(seg.b)}</span>`).join("")}</p>
-          <div class="ag-brief-read${state.docRead[doc.id] ? " is-read" : ""}" id="agReadState" data-doc="${doc.id}" role="status">
-            <span class="ag-brief-bar"><i style="width:${state.docRead[doc.id] ? 100 : 0}%"></i></span>
-            <span class="ag-brief-readtxt">${state.docRead[doc.id] ? "You've read it all" : "Scroll to the end to accept"}</span>
-          </div>
         </aside>
         <article class="ag-paper" aria-label="Full text of ${doc.name}">
           <header class="ag-paper-head">
