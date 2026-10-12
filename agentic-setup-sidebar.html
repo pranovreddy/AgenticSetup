@@ -12162,6 +12162,11 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
 .ag-sum-legend{ list-style:none; margin:0 0 6px !important; padding:0; display:flex !important; flex-wrap:wrap; gap:6px 18px; font-size:12.5px; color:#5f7396; }
 .ag-sum-legend li{ display:flex; align-items:center; gap:7px; } .ag-sum-legend i{ width:9px; height:9px; border-radius:50%; }
 
+/* no logo/user pill on the agreements pop-up itself */
+body.ag-gate:not(:has(#agNextUp)) .setup-layout .cl-overview::before,
+body.ag-gate:not(:has(#agNextUp)) .setup-layout .cl-overview .cl-overview-brand,
+body.ag-gate:not(:has(#agNextUp)) .setup-layout .cl-overview .cl-overview-foot{ opacity:0 !important; visibility:hidden; animation:none !important; transition:opacity 300ms ease; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
