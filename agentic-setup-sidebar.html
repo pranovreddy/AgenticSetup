@@ -11671,11 +11671,11 @@ body.ag-app-ready .setup-layout .cl-overview{
 .shell:has(.setup-layout) .cl-detail-card:has(.ag-step-ai) > .welcome-card.is-agentic{ display:none !important; }
 
 /* ---- Agreements: summary first, then the full text, in one column ---- */
-.ag-acols{ display:block; max-width:780px; }
+.ag-acols{ display:block; max-width:none; width:100%; }
 .ag-brief{ display:contents; }
 .ag-brief-eyebrow{ margin-bottom:10px; }
 .ag-brief-title{ margin:0 0 10px; font-size:22px; }
-.ag-brief-prose{ max-width:68ch; font-size:16.5px; line-height:1.75; margin:0 0 18px; }
+.ag-brief-prose{ max-width:none; font-size:16.5px; line-height:1.75; margin:0 0 18px; }
 .ag-brief-read{
   position:sticky; top:0; z-index:5; margin:0 0 6px; padding:12px 0 10px; border-top:1px solid var(--cv-line);
   background:linear-gradient(180deg, rgba(248,250,253,.96) 70%, rgba(248,250,253,0)); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
@@ -14260,8 +14260,9 @@ body.ag-app-ready .setup-layout .cl-overview{
     const fx = w;
     const pad = 46;
     const bow = 18;
-    const gap = Math.min(64, (h - 2 * pad) / 6);
-    const xAt = (y) => fx - 0.0036 * (y - h / 2) * (y - h / 2);
+    const gap = Math.max(52, (h / 2 - pad) / 3);
+    const kc = 80 / Math.pow(Math.max(60, h / 2 - pad), 2);
+    const xAt = (y) => fx - kc * (y - h / 2) * (y - h / 2);
     const yAt = (i) => h / 2 + (i - m.pos) * gap;
     const pt = (i) => [xAt(yAt(i)), yAt(i)];
     const svg = el.querySelector(".ag-tel-path");
