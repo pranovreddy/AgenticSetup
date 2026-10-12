@@ -11587,7 +11587,7 @@ body.ag-app-ready .setup-layout .cl-overview{
   transition:transform 220ms var(--tel-ease), color 220ms, opacity 220ms;
 }
 .ag-tel-nav svg{ width:12px; height:12px; }
-.ag-tel-nav.is-prev{ top:0; transform:rotate(-90deg); } .ag-tel-nav.is-next{ bottom:0; transform:rotate(90deg); }
+.ag-tel-nav.is-prev{ top:6px; transform:rotate(-90deg); } .ag-tel-nav.is-next{ bottom:6px; transform:rotate(90deg); }
 .ag-tel-nav:hover:not(:disabled){ color:#2563eb; }
 .ag-tel-nav:disabled{ opacity:.25; cursor:default; }
 .ag-tel-nav:focus-visible, .ag-tel-ico:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }
@@ -11640,6 +11640,8 @@ body.ag-app-ready .setup-layout .cl-overview{
   pointer-events:none;
 }
 .setup-layout .cl-detail .ag-actions > *, .setup-layout .cl-detail .ag-profile .kyc-footer > *{ pointer-events:auto; }
+
+.setup-layout .cl-overview .cl-rail-logout{ display:none !important; }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14253,17 +14255,18 @@ body.ag-app-ready .setup-layout .cl-overview{
     const w = track.clientWidth || 180;
     const h = track.clientHeight || 320;
     const fx = 34;
-    const n = AG_TEL_ORDER.length;
     const pad = 46;
-    const bow = Math.min(30, w * 0.16);
-    const yAt = (i) => pad + i * (h - 2 * pad) / (n - 1);
-    const pt = (i) => { const t = (yAt(i) - h / 2) / (h / 2 - pad); return [fx + bow * (1 - t * t), yAt(i)]; };
+    const bow = 18;
+    const gap = Math.min(64, (h - 2 * pad) / 6);
+    const xAt = (y) => { const t = (y - h / 2) / (h / 2 - pad); return fx + bow * (1 - Math.min(1, t * t)); };
+    const yAt = (i) => h / 2 + (i - m.pos) * gap;
+    const pt = (i) => [xAt(yAt(i)), yAt(i)];
     const svg = el.querySelector(".ag-tel-path");
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     const g = el.querySelector("#agTelRailG");
     g.setAttribute("x1", "0"); g.setAttribute("x2", "0"); g.setAttribute("y1", "0"); g.setAttribute("y2", String(h));
     let d = "";
-    for (let k = 0; k <= 60; k++) { const f = -0.04 + 1.08 * k / 60; const y = pad + f * (h - 2 * pad); const t = (y - h / 2) / (h / 2 - pad); d += (k ? " L " : "M ") + (fx + bow * (1 - t * t)).toFixed(1) + " " + y.toFixed(1); }
+    for (let k = 0; k <= 60; k++) { const y = 8 + k * (h - 16) / 60; d += (k ? " L " : "M ") + xAt(y).toFixed(1) + " " + y.toFixed(1); }
     el.querySelector(".ag-tel-rail").setAttribute("d", d);
     const cap = el.querySelector(".ag-tel-cap");
     const [fcx, fcy] = pt(m.pos);
@@ -14274,12 +14277,13 @@ body.ag-app-ready .setup-layout .cl-overview{
       const ad = Math.abs(dd);
       const [x, y] = pt(i);
       const s = ad === 0 ? 1 : 0.86;
-      const o = ad === 0 ? 1 : ad === 1 ? 1 : 0.7;
+      const o = Math.max(0, 1 - ad * 0.22) * (ad > 3 ? 0 : 1);
       const key = AG_TEL_ORDER[i];
       const locked = !agTelViewable(key) && i !== m.pos;
       btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${s.toFixed(3)})`;
       btn.style.setProperty("--arc-o", o.toFixed(3));
       btn.style.setProperty("--arc-f", ad < 0.5 ? "1" : "0");
+      btn.style.visibility = o > 0.02 ? "visible" : "hidden";
       btn.style.zIndex = String(10 - Math.round(ad * 3));
             btn.classList.toggle("is-focus", i === m.pos);
       btn.classList.toggle("is-active", i === m.pos && m.working);
