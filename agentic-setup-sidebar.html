@@ -12081,6 +12081,42 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
 .ag-trace-facts dd{ overflow:visible; text-overflow:clip; }
 .ag-trace-main .ag-sum-role{ margin-left:auto; }
 
+/* ---- Summary card, trendy: centred hero, airy list rows, dark pill CTA ---- */
+.ag-sum-card{ width:min(680px, 100%) !important; max-height:min(820px, calc(100vh - 48px)); border-radius:38px !important; background:linear-gradient(180deg, #eceff5 0, #f6f8fc 130px, #fff 300px) !important; box-shadow:0 60px 120px rgba(15,23,42,.30), 0 4px 18px rgba(15,23,42,.08), inset 0 1px 0 #fff !important; }
+.ag-sum-hero{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:34px 44px 4px; }
+.ag-sum-gem{ position:relative; display:grid; place-items:center; width:84px; height:84px; margin-bottom:14px; border-radius:50%;
+  background:radial-gradient(circle at 32% 24%, #fff 0, #cfe0ff 26%, #6a9bf5 62%, #2a4fd0 100%);
+  box-shadow:inset 0 -8px 16px rgba(20,40,140,.35), inset 0 6px 10px rgba(255,255,255,.9), 0 22px 30px -10px rgba(37,99,235,.55); animation:ag-gem-float 4.5s ease-in-out infinite; }
+.ag-sum-gem::after{ content:""; position:absolute; left:50%; bottom:-22px; width:60px; height:12px; transform:translateX(-50%); border-radius:50%; background:radial-gradient(closest-side, rgba(37,99,235,.28), transparent); filter:blur(3px); }
+.ag-sum-gem i{ display:grid; place-items:center; width:34px; height:34px; color:#fff; filter:drop-shadow(0 2px 3px rgba(20,40,140,.5)); }
+.ag-sum-gem svg{ width:30px; height:30px; }
+@keyframes ag-gem-float{ 50%{ transform:translateY(-4px); } }
+.ag-sum-hero .ag-sum-head{ margin:18px 0 8px; max-width:30ch; font-size:25px; line-height:1.25; font-weight:700; letter-spacing:-.5px; color:#0f1a2b; }
+.ag-sum-hero .ag-sum-sub{ margin:0; max-width:44ch; font-size:14.5px; line-height:1.5; color:#6b7686; }
+.ag-sum-page{ padding:20px 44px 14px !important; }
+.ag-pl{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+.ag-pl-row{ display:flex; align-items:center; gap:16px; padding:10px 0; animation:cv-rise 520ms var(--cv-ease) calc(240ms + var(--n) * 90ms) both; }
+.ag-pl-av{ flex:none; display:grid; place-items:center; width:56px; height:56px; border-radius:50%; background:var(--bg,#e8eef8); color:#334155; font-size:16px; font-weight:700; box-shadow:inset 0 0 0 1px rgba(255,255,255,.7); overflow:hidden; }
+.ag-pl-av.is-logo img{ width:34px; height:34px; object-fit:contain; }
+.ag-pl-txt{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.ag-pl-txt b{ display:flex; align-items:center; gap:6px; font-size:17px; font-weight:600; letter-spacing:-.2px; color:#0f1a2b; }
+.ag-pl-tick{ display:inline-grid; width:17px; height:17px; } .ag-pl-tick svg{ width:17px; height:17px; }
+.ag-pl-sub{ font-size:14px; line-height:1.35; color:#8a94a3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ag-pl-sub em{ font-style:normal; font-weight:600; }
+.ag-pl-dot{ display:inline-block; width:4px; height:4px; margin:0 8px; border-radius:50%; background:#c3cad6; vertical-align:middle; }
+.ag-pl-meta{ font-size:12.5px; color:#a3acba; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ag-pl-pill{ flex:none; display:inline-flex; align-items:center; height:38px; padding:0 16px; border-radius:14px; background:#f1f3f7; color:#0f1a2b; font-size:14px; font-weight:560; white-space:nowrap; }
+.ag-pl-pill.is-on{ background:#e8f6ee; color:#157a45; }
+.ag-sum-page .ag-sum-seg{ margin:0 0 10px; } .ag-sum-page .ag-sum-legend{ margin:0 0 10px; }
+.ag-sum-bar{ padding:16px 44px 28px !important; border-top:0 !important; background:linear-gradient(180deg, rgba(255,255,255,0), #fff 45%) !important; }
+.ag-sum-bar > span{ display:inline-flex; align-items:center; gap:10px; font-size:14px; font-weight:560; color:#2b3544; }
+.ag-sum-bar > span i{ display:grid; place-items:center; width:26px; height:26px; border-radius:9px; background:#0f1a2b; color:#fff; font-style:normal; } .ag-sum-bar > span i svg{ width:13px; height:13px; stroke-width:2.6; }
+.ag-sum-go{ display:inline-flex; align-items:center; justify-content:center; gap:8px; height:50px; padding:0 26px; border:0; border-radius:18px; cursor:pointer; font:inherit; font-size:15.5px; font-weight:620; color:#fff;
+  background:linear-gradient(180deg, #2a3446, #0b1220); box-shadow:0 14px 26px rgba(11,18,32,.32), inset 0 1px 0 rgba(255,255,255,.18); transition:transform 200ms var(--cv-ease), box-shadow 200ms; }
+.ag-sum-go:hover{ transform:translateY(-1px); box-shadow:0 18px 32px rgba(11,18,32,.38), inset 0 1px 0 rgba(255,255,255,.18); }
+.ag-sum-go svg{ width:16px; height:16px; }
+@media (prefers-reduced-motion:reduce){ .ag-sum-gem{ animation:none; } }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -14740,81 +14776,56 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
   /* ---- Agent summary: a glass overlay over the blurred step; CTA reveals the full details ---- */
   const agSumDone = new Set();
   const agSumEsc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const AG_PL_TONES = [["#d8f0e0", "#16a34a"], ["#fbe0ea", "#d6336c"], ["#e2dcfb", "#6d4fe0"], ["#fde7c9", "#e07a12"], ["#d7ebfb", "#1f7fd0"]];
+  const agPlTone = (n) => AG_PL_TONES[n % AG_PL_TONES.length];
+  const agPlTick = `<i class="ag-pl-tick" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 .8l1.9 1.2 2.2-.1.9 2 1.9 1.1-.3 2.2 1 2-1.7 1.5-.5 2.1-2.1.6-1.4 1.7L8 14.2l-2 .9-1.4-1.7-2.1-.6-.5-2.1L.3 9.2l1-2L1 5l1.9-1.1.9-2 2.2.1z" fill="#38bdf8"/><path d="M5.3 8.1l1.9 1.9 3.5-3.7" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>`;
   function agSummaryData(key) {
-    const root = (label, sub) => `<div class="ag-trace-root"><span class="ag-trace-orb">${bootAiMark()}</span><span><b>${agSumEsc(label)}</b><span>${agSumEsc(sub)}</span></span></div>`;
-    const note = (t) => `<p class="ag-trace-note"><i>${I("spark")}</i>${t}</p>`;
+    const row = (n, lead, name, sub, extra, pill) => `<li class="ag-pl-row" style="--n:${n}">${lead}<span class="ag-pl-txt"><b>${name}${agPlTick}</b><span class="ag-pl-sub">${sub}</span>${extra ? `<span class="ag-pl-meta">${extra}</span>` : ""}</span>${pill}</li>`;
     if (key === "2") {
       const people = agTeamPeople();
       return {
-        kicker: "Team", cta: "Review and invite", count: `${people.length} suggested users`,
-        body: `<div class="ag-trace">${root("DLT registration", "HDFC Bank Limited")}
-          <ol class="ag-trace-list">${people.map((p, n) => `<li class="ag-trace-row" style="--n:${n}">
-            <span class="ag-trace-node"></span>
-            <div class="ag-trace-main">
-              <span class="ag-sum-av">${agSumEsc(p.initials)}</span>
-              <span class="ag-sum-who"><b>${agSumEsc(p.name)}</b><span>${agSumEsc(p.designation || "")}</span></span>
-              <dl class="ag-trace-facts"><div><dt>Email</dt><dd>${agSumEsc(p.email)}</dd></div><div><dt>Mobile</dt><dd>${agSumEsc(p.mobile)}</dd></div><div><dt>Department</dt><dd>${agSumEsc(p.department || "")}</dd></div></dl>
-              <span class="ag-sum-role">${agSumEsc(p.platformRole)}</span>
-            </div>
-            ${note(`Found on your DLT record. Role <b>${agSumEsc(p.platformRole)}</b> suggested from the designation “${agSumEsc(p.designation || "")}”.`)}
-          </li>`).join("")}</ol></div>`,
+        icon: "users", cta: "Review and invite", count: `${people.length} suggested users, from your DLT record`,
+        body: `<ul class="ag-pl">${people.map((p, n) => { const [bg, fg] = agPlTone(n); return row(n,
+          `<span class="ag-pl-av" style="--bg:${bg}">${agSumEsc(p.initials)}</span>`,
+          agSumEsc(p.name),
+          `<em style="color:${fg}">${agSumEsc(p.designation || "")}</em><i class="ag-pl-dot"></i>${agSumEsc(p.email)}`,
+          `${agSumEsc(p.mobile)}<i class="ag-pl-dot"></i>${agSumEsc(p.department || "")}`,
+          `<span class="ag-pl-pill">${agSumEsc(p.platformRole)}</span>`); }).join("")}</ul>`,
       };
     }
     if (key === "e0") {
       return {
-        kicker: "Brands and LOBs", cta: "Review brands", count: `${AG_BRANDS.length} brands · ${agLobTotal()} LOBs`,
-        body: `<div class="ag-trace">${root("DLT registrations", "Sender headers and templates read")}
-          <ol class="ag-trace-list">${AG_BRANDS.map((b, n) => `<li class="ag-trace-row" style="--n:${n}">
-            <span class="ag-trace-node"></span>
-            <div class="ag-trace-main is-brand">
-              <span class="ag-sum-logo"><img src="${b.logo}" alt=""></span>
-              <span class="ag-sum-who"><b>${agSumEsc(b.name)}</b><span>${b.lobs.length} lines of business</span></span>
-              <ul class="ag-trace-chips">${b.lobs.map((l) => `<li><b>${agSumEsc(l.name)}</b>${(l.promos || []).length ? `<span>${(l.promos || []).length} promo types</span>` : ""}</li>`).join("")}</ul>
-            </div>
-            ${note(`Brand found in your sender headers. ${b.lobs.length} LOBs drafted and bound to the DLT entity.`)}
-          </li>`).join("")}</ol></div>`,
+        icon: "layers", cta: "Review brands", count: `${AG_BRANDS.length} brands · ${agLobTotal()} LOBs, from your DLT registrations`,
+        body: `<ul class="ag-pl">${AG_BRANDS.map((b, n) => { const [bg, fg] = agPlTone(n); return row(n,
+          `<span class="ag-pl-av is-logo" style="--bg:${bg}"><img src="${b.logo}" alt=""></span>`,
+          agSumEsc(b.name),
+          `<em style="color:${fg}">${b.lobs.length} lines of business</em>`,
+          b.lobs.map((l) => agSumEsc(l.name)).join(`<i class="ag-pl-dot"></i>`),
+          `<span class="ag-pl-pill">${b.lobs.length} LOBs</span>`); }).join("")}</ul>`,
       };
     }
     if (key === "e1") {
-      const picked = AG_PARTNERS.filter((p) => p.share > 0);
-      const maxReg = Math.max(...AG_PARTNERS.map((p) => parseFloat(String(p.reg).replace(/[^\d.]/g, ""))));
       return {
-        kicker: "GTM partners", cta: "Review partners", count: `${picked.length} of ${AG_PARTNERS.length} partners selected`,
-        body: `<div class="ag-trace">${root("Rate cards compared", `${AG_PARTNERS.length} telecom partners`)}
-          <ol class="ag-trace-list">${AG_PARTNERS.map((p, n) => {
-            const reg = parseFloat(String(p.reg).replace(/[^\d.]/g, ""));
-            return `<li class="ag-trace-row${p.share > 0 ? " is-picked" : " is-dim"}" style="--n:${n}">
-            <span class="ag-trace-node"></span>
-            <div class="ag-trace-main is-partner">
-              <span class="ag-sum-rank">${n + 1}</span>
-              <span class="ag-sum-who"><b>${agSumEsc(p.name)}</b><span>${p.share > 0 ? (p.best ? "Selected · best rate" : "Selected") : "Not selected"}</span></span>
-              <div class="ag-trace-bars">
-                <div><span>Registration</span><i style="--w:${Math.round((1 - (reg - 0.1) / (maxReg || 1)) * 100) + 25}%"></i><b>${agSumEsc(p.reg)}</b></div>
-                <div><span>Migration</span><i style="--w:${Math.round((1 - (parseFloat(String(p.mig).replace(/[^\d.]/g, "")) - 0.03) / 0.1) * 100)}%"></i><b>${agSumEsc(p.mig)}</b></div>
-              </div>
-              <span class="ag-trace-share"><b>${p.share}%</b><span>of volume</span></span>
-            </div>
-            ${note(p.share > 0 ? `${p.best ? "Lowest rates of the four" : "Competitive rates"}, so I gave it <b>${p.share}%</b> of your volume.` : "Higher rates than the selected partners, so it gets no volume for now.")}
-          </li>`; }).join("")}</ol></div>`,
+        icon: "phone", cta: "Review partners", count: `${AG_PARTNERS.filter((p) => p.share > 0).length} of ${AG_PARTNERS.length} partners selected`,
+        body: `<ul class="ag-pl">${AG_PARTNERS.map((p, n) => { const [bg, fg] = agPlTone(n); const on = p.share > 0; return row(n,
+          `<span class="ag-pl-av" style="--bg:${on ? bg : "#e9edf4"}">${agSumEsc(p.name.replace(/^(Bharti|Reliance) /, "").slice(0, 2).toUpperCase())}</span>`,
+          agSumEsc(p.name),
+          on ? `<em style="color:${fg}">${p.best ? "Selected · best rate" : "Selected"}</em>` : `<em style="color:#94a3b8">Not selected</em>`,
+          `${agSumEsc(p.reg)} registration<i class="ag-pl-dot"></i>${agSumEsc(p.mig)} migration`,
+          `<span class="ag-pl-pill${on ? " is-on" : ""}">${on ? p.share + "% of volume" : "No volume"}</span>`); }).join("")}</ul>`,
       };
     }
     if (key === "e2") {
       return {
-        kicker: "Templates", cta: "Review mappings", count: "98 of 100 templates mapped",
-        body: `<div class="ag-trace">${root("Your templates", "100 read · 98 mapped · 2 left for you")}
-          <div class="ag-sum-seg" role="img" aria-label="25 high confidence, 71 to review, 2 unmapped"><span class="is-hi" style="flex:25"></span><span class="is-mid" style="flex:71"></span><span class="is-lo" style="flex:2"></span></div>
-          <ul class="ag-sum-legend"><li><i class="is-hi"></i>25 high confidence</li><li><i class="is-mid"></i>71 to review</li><li><i class="is-lo"></i>2 unmapped</li></ul>
-          <ol class="ag-trace-list">${AG_TM_LOBS.map((l, n) => {
-            const total = l.suggested + l.review;
-            return `<li class="ag-trace-row" style="--n:${n}">
-            <span class="ag-trace-node"></span>
-            <div class="ag-trace-main is-lob">
-              <span class="ag-sum-who"><b>${agSumEsc(l.name)}</b><span>${agSumEsc(l.brand)}</span></span>
-              <div class="ag-trace-lobbar"><i style="width:${Math.round((l.suggested / total) * 100)}%"></i></div>
-              <span class="ag-trace-share"><b>${total}</b><span>templates</span></span>
-            </div>
-            ${note(`${l.suggested} confidently matched, <b>${l.review}</b> need a quick look. e.g. “${agSumEsc(((AG_TM_SEED[l.id] || [])[0] || [""])[0])}”.`)}
-          </li>`; }).join("")}</ol></div>`,
+        icon: "list", cta: "Review mappings", count: "98 of 100 templates mapped",
+        body: `<div class="ag-sum-seg" role="img" aria-label="25 high confidence, 71 to review, 2 unmapped"><span class="is-hi" style="flex:25"></span><span class="is-mid" style="flex:71"></span><span class="is-lo" style="flex:2"></span></div>
+        <ul class="ag-sum-legend"><li><i class="is-hi"></i>25 high confidence</li><li><i class="is-mid"></i>71 to review</li><li><i class="is-lo"></i>2 unmapped</li></ul>
+        <ul class="ag-pl">${AG_TM_LOBS.map((l, n) => { const [bg, fg] = agPlTone(n); const t = l.suggested + l.review; return row(n,
+          `<span class="ag-pl-av" style="--bg:${bg}">${agSumEsc(l.name.slice(0, 2).toUpperCase())}</span>`,
+          agSumEsc(l.name),
+          `<em style="color:${fg}">${agSumEsc(l.brand)}</em><i class="ag-pl-dot"></i>${t} templates`,
+          `${l.suggested} confidently matched<i class="ag-pl-dot"></i>${l.review} to review`,
+          `<span class="ag-pl-pill">${Math.round((l.suggested / t) * 100)}% matched</span>`); }).join("")}</ul>`,
       };
     }
     return null;
@@ -14862,13 +14873,13 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     el.setAttribute("role", "dialog");
     el.setAttribute("aria-label", `${d.kicker} summary`);
     el.innerHTML = `<div class="ag-sum-card">
-      <header class="ag-sum-top">
-        <span class="ag-sum-orb">${bootAiMark()}</span>
-        <div><p class="ag-sum-kicker">Agent summary · ${agSumEsc(d.kicker)}</p>
-        <h2 class="ag-sum-head">${agSumEsc(tele ? tele.did() : d.kicker)}</h2></div>
+      <header class="ag-sum-hero">
+        <span class="ag-sum-gem"><i>${I(d.icon)}</i></span>
+        <h2 class="ag-sum-head">${agSumEsc(tele ? tele.did() : "Summary")}</h2>
+        <p class="ag-sum-sub">${agSumEsc(tele ? tele.next() : "")}</p>
       </header>
       <div class="ag-sum-scroll"><div class="ag-sum-page">${d.body}</div></div>
-      <footer class="ag-sum-bar"><span>${agSumEsc(d.count)}</span><button type="button" class="ag-btn is-primary ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button></footer>
+      <footer class="ag-sum-bar"><span><i>${I("check")}</i>${agSumEsc(d.count)}</span><button type="button" class="ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button></footer>
     </div>`;
     el.addEventListener("click", (ev) => {
       if (!ev.target.closest("[data-sum-go]")) return;
