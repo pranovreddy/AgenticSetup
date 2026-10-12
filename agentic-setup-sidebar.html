@@ -12117,6 +12117,22 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
 .ag-sum-go svg{ width:16px; height:16px; }
 @media (prefers-reduced-motion:reduce){ .ag-sum-gem{ animation:none; } }
 
+/* ---- Summary cards: one blue theme, a little more polish ---- */
+.ag-sum-go{ background:linear-gradient(180deg, #3b82f6, #1d4ed8) !important; box-shadow:0 14px 28px rgba(37,99,235,.34), inset 0 1px 0 rgba(255,255,255,.28) !important; }
+.ag-sum-go:hover{ box-shadow:0 18px 34px rgba(37,99,235,.42), inset 0 1px 0 rgba(255,255,255,.28) !important; }
+.ag-sum-bar > span i{ background:linear-gradient(155deg,#5b95ff,#2563eb) !important; box-shadow:0 4px 10px rgba(37,99,235,.28); }
+.ag-pl-av{ color:#1e3a8a !important; box-shadow:0 0 0 3px #fff, 0 8px 18px rgba(37,99,235,.14) !important; }
+.ag-pl-pill{ background:#eef4ff !important; color:#1e40af !important; box-shadow:inset 0 0 0 1px rgba(37,99,235,.08); }
+.ag-pl-pill.is-on{ background:linear-gradient(180deg,#dbe8ff,#cfe0ff) !important; color:#1d4ed8 !important; }
+.ag-pl-row{ margin:0 -14px; padding:11px 14px; border-radius:20px; transition:background 200ms; }
+.ag-pl-row:hover{ background:rgba(37,99,235,.045); }
+.ag-pl-dot{ background:#bcd0f5; }
+.ag-sum-seg .is-hi, .ag-sum-legend .is-hi{ background:linear-gradient(90deg,#1d4ed8,#3b82f6) !important; }
+.ag-sum-seg .is-mid, .ag-sum-legend .is-mid{ background:#93b4f5 !important; }
+.ag-sum-seg .is-lo, .ag-sum-legend .is-lo{ background:#d7e0f1 !important; }
+.ag-sum-hero .ag-sum-sub{ color:#5f7396; }
+.ag-pl-txt b{ color:#0f1f3d; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -14776,7 +14792,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
   /* ---- Agent summary: a glass overlay over the blurred step; CTA reveals the full details ---- */
   const agSumDone = new Set();
   const agSumEsc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const AG_PL_TONES = [["#d8f0e0", "#16a34a"], ["#fbe0ea", "#d6336c"], ["#e2dcfb", "#6d4fe0"], ["#fde7c9", "#e07a12"], ["#d7ebfb", "#1f7fd0"]];
+  const AG_PL_TONES = [["#dbe8ff", "#1d4ed8"], ["#cfe0ff", "#2563eb"], ["#e3edff", "#1e40af"], ["#d3e3ff", "#3b82f6"], ["#e9f1ff", "#1d4ed8"]];
   const agPlTone = (n) => AG_PL_TONES[n % AG_PL_TONES.length];
   const agPlTick = `<i class="ag-pl-tick" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 .8l1.9 1.2 2.2-.1.9 2 1.9 1.1-.3 2.2 1 2-1.7 1.5-.5 2.1-2.1.6-1.4 1.7L8 14.2l-2 .9-1.4-1.7-2.1-.6-.5-2.1L.3 9.2l1-2L1 5l1.9-1.1.9-2 2.2.1z" fill="#38bdf8"/><path d="M5.3 8.1l1.9 1.9 3.5-3.7" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>`;
   function agSummaryData(key) {
@@ -14810,7 +14826,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
         body: `<ul class="ag-pl">${AG_PARTNERS.map((p, n) => { const [bg, fg] = agPlTone(n); const on = p.share > 0; return row(n,
           `<span class="ag-pl-av" style="--bg:${on ? bg : "#e9edf4"}">${agSumEsc(p.name.replace(/^(Bharti|Reliance) /, "").slice(0, 2).toUpperCase())}</span>`,
           agSumEsc(p.name),
-          on ? `<em style="color:${fg}">${p.best ? "Selected · best rate" : "Selected"}</em>` : `<em style="color:#94a3b8">Not selected</em>`,
+          on ? `<em style="color:${fg}">${p.best ? "Selected · best rate" : "Selected"}</em>` : `<em style="color:#8a9bb5">Not selected</em>`,
           `${agSumEsc(p.reg)} registration<i class="ag-pl-dot"></i>${agSumEsc(p.mig)} migration`,
           `<span class="ag-pl-pill${on ? " is-on" : ""}">${on ? p.share + "% of volume" : "No volume"}</span>`); }).join("")}</ul>`,
       };
