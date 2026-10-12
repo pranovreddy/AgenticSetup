@@ -11715,7 +11715,7 @@ html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
 /* ---- Steps as a pill, same family as the logo and user pill: icons only, names on hover ---- */
 .setup-layout .cl-overview{ padding-top:0 !important; }
 .ag-telcard{
-  position:fixed !important; z-index:39; left:14px; top:144px; width:56px !important; flex:none !important; margin:0 !important; border-radius:28px; overflow:visible !important;
+  position:fixed !important; z-index:39; left:14px; top:50%; transform:translateY(-50%); width:56px !important; flex:none !important; margin:0 !important; border-radius:28px; overflow:visible !important;
 }
 .ag-telcard .ag-tel-orbit{ min-height:0 !important; height:360px; flex:none; }
 .ag-telcard .ag-tel-nav, .ag-telcard .ag-tel-path, .ag-telcard .ag-tel-cap{ display:none !important; }
@@ -11750,6 +11750,18 @@ html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
 /* blob centred with the agent text beside it */
 body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai{ align-items:center !important; gap:8px !important; }
 body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welcome-ai-avatar{ flex:0 0 52px !important; width:52px !important; height:52px !important; margin:0 !important; }
+
+/* pills arrive softly once the cover is gone */
+@keyframes ag-pill-in{ from{ opacity:0; } to{ opacity:1; } }
+.setup-layout .cl-overview::before, .setup-layout .cl-overview .cl-overview-brand, .setup-layout .cl-overview .cl-overview-foot, .ag-telcard{ animation:ag-pill-in 700ms var(--cv-ease) both; }
+.ag-telcard{ animation-delay:120ms; }
+@media (prefers-reduced-motion:reduce){ .setup-layout .cl-overview::before, .setup-layout .cl-overview .cl-overview-brand, .setup-layout .cl-overview .cl-overview-foot, .ag-telcard{ animation:none !important; } }
+
+/* insight stays at the top and actions at the bottom; scrolling content fades under both */
+.setup-layout .cl-detail .kyc-body, .setup-layout .cl-detail .ag-agree{
+  -webkit-mask-image:linear-gradient(180deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+  mask-image:linear-gradient(180deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+}
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -12662,7 +12674,7 @@ body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic .welco
     return "m";
   }
 
-  function agFileIntoFolder(key, { instant = false } = {}) {
+  function agFileIntoFolder(key, { instant = true } = {}) {
     const id = String(key);
     if (state.navFiled[id]) return;
     const stage = id === "m" ? 3 : id.startsWith("e") ? 2 : 1;
