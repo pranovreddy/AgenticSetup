@@ -12133,6 +12133,18 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
 .ag-sum-hero .ag-sum-sub{ color:#5f7396; }
 .ag-pl-txt b{ color:#0f1f3d; }
 
+/* ---- Summary actions: View details, optional skip, primary approval ---- */
+.ag-sum-bar{ flex-direction:column !important; align-items:stretch !important; gap:14px !important; padding:14px 44px 26px !important; }
+.ag-sum-info{ display:flex; align-items:center; gap:10px; margin:0; font-size:13.5px; font-weight:560; color:#35507a; }
+.ag-sum-info i{ display:grid; place-items:center; flex:none; width:24px; height:24px; border-radius:8px; background:linear-gradient(155deg,#5b95ff,#2563eb); color:#fff; font-style:normal; } .ag-sum-info i svg{ width:12px; height:12px; stroke-width:2.6; }
+.ag-sum-actions{ display:flex; align-items:center; gap:10px; }
+.ag-sum-spacer{ flex:1; }
+.ag-sum-link{ display:inline-flex; align-items:center; gap:6px; height:46px; padding:0 6px; border:0; background:none; cursor:pointer; font:inherit; font-size:14.5px; font-weight:600; color:#2563eb; border-radius:14px; transition:color 160ms, gap 200ms; }
+.ag-sum-link:hover{ color:#1d4ed8; gap:9px; } .ag-sum-link svg{ width:14px; height:14px; }
+.ag-sum-skip{ height:50px; padding:0 20px; border:1px solid #d7e2f6; border-radius:18px; background:#fff; cursor:pointer; font:inherit; font-size:14.5px; font-weight:600; color:#35507a; transition:background 160ms, border-color 160ms; }
+.ag-sum-skip:hover{ background:#f3f7ff; border-color:#b9cdf2; }
+.ag-sum-bar > span{ display:none; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -14800,7 +14812,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     if (key === "2") {
       const people = agTeamPeople();
       return {
-        icon: "users", cta: "Review and invite", count: `${people.length} suggested users, from your DLT record`,
+        icon: "users", cta: "Send invites", skip: "Do it later", count: `${people.length} suggested users, from your DLT record`,
         body: `<ul class="ag-pl">${people.map((p, n) => { const [bg, fg] = agPlTone(n); return row(n,
           `<span class="ag-pl-av" style="--bg:${bg}">${agSumEsc(p.initials)}</span>`,
           agSumEsc(p.name),
@@ -14811,7 +14823,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     }
     if (key === "e0") {
       return {
-        icon: "layers", cta: "Review brands", count: `${AG_BRANDS.length} brands · ${agLobTotal()} LOBs, from your DLT registrations`,
+        icon: "layers", cta: "Confirm and continue", count: `${AG_BRANDS.length} brands · ${agLobTotal()} LOBs, from your DLT registrations`,
         body: `<ul class="ag-pl">${AG_BRANDS.map((b, n) => { const [bg, fg] = agPlTone(n); return row(n,
           `<span class="ag-pl-av is-logo" style="--bg:${bg}"><img src="${b.logo}" alt=""></span>`,
           agSumEsc(b.name),
@@ -14822,7 +14834,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     }
     if (key === "e1") {
       return {
-        icon: "phone", cta: "Review partners", count: `${AG_PARTNERS.filter((p) => p.share > 0).length} of ${AG_PARTNERS.length} partners selected`,
+        icon: "phone", cta: "Approve partners", count: `${AG_PARTNERS.filter((p) => p.share > 0).length} of ${AG_PARTNERS.length} partners selected. Approving accepts each partner's rate card terms.`,
         body: `<ul class="ag-pl">${AG_PARTNERS.map((p, n) => { const [bg, fg] = agPlTone(n); const on = p.share > 0; return row(n,
           `<span class="ag-pl-av" style="--bg:${on ? bg : "#e9edf4"}">${agSumEsc(p.name.replace(/^(Bharti|Reliance) /, "").slice(0, 2).toUpperCase())}</span>`,
           agSumEsc(p.name),
@@ -14833,7 +14845,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     }
     if (key === "e2") {
       return {
-        icon: "list", cta: "Review mappings", count: "98 of 100 templates mapped",
+        icon: "list", cta: "Confirm mappings", skip: "Skip for now", count: "98 of 100 templates mapped",
         body: `<div class="ag-sum-seg" role="img" aria-label="25 high confidence, 71 to review, 2 unmapped"><span class="is-hi" style="flex:25"></span><span class="is-mid" style="flex:71"></span><span class="is-lo" style="flex:2"></span></div>
         <ul class="ag-sum-legend"><li><i class="is-hi"></i>25 high confidence</li><li><i class="is-mid"></i>71 to review</li><li><i class="is-lo"></i>2 unmapped</li></ul>
         <ul class="ag-pl">${AG_TM_LOBS.map((l, n) => { const [bg, fg] = agPlTone(n); const t = l.suggested + l.review; return row(n,
@@ -14846,6 +14858,38 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     }
     return null;
   }
+  let agSumHold = "";
+  let agSkipToast = false;
+  function agSummaryApprove(key) {
+    const q = (sel) => document.querySelector(sel);
+    if (key === "2") { q('[data-action="ag-send-invites"]')?.click(); return; }
+    if (key === "e1") {
+      document.querySelectorAll('.ag-rate-accept input[type="checkbox"]').forEach((c) => { if (!c.checked) c.click(); });
+      setTimeout(() => q('[data-action="ag-estate-confirm"][data-estate="1"]')?.click(), 350);
+      return;
+    }
+    const i = key.slice(1);
+    q(`[data-action="ag-estate-confirm"][data-estate="${i}"]`)?.click();
+  }
+  function agSummarySkip(key) {
+    if (key === "2") {
+      document.querySelector('[data-action="ag-team-later"]')?.click();
+      setTimeout(() => {
+        agSkipToast = true;
+        state.successAuto = { key: "2", at: Date.now() };
+        agDoneToastShow("2");
+        successAutoProceed();
+      }, 1000);
+      return;
+    }
+    if (key === "e2") {
+      state.done.estate[2] = true;
+      state.doneAt.e2 = agStamp();
+      agSkipToast = true;
+      successAutoArm("e2");
+      render();
+    }
+  }
   function agSummaryReopenSync(show, key) {
     let b = document.getElementById("agSumReopen");
     if (!show) { b?.remove(); return; }
@@ -14856,7 +14900,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     b.type = "button";
     b.className = "ag-sum-reopen";
     b.dataset.key = key;
-    b.innerHTML = `<i>${I("spark")}</i>Summary`;
+    b.innerHTML = `<i>${I("spark")}</i>View summary`;
     b.addEventListener("click", () => {
       agSumDone.delete(key);
       b.remove();
@@ -14874,7 +14918,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
       && !document.querySelector(".ag-step-ai, .ag-step-intro, .ag-gtm-intro")
       && !document.getElementById("agNextUp");
     const want = ready && !agSumDone.has(key);
-    agSummaryReopenSync(ready && agSumDone.has(key) && !(have && have.dataset.leaving === "1"), key);
+    agSummaryReopenSync(ready && agSumDone.has(key) && agSumHold !== key && !(have && have.dataset.leaving === "1"), key);
     if (!want) { if (have && have.dataset.leaving !== "1") have.remove(); return; }
     if (have && have.dataset.key === key) return;
     have?.remove();
@@ -14895,15 +14939,31 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
         <p class="ag-sum-sub">${agSumEsc(tele ? tele.next() : "")}</p>
       </header>
       <div class="ag-sum-scroll"><div class="ag-sum-page">${d.body}</div></div>
-      <footer class="ag-sum-bar"><span><i>${I("check")}</i>${agSumEsc(d.count)}</span><button type="button" class="ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button></footer>
+      <footer class="ag-sum-bar">
+        <p class="ag-sum-info"><i>${I("check")}</i>${agSumEsc(d.count)}</p>
+        <div class="ag-sum-actions">
+          <button type="button" class="ag-sum-link" data-sum-details>View details${I("arrow", "sm")}</button>
+          <span class="ag-sum-spacer"></span>
+          ${d.skip ? `<button type="button" class="ag-sum-skip" data-sum-skip>${agSumEsc(d.skip)}</button>` : ""}
+          <button type="button" class="ag-sum-go" data-sum-go>${I("check", "sm")}${agSumEsc(d.cta)}</button>
+        </div>
+      </footer>
     </div>`;
-    el.addEventListener("click", (ev) => {
-      if (!ev.target.closest("[data-sum-go]")) return;
+    const close = (after) => {
       agSumDone.add(key);
+      agSumHold = key;
+      setTimeout(() => { if (agSumHold === key) { agSumHold = ""; agSummarySync(); } }, 3500);
       el.dataset.leaving = "1";
       el.classList.add("is-leaving");
       document.body.classList.add("ag-sum-landing");
       setTimeout(() => { el.remove(); document.body.classList.remove("ag-sum-landing"); agSummarySync(); }, 620);
+      if (after) setTimeout(after, 300);
+    };
+    el.addEventListener("click", (ev) => {
+      if (el.dataset.leaving === "1") return;
+      if (ev.target.closest("[data-sum-details]")) { agSumHold = ""; close(); return; }
+      if (ev.target.closest("[data-sum-skip]")) { close(() => agSummarySkip(key)); return; }
+      if (ev.target.closest("[data-sum-go]")) { close(() => agSummaryApprove(key)); }
     });
     document.body.appendChild(el);
   }
@@ -16379,7 +16439,8 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
   };
   let agDoneToastTimer = null;
   function agDoneToastShow(k) {
-    const msg = AG_DONE_TOAST[k];
+    let msg = AG_DONE_TOAST[k];
+    if (agSkipToast) { agSkipToast = false; msg = k === "2" ? ["Team invites skipped", "You can add people any time from Users and Roles."] : ["Template mapping skipped", "You can map templates any time later."]; }
     if (!msg) return;
     let el = document.getElementById("agDoneToast");
     if (!el) {
