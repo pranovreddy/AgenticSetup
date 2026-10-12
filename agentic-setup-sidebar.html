@@ -14705,7 +14705,7 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
       const [x0, y0, x1, y1] = AG_LOADER_BOX[crop.dataset.loader] || [0, 0, 720, 360];
       const bw = x1 - x0;
       const bh = y1 - y0;
-      const s = Math.max(0.5, Math.min((host.clientWidth - 64) / bw, (host.clientHeight - 48) / bh, 1.5));
+      const s = Math.max(0.5, Math.min((host.clientWidth - 64) / bw, (host.clientHeight - 48) / bh, 1));
       crop.style.width = Math.round(bw * s) + "px";
       crop.style.height = Math.round(bh * s) + "px";
       frame.style.transform = `translate(${-x0 * s}px, ${-y0 * s}px) scale(${s})`;
