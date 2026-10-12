@@ -11784,6 +11784,14 @@ body.ag-gate .ag-brief-read{ background:linear-gradient(180deg, rgba(255,255,255
 body.ag-gate .shell:has(.setup-layout) .cl-detail-card:has(.ag-success){ opacity:0 !important; transform:translate(-50%, calc(-50% - 10px)) scale(.99); transition:opacity 260ms ease, transform 320ms ease; pointer-events:none; animation:none !important; }
 @media (prefers-reduced-motion:reduce){ body.ag-gate::before, body.ag-gate .shell:has(.setup-layout) .cl-detail-card{ animation:none !important; } }
 
+/* reading progress: a clearer, brighter meter */
+.ag-brief-read .ag-brief-bar{ height:6px !important; border-radius:99px; background:#dbe6fb !important; overflow:hidden; box-shadow:inset 0 0 0 1px rgba(37,99,235,.08); }
+.ag-brief-read .ag-brief-bar i{ background:linear-gradient(90deg,#60a5fa,#2563eb) !important; border-radius:99px; box-shadow:0 0 10px rgba(37,99,235,.45); }
+.ag-brief-read.is-read .ag-brief-bar i{ background:linear-gradient(90deg,#34d399,#15814c) !important; box-shadow:0 0 10px rgba(21,129,76,.4); }
+.ag-brief-read .ag-brief-readtxt{ font-size:12.5px !important; font-weight:640 !important; color:#2563eb !important; }
+.ag-brief-read.is-read .ag-brief-readtxt{ color:#15663f !important; }
+.ag-brief-read{ padding-top:14px !important; padding-bottom:12px !important; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
