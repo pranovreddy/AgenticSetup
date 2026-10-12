@@ -1,0 +1,28 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const fs=require('fs');
+(async()=>{
+  const b = await chromium.launch({executablePath:'/opt/pw-browsers/chromium'});
+  const p = await b.newPage();
+  await p.goto('file:///home/user/AgenticSetup/references/Animations_claude_-_Agent_Loaders_v35.html?test');
+  await p.waitForTimeout(1500);
+  let emb = await p.evaluate(()=>buildEmbedHtml('brand',0));
+  const must=(c,m)=>{if(!c)throw new Error(m)};
+  must(emb.includes('const EMBED_ID = "brand";'),'id');
+  emb=emb.replace('const EMBED_ID = "brand";','const EMBED_ID = "__AG_ID__";').replace('const EMBED_VI = 0;','const EMBED_VI = __AG_VI__;');
+  const a='(function bootEmbed() {'; must(emb.includes(a),'boot');
+  emb=emb.replace(a,a+'try{history.replaceState=function(){};}catch(e){}');
+  const g='  go(grp.id, vi, true);\n})();'; must(emb.includes(g),'go');
+  emb=emb.replace(g,"  go(grp.id, vi, true);\n  try{const lo=document.getElementById('loader');const post=()=>parent.postMessage({agLoader:true,state:lo.dataset.state},'*');new MutationObserver(post).observe(lo,{attributes:true,attributeFilter:['data-state']});post();const pc=document.getElementById('pcount');if(pc){const sp=()=>{const n=parseInt((pc.querySelector('b')||{}).textContent,10);if(n)parent.postMessage({agLoader:true,step:n},'*');};new MutationObserver(sp).observe(pc,{childList:true,subtree:true,characterData:true});sp();}}catch(e){}\n})();");
+  emb=emb.replace("body{min-height:0;background:transparent}.embed main{padding:8px 12px 16px}","body{min-height:0;background:transparent;overflow:hidden}.embed main{padding:0}");
+  const lit=JSON.stringify(emb).replace(/<\//g,'<\\/').replace(new RegExp('\\u2028','g'),'\\u2028').replace(new RegExp('\\u2029','g'),'\\u2029');
+  let h=fs.readFileSync('/home/user/AgenticSetup/agentic-setup.html','utf8');
+  const i=h.indexOf('  const AG_LOADER_DOC = '); must(i>0,'doc');
+  const j=h.indexOf('\n',i);
+  h=h.slice(0,i)+'  const AG_LOADER_DOC = '+lit+';'+h.slice(j);
+  const m='    "1": { id: "kyc", vi: 0, label: "Fetching your business details" },';
+  if(!h.includes('id: "agreements"')) h=h.replace(m,'    "0": { id: "agreements", vi: 0, label: "Reading your agreements" },\n'+m+'\n    "2": { id: "team", vi: 0, label: "Finding your team" },');
+  if(!h.includes('"e1": { id')) h=h.replace('    "e0": {','    "e1": { id: "gtm", vi: 0, label: "Choosing your GTM partners" },\n    "e0": {');
+  fs.writeFileSync('/home/user/AgenticSetup/agentic-setup.html',h);
+  console.log('ok');
+  await b.close();
+})();
