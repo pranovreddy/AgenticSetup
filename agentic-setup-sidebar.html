@@ -11844,55 +11844,84 @@ body.ag-gate::before{ background:radial-gradient(40% 36% at 18% 22%, rgba(96,150
   border:1px solid rgba(37,99,235,.12) !important; border-radius:14px !important; padding:12px 16px !important; margin-top:14px !important; margin-bottom:10px !important;
 }
 
-/* ---- Agent summary overlay ---- */
+/* ---- Agent summary: a full page of its own on the canvas; the CTA lifts it away to reveal the details ---- */
 .ag-sum{
-  position:absolute; inset:0; z-index:30; display:grid; place-items:center; padding:24px; overflow:hidden;
-  background:radial-gradient(46% 40% at 24% 22%, rgba(96,150,255,.30), transparent 70%), radial-gradient(40% 36% at 80% 74%, rgba(167,139,250,.22), transparent 70%), rgba(248,250,253,.30);
-  -webkit-backdrop-filter:blur(18px) saturate(1.5); backdrop-filter:blur(18px) saturate(1.5);
-  animation:ag-pill-in 480ms var(--cv-ease) both;
+  position:absolute; inset:0; z-index:30; display:flex; flex-direction:column; overflow:hidden;
+  background:
+    radial-gradient(50% 36% at 12% 0%, rgba(96,150,255,.14), transparent 70%),
+    radial-gradient(40% 30% at 86% 2%, rgba(139,112,255,.10), transparent 70%),
+    #f8fafd;
+  animation:ag-pill-in 420ms var(--cv-ease) both;
 }
-.ag-sum.is-leaving{ opacity:0; -webkit-backdrop-filter:blur(0); backdrop-filter:blur(0); transition:opacity 420ms ease, backdrop-filter 420ms ease, -webkit-backdrop-filter 420ms ease; pointer-events:none; }
-.ag-sum-card{
-  width:min(520px, 100%); padding:26px 28px 24px; border-radius:24px;
-  background:linear-gradient(160deg, rgba(255,255,255,.82), rgba(255,255,255,.58));
-  border:1px solid rgba(255,255,255,.8); box-shadow:0 30px 70px rgba(30,41,80,.20), 0 2px 8px rgba(30,41,80,.06), inset 0 1px 0 rgba(255,255,255,.95);
-  -webkit-backdrop-filter:blur(26px) saturate(1.5); backdrop-filter:blur(26px) saturate(1.5);
-  animation:ag-gate-card-in 560ms var(--cv-ease) 80ms both;
-}
-.ag-sum.is-leaving .ag-sum-card{ transform:translateY(-8px) scale(.985); transition:transform 420ms var(--cv-ease); }
+.ag-sum-scroll{ flex:1 1 0; min-height:0; overflow-y:auto; scrollbar-width:thin; }
+.ag-sum-page{ padding:64px 32px 110px 28px; max-width:1180px; }
+.ag-sum.is-leaving{ pointer-events:none; opacity:0; transform:translateY(-44px); transition:opacity 520ms var(--cv-ease), transform 620ms var(--cv-ease); }
+body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:ag-details-rise 680ms var(--cv-ease) both; }
+@keyframes ag-details-rise{ from{ opacity:0; transform:translateY(42px); } to{ opacity:1; transform:none; } }
+.ag-sum-top{ margin-bottom:22px; }
 .ag-sum-kicker{ display:flex; align-items:center; gap:8px; margin:0 0 10px; font-family:"Geist Mono", ui-monospace, monospace; font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#2563eb; }
 .ag-sum-dot{ width:7px; height:7px; border-radius:50%; background:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,.14); }
-.ag-sum-head{ margin:0 0 4px; font-size:22px; line-height:1.25; font-weight:680; letter-spacing:-.4px; color:var(--cv-ink); }
-.ag-sum-sub{ margin:0 0 18px; font-size:14px; line-height:1.5; color:var(--cv-ink-2); }
-.ag-sum-viz{ margin-bottom:16px; }
-.ag-sum-people, .ag-sum-brands{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.ag-sum-people li, .ag-sum-brands li{ display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:14px; background:rgba(255,255,255,.65); box-shadow:inset 0 0 0 1px rgba(37,99,235,.08); animation:cv-rise 480ms var(--cv-ease) calc(240ms + var(--n) * 70ms) both; min-width:0; }
-.ag-sum-av{ flex:none; display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:linear-gradient(155deg,#5b95ff,#2563eb); color:#fff; font-size:11px; font-weight:650; }
-.ag-sum-who{ display:flex; flex-direction:column; min-width:0; }
-.ag-sum-who b, .ag-sum-brands b{ font-size:13px; font-weight:620; color:var(--cv-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.ag-sum-who span{ font-size:11.5px; color:var(--cv-mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.ag-sum-logo{ flex:none; display:grid; place-items:center; width:30px; height:30px; border-radius:9px; background:#fff; overflow:hidden; }
-.ag-sum-logo img{ width:24px; height:24px; object-fit:contain; }
-.ag-sum-brands b{ flex:1; min-width:0; }
-.ag-sum-pill{ flex:none; padding:2px 8px; border-radius:99px; background:#eef4ff; color:#2563eb; font-size:11px; font-weight:600; }
-.ag-sum-split{ display:flex; gap:6px; height:46px; }
-.ag-sum-split span{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 14px; border-radius:14px; color:#fff; font-size:13px; animation:cv-rise 480ms var(--cv-ease) 260ms both; }
-.ag-sum-split span:nth-child(1){ background:linear-gradient(135deg,#5b95ff,#2563eb); }
-.ag-sum-split span:nth-child(2){ background:linear-gradient(135deg,#a78bfa,#6d4fe0); }
-.ag-sum-split b{ font-weight:620; } .ag-sum-split i{ font-style:normal; font-weight:700; }
-.ag-sum-seg{ display:flex; gap:4px; height:14px; }
-.ag-sum-seg span, .ag-sum-legend i{ border-radius:99px; }
-.ag-sum-seg .is-hi, .ag-sum-legend .is-hi{ background:#16a34a; } .ag-sum-seg .is-mid, .ag-sum-legend .is-mid{ background:#f59e0b; } .ag-sum-seg .is-lo, .ag-sum-legend .is-lo{ background:#cbd5e1; }
-.ag-sum-seg span{ transform-origin:left; animation:ag-sum-grow 700ms var(--cv-ease) 280ms both; }
+.ag-sum-head{ margin:0 0 6px; max-width:62ch; font-size:26px; line-height:1.25; font-weight:690; letter-spacing:-.5px; color:var(--cv-ink); }
+.ag-sum-sub{ margin:0; font-size:15px; line-height:1.5; color:var(--cv-ink-2); }
+.ag-sum-tiles{ display:flex; gap:12px; margin-bottom:22px; flex-wrap:wrap; }
+.ag-sum-tiles > div{ flex:1 1 150px; max-width:240px; padding:14px 16px; border-radius:16px; background:rgba(255,255,255,.7); border:1px solid rgba(37,99,235,.08); box-shadow:0 1px 2px rgba(15,23,42,.04); animation:cv-rise 480ms var(--cv-ease) calc(120ms + var(--n) * 70ms) both; }
+.ag-sum-tiles b{ display:block; font-size:22px; line-height:1.15; font-weight:700; letter-spacing:-.3px; color:var(--cv-ink); white-space:nowrap; }
+.ag-sum-tiles span{ display:block; margin-top:3px; font-size:12px; color:var(--cv-mute); }
+.ag-sum-grid{ display:grid; gap:14px; }
+.ag-sum-grid.is-people{ grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); }
+.ag-sum-grid.is-brands{ grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); }
+.ag-sum-grid.is-partners{ grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); }
+.ag-sum-grid.is-lobs{ grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); }
+.ag-sum-person, .ag-sum-brand, .ag-sum-partner, .ag-sum-lob{
+  padding:16px 18px; border-radius:18px; background:rgba(255,255,255,.78); border:1px solid rgba(37,99,235,.08);
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 10px 26px rgba(15,23,42,.04); animation:cv-rise 520ms var(--cv-ease) calc(200ms + var(--n) * 80ms) both; min-width:0;
+}
+.ag-sum-person header, .ag-sum-brand header, .ag-sum-partner header, .ag-sum-lob header{ display:flex; align-items:center; gap:10px; }
+.ag-sum-person header{ margin-bottom:12px; }
+.ag-sum-av{ flex:none; display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:linear-gradient(155deg,#5b95ff,#2563eb); color:#fff; font-size:13px; font-weight:650; }
+.ag-sum-who{ flex:1; display:flex; flex-direction:column; min-width:0; }
+.ag-sum-who b{ font-size:14.5px; font-weight:640; color:var(--cv-ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ag-sum-who span{ font-size:12px; color:var(--cv-mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ag-sum-role, .ag-sum-pill{ flex:none; padding:3px 10px; border-radius:99px; background:#eef4ff; color:#2563eb; font-size:11.5px; font-weight:620; white-space:nowrap; }
+.ag-sum-pill.is-on{ background:#e7f6ee; color:#15663f; }
+.ag-sum-person dl{ margin:0; display:flex; flex-direction:column; gap:7px; padding-top:12px; border-top:1px solid #edf1f8; }
+.ag-sum-person dl div{ display:flex; justify-content:space-between; gap:12px; font-size:12.5px; }
+.ag-sum-person dt{ color:var(--cv-mute); flex:none; }
+.ag-sum-person dd{ margin:0; color:var(--cv-ink); font-weight:540; text-align:right; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ag-sum-brand header{ margin-bottom:12px; }
+.ag-sum-brand header b, .ag-sum-lob header b, .ag-sum-partner header b{ flex:1; min-width:0; font-size:15px; font-weight:650; color:var(--cv-ink); }
+.ag-sum-logo{ flex:none; display:grid; place-items:center; width:34px; height:34px; border-radius:10px; background:#fff; box-shadow:inset 0 0 0 1px #e8eef8; overflow:hidden; }
+.ag-sum-logo img{ width:26px; height:26px; object-fit:contain; }
+.ag-sum-brand ul, .ag-sum-lob ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+.ag-sum-brand li{ display:flex; flex-direction:column; gap:5px; padding:9px 0; border-top:1px solid #edf1f8; }
+.ag-sum-brand li b{ font-size:13.5px; font-weight:600; color:var(--cv-ink); }
+.ag-sum-brand li span{ display:flex; flex-wrap:wrap; gap:5px; }
+.ag-sum-brand li i{ font-style:normal; padding:2px 8px; border-radius:99px; background:#f2f5fb; color:var(--cv-ink-2); font-size:11.5px; }
+.ag-sum-split{ display:flex; gap:8px; height:56px; margin-bottom:16px; }
+.ag-sum-split span{ display:flex; flex-direction:column; justify-content:center; padding:0 18px; border-radius:16px; color:#fff; animation:cv-rise 480ms var(--cv-ease) 160ms both; min-width:0; }
+.ag-sum-split span:nth-child(1){ background:linear-gradient(135deg,#5b95ff,#2563eb); } .ag-sum-split span:nth-child(2){ background:linear-gradient(135deg,#a78bfa,#6d4fe0); }
+.ag-sum-split b{ font-size:14px; font-weight:650; } .ag-sum-split i{ font-style:normal; font-size:12px; opacity:.9; }
+.ag-sum-partner{ display:flex; flex-direction:column; gap:10px; }
+.ag-sum-partner:not(.is-picked){ opacity:.72; }
+.ag-sum-partner.is-picked{ border-color:rgba(37,99,235,.28); box-shadow:0 0 0 3px rgba(37,99,235,.07), 0 10px 26px rgba(37,99,235,.10); }
+.ag-sum-rate{ display:flex; align-items:baseline; gap:8px; } .ag-sum-rate b{ font-size:20px; font-weight:700; color:var(--cv-ink); letter-spacing:-.3px; } .ag-sum-rate span{ font-size:12px; color:var(--cv-mute); }
+.ag-sum-share{ height:6px; border-radius:99px; background:#e6edf9; overflow:hidden; } .ag-sum-share i{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,#60a5fa,#2563eb); }
+.ag-sum-partner small{ font-size:12px; color:var(--cv-mute); }
+.ag-sum-seg{ display:flex; gap:4px; height:14px; margin-bottom:18px; }
+.ag-sum-seg span{ border-radius:99px; transform-origin:left; animation:ag-sum-grow 700ms var(--cv-ease) 200ms both; }
+.ag-sum-seg .is-hi{ background:#16a34a; } .ag-sum-seg .is-mid{ background:#f59e0b; } .ag-sum-seg .is-lo{ background:#cbd5e1; }
 @keyframes ag-sum-grow{ from{ transform:scaleX(0); opacity:0; } to{ transform:none; opacity:1; } }
-.ag-sum-legend{ list-style:none; margin:10px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:6px 16px; font-size:12.5px; color:var(--cv-ink-2); }
-.ag-sum-legend li{ display:flex; align-items:center; gap:6px; } .ag-sum-legend i{ width:8px; height:8px; }
-.ag-sum-tiles{ display:flex; gap:10px; margin-bottom:20px; }
-.ag-sum-tiles > div{ flex:1; min-width:0; padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.62); box-shadow:inset 0 0 0 1px rgba(37,99,235,.08); animation:cv-rise 480ms var(--cv-ease) calc(340ms + var(--n) * 70ms) both; }
-.ag-sum-tiles b{ display:block; font-size:20px; line-height:1.15; font-weight:700; letter-spacing:-.3px; color:var(--cv-ink); white-space:nowrap; }
-.ag-sum-tiles span{ display:block; margin-top:3px; font-size:11.5px; color:var(--cv-mute); }
-.ag-sum-go{ width:100%; justify-content:center; height:46px; font-size:15px; }
-@media (prefers-reduced-motion:reduce){ .ag-sum, .ag-sum-card, .ag-sum li, .ag-sum-split span, .ag-sum-seg span, .ag-sum-tiles > div{ animation:none !important; } }
+.ag-sum-lobcount{ display:flex; align-items:baseline; gap:8px; margin:10px 0 8px; } .ag-sum-lobcount b{ font-size:26px; font-weight:700; letter-spacing:-.4px; color:var(--cv-ink); } .ag-sum-lobcount span{ font-size:12.5px; color:var(--cv-mute); }
+.ag-sum-lob li{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-top:1px solid #edf1f8; font-size:13px; color:var(--cv-ink); }
+.ag-sum-lob li i{ font-style:normal; font-weight:650; font-size:12px; padding:2px 8px; border-radius:99px; }
+.ag-sum-lob li i.is-hi{ background:#e7f6ee; color:#15663f; } .ag-sum-lob li i.is-mid{ background:#fff4df; color:#9a5b0a; }
+.ag-sum-bar{
+  position:absolute; left:0; right:0; bottom:0; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:34px 32px 20px 28px;
+  background:linear-gradient(180deg, rgba(248,250,253,0), rgba(248,250,253,.92) 55%, #f8fafd);
+}
+.ag-sum-bar > span{ font-size:13px; color:var(--cv-mute); }
+.ag-sum-go{ min-width:220px; justify-content:center; height:46px; font-size:15px; }
+@media (prefers-reduced-motion:reduce){ .ag-sum, .ag-sum-person, .ag-sum-brand, .ag-sum-partner, .ag-sum-lob, .ag-sum-split span, .ag-sum-seg span, .ag-sum-tiles > div, body.ag-revealing .cl-detail-card > :not(.ag-sum){ animation:none !important; } .ag-sum.is-leaving{ transition:none; } }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14555,36 +14584,54 @@ body.ag-gate::before{ background:radial-gradient(40% 36% at 18% 22%, rgba(96,150
   const agSumDone = new Set();
   const agSumEsc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   function agSummaryData(key) {
+    const rows = (list) => list.join("");
     if (key === "2") {
       const people = agTeamPeople();
       const roles = [...new Set(people.map((p) => p.platformRole))];
       return {
-        kicker: "Team", head: `${people.length} people found on your DLT record`, sub: "Each one has a role and permissions matched.", cta: "Review and invite",
-        viz: `<ul class="ag-sum-people">${people.slice(0, 4).map((p, n) => `<li style="--n:${n}"><span class="ag-sum-av">${agSumEsc(p.initials)}</span><span class="ag-sum-who"><b>${agSumEsc(p.name)}</b><span>${agSumEsc(p.platformRole)}</span></span></li>`).join("")}</ul>`,
-        tiles: [[people.length, "people"], [roles.length, "roles matched"]],
+        kicker: "Team", cta: "Review and invite", count: `${people.length} suggested users`,
+        tiles: [[people.length, "people found"], [roles.length, "roles matched"], ["DLT", "source record"]],
+        body: `<div class="ag-sum-grid is-people">${rows(people.map((p, n) => `<article class="ag-sum-person" style="--n:${n}">
+          <header><span class="ag-sum-av">${agSumEsc(p.initials)}</span><span class="ag-sum-who"><b>${agSumEsc(p.name)}</b><span>${agSumEsc(p.designation || "")}</span></span><span class="ag-sum-role">${agSumEsc(p.platformRole)}</span></header>
+          <dl><div><dt>Email</dt><dd>${agSumEsc(p.email)}</dd></div><div><dt>Mobile</dt><dd>${agSumEsc(p.mobile)}</dd></div><div><dt>Department</dt><dd>${agSumEsc(p.department || "")}</dd></div></dl>
+        </article>`))}</div>`,
       };
     }
     if (key === "e0") {
       return {
-        kicker: "Brands and LOBs", head: `${AG_BRANDS.length} brands and ${agLobTotal()} lines of business`, sub: "Drafted from your DLT registrations.", cta: "Review brands",
-        viz: `<ul class="ag-sum-brands">${AG_BRANDS.slice(0, 4).map((b, n) => `<li style="--n:${n}"><span class="ag-sum-logo"><img src="${b.logo}" alt=""></span><b>${agSumEsc(b.name)}</b><span class="ag-sum-pill">${b.lobs.length} LOBs</span></li>`).join("")}</ul>`,
-        tiles: [[AG_BRANDS.length, "brands"], [agLobTotal(), "LOBs"], ["All", "bound to DLT"]],
+        kicker: "Brands and LOBs", cta: "Review brands", count: `${AG_BRANDS.length} brands · ${agLobTotal()} LOBs`,
+        tiles: [[AG_BRANDS.length, "brands"], [agLobTotal(), "lines of business"], ["All", "bound to DLT"]],
+        body: `<div class="ag-sum-grid is-brands">${rows(AG_BRANDS.map((b, n) => `<article class="ag-sum-brand" style="--n:${n}">
+          <header><span class="ag-sum-logo"><img src="${b.logo}" alt=""></span><b>${agSumEsc(b.name)}</b><span class="ag-sum-pill">${b.lobs.length} LOBs</span></header>
+          <ul>${b.lobs.map((l) => `<li><b>${agSumEsc(l.name)}</b><span>${(l.promos || []).slice(0, 2).map((x) => `<i>${agSumEsc(x)}</i>`).join("")}</span></li>`).join("")}</ul>
+        </article>`))}</div>`,
       };
     }
     if (key === "e1") {
       const chosen = AG_PARTNERS.filter((p) => p.share > 0);
-      const best = AG_PARTNERS.find((p) => p.best) || AG_PARTNERS[0];
       return {
-        kicker: "GTM partners", head: `${chosen.map((p) => p.name.replace(/^(Bharti|Reliance) /, "")).join(" and ")} selected`, sub: `Best of ${AG_PARTNERS.length} partners on rate and coverage.`, cta: "Review partners",
-        viz: `<div class="ag-sum-split" role="img" aria-label="Volume split">${chosen.map((p) => `<span style="flex:${p.share}"><b>${agSumEsc(p.name.replace(/^(Bharti|Reliance) /, ""))}</b><i>${p.share}%</i></span>`).join("")}</div>`,
-        tiles: [[AG_PARTNERS.length, "partners compared"], [best.reg, "best registration rate"], [chosen.map((p) => p.share).join(" / "), "volume split"]],
+        kicker: "GTM partners", cta: "Review partners", count: `${chosen.length} of ${AG_PARTNERS.length} partners selected`,
+        tiles: [[AG_PARTNERS.length, "partners compared"], [(AG_PARTNERS.find((p) => p.best) || AG_PARTNERS[0]).reg, "best registration rate"], [chosen.map((p) => p.share + "%").join(" / "), "volume split"]],
+        body: `<div class="ag-sum-split" role="img" aria-label="Volume split">${chosen.map((p) => `<span style="flex:${p.share}"><b>${agSumEsc(p.name)}</b><i>${p.share}% of volume</i></span>`).join("")}</div>
+        <div class="ag-sum-grid is-partners">${rows(AG_PARTNERS.map((p, n) => `<article class="ag-sum-partner${p.share > 0 ? " is-picked" : ""}" style="--n:${n}">
+          <header><b>${agSumEsc(p.name)}</b><span class="ag-sum-pill${p.share > 0 ? " is-on" : ""}">${p.share > 0 ? (p.best ? "Best rate" : "Selected") : "Not selected"}</span></header>
+          <div class="ag-sum-rate"><b>${agSumEsc(p.reg)}</b><span>registration</span></div>
+          <div class="ag-sum-rate"><b>${agSumEsc(p.mig)}</b><span>migration</span></div>
+          <div class="ag-sum-share"><i style="width:${p.share}%"></i></div><small>${p.share > 0 ? p.share + "% of your volume" : "Higher rates, no volume"}</small>
+        </article>`))}</div>`,
       };
     }
     if (key === "e2") {
+      const tot = AG_TM_LOBS.reduce((a, l) => a + l.suggested + l.review, 0);
       return {
-        kicker: "Templates", head: "98 of 100 templates mapped", sub: "Each has a suggested line of business.", cta: "Review mappings",
-        viz: `<div class="ag-sum-seg" role="img" aria-label="25 high confidence, 71 to review, 2 unmapped"><span class="is-hi" style="flex:25"></span><span class="is-mid" style="flex:71"></span><span class="is-lo" style="flex:2"></span></div><ul class="ag-sum-legend"><li><i class="is-hi"></i>25 high confidence</li><li><i class="is-mid"></i>71 to review</li><li><i class="is-lo"></i>2 unmapped</li></ul>`,
-        tiles: [["98%", "mapped"], [25, "high confidence"], [2, "left for you"]],
+        kicker: "Templates", cta: "Review mappings", count: "98 of 100 templates mapped",
+        tiles: [["98%", "mapped"], [25, "high confidence"], [71, "to review"], [2, "left for you"]],
+        body: `<div class="ag-sum-seg" role="img" aria-label="25 high confidence, 71 to review, 2 unmapped"><span class="is-hi" style="flex:25"></span><span class="is-mid" style="flex:71"></span><span class="is-lo" style="flex:2"></span></div>
+        <div class="ag-sum-grid is-lobs">${rows(AG_TM_LOBS.map((l, n) => `<article class="ag-sum-lob" style="--n:${n}">
+          <header><b>${agSumEsc(l.name)}</b><span class="ag-sum-pill">${agSumEsc(l.brand)}</span></header>
+          <div class="ag-sum-lobcount"><b>${l.suggested + l.review}</b><span>templates · ${l.review} to review</span></div>
+          <ul>${(AG_TM_SEED[l.id] || []).slice(0, 3).map((t) => `<li><span>${agSumEsc(t[0])}</span><i class="is-${t[4] === "high" ? "hi" : "mid"}">${t[3]}%</i></li>`).join("")}</ul>
+        </article>`))}</div>`,
       };
     }
     return null;
@@ -14605,26 +14652,31 @@ body.ag-gate::before{ background:radial-gradient(40% 36% at 18% 22%, rgba(96,150
     have?.remove();
     const d = agSummaryData(key);
     if (!d) return;
+    const cfg = AG_TEL_CARD[key];
+    const tele = cfg && cfg.loader ? AG_TELE[cfg.loader] : null;
     const el = document.createElement("div");
     el.id = "agSummary";
     el.className = "ag-sum";
     el.dataset.key = key;
     el.setAttribute("role", "region");
     el.setAttribute("aria-label", `${d.kicker} summary`);
-    el.innerHTML = `<div class="ag-sum-card">
-      <p class="ag-sum-kicker"><span class="ag-sum-dot"></span>Agent summary · ${agSumEsc(d.kicker)}</p>
-      <h3 class="ag-sum-head">${agSumEsc(d.head)}</h3>
-      <p class="ag-sum-sub">${agSumEsc(d.sub)}</p>
-      <div class="ag-sum-viz">${d.viz}</div>
+    el.innerHTML = `<div class="ag-sum-scroll"><div class="ag-sum-page">
+      <header class="ag-sum-top">
+        <p class="ag-sum-kicker"><span class="ag-sum-dot"></span>Agent summary · ${agSumEsc(d.kicker)}</p>
+        <h2 class="ag-sum-head">${agSumEsc(tele ? tele.did() : d.kicker)}</h2>
+        <p class="ag-sum-sub">${agSumEsc(tele ? tele.next() : "")}</p>
+      </header>
       <div class="ag-sum-tiles">${d.tiles.map(([v, l], n) => `<div style="--n:${n}"><b>${agSumEsc(v)}</b><span>${agSumEsc(l)}</span></div>`).join("")}</div>
-      <button type="button" class="ag-btn is-primary ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button>
-    </div>`;
+      ${d.body}
+    </div></div>
+    <footer class="ag-sum-bar"><span>${agSumEsc(d.count)}</span><button type="button" class="ag-btn is-primary ag-sum-go" data-sum-go>${agSumEsc(d.cta)}${I("arrow", "sm")}</button></footer>`;
     el.addEventListener("click", (ev) => {
       if (!ev.target.closest("[data-sum-go]")) return;
       agSumDone.add(key);
       el.dataset.leaving = "1";
       el.classList.add("is-leaving");
-      setTimeout(() => { el.remove(); agPopSig = ""; agPopulate(); }, 480);
+      document.body.classList.add("ag-revealing");
+      setTimeout(() => { el.remove(); document.body.classList.remove("ag-revealing"); agPopSig = ""; }, 700);
     });
     card.appendChild(el);
   }
