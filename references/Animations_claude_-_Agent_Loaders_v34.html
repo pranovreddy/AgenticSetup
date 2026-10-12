@@ -4247,12 +4247,6 @@ addScene((() => {
       await light.to(docs, 360);
       c.focus(docs, 8);
       sums.forEach((s, i) => setTimeout(() => !c.signal.aborted && s.classList.add('ghost'), i * 110));
-      /* each agreement is linked through the agent to the summary that will sit beside it */
-      const tr = docs.flatMap((d, k) => [
-        c.curve(d, blob, { from: 'r', to: 'l', pad: 13, cls: 'trace' }),
-        c.curve(blob, sums[k], { from: 'r', to: 'l', pad: 13, cls: 'trace' }),
-      ]);
-      tr.forEach((p, i) => c.anim(p, [{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: 120 + i * 70, fill: 'both' }).catch(() => {}));
       await c.wait(420);
       docs.forEach(d => c.ripple(d, 'var(--blue)', { scaleTo: 1.05 }));
       await c.wait(240);
