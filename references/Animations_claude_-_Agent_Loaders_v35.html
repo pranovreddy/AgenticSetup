@@ -2017,11 +2017,17 @@ function dockStatus() {
     place(cx, bottom + 28);
     return;
   }
-  /* Agreements: the blob sits between the pages and the summaries; the pill goes under the whole scene */
+  /* Embedded scenes: the blob sits where the scene is balanced; the pill goes under everything else */
   if (mode === 'bottom') {
     let bottom = 0;
-    $$('.ag-doc', el.scene).forEach(n => { const r = rectIn(n); bottom = Math.max(bottom, r.y + r.h); });
-    place(304, bottom + 14);
+    Array.from(el.scene.children).forEach(n => {
+      if (n.id === 'core' || n.id === 'vCone' || n.tagName === 'svg') return;
+      if (parseFloat(getComputedStyle(n).opacity) < .3) return;
+      const r = rectIn(n);
+      if (r.w > 500 || r.h > 320 || r.w < 20) return;
+      bottom = Math.max(bottom, r.y + r.h);
+    });
+    place(el.loader.dataset.dx ? +el.loader.dataset.dx : 304, el.loader.dataset.dy ? +el.loader.dataset.dy : Math.min(bottom + 14, 318));
     return;
   }
   /* Brand Map steps 2–4: sit a bit higher above the raised blob */
@@ -4465,7 +4471,7 @@ addScene((() => {
    invite: those cards settle into an invite list and are approved one by one.
    ========================================================================== */
 addScene((() => {
-  const BX = 300, BY = 206, CX = 20, CY = 66, CH = 50;
+  const BX = 300, BY = 150, CX = 20, CY = 66, CH = 50;
   const PEOPLE = [
     { role: 'shieldCheck', perm: 'key', c: 'var(--blue-3)', ok: true, w: [56, 34] },
     { role: 'id', perm: 'shieldLock', c: 'var(--blue)', ok: true, w: [48, 30] },
@@ -4501,6 +4507,7 @@ addScene((() => {
       const frag = '<span class="kfrag-f" style="--c:var(--blue)"></span>';
 
       /* 1 · the registration is looked up: the agent lights the registry and pulls its record */
+      el.loader.dataset.dock = 'bottom'; el.loader.dataset.dx = '304'; el.loader.dataset.dy = '278'; dockStatus();
       c.step(0); c.state('think');
       c.focus(blob, 4);
       await c.wait(160);
@@ -4600,7 +4607,7 @@ Object.assign(ICON, {
   gpD: '<path d="M6 18v-4M10 18v-7M14 18V8M18 18V5"/>',
 });
 addScene((() => {
-  const BX = 360, BY = 230, CW = 148, CG = 16, CX0 = 40, CY = 16;
+  const BX = 360, BY = 196, CW = 148, CG = 16, CX0 = 40, CY = 16;
   /* r: each partner's rate relative to the dearest — shorter is cheaper */
   const P = [
     { mk: 'gpA', c: 'var(--blue-5)', r: .84, w: [58, 36] },
@@ -4659,6 +4666,7 @@ addScene((() => {
       const split = segs => segs.forEach(s => { s.style.width = `calc(${s.dataset.w}% - 1px)`; });
 
       /* 1 · the available partners arrive and settle as the agent takes stock of them */
+      el.loader.dataset.dock = 'bottom'; el.loader.dataset.dx = '360'; el.loader.dataset.dy = '276'; dockStatus();
       c.step(0); c.state('think');
       c.focus(blob, 4);
       await c.wait(160);
