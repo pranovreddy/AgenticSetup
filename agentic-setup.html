@@ -11557,6 +11557,17 @@ body.ag-app-ready .setup-layout .cl-overview{
 /* summary points are not steps: a quiet marker, no numbers */
 .ag-brief-n{ width:8px; height:8px; border-radius:50%; background:var(--cv-blue); opacity:.4; justify-self:center; transition:opacity 240ms, transform 360ms var(--cv-ease); }
 .ag-brief-pt:hover .ag-brief-n, .ag-brief-pt.is-peek .ag-brief-n, .ag-brief-pt:focus-visible .ag-brief-n{ background:var(--cv-blue); opacity:1; color:transparent; transform:scale(1.4); }
+
+/* ---- Agreements summary as a short paragraph */
+.ag-brief-title{ margin-bottom:12px; }
+.ag-brief-prose{ margin:0; font-size:15.5px; line-height:1.7; color:var(--cv-ink-2); animation:cv-rise 640ms var(--cv-ease) 120ms both; }
+.ag-brief-prose .ag-brief-pt{
+  display:inline; width:auto; padding:0 1px; margin:0; border:0; border-radius:3px; background:none; cursor:pointer;
+  font:inherit; font-weight:600; color:var(--cv-ink); line-height:inherit;
+  text-decoration:underline; text-decoration-color:rgba(37,99,235,.35); text-decoration-thickness:2px; text-underline-offset:3px;
+  transition:background 240ms var(--cv-ease), text-decoration-color 240ms;
+}
+.ag-brief-prose .ag-brief-pt:hover, .ag-brief-prose .ag-brief-pt:focus-visible, .ag-brief-prose .ag-brief-pt.is-peek{ background:var(--cv-blue-wash); text-decoration-color:var(--cv-blue); }
 /* ---- Motion: one calm swap between steps */
 .shell:has(.setup-layout) .cl-detail-card.is-swap-out{
   opacity:0; transform:translateY(4px); filter:blur(2px);
@@ -18328,6 +18339,19 @@ function agMigRow() {
     terms: ["12-month term", "Your data stays yours", "99.9% uptime, fixed fees"],
     privacy: ["Used only for consent", "Stays in India", "24-hour breach notice"],
   };
+  /* The summary reads as a short paragraph; each marked phrase links to the clause behind it. */
+  const AG_DOC_PROSE = {
+    terms: [
+      { b: "The agreement runs for 12 months and renews unless either side gives 30 days' notice", c: [5] }, ". ",
+      { b: "Your consent records stay yours", c: [2] }, ", and you can export the full record at any time at no charge. ",
+      { b: "Availability is targeted at 99.9%, and fees stay fixed", c: [3, 4] }, " for the initial term.",
+    ],
+    privacy: [
+      { b: "Personal data is processed only to capture, store and deliver consent", c: [1] }, ". ",
+      { b: "All of it stays in India and is never used for the Provider's own marketing", c: [4] }, ". ",
+      { b: "A breach is reported within 24 hours, and data is deleted within 30 days of exit", c: [5] }, ".",
+    ],
+  };
   const agPeeked = new Set();
 
   /* The first time a document opens, each summary point lights the clauses it comes from. */
@@ -18401,6 +18425,12 @@ function agMigRow() {
       btn.classList.add("is-unlocked");
     }
   }
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("ag-brief-pt")) {
+      e.preventDefault();
+      agBriefJump(e.target.dataset.secs);
+    }
+  });
   document.addEventListener("scroll", (e) => {
     if (e.target && e.target.classList && e.target.classList.contains("ag-agree")) agReaderSync();
   }, true);
@@ -18448,7 +18478,7 @@ function agMigRow() {
         <aside class="ag-brief" aria-label="Summary of ${doc.name}">
           <p class="ag-brief-eyebrow"><svg class="ag-brief-spark" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg><span>Read for you</span><i>${doc.version}</i></p>
           <h3 class="ag-brief-title">In short</h3>
-          <ol class="ag-brief-list">${points}</ol>
+          <p class="ag-brief-prose">${(AG_DOC_PROSE[doc.id] || []).map((seg) => typeof seg === "string" ? agEsc(seg) : `<span role="button" tabindex="0" class="ag-brief-pt" data-action="ag-brief-jump" data-secs="${seg.c.join(",")}" title="Clause ${seg.c.map((n) => n + 1).join(" and ")}">${agEsc(seg.b)}</span>`).join("")}</p>
           <div class="ag-brief-read${state.docRead[doc.id] ? " is-read" : ""}" id="agReadState" data-doc="${doc.id}" role="status">
             <span class="ag-brief-bar"><i style="width:${state.docRead[doc.id] ? 100 : 0}%"></i></span>
             <span class="ag-brief-readtxt">${state.docRead[doc.id] ? "You've read it all" : "Scroll to the end to accept"}</span>
