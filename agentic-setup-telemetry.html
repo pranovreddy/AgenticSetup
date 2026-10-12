@@ -12500,6 +12500,16 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
 .ag-st-row .ag-pl-av{ width:42px !important; height:42px !important; }
 .ag-st-foot{ padding:14px 28px !important; }
 
+/* steps: compact, above the animation */
+.ag-step-ai--loader .ag-lsteps{ position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:3; margin:0 !important; width:max-content; max-width:calc(100% - 40px); flex-wrap:nowrap !important; gap:4px !important; padding:4px; border-radius:99px; background:rgba(255,255,255,.78); border:1px solid #e1eafb; box-shadow:0 8px 22px -10px rgba(37,99,235,.22); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+.ag-step-ai--loader .ag-lsteps li{ height:26px !important; padding:0 11px 0 6px !important; gap:6px !important; font-size:11.5px !important; border:0 !important; background:transparent !important; box-shadow:none !important; white-space:nowrap; }
+.ag-step-ai--loader .ag-lsteps li i{ width:15px !important; height:15px !important; }
+.ag-step-ai--loader .ag-lsteps li i svg{ width:9px; height:9px; }
+.ag-step-ai--loader .ag-lsteps li.is-done{ color:#2a4a8a; background:transparent !important; }
+.ag-step-ai--loader .ag-lsteps li.is-active{ color:#0f1f3d; background:#fff !important; box-shadow:0 2px 8px rgba(37,99,235,.16) !important; }
+.ag-step-ai--loader .ag-lsteps li.is-todo{ opacity:.55; }
+.ag-loader-note{ bottom:30px !important; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -15706,11 +15716,11 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
     const w = AG_LOADER_WHY[id];
     if (!host || !w) return;
     host.querySelector(".ag-loader-note")?.remove();
-    host.insertAdjacentHTML("beforeend", `<div class="ag-loader-note" aria-live="polite"><b>${w[0]}</b><span>${w[1]}</span><ol class="ag-lsteps"></ol><em>${w[2]}</em></div>`);
+    host.insertAdjacentHTML("beforeend", `<div class="ag-loader-note" aria-live="polite"><b>${w[0]}</b><span>${w[1]}</span><em>${w[2]}</em></div><ol class="ag-lsteps" aria-label="Progress"></ol>`);
     agLsRender();
   }
   function agLsRender() {
-    const list = document.querySelector(".ag-loader-note .ag-lsteps");
+    const list = document.querySelector(".ag-step-ai--loader .ag-lsteps");
     if (!list || !agTele) return;
     const def = AG_TELE[agTele.id];
     if (!def) return;
