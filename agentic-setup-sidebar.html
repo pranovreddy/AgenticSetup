@@ -11572,26 +11572,26 @@ body.ag-app-ready .setup-layout .cl-overview{
 /* ==========================================================================
    Sidebar version: the rail carries the agent telemetry (blob, orbit, log)
    ========================================================================== */
-.setup-layout .cl-workspace{ grid-template-columns:200px minmax(0, 1fr) !important; }
-.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:200px !important; min-width:200px !important; max-width:200px !important; }
+.setup-layout .cl-workspace{ grid-template-columns:180px minmax(0, 1fr) !important; }
+.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:180px !important; min-width:180px !important; max-width:180px !important; }
 .setup-layout .cl-overview .stages, .setup-layout .cl-overview .cl-overview-head{ display:none !important; }
 .ag-telcard{
   --tel-ease:cubic-bezier(.22,1,.36,1);
   position:relative; flex:none; width:100%; margin:8px 0 0; padding:0; text-align:left;
   display:flex; flex-direction:column; overflow:hidden; background:none; border:0; box-shadow:none;
 }
-.ag-tel-orbit{ position:relative; flex:none; --hub-y:66px; }
+.ag-tel-orbit{ position:relative; flex:none; --fx:34px; }
 .ag-tel-nav{
-  position:absolute; top:calc(var(--hub-y) - 11px); z-index:5; display:grid; place-items:center; width:22px; height:22px; margin:0; padding:0; cursor:pointer;
+  position:absolute; left:calc(var(--fx) - 11px); z-index:5; display:grid; place-items:center; width:22px; height:22px; margin:0; padding:0; cursor:pointer;
   border:0; border-radius:50%; background:none; color:#8b97ae;
   transition:transform 220ms var(--tel-ease), color 220ms, opacity 220ms;
 }
 .ag-tel-nav svg{ width:12px; height:12px; }
-.ag-tel-nav.is-prev{ left:0; transform:scaleX(-1); } .ag-tel-nav.is-next{ right:0; }
+.ag-tel-nav.is-prev{ top:0; transform:rotate(-90deg); } .ag-tel-nav.is-next{ bottom:0; transform:rotate(90deg); }
 .ag-tel-nav:hover:not(:disabled){ color:#2563eb; }
 .ag-tel-nav:disabled{ opacity:.25; cursor:default; }
 .ag-tel-nav:focus-visible, .ag-tel-ico:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }
-.ag-tel-track{ position:relative; width:100%; height:92px; overflow:hidden; user-select:none; }
+.ag-tel-track{ position:relative; width:100%; height:320px; overflow:hidden; user-select:none; }
 .ag-tel-path{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:0; }
 .ag-tel-rail{ fill:none; stroke:url(#agTelRailG); stroke-width:1.25; stroke-linecap:round; }
 .ag-tel-icons{ position:absolute; inset:0; z-index:2; }
@@ -11622,12 +11622,25 @@ body.ag-app-ready .setup-layout .cl-overview{
   animation:ag-tel-spin 1.4s linear infinite;
 }
 @keyframes ag-tel-spin{ to{ transform:rotate(360deg); } }
-.ag-tel-cap{ margin:0; padding:2px 8px 0; text-align:center; display:flex; flex-direction:column; gap:2px; animation:ag-tel-swap 420ms var(--tel-ease) both; }
+.ag-tel-cap{ position:absolute; left:calc(var(--fx) + 34px); right:6px; top:50%; margin:0; padding:0; text-align:left; display:flex; flex-direction:column; gap:2px; transform:translateY(-50%); pointer-events:none; }
+.ag-tel-cap > *{ animation:ag-tel-swap 420ms var(--tel-ease) both; }
 .ag-tel-kicker{ font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:500; letter-spacing:.09em; color:#8b97ae; }
 .ag-tel-title{ font-size:12.5px; line-height:1.3; font-weight:600; color:var(--cv-ink); }
 @keyframes ag-tel-swap{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:none; } }
+@media (max-height:700px){ .ag-tel-track{ height:250px; } }
 @media (prefers-reduced-motion:reduce){ .ag-telcard *{ animation:none !important; transition:none !important; } }
 
+
+/* ---- Bottom CTA: no line, a white gradient rising from the bottom that blends into the page ---- */
+.setup-layout .cl-detail .ag-actions, .setup-layout .cl-detail .ag-team > .ag-actions, .setup-layout .cl-detail .ag-profile > .ag-actions, .setup-layout .cl-detail .ag-profile .kyc-footer{
+  border:0 !important; border-top:0 !important; box-shadow:none !important;
+  -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+  min-height:0 !important; height:auto !important;
+  padding:34px 40px 16px !important;
+  background:linear-gradient(180deg, rgba(248,250,253,0) 0%, rgba(248,250,253,.82) 42%, #f8fafd 78%) !important;
+  pointer-events:none;
+}
+.setup-layout .cl-detail .ag-actions > *, .setup-layout .cl-detail .ag-profile .kyc-footer > *{ pointer-events:auto; }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14215,8 +14228,8 @@ body.ag-app-ready .setup-layout .cl-overview{
           <div class="ag-tel-icons">${AG_TEL_ORDER.map((k) => `<button type="button" class="ag-tel-ico" role="tab" data-tel-go="${k}" aria-label="${agTeleEsc(AG_TEL_CARD[k].title)}">${I(AG_TEL_CARD[k].icon)}<i class="ag-tel-badge">${I("check")}</i></button>`).join("")}</div>
         </div>
         <button type="button" class="ag-tel-nav is-next" data-tel-nav="1" aria-label="Next step">${chev}</button>
-      </div>
-      <p class="ag-tel-cap"><span class="ag-tel-kicker"></span><span class="ag-tel-title"></span></p>`;
+        <p class="ag-tel-cap"><span class="ag-tel-kicker"></span><span class="ag-tel-title"></span></p>
+      </div>`;
     el.addEventListener("click", (ev) => {
       const nav = ev.target.closest("[data-tel-nav]");
       const go = ev.target.closest("[data-tel-go]");
@@ -14238,30 +14251,29 @@ body.ag-app-ready .setup-layout .cl-overview{
     const m = agTelCardModel();
     if (!m) return;
     const track = el.querySelector(".ag-tel-track");
-    const w = track.clientWidth || 300;
-    const h = track.clientHeight || 92;
-    const cx = w / 2;
-    const focusY = h - 26;
-    const hubY = focusY;
+    const w = track.clientWidth || 180;
+    const h = track.clientHeight || 320;
+    const fx = 34;
+    const fy = h / 2;
     const STEP = AG_TEL_ARC_STEP;
-    const rx = Math.max(84, w * 0.5);
-    const ry = 24 / (1 - Math.cos(STEP));
-    const cy = focusY - ry;
-    const pt = (th) => [cx + rx * Math.cos(th), cy + ry * Math.sin(th)];
-    track.style.setProperty("--hub-y", hubY + "px");
-    el.querySelector(".ag-tel-orbit").style.setProperty("--hub-y", hubY + "px");
+    const R = 62 / Math.sin(STEP);
+    const cxc = fx + R;
+    const pt = (th) => [cxc + R * Math.cos(th), fy + R * Math.sin(th)];
     const svg = el.querySelector(".ag-tel-path");
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-    el.querySelector("#agTelRailG").setAttribute("x2", String(w));
+    const g = el.querySelector("#agTelRailG");
+    g.setAttribute("x1", "0"); g.setAttribute("x2", "0"); g.setAttribute("y1", "0"); g.setAttribute("y2", String(h));
+    const span = Math.min(Math.asin(Math.min(1, (h / 2 - 6) / R)), 2.6 * STEP);
     let d = "";
-    for (let k = 0; k <= 72; k++) { const [x, y] = pt(Math.PI - Math.PI * (k / 72)); d += (k ? " L " : "M ") + x.toFixed(1) + " " + y.toFixed(1); }
+    for (let k = 0; k <= 60; k++) { const [x, y] = pt(Math.PI + span * (2 * k / 60 - 1)); d += (k ? " L " : "M ") + x.toFixed(1) + " " + y.toFixed(1); }
     el.querySelector(".ag-tel-rail").setAttribute("d", d);
+    el.querySelector(".ag-tel-orbit").style.setProperty("--fx", fx + "px");
     el.querySelectorAll(".ag-tel-ico").forEach((btn, i) => {
       const dd = i - m.pos;
       const ad = Math.abs(dd);
-      const [x, y] = pt(Math.PI / 2 - dd * STEP);
+      const [x, y] = pt(Math.PI - dd * STEP);
       const s = Math.max(0.7, 1 - 0.16 * ad);
-      const o = Math.max(0, Math.min(1, 1 - Math.max(0, ad - 1.05) / 0.5));
+      const o = Math.max(0, Math.min(1, 1 - Math.max(0, ad - 1.4) / 0.9));
       const key = AG_TEL_ORDER[i];
       const locked = !agTelViewable(key) && i !== m.pos;
       btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${s.toFixed(3)})`;
