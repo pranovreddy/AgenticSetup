@@ -11682,17 +11682,15 @@ body.ag-app-ready .setup-layout .cl-overview{
 .setup-layout .cl-overview{ padding-top:68px !important; padding-bottom:12px !important; background:none !important; }
 .setup-layout .cl-overview{ padding-top:128px !important; }
 .setup-layout .cl-overview::before{
-  display:block !important; content:""; position:fixed; z-index:39; left:14px; top:14px; width:52px; height:104px; border-radius:26px;
-  background:rgba(255,255,255,.92); border:1px solid #e6ecf5; box-shadow:0 10px 28px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
-  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  display:block !important; content:""; position:fixed; z-index:39; left:14px; top:14px; width:56px; height:118px; border-radius:28px;
 }
 .setup-layout .cl-overview .cl-overview-brand{
-  position:fixed !important; top:22px; left:22px; z-index:40; width:36px !important; height:36px; padding:0 !important; margin:0 !important; border:0 !important;
+  position:fixed !important; top:26px; left:24px; z-index:40; width:38px !important; height:38px; padding:0 !important; margin:0 !important; border:0 !important;
   border-radius:50%; background:#f1f4fa !important; overflow:hidden; display:block;
 }
 .setup-layout .cl-overview .cl-overview-logo{ position:absolute; left:9px; top:50%; transform:translateY(-50%); height:20px; width:auto !important; max-width:none !important; clip-path:inset(0 82% 0 0); }
 .setup-layout .cl-overview .cl-overview-foot{
-  position:fixed !important; top:64px; left:20px; right:auto; bottom:auto; z-index:40; width:40px !important; height:40px; margin:0 !important; padding:0 !important; border:0 !important; background:none !important; display:block;
+  position:fixed !important; top:76px; left:22px; right:auto; bottom:auto; z-index:40; width:40px !important; height:40px; margin:0 !important; padding:0 !important; border:0 !important; background:none !important; display:block;
 }
 .setup-layout .cl-overview .cl-overview-user{ width:40px !important; }
 .setup-layout .cl-overview .cl-overview-user-meta{ display:none !important; }
@@ -11717,20 +11715,38 @@ html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
 /* ---- Steps as a pill, same family as the logo and user pill: icons only, names on hover ---- */
 .setup-layout .cl-overview{ padding-top:0 !important; }
 .ag-telcard{
-  position:fixed !important; z-index:39; left:14px; top:128px; width:52px !important; flex:none !important; margin:0 !important; border-radius:26px;
-  background:rgba(255,255,255,.92); border:1px solid #e6ecf5; box-shadow:0 10px 28px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
-  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); overflow:visible !important;
+  position:fixed !important; z-index:39; left:14px; top:144px; width:56px !important; flex:none !important; margin:0 !important; border-radius:28px; overflow:visible !important;
 }
-.ag-telcard .ag-tel-orbit{ min-height:0 !important; height:322px; flex:none; }
+.ag-telcard .ag-tel-orbit{ min-height:0 !important; height:360px; flex:none; }
 .ag-telcard .ag-tel-nav, .ag-telcard .ag-tel-path, .ag-telcard .ag-tel-cap{ display:none !important; }
-.ag-telcard .ag-tel-track{ height:322px; overflow:visible; }
+.ag-telcard .ag-tel-track{ height:360px; overflow:visible; }
 .ag-telcard .ag-tel-track::before{ content:""; position:absolute; left:calc(50% - .75px); top:24px; bottom:24px; width:1.5px; border-radius:2px; background:#e3eaf6; }
 .ag-telcard .ag-tel-track::after{ content:""; position:absolute; left:calc(50% - .75px); top:24px; width:1.5px; border-radius:2px; height:calc(var(--prog, 24) * 1px - 24px); background:linear-gradient(180deg,#9cc2ff,#2563eb); box-shadow:0 0 8px rgba(37,99,235,.45); transition:height 700ms var(--tel-ease); }
 .ag-telcard .ag-tel-ico{ width:34px; height:34px; }
 .ag-telcard .ag-tel-ico svg{ width:15px; height:15px; }
 .ag-telcard .ag-tel-ico.is-focus{ box-shadow:0 0 0 4px rgba(37,99,235,.12), 0 8px 18px rgba(37,99,235,.3); }
 .ag-telcard .ag-tel-ico:not(.is-focus){ background:#fff; }
-.ag-telcard .ag-tel-ico:disabled{ opacity:.5 !important; }
+.ag-telcard .ag-tel-ico:disabled{ opacity:.75 !important; }
+/* ---- Glass: frosted pills over soft colour ---- */
+.setup-layout .cl-overview::before, .ag-telcard{
+  background:linear-gradient(160deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important;
+  border:1px solid rgba(255,255,255,.75) !important;
+  box-shadow:0 18px 40px rgba(37,99,235,.12), 0 2px 8px rgba(15,23,42,.05), inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(255,255,255,.35) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(1.6); backdrop-filter:blur(22px) saturate(1.6);
+}
+.setup-layout::after{
+  content:""; position:fixed; z-index:0; left:-60px; top:0; width:300px; height:100vh; pointer-events:none;
+  background:
+    radial-gradient(closest-side at 40% 22%, rgba(96,150,255,.32), transparent 70%),
+    radial-gradient(closest-side at 55% 62%, rgba(139,112,255,.20), transparent 70%),
+    radial-gradient(closest-side at 35% 92%, rgba(56,189,248,.18), transparent 70%);
+  filter:blur(8px);
+}
+.setup-layout .cl-overview .cl-overview-brand{ background:rgba(255,255,255,.7) !important; box-shadow:inset 0 0 0 1px rgba(255,255,255,.8), 0 2px 6px rgba(15,23,42,.06); }
+.ag-telcard .ag-tel-ico:not(.is-focus){ background:rgba(255,255,255,.7); border-color:rgba(255,255,255,.85); }
+.ag-telcard .ag-tel-track::before{ background:rgba(147,178,242,.28); }
+.ag-donetoast{ background:rgba(255,255,255,.7) !important; border:1px solid rgba(255,255,255,.8) !important; -webkit-backdrop-filter:blur(20px) saturate(1.5); backdrop-filter:blur(20px) saturate(1.5); }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -14346,7 +14362,7 @@ html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
     const STEP = 0.4;
     const rx = Math.min(84, Math.max(36, w - 70));
     const ry = Math.max(120, (h / 2 - 34) / Math.sin(3 * STEP));
-    const GAP = 42;
+    const GAP = 52;
     const pt = (i) => [w / 2, 24 + i * GAP];
     el.style.setProperty("--prog", String((24 + m.pos * GAP) / 1));
     const svg = el.querySelector(".ag-tel-path");
