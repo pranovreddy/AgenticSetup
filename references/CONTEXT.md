@@ -141,6 +141,20 @@ Key code anchors in the files (search these names): `agSummaryData`, `agSumTable
 ### How to test (Playwright, headless Chromium)
 Scripts used this session are in `references/tools/session2/`. They open the file with `file://`, wait for `.ag-sec` (agreements), scroll `.ag-agree` to the bottom and click `#agAcceptBtn` twice, click `[data-nextup-go]`, wait for the profile form (`.ag-profile input[type=checkbox]`), tick it and click Submit, then wait for `#agSummary` and click `[data-sum-go]` / `[data-sum-skip]`. Takes 60-120 s per run because of the opening cover and loaders. Use `--no-sandbox`. Do not run two browsers at once on slow steps.
 
+## 8c. Session 3 (Opus pass): `agentic-setup-telemetry-opus.html`
+
+Branch `claude/optimistic-heisenberg-i0otau`. A copy of the telemetry version titled "DigiConsent Agentic Telemetry Opus", with every new screen offered in versions the user picks from a **Versions** button (bottom left). Picks are stored in the viewer's browser (`localStorage` key `agOpusVersions.v1`) and listed under "Your picks" with a copy button. Each row has "Preview", which puts the app in the state just before that screen (`opPreview`, also `window.__opPreview(kind, key)` for tests).
+
+All new code is prefixed `op` (CSS `.op-*`, JS `op*`) and sits in one CSS block before `</style>` and one JS block before the final `render()`.
+
+- **Agent at work** (`opLoaderChrome`, `opLoaderRender`): title + one "why" sentence on top, and one live line only. A = caption under the animation (step name, "n of N", segmented bar) with the pill inside the scene hidden; B = the pill inside the scene is the only live line (no caption); C = stepper across the top naming every step, pill hidden. The pill is hidden by injecting a `<style id="opChip">` into the loader srcdoc (`opLoaderDoc`). `OP_BOX_NOCHIP` crops the scene without the pill.
+- **Summaries** (`opSumModel`, `opSumMarkup`): A list, B cards, C brief (what I did + sources on the left, compact list right). One data model per step, so all three always agree. GTM now uses the same partners and rates as its details page (`AG_GTM_POOL`, `agGtmPhaseAlloc`), not `AG_PARTNERS`. Template numbers now match the details page (98 of 100 mapped, 27 high confidence, 71 to check).
+- **After approve** (`opSuccessPaint`): A centred, B ticks each item in place with a bar at the bottom, C centred with the whole journey. Skip shows "skipped" without ticks.
+- **What happens next**: A the original timeline, B a five-column plan (Agent / You per area).
+- **View summary** pill now appears ~0.1 s after leaving the summary (was ~3.5 s).
+- Fixes carried in: broken GTM rate-card icon URLs; the agreements subtitle clipped under the sticky tabs; reduced motion never showed summaries (blocker check now scoped to the focused step, GTM marks itself ready); kick-off and toast colours moved from green to blue; "Filling your details with AI" chip moved to the top right so it never sits on the form.
+- Defaults (`OP_DEFAULT`): loader A, Team A, Brands B, GTM B, Templates C, success C, next-up B.
+
 ## 9. User preferences for how to respond
 
 Be brief; say what changed and what was not checked; never claim something was tested unless it was; propose a next step as a question. When a comment arrives from an artifact, reply in that thread with `ArtifactComments` and resolve it, and give one short line in the session.
