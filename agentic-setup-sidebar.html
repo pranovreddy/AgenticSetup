@@ -11577,10 +11577,10 @@ body.ag-app-ready .setup-layout .cl-overview{
 .setup-layout .cl-overview .stages, .setup-layout .cl-overview .cl-overview-head{ display:none !important; }
 .ag-telcard{
   --tel-ease:cubic-bezier(.22,1,.36,1);
-  position:relative; flex:none; width:100%; margin:8px 0 0; padding:0; text-align:left;
+  position:relative; flex:1 1 0; min-height:0; width:100%; margin:8px 0 0; padding:0; text-align:left;
   display:flex; flex-direction:column; overflow:hidden; background:none; border:0; box-shadow:none;
 }
-.ag-tel-orbit{ position:relative; flex:none; --fx:34px; }
+.ag-tel-orbit{ position:relative; flex:1 1 0; min-height:330px; --fx:34px; }
 .ag-tel-nav{
   position:absolute; left:calc(var(--fx) - 11px); z-index:5; display:grid; place-items:center; width:22px; height:22px; margin:0; padding:0; cursor:pointer;
   border:0; border-radius:50%; background:none; color:#8b97ae;
@@ -11591,12 +11591,12 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-tel-nav:hover:not(:disabled){ color:#2563eb; }
 .ag-tel-nav:disabled{ opacity:.25; cursor:default; }
 .ag-tel-nav:focus-visible, .ag-tel-ico:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; }
-.ag-tel-track{ position:relative; width:100%; height:320px; overflow:hidden; user-select:none; }
+.ag-tel-track{ position:relative; width:100%; height:100%; overflow:hidden; user-select:none; }
 .ag-tel-path{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:0; }
 .ag-tel-rail{ fill:none; stroke:url(#agTelRailG); stroke-width:1.25; stroke-linecap:round; }
 .ag-tel-icons{ position:absolute; inset:0; z-index:2; }
 .ag-tel-ico{
-  position:absolute; left:0; top:0; display:grid; place-items:center; width:38px; height:38px; margin:0; padding:0; cursor:pointer;
+  position:absolute; left:0; top:0; display:grid; place-items:center; width:36px; height:36px; margin:0; padding:0; cursor:pointer;
   border:1px solid #dbe3ef; border-radius:50%; background:#fff; color:#6b7a94;
   opacity:var(--arc-o,1); transform:translate3d(-50%,-50%,0);
   box-shadow:0 1px 2px rgba(15,23,42,.04);
@@ -11610,7 +11610,7 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-tel-ico svg{ position:relative; z-index:1; width:16px; height:16px; }
 .ag-tel-ico.is-focus{ color:#fff; border-color:transparent; }
 .ag-tel-ico:hover:not(:disabled):not(.is-focus){ border-color:#a9c2f7; color:#2563eb; }
-.ag-tel-ico:disabled{ cursor:not-allowed; opacity:calc(var(--arc-o,1) * .55); background:#f6f8fb; border-style:dashed; border-color:#d5deea; color:#a6b1c4; box-shadow:none; }
+.ag-tel-ico:disabled{ cursor:not-allowed; opacity:calc(var(--arc-o,1) * .9); background:#f6f8fb; border-style:dashed; border-color:#d5deea; color:#a6b1c4; box-shadow:none; }
 .ag-tel-ico.is-done:not(.is-focus){ color:#2563eb; border-color:#cfdcf7; }
 .ag-tel-badge{ position:absolute; z-index:2; right:-3px; bottom:-3px; display:none; place-items:center; width:14px; height:14px; border-radius:50%; background:#16a34a; color:#fff; box-shadow:0 0 0 2px #fff; }
 .ag-tel-ico.is-done .ag-tel-badge{ display:grid; }
@@ -11622,12 +11622,11 @@ body.ag-app-ready .setup-layout .cl-overview{
   animation:ag-tel-spin 1.4s linear infinite;
 }
 @keyframes ag-tel-spin{ to{ transform:rotate(360deg); } }
-.ag-tel-cap{ position:absolute; left:calc(var(--fx) + 34px); right:6px; top:50%; margin:0; padding:0; text-align:left; display:flex; flex-direction:column; gap:2px; transform:translateY(-50%); pointer-events:none; }
+.ag-tel-cap{ position:absolute; left:70px; right:6px; top:50%; margin:0; padding:0; text-align:left; display:flex; flex-direction:column; gap:2px; transform:translateY(-50%); pointer-events:none; transition:top 700ms var(--tel-ease), left 700ms var(--tel-ease); }
 .ag-tel-cap > *{ animation:ag-tel-swap 420ms var(--tel-ease) both; }
 .ag-tel-kicker{ font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:500; letter-spacing:.09em; color:#8b97ae; }
 .ag-tel-title{ font-size:12.5px; line-height:1.3; font-weight:600; color:var(--cv-ink); }
 @keyframes ag-tel-swap{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:none; } }
-@media (max-height:700px){ .ag-tel-track{ height:250px; } }
 @media (prefers-reduced-motion:reduce){ .ag-telcard *{ animation:none !important; transition:none !important; } }
 
 
@@ -14254,34 +14253,35 @@ body.ag-app-ready .setup-layout .cl-overview{
     const w = track.clientWidth || 180;
     const h = track.clientHeight || 320;
     const fx = 34;
-    const fy = h / 2;
-    const STEP = AG_TEL_ARC_STEP;
-    const R = 62 / Math.sin(STEP);
-    const cxc = fx + R;
-    const pt = (th) => [cxc + R * Math.cos(th), fy + R * Math.sin(th)];
+    const n = AG_TEL_ORDER.length;
+    const pad = 46;
+    const bow = Math.min(30, w * 0.16);
+    const yAt = (i) => pad + i * (h - 2 * pad) / (n - 1);
+    const pt = (i) => { const t = (yAt(i) - h / 2) / (h / 2 - pad); return [fx + bow * (1 - t * t), yAt(i)]; };
     const svg = el.querySelector(".ag-tel-path");
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     const g = el.querySelector("#agTelRailG");
     g.setAttribute("x1", "0"); g.setAttribute("x2", "0"); g.setAttribute("y1", "0"); g.setAttribute("y2", String(h));
-    const span = Math.min(Math.asin(Math.min(1, (h / 2 - 6) / R)), 2.6 * STEP);
     let d = "";
-    for (let k = 0; k <= 60; k++) { const [x, y] = pt(Math.PI + span * (2 * k / 60 - 1)); d += (k ? " L " : "M ") + x.toFixed(1) + " " + y.toFixed(1); }
+    for (let k = 0; k <= 60; k++) { const f = -0.04 + 1.08 * k / 60; const y = pad + f * (h - 2 * pad); const t = (y - h / 2) / (h / 2 - pad); d += (k ? " L " : "M ") + (fx + bow * (1 - t * t)).toFixed(1) + " " + y.toFixed(1); }
     el.querySelector(".ag-tel-rail").setAttribute("d", d);
-    el.querySelector(".ag-tel-orbit").style.setProperty("--fx", fx + "px");
+    const cap = el.querySelector(".ag-tel-cap");
+    const [fcx, fcy] = pt(m.pos);
+    cap.style.top = fcy.toFixed(1) + "px";
+    cap.style.left = (fcx + 32).toFixed(1) + "px";
     el.querySelectorAll(".ag-tel-ico").forEach((btn, i) => {
       const dd = i - m.pos;
       const ad = Math.abs(dd);
-      const [x, y] = pt(Math.PI - dd * STEP);
-      const s = Math.max(0.7, 1 - 0.16 * ad);
-      const o = Math.max(0, Math.min(1, 1 - Math.max(0, ad - 1.4) / 0.9));
+      const [x, y] = pt(i);
+      const s = ad === 0 ? 1 : 0.86;
+      const o = ad === 0 ? 1 : ad === 1 ? 1 : 0.7;
       const key = AG_TEL_ORDER[i];
       const locked = !agTelViewable(key) && i !== m.pos;
       btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${s.toFixed(3)})`;
       btn.style.setProperty("--arc-o", o.toFixed(3));
       btn.style.setProperty("--arc-f", ad < 0.5 ? "1" : "0");
       btn.style.zIndex = String(10 - Math.round(ad * 3));
-      btn.style.visibility = o > 0.02 ? "visible" : "hidden";
-      btn.classList.toggle("is-focus", i === m.pos);
+            btn.classList.toggle("is-focus", i === m.pos);
       btn.classList.toggle("is-active", i === m.pos && m.working);
       btn.classList.toggle("is-done", agStepIsComplete(key));
       btn.disabled = locked;
