@@ -11572,8 +11572,8 @@ body.ag-app-ready .setup-layout .cl-overview{
 /* ==========================================================================
    Sidebar version: the rail carries the agent telemetry (blob, orbit, log)
    ========================================================================== */
-.setup-layout .cl-workspace{ grid-template-columns:180px minmax(0, 1fr) !important; }
-.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:180px !important; min-width:180px !important; max-width:180px !important; }
+.setup-layout .cl-workspace{ grid-template-columns:72px minmax(0, 1fr) !important; }
+.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:72px !important; min-width:72px !important; max-width:72px !important; }
 .setup-layout .cl-overview .stages, .setup-layout .cl-overview .cl-overview-head{ display:none !important; }
 .ag-telcard{
   --tel-ease:cubic-bezier(.22,1,.36,1);
@@ -11622,7 +11622,7 @@ body.ag-app-ready .setup-layout .cl-overview{
   animation:ag-tel-spin 1.4s linear infinite;
 }
 @keyframes ag-tel-spin{ to{ transform:rotate(360deg); } }
-.ag-tel-cap{ position:absolute; left:16px; right:60px; top:50%; margin:0; padding:0; text-align:left; display:flex; flex-direction:column; gap:2px; transform:translateY(-50%); pointer-events:none; transition:top 700ms var(--tel-ease), left 700ms var(--tel-ease); }
+.ag-tel-cap{ display:none !important; position:absolute; left:16px; right:60px; top:50%; margin:0; padding:0; text-align:left; display:flex; flex-direction:column; gap:2px; transform:translateY(-50%); pointer-events:none; transition:top 700ms var(--tel-ease), left 700ms var(--tel-ease); }
 .ag-tel-cap > *{ animation:ag-tel-swap 420ms var(--tel-ease) both; }
 .ag-tel-kicker{ font-family:"Geist Mono", ui-monospace, monospace; font-size:10px; font-weight:500; letter-spacing:.09em; color:#8b97ae; }
 .ag-tel-title{ font-size:12.5px; line-height:1.3; font-weight:600; color:var(--cv-ink); }
@@ -11648,8 +11648,8 @@ body.ag-app-ready .setup-layout .cl-overview{
 
 /* ---- Step done: a temporary pop-up instead of a success page ---- */
 .ag-donetoast{
-  position:fixed; z-index:60; left:calc(180px + (100vw - 180px) / 2); bottom:104px; transform:translate(-50%, 16px); opacity:0; pointer-events:none;
-  display:flex; align-items:center; gap:12px; min-width:320px; max-width:min(520px, calc(100vw - 220px)); padding:12px 12px 12px 14px; overflow:hidden;
+  position:fixed; z-index:60; left:calc(72px + (100vw - 72px) / 2); bottom:104px; transform:translate(-50%, 16px); opacity:0; pointer-events:none;
+  display:flex; align-items:center; gap:12px; min-width:320px; max-width:min(520px, calc(100vw - 112px)); padding:12px 12px 12px 14px; overflow:hidden;
   border-radius:14px; background:rgba(255,255,255,.96); border:1px solid #e3eaf5; box-shadow:0 18px 44px rgba(15,23,42,.14), 0 2px 6px rgba(15,23,42,.06);
   -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
   transition:opacity 320ms var(--cv-ease), transform 420ms var(--cv-ease);
@@ -11668,6 +11668,19 @@ body.ag-app-ready .setup-layout .cl-overview{
 .ag-donetoast.is-on .ag-donetoast-bar{ animation:ag-donetoast-bar 5200ms linear forwards; }
 @keyframes ag-donetoast-bar{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
 @media (prefers-reduced-motion:reduce){ .ag-donetoast, .ag-donetoast-bar{ transition:none !important; animation:none !important; } }
+
+.ag-tel-tip{
+  position:absolute; z-index:20; left:calc(100% + 12px); top:50%; transform:translate(-4px,-50%); white-space:nowrap; pointer-events:none;
+  padding:6px 10px; border-radius:8px; background:#0f172a; color:#fff; font-size:12px; font-weight:560; line-height:1.2; letter-spacing:0;
+  opacity:0; transition:opacity 160ms var(--tel-ease), transform 220ms var(--tel-ease);
+}
+.ag-tel-tip::before{ content:""; position:absolute; left:-4px; top:50%; width:8px; height:8px; background:inherit; transform:translateY(-50%) rotate(45deg); border-radius:1px; }
+.ag-tel-ico:hover .ag-tel-tip, .ag-tel-ico:focus-visible .ag-tel-tip{ opacity:1; transform:translate(0,-50%); }
+
+.setup-layout .cl-overview .cl-overview-brand{ overflow:hidden; width:100% !important; padding-left:24px !important; padding-right:0 !important; display:flex; justify-content:flex-start; }
+.setup-layout .cl-overview .cl-overview-logo{ flex:none; max-width:none !important; width:132px !important; margin-right:-98px; clip-path:inset(0 112px 0 0); }
+.setup-layout .cl-overview .cl-overview-user-meta{ display:none !important; }
+.setup-layout .cl-overview .cl-overview-user-btn{ justify-content:center; padding-left:0 !important; padding-right:0 !important; }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14252,7 +14265,7 @@ body.ag-app-ready .setup-layout .cl-overview{
           <svg class="ag-tel-path" aria-hidden="true"><defs>
             <linearGradient id="agTelRailG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="300" y2="0"><stop offset="0" stop-color="#b9c9e8" stop-opacity="0"/><stop offset=".22" stop-color="#b9c9e8" stop-opacity=".9"/><stop offset=".5" stop-color="#93b2f2"/><stop offset=".78" stop-color="#b9c9e8" stop-opacity=".9"/><stop offset="1" stop-color="#b9c9e8" stop-opacity="0"/></linearGradient>
           </defs><path class="ag-tel-rail"></path></svg>
-          <div class="ag-tel-icons">${AG_TEL_ORDER.map((k) => `<button type="button" class="ag-tel-ico" role="tab" data-tel-go="${k}" aria-label="${agTeleEsc(AG_TEL_CARD[k].title)}">${I(AG_TEL_CARD[k].icon)}<i class="ag-tel-badge">${I("check")}</i></button>`).join("")}</div>
+          <div class="ag-tel-icons">${AG_TEL_ORDER.map((k) => `<button type="button" class="ag-tel-ico" role="tab" data-tel-go="${k}" aria-label="${agTeleEsc(AG_TEL_CARD[k].title)}">${I(AG_TEL_CARD[k].icon)}<i class="ag-tel-badge">${I("check")}</i><span class="ag-tel-tip">${agTeleEsc(AG_TEL_CARD[k].title)}</span></button>`).join("")}</div>
         </div>
         <button type="button" class="ag-tel-nav is-next" data-tel-nav="1" aria-label="Next step">${chev}</button>
         <p class="ag-tel-cap"><span class="ag-tel-kicker"></span><span class="ag-tel-title"></span></p>
