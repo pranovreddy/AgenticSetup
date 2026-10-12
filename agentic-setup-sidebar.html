@@ -11646,6 +11646,29 @@ body.ag-app-ready .setup-layout .cl-overview{
 .setup-layout .cl-overview{ overflow:visible !important; z-index:6; }
 .ag-tel-ico{ box-shadow:0 0 0 4px #f8fafd, 0 1px 2px rgba(15,23,42,.04); }
 
+/* ---- Step done: a temporary pop-up instead of a success page ---- */
+.ag-donetoast{
+  position:fixed; z-index:60; left:calc(180px + (100vw - 180px) / 2); bottom:104px; transform:translate(-50%, 16px); opacity:0; pointer-events:none;
+  display:flex; align-items:center; gap:12px; min-width:320px; max-width:min(520px, calc(100vw - 220px)); padding:12px 12px 12px 14px; overflow:hidden;
+  border-radius:14px; background:rgba(255,255,255,.96); border:1px solid #e3eaf5; box-shadow:0 18px 44px rgba(15,23,42,.14), 0 2px 6px rgba(15,23,42,.06);
+  -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+  transition:opacity 320ms var(--cv-ease), transform 420ms var(--cv-ease);
+}
+.ag-donetoast.is-on{ opacity:1; transform:translate(-50%, 0); pointer-events:auto; }
+.ag-donetoast-badge{ flex:none; display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:#16a34a; color:#fff; }
+.ag-donetoast-badge svg{ width:13px; height:13px; }
+.ag-donetoast-copy{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px; }
+.ag-donetoast-copy b{ font-size:14px; font-weight:620; color:var(--cv-ink); }
+.ag-donetoast-copy span{ font-size:12.5px; color:var(--cv-mute); line-height:1.35; }
+.ag-donetoast-link{ flex:none; border:0; background:none; padding:6px 8px; border-radius:8px; font:inherit; font-size:13px; font-weight:600; color:var(--cv-blue); cursor:pointer; }
+.ag-donetoast-link:hover{ background:var(--cv-blue-wash); }
+.ag-donetoast-x{ flex:none; border:0; background:none; width:24px; height:24px; border-radius:50%; font-size:18px; line-height:1; color:#8b97ae; cursor:pointer; }
+.ag-donetoast-x:hover{ color:var(--cv-ink); background:#f1f4f9; }
+.ag-donetoast-bar{ position:absolute; left:0; bottom:0; height:2px; width:100%; background:linear-gradient(90deg,#16a34a,#86efac); transform-origin:left; transform:scaleX(0); }
+.ag-donetoast.is-on .ag-donetoast-bar{ animation:ag-donetoast-bar 5200ms linear forwards; }
+@keyframes ag-donetoast-bar{ from{ transform:scaleX(1); } to{ transform:scaleX(0); } }
+@media (prefers-reduced-motion:reduce){ .ag-donetoast, .ag-donetoast-bar{ transition:none !important; animation:none !important; } }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -15735,10 +15758,51 @@ body.ag-app-ready .setup-layout .cl-overview{
     if (next) agGo(next.focus);
   }
 
+  /* Success is a short pop-up over the next step, not a page of its own. */
+  const AG_DONE_TOAST = {
+    "0": ["Agreements accepted", "Both agreements are signed and saved to the audit log."],
+    "1": ["Business profile approved", "Your details are verified for all channel owners."],
+    "2": ["Team invited", "Invitations are on their way."],
+    "e0": ["Brands and LOBs confirmed", "Your estate structure is saved."],
+    "e1": ["GTM partners confirmed", "Rate cards accepted and volume allocated."],
+    "e2": ["Templates mapped", "Your consent estate is ready for migration."],
+  };
+  let agDoneToastTimer = null;
+  function agDoneToastShow(k) {
+    const msg = AG_DONE_TOAST[k];
+    if (!msg) return;
+    let el = document.getElementById("agDoneToast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "agDoneToast";
+      el.className = "ag-donetoast";
+      el.setAttribute("role", "status");
+      el.addEventListener("click", (ev) => {
+        const v = ev.target.closest("[data-done-view]");
+        if (v) { agSelect(v.dataset.doneView); el.classList.remove("is-on"); }
+        if (ev.target.closest("[data-done-close]")) el.classList.remove("is-on");
+      });
+      document.body.appendChild(el);
+    }
+    el.innerHTML = `<span class="ag-donetoast-badge">${AG_CHECK_SVG}</span>
+      <span class="ag-donetoast-copy"><b>${msg[0]}</b><span>${msg[1]}</span></span>
+      <button type="button" class="ag-donetoast-link" data-done-view="${k}">View</button>
+      <button type="button" class="ag-donetoast-x" data-done-close aria-label="Dismiss">&times;</button>
+      <i class="ag-donetoast-bar"></i>`;
+    el.classList.remove("is-on"); void el.offsetWidth; el.classList.add("is-on");
+    clearTimeout(agDoneToastTimer);
+    agDoneToastTimer = setTimeout(() => el.classList.remove("is-on"), 5200);
+  }
+
   function successAutoArm(key) {
     kycAutoStop();
     const k = String(key);
     state.successAuto = { key: k, at: Date.now() };
+    if (AG_DONE_TOAST[k]) {
+      const at = state.successAuto.at;
+      agDoneToastShow(k);
+      setTimeout(() => { if (state.successAuto && state.successAuto.at === at) successAutoProceed(); }, 120);
+    }
     state.successSettled.delete(k);
     clearTimeout(successSettleTimer);
     successSettleTimer = setTimeout(() => {
