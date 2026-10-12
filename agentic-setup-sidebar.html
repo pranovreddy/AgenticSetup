@@ -11960,6 +11960,30 @@ body.ag-gate .ag-brief-title{ margin-top:2px; }
 .ag-loader-note span{ display:block; margin-top:4px; font-size:13.5px; line-height:1.5; color:var(--cv-mute); }
 .ag-loader-note em{ display:block; margin-top:8px; font-style:normal; font-size:12.5px; color:#2563eb; font-weight:560; }
 
+/* ---- Calmer pop-ups: one subtle top gradient, no extra cards ---- */
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card{ background:linear-gradient(180deg, #e9f0ff 0, #f3f7ff 120px, #fff 300px) !important; }
+body.ag-gate .ag-atabs{ background:#e9f0ff !important; box-shadow:none !important; height:60px; min-height:60px; padding:0 28px 10px !important; }
+body.ag-gate .ag-atab{ background:transparent !important; color:#5b6b86 !important; -webkit-backdrop-filter:none; backdrop-filter:none; }
+body.ag-gate .ag-atab:hover{ background:rgba(37,99,235,.08) !important; color:#1d4ed8 !important; }
+body.ag-gate .ag-atab.is-on{ background:#fff !important; color:#1d4ed8 !important; box-shadow:0 1px 3px rgba(37,99,235,.18) !important; }
+body.ag-gate .ag-brief-read{ top:57px !important; background:rgba(37,99,235,.10) !important; height:2px !important; }
+body.ag-gate .ag-brief-read .ag-brief-bar, body.ag-gate .ag-brief-read .ag-brief-bar i{ height:2px !important; }
+body.ag-gate .ag-brief-read .ag-brief-bar i{ background:linear-gradient(90deg,#60a5fa,#2563eb) !important; box-shadow:none !important; }
+body.ag-gate .ag-brief-read.is-read .ag-brief-bar i{ background:linear-gradient(90deg,#34d399,#15814c) !important; }
+body.ag-gate .ag-brief{ background:none !important; border:0 !important; border-radius:0 !important; padding:8px 0 4px !important; margin:0 0 16px !important; }
+
+.ag-nextup-card{ background:linear-gradient(180deg, #e9f0ff 0, #f3f7ff 150px, #fff 340px) !important; }
+.ag-nextup-head{ background:none !important; color:var(--cv-ink) !important; padding:30px 36px 8px !important; overflow:visible; }
+.ag-nextup-head::after{ display:none !important; }
+.ag-nextup-head .ag-nextup-mark{ background:linear-gradient(155deg,#5b95ff,#2563eb) !important; box-shadow:0 8px 20px rgba(37,99,235,.28) !important; }
+.ag-nextup-head .ag-nextup-kicker{ background:none !important; padding:0 !important; color:#15814c !important; }
+.ag-nextup-head .ag-nextup-kicker i{ background:#16a34a !important; color:#fff !important; }
+.ag-nextup-head .ag-nextup-title{ color:var(--cv-ink) !important; }
+.ag-nextup-head .ag-nextup-sub{ color:var(--cv-ink-2) !important; }
+.ag-nextup-body{ padding-top:14px !important; }
+.ag-nextup-ico{ box-shadow:0 0 0 1px #d4e1f8 !important; }
+.ag-nextup-go{ background:var(--cv-blue) !important; box-shadow:none !important; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
