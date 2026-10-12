@@ -20,7 +20,7 @@ The user is a designer / product owner. They iterate by sending short, spoken-st
 | `references/Animations_claude_-_Agent_Loaders_v33.html` | The user's loader reference (engine + scenes). Untouched. |
 | `references/Animations_claude_-_Agent_Loaders_v34.html` | v33 + our `agreements` and `team` scenes. |
 | `references/Animations_claude_-_Agent_Loaders_v35.html` | v34 + our `gtm` scene + embed fixes (brand tall frame, bottom dock mode, blob centring). **This is the source of the loaders used by all three prototypes.** |
-| `references/Home-Agentic` (user upload, not in repo) | The user's reference for the sidebar telemetry card (`.agent-card`, `agent-tel-*`). |
+| `references/Home-Agentic_reference.html` | The user's reference for the sidebar telemetry card (`.agent-card`, `agent-tel-*` CSS, `agentTelArcLayout` JS). The sidebar rail was ported from this. |
 | `references/tools/*.js` | Playwright helper scripts (see section 7). |
 
 Published artifacts (private, owned by the user; a new session must republish with `Artifact` and the same `url` to update):
@@ -71,7 +71,7 @@ Brands and LOBs in review hold up the journey; templates in review do not; Team 
 ## 7. How to work and test here
 
 - Environment: Chromium at `/opt/pw-browsers/chromium`, Playwright module at `/opt/node22/lib/node_modules/playwright` (do not run `playwright install`). Open the local file with `file://` URLs; there is no server.
-- Helper scripts in `references/tools/` (they hard-code local scratch paths; adjust before use):
+- Helper scripts in `references/tools/` (they hard-code scratch paths such as `/tmp/claude-0/.../scratchpad` and `file:///home/user/AgenticSetup/...`; adjust before use):
   - `embed-loaders.js` regenerates the embedded loader document.
   - `measure-content-box.js`, `measure-blob-alignment.js` report loader geometry.
   - `preview-cropped-loader.js` renders each loader inside the same crop logic used on the page.
@@ -86,10 +86,17 @@ Brands and LOBs in review hold up the journey; templates in review do not; Team 
 - Kick off migration has no loader or telemetry (its card has a title only).
 - In the sidebar version the rail has no stage list, so users cannot jump between steps except by the arrows and icons (untested clicking).
 - The blob version hides the "You are approving ... on behalf of" note and has an untested log chevron.
-- The KYC loader blob sits about 8 px high relative to the form; Matching and Brand Map blobs were not re-centred.
+- Blob alignment: Agreements, Team and GTM blobs are now level with the right-hand elements (Team and GTM use `data-dock="bottom"` with a fixed pill position `dy`). The KYC blob sits about 8 px high relative to the form; Matching and Brand Map were not re-checked.
 - The sidebar telemetry card does not support drag/swipe on the arc (reference does).
 - Walkthrough, return opening, logout confirmation and other requirement items exist from the original prototype but were not re-verified after the redesign.
 - Wake subscriptions for the Blob and Sidebar artifacts are not registered, so new comments on them do not wake a session automatically.
+
+## 8b. Latest state (end of this session)
+
+- Latest published versions: Main v12, Blob v4, Sidebar v9. All three embed the same loader document (v35) and the same `AG_LOADER_BOX`:
+  `agreements [5,0,604,345]`, `kyc [120,3,710,306]`, `team [6,0,655,340]`, `brand [14,0,700,440]` (tall frame), `match [8,0,613,360]`, `gtm [14,0,712,340]`.
+- Most recent user requests, all done: sidebar telemetry layout matching the reference (blob, beam, arc, prev/next icons, chevrons); agent summary as a gradient wash at the top of the workspace; blob alignment in Team and GTM; summary first then full text in the sidebar version.
+- The very last thing asked before this handoff was only to produce and update this document. No change request is pending.
 
 ## 9. User preferences for how to respond
 
