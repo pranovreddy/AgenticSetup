@@ -17883,6 +17883,7 @@ body.ag-sum-landing .cl-detail-card{ animation:ag-page-settle 760ms var(--cv-eas
     live.insertAdjacentHTML("beforeend", `<div class="ag-step-ai ag-step-ai--loader" role="status" aria-label="${ld.label}"><div class="ag-loader-crop" data-loader="${ld.id}"><iframe class="ag-loader-frame" data-loader="${ld.id}" title="${ld.label}" tabindex="-1" width="720" height="360"></iframe></div></div>`);
     live.querySelector(".ag-loader-frame").srcdoc = AG_LOADER_DOC.replace("__AG_ID__", ld.id).replace("__AG_VI__", String(ld.vi));
     agFitLoaders();
+    agLoaderNote(live.querySelector(".ag-step-ai--loader"), ld.id);
     agTeleStart(ld.id, "e1");
   }
   function agGtmLoaderFinish() {
