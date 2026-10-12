@@ -11792,6 +11792,33 @@ body.ag-gate .shell:has(.setup-layout) .cl-detail-card:has(.ag-success){ opacity
 .ag-brief-read.is-read .ag-brief-readtxt{ color:#15663f !important; }
 .ag-brief-read{ padding-top:14px !important; padding-bottom:12px !important; }
 
+/* ---- Between agreements and AI work: what happens next ---- */
+.ag-nextup{ position:fixed; inset:0; z-index:90; display:grid; place-items:center; padding:24px; animation:ag-pill-in 420ms var(--cv-ease) both; }
+.ag-nextup.is-leaving{ opacity:0; transition:opacity 260ms ease; }
+.ag-nextup-card{
+  width:min(560px, 100%); padding:34px 36px 30px; border-radius:26px; text-align:left;
+  background:linear-gradient(165deg, #fff, #f6f9ff); border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 40px 90px rgba(15,23,42,.28), 0 4px 16px rgba(15,23,42,.08);
+  animation:ag-gate-card-in 560ms var(--cv-ease) both;
+}
+@keyframes ag-gate-card-in{ from{ opacity:0; transform:translateY(18px) scale(.985); } to{ opacity:1; transform:none; } }
+.ag-nextup-mark{ display:grid; place-items:center; width:46px; height:46px; margin:0 0 16px; border-radius:50%; background:linear-gradient(155deg,#5b95ff,#2563eb); box-shadow:0 10px 24px rgba(37,99,235,.35); }
+.ag-nextup-mark .ai-mark, .ag-nextup-mark svg{ width:22px; height:22px; }
+.ag-nextup-kicker{ margin:0 0 6px; font-family:"Geist Mono", ui-monospace, monospace; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#15814c; }
+.ag-nextup-title{ margin:0 0 8px; font-size:24px; line-height:1.25; font-weight:680; letter-spacing:-.4px; color:var(--cv-ink); }
+.ag-nextup-sub{ margin:0 0 22px; font-size:15px; line-height:1.55; color:var(--cv-ink-2); }
+.ag-nextup-list{ list-style:none; margin:0 0 18px; padding:0; display:flex; flex-direction:column; gap:4px; }
+.ag-nextup-list li{ display:flex; gap:14px; align-items:center; padding:10px 12px; border-radius:14px; animation:cv-rise 480ms var(--cv-ease) calc(240ms + var(--n) * 80ms) both; }
+.ag-nextup-list li:hover{ background:var(--cv-blue-wash); }
+.ag-nextup-ico{ flex:none; display:grid; place-items:center; width:36px; height:36px; border-radius:12px; background:#eef4ff; color:#2563eb; }
+.ag-nextup-ico svg{ width:17px; height:17px; }
+.ag-nextup-txt{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.ag-nextup-txt b{ font-size:14.5px; font-weight:620; color:var(--cv-ink); }
+.ag-nextup-txt span{ font-size:13px; line-height:1.4; color:var(--cv-mute); }
+.ag-nextup-note{ margin:0 0 20px; font-size:13px; color:var(--cv-mute); }
+.ag-nextup-go{ width:100%; justify-content:center; height:46px; font-size:15px; }
+@media (prefers-reduced-motion:reduce){ .ag-nextup, .ag-nextup-card, .ag-nextup-list li{ animation:none !important; } }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -15928,9 +15955,52 @@ body.ag-gate .shell:has(.setup-layout) .cl-detail-card:has(.ag-success){ opacity
     agDoneToastTimer = setTimeout(() => el.classList.remove("is-on"), 5200);
   }
 
+  /* Between the agreements and the AI work: what happens next, then Continue. */
+  const AG_NEXTUP = [
+    ["building", "Business profile", "I fetch your details from DLT, GSTIN and MCA. You check and submit."],
+    ["users", "Team", "I match people to your DLT records. You choose who to invite."],
+    ["layers", "Brands and LOBs", "I map your brands and lines of business. You confirm."],
+    ["phone", "GTM partners", "I compare rate cards and pick partners. You approve."],
+    ["list", "Templates", "I map your templates to lines of business. You review."],
+  ];
+  function agNextUpShow() {
+    document.getElementById("agNextUp")?.remove();
+    const el = document.createElement("div");
+    el.id = "agNextUp";
+    el.className = "ag-nextup";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+    el.setAttribute("aria-label", "What happens next");
+    el.innerHTML = `<div class="ag-nextup-card">
+      <span class="ag-nextup-mark ai-mark-wrap">${bootAiMark()}</span>
+      <p class="ag-nextup-kicker">Agreements accepted</p>
+      <h2 class="ag-nextup-title">Next, your agent sets everything up</h2>
+      <p class="ag-nextup-sub">I'll work through each area and prepare your DigiConsent workspace. You only review and accept.</p>
+      <ol class="ag-nextup-list">${AG_NEXTUP.map(([ic, t, d], n) => `<li style="--n:${n}"><span class="ag-nextup-ico">${I(ic)}</span><span class="ag-nextup-txt"><b>${t}</b><span>${d}</span></span></li>`).join("")}</ol>
+      <p class="ag-nextup-note">Nothing goes live until you accept it.</p>
+      <button type="button" class="ag-btn is-primary ag-nextup-go" data-nextup-go>Continue${I("arrow", "sm")}</button>
+    </div>`;
+    el.addEventListener("click", (ev) => {
+      if (!ev.target.closest("[data-nextup-go]")) return;
+      el.classList.add("is-leaving");
+      setTimeout(() => {
+        el.remove();
+        agDoneToastShow("0");
+        agGo("1");
+      }, 280);
+    });
+    document.body.appendChild(el);
+    el.querySelector("[data-nextup-go]").focus({ preventScroll: true });
+  }
+
   function successAutoArm(key) {
     kycAutoStop();
     const k = String(key);
+    if (k === "0") {
+      state.successAuto = null;
+      setTimeout(agNextUpShow, 380);
+      return;
+    }
     state.successAuto = { key: k, at: Date.now() };
     if (AG_DONE_TOAST[k]) {
       const at = state.successAuto.at;
