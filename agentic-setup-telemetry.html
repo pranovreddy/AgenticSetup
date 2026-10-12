@@ -12519,6 +12519,23 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
 .ag-step-ai--loader .ag-loader-crop{ margin:auto !important; }
 .ag-loader-note{ display:none !important; }
 
+/* dynamic stepper: only the current step shows its label, the rest collapse to dots so it never breaks */
+.ag-step-ai--loader .ag-ltop .ag-lsteps{ display:inline-flex !important; align-items:center; flex-wrap:nowrap !important; gap:0 !important; padding:5px 6px !important; max-width:calc(100vw - 180px); }
+.ag-lsteps li{ position:relative; display:inline-flex; align-items:center; gap:0 !important; height:30px !important; padding:0 !important; border-radius:99px; transition:background 300ms, padding 400ms var(--cv-ease), gap 400ms var(--cv-ease); }
+.ag-lsteps li + li{ margin-left:22px; }
+.ag-lsteps li + li::before{ content:""; position:absolute; left:-18px; top:50%; width:14px; height:2px; margin-top:-1px; border-radius:2px; background:#dbe6fa; transition:background 300ms; }
+.ag-lsteps li.is-done + li::before, .ag-lsteps li.is-done + li.is-active::before{ background:#2563eb; }
+.ag-lsteps li i{ flex:none; display:grid !important; place-items:center; width:22px !important; height:22px !important; border-radius:50%; font-size:10.5px; font-weight:700; line-height:1; border:1.5px solid #cfdcf3; color:#8aa0c4; background:#fff; font-style:normal; }
+.ag-lsteps li i svg{ width:11px !important; height:11px !important; }
+.ag-lsteps li.is-done i{ background:#2563eb; border-color:#2563eb; color:#fff; }
+.ag-lsteps li.is-active{ background:#fff !important; padding:0 14px 0 4px !important; gap:8px !important; box-shadow:0 6px 16px rgba(37,99,235,.14) !important; }
+.ag-lsteps li.is-active i{ border:2px solid #cfdcf8; border-top-color:#2563eb; color:transparent; animation:ag-tel-spin 900ms linear infinite; }
+.ag-lsteps li span{ display:block; max-width:0; overflow:hidden; opacity:0; white-space:nowrap; font-size:12px; font-weight:600; color:#0f1f3d; transition:max-width 450ms var(--cv-ease), opacity 300ms ease; }
+.ag-lsteps li.is-active span{ max-width:320px; opacity:1; }
+.ag-lsteps li.is-todo{ opacity:1 !important; }
+.ag-lsteps li.is-todo i{ color:#a9b8d4; }
+@media (max-width:760px){ .ag-lsteps li.is-active span{ max-width:150px; } }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -15737,7 +15754,7 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
     const check = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
     const html = def.steps.map(([now, did], i) => {
       const st = agTele.done || i < agTele.step ? "done" : i === agTele.step ? "active" : "todo";
-      return `<li class="is-${st}"><i>${st === "done" ? check : st === "active" ? "<b></b>" : ""}</i><span>${agTeleEsc(st === "done" ? did : now)}</span></li>`;
+      return `<li class="is-${st}" title="${agTeleEsc(st === "done" ? did : now)}"><i>${st === "done" ? check : st === "active" ? "<b></b>" : i + 1}</i><span>${agTeleEsc(st === "done" ? did : now)}</span></li>`;
     }).join("");
     if (list.dataset.sig !== html) { list.innerHTML = html; list.dataset.sig = html; }
   }
