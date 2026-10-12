@@ -12483,6 +12483,23 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
 .ag-sum-card::before{ height:240px; }
 @media (max-width:1000px){ .ag-st{ padding-left:110px; } .ag-st-hero{ flex-direction:column; align-items:flex-start; } .ag-st-stats div{ align-items:flex-start; } .ag-st-row{ grid-template-columns:1fr auto; } .ag-st-row.is-head{ display:none; } }
 
+/* compact header */
+.ag-st{ padding-top:70px !important; }
+.ag-st-hero{ align-items:center !important; margin-bottom:18px !important; padding:14px 20px; border:1px solid #e1eafb; border-radius:20px; background:rgba(255,255,255,.7); gap:28px !important; }
+.ag-st-copy{ max-width:none !important; flex:1; min-width:0; }
+.ag-st-meta{ display:flex; align-items:center; flex-wrap:wrap; gap:6px 16px; margin-bottom:8px; }
+.ag-st-meta .ag-sum-kicker{ margin:0 !important; }
+.ag-st-meta .ag-sum-src{ margin:0 !important; padding:0 !important; }
+.ag-st .ag-sum-head{ font-size:21px !important; margin:0 0 4px !important; letter-spacing:-.4px !important; }
+.ag-st .ag-sum-sub{ font-size:14px !important; }
+.ag-st-stats{ gap:0 !important; }
+.ag-st-stats div{ flex-direction:row !important; align-items:baseline !important; gap:8px; padding:0 22px; border-left:1px solid #e1eafb; }
+.ag-st-stats dd{ font-size:26px !important; letter-spacing:-.8px !important; }
+.ag-st-stats dt{ font-size:12px !important; max-width:70px; line-height:1.25; }
+.ag-st-row{ padding-top:13px !important; padding-bottom:13px !important; }
+.ag-st-row .ag-pl-av{ width:42px !important; height:42px !important; }
+.ag-st-foot{ padding:14px 28px !important; }
+
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
   margin:0 0 -30px !important; width:100% !important; padding:18px 32px 46px 28px !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
@@ -15316,7 +15333,7 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
       <div class="ag-sum-scroll"><div class="ag-st">
         <header class="ag-st-hero">
           <div class="ag-st-copy">
-            <p class="ag-sum-kicker"><span class="ag-sum-dot"></span>Agent summary</p>
+            <div class="ag-st-meta"><p class="ag-sum-kicker"><span class="ag-sum-dot"></span>Agent summary</p><div class="ag-sum-src"><span>From</span>${side.sources.map((x) => `<i>${agSumEsc(x)}</i>`).join("")}</div></div>
             <h2 class="ag-sum-head">${agSumEsc(tele ? tele.did() : "Summary")}</h2>
             <p class="ag-sum-sub">${agSumEsc(tele ? tele.next() : "")}</p>
           </div>
@@ -15334,7 +15351,6 @@ body.ag-gate .ag-atabs{ background:#eef3fe !important; -webkit-backdrop-filter:n
             </div>
           </footer>
         </section>
-        <div class="ag-sum-src"><span>How I got here</span>${side.sources.map((x) => `<i>${agSumEsc(x)}</i>`).join("")}</div>
       </div></div>
     </div>`;
     const close = (after) => {
