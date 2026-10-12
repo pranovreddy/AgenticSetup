@@ -154,6 +154,8 @@ All new code is prefixed `op` (CSS `.op-*`, JS `op*`) and sits in one CSS block 
 - **View summary** pill now appears ~0.1 s after leaving the summary (was ~3.5 s).
 - Fixes carried in: broken GTM rate-card icon URLs; the agreements subtitle clipped under the sticky tabs; reduced motion never showed summaries (blocker check now scoped to the focused step, GTM marks itself ready); kick-off and toast colours moved from green to blue; "Filling your details with AI" chip moved to the top right so it never sits on the form.
 - Defaults (`OP_DEFAULT`): loader A, Team A, Brands B, GTM B, Templates C, success C, next-up B.
+- **Session 3b: two whole-experience directions** on every screen, plus "Whole experience" presets at the top of the panel (A–C Refined / D Board / E Conversation; picking D or E plays from the Team loader). D = loader with a Findings column streaming results (`OP_FIND`), decision board with a reason and an include switch per item and actions on top (GTM shows a rate race per phase), signed receipt on approve, full-screen route for what happens next. E = loader narrated line by line (`OP_NARR`), summary as an agent message with item tiles, reply chips, "How did you decide?" and a working ask box, approve shows your reply then the agent's confirmation, next-up as a chat. Code is in the `Opus 2` JS block (`opBoard`, `opChat`, `opSumBind`, `opSuccessPaint2`, `opNextUpMarkup`).
+- **Version bar** (`opStrip`, top centre): appears on any loader, summary, confirmation or next-up screen, names the screen and swaps its version in place. Choosing a version in the panel jumps straight to that screen (`opSetAndShow`).
 
 ## 9. User preferences for how to respond
 
