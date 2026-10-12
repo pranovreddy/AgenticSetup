@@ -11572,8 +11572,8 @@ body.ag-app-ready .setup-layout .cl-overview{
 /* ==========================================================================
    Sidebar version: the rail carries the agent telemetry (blob, orbit, log)
    ========================================================================== */
-.setup-layout .cl-workspace{ grid-template-columns:168px minmax(0, 1fr) !important; }
-.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:168px !important; min-width:168px !important; max-width:168px !important; border-right:0 !important; box-shadow:none !important; }
+.setup-layout .cl-workspace{ grid-template-columns:112px minmax(0, 1fr) !important; }
+.setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:112px !important; min-width:112px !important; max-width:112px !important; border-right:0 !important; box-shadow:none !important; }
 .setup-layout .cl-overview .stages, .setup-layout .cl-overview .cl-overview-head{ display:none !important; }
 .ag-telcard{
   --tel-ease:cubic-bezier(.22,1,.36,1);
@@ -11649,8 +11649,8 @@ body.ag-app-ready .setup-layout .cl-overview{
 
 /* ---- Step done: a temporary pop-up instead of a success page ---- */
 .ag-donetoast{
-  position:fixed; z-index:60; left:calc(168px + (100vw - 168px) / 2); bottom:104px; transform:translate(-50%, 16px); opacity:0; pointer-events:none;
-  display:flex; align-items:center; gap:12px; min-width:320px; max-width:min(520px, calc(100vw - 208px)); padding:12px 12px 12px 14px; overflow:hidden;
+  position:fixed; z-index:60; left:calc(112px + (100vw - 112px) / 2); bottom:104px; transform:translate(-50%, 16px); opacity:0; pointer-events:none;
+  display:flex; align-items:center; gap:12px; min-width:320px; max-width:min(520px, calc(100vw - 152px)); padding:12px 12px 12px 14px; overflow:hidden;
   border-radius:14px; background:rgba(255,255,255,.96); border:1px solid #e3eaf5; box-shadow:0 18px 44px rgba(15,23,42,.14), 0 2px 6px rgba(15,23,42,.06);
   -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
   transition:opacity 320ms var(--cv-ease), transform 420ms var(--cv-ease);
@@ -11677,6 +11677,33 @@ body.ag-app-ready .setup-layout .cl-overview{
 }
 .ag-tel-tip::before{ content:""; position:absolute; left:-4px; top:50%; width:8px; height:8px; background:inherit; transform:translateY(-50%) rotate(45deg); border-radius:1px; }
 .ag-tel-ico:hover .ag-tel-tip, .ag-tel-ico:focus-visible .ag-tel-tip{ opacity:1; transform:translate(0,-50%); }
+
+/* ---- Not a bar: logo top-left, user top-right, the step curve floats on the canvas ---- */
+.setup-layout .cl-overview{ padding-top:68px !important; padding-bottom:12px !important; background:none !important; }
+.setup-layout .cl-overview .cl-overview-brand{
+  position:fixed !important; top:10px; left:22px; z-index:40; width:auto !important; height:44px; padding:0 !important; margin:0 !important; border:0 !important; background:none !important; display:flex; align-items:center;
+}
+.setup-layout .cl-overview .cl-overview-logo{ height:26px; width:auto !important; max-width:none !important; }
+.setup-layout .cl-overview .cl-overview-foot{
+  position:fixed !important; top:8px; right:24px; left:auto; bottom:auto; z-index:40; width:auto !important; height:48px; margin:0 !important; padding:0 !important; border:0 !important; background:none !important; display:flex; align-items:center;
+}
+.setup-layout .cl-overview .cl-overview-user{ width:auto !important; }
+.setup-layout .cl-overview .cl-overview-user-btn{ width:auto !important; padding:4px 8px 4px 4px !important; border-radius:999px; gap:10px; }
+.setup-layout .cl-overview .cl-overview-user-btn:hover{ background:rgba(255,255,255,.7); }
+.setup-layout .cl-overview .cl-overview-user-menu{ top:calc(100% + 6px) !important; bottom:auto !important; right:0 !important; left:auto !important; }
+.setup-layout .cl-detail .cl-detail-card{ padding-top:0; }
+
+body .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{ padding:64px 32px 40px 28px !important; background:none !important; }
+.setup-layout::before{
+  content:""; position:fixed; z-index:0; left:0; right:0; top:0; height:190px; pointer-events:none;
+  background:
+    radial-gradient(50% 120% at 14% 0%, rgba(59,130,246,.20), transparent 70%),
+    radial-gradient(45% 110% at 72% -10%, rgba(139,112,255,.12), transparent 70%),
+    linear-gradient(180deg, rgba(37,99,235,.09) 0%, rgba(37,99,235,.04) 55%, rgba(37,99,235,0) 100%);
+}
+html, body, .shell, .shell > .content, .page{ background-color:#f8fafd; }
+.setup-layout .cl-overview::before, .setup-layout .cl-overview::after{ display:none !important; }
+.setup-layout .cl-detail{ background:transparent !important; }
 
 /* ---- Agent feedback: a gradient that washes down from the top and fades into the page ---- */
 .shell:has(.setup-layout) .cl-detail-card > .welcome-card.is-agentic{
@@ -14289,9 +14316,9 @@ body.ag-app-ready .setup-layout .cl-overview{
     const track = el.querySelector(".ag-tel-track");
     const w = track.clientWidth || 180;
     const h = track.clientHeight || 320;
-    const fx = w - 26;
+    const fx = w - 30;
     const STEP = 0.4;
-    const rx = Math.min(84, w - 70);
+    const rx = Math.min(84, Math.max(36, w - 70));
     const ry = Math.max(120, (h / 2 - 34) / Math.sin(3 * STEP));
     const pt = (i) => { const th = (i - m.pos) * STEP; return [fx - rx * (1 - Math.cos(th)), h / 2 + ry * Math.sin(th)]; };
     const svg = el.querySelector(".ag-tel-path");
