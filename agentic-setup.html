@@ -11527,6 +11527,22 @@ body.ag-app-ready .setup-layout .cl-overview{
   to{ opacity:1; transform:none; filter:none; clip-path:inset(0 0 0 0); }
 }
 @media (prefers-reduced-motion:reduce){ .cv-pop{ animation:none !important; } }
+
+/* ---- Agreements brief v3: three short lines */
+.ag-brief-title{ font-size:20px; margin-bottom:10px; }
+.ag-brief-pt{ grid-template-columns:22px minmax(0,1fr) auto; align-items:center; padding:13px 0; column-gap:12px; }
+.ag-brief-lead{ grid-column:2; font-size:15.5px; font-weight:600; letter-spacing:-.15px; line-height:1.35; }
+.ag-brief-ref{ grid-column:3; margin:0; font-size:12px; opacity:.55; white-space:nowrap; }
+.ag-brief-n{ grid-row:auto; }
+.ag-brief-read{ display:flex; flex-direction:column; gap:8px; margin-top:20px; padding-top:16px; border-top:1px solid var(--cv-line); }
+.ag-brief-bar{ display:block; height:3px; border-radius:3px; background:var(--cv-line); overflow:hidden; }
+.ag-brief-bar i{ display:block; height:100%; width:0; border-radius:3px; background:var(--cv-blue); transition:width 220ms linear, background 300ms; }
+.ag-brief-readtxt{ font-size:12.5px; color:var(--cv-mute); }
+.ag-brief-read.is-read .ag-brief-bar i{ background:#15814c; }
+.ag-brief-read.is-read .ag-brief-readtxt{ color:#15663f; font-weight:600; }
+#agAcceptBtn[disabled]{ opacity:.45; cursor:not-allowed; box-shadow:none; filter:grayscale(.25); }
+#agAcceptBtn.is-unlocked{ animation:cv-unlock 700ms var(--cv-ease); }
+@keyframes cv-unlock{ 0%{ box-shadow:0 0 0 0 rgba(37,99,235,.5); } 100%{ box-shadow:0 0 0 14px rgba(37,99,235,0); } }
 /* ---- Motion: one calm swap between steps */
 .shell:has(.setup-layout) .cl-detail-card.is-swap-out{
   opacity:0; transform:translateY(4px); filter:blur(2px);
@@ -11785,6 +11801,7 @@ body.ag-app-ready .setup-layout .cl-overview{
     agentLogGroups: Object.create(null),
     docTab: "terms",
     docSigned: { terms: false, privacy: false },
+    docRead: { terms: false, privacy: false },
     docAgree: false,
     /* what the user has finished, as opposed to what the agent has prepared */
     done: { invites: false, agreements: false, estate: [false, false, false], migration: false },
@@ -13945,7 +13962,7 @@ body.ag-app-ready .setup-layout .cl-overview{
     agreements: {
       steps: [["Pulling the latest agreements", "Pulled the latest agreements"], ["Reading the terms and conditions", "Read the terms and conditions"], ["Reading the privacy policy", "Read the privacy policy"], ["Summarising the key terms", "Summarised the key terms"]],
       did: () => "I read both agreements and pulled out the three key terms in each.",
-      next: () => "Check the clauses each point links to, then accept both.",
+      next: () => "Scroll each agreement to the end, then accept both.",
     },
     kyc: {
       steps: [["Checking the DLT registry", "Checked the DLT registry"], ["Checking MCA, GSTIN and RBI", "Checked MCA, GSTIN and RBI"], ["Checking trademark records and more", "Checked trademark records and more"], ["Filling in your business profile", "Filled in your business profile"]],
@@ -15716,6 +15733,7 @@ body.ag-app-ready .setup-layout .cl-overview{
     state.stage1AutoCollapsed = false;
     delete state.stageOpen[1];
     state.docSigned = { terms: false, privacy: false };
+    state.docRead = { terms: false, privacy: false };
     state.docTab = "terms";
     state.invited = [];
     state.estateAmend = {};
@@ -18317,18 +18335,31 @@ function agMigRow() {
     if (!sc) return;
     const secs = [...sc.querySelectorAll(".ag-sec")];
     if (!secs.length) return;
+    const id = sc.dataset.doc;
+    const room = sc.scrollHeight - sc.clientHeight;
+    const atEnd = room <= 8 || sc.scrollTop >= room - 8;
     const line = sc.getBoundingClientRect().top + sc.clientHeight * 0.7;
-    const atEnd = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 6 && sc.scrollTop > 0;
-    let read = 0;
-    secs.forEach((el, i) => {
-      const on = atEnd || el.getBoundingClientRect().top < line;
-      el.classList.toggle("is-read", on);
-      const tick = sc.querySelector(`.ag-tick[data-secs="${i}"]`);
-      if (tick) tick.classList.toggle("is-read", on);
-      if (on) read += 1;
+    secs.forEach((el) => {
+      el.classList.toggle("is-read", atEnd || el.getBoundingClientRect().top < line);
     });
-    const count = document.getElementById("agReadCount");
-    if (count) count.textContent = String(read);
+    if (atEnd && id && !state.docRead[id]) state.docRead[id] = true;
+    const meter = document.getElementById("agReadState");
+    if (meter) {
+      const done = !!state.docRead[id];
+      const frac = done ? 1 : room > 0 ? Math.min(1, sc.scrollTop / room) : 1;
+      meter.classList.toggle("is-read", done);
+      const bar = meter.querySelector(".ag-brief-bar i");
+      if (bar) bar.style.width = Math.round(frac * 100) + "%";
+      const txt = meter.querySelector(".ag-brief-readtxt");
+      if (txt) txt.textContent = done ? "You've read it all" : "Scroll to the end to accept";
+    }
+    const btn = document.getElementById("agAcceptBtn");
+    if (btn && state.docRead[btn.dataset.doc] && btn.disabled) {
+      btn.disabled = false;
+      btn.removeAttribute("aria-disabled");
+      btn.removeAttribute("title");
+      btn.classList.add("is-unlocked");
+    }
   }
   document.addEventListener("scroll", (e) => {
     if (e.target && e.target.classList && e.target.classList.contains("ag-agree")) agReaderSync();
@@ -18356,10 +18387,9 @@ function agMigRow() {
     const points = doc.summary.map((line, i) => {
       const r = refs[i] || [];
       const lead = (AG_DOC_LEADS[doc.id] || [])[i] || "";
-      return `<li style="--i:${i}"><button type="button" class="ag-brief-pt" data-action="ag-brief-jump" data-secs="${r.join(",")}">
+      return `<li style="--i:${i}"><button type="button" class="ag-brief-pt" data-action="ag-brief-jump" data-secs="${r.join(",")}" title="${agEsc(line)}">
           <span class="ag-brief-n">${i + 1}</span>
-          ${lead ? `<span class="ag-brief-lead">${lead}</span>` : ""}
-          <span class="ag-brief-text">${line}</span>
+          <span class="ag-brief-lead">${lead || line}</span>
           ${r.length ? `<span class="ag-brief-ref">Clause ${r.map((n) => n + 1).join(" and ")}${arrow}</span>` : ""}
         </button></li>`;
     }).join("");
@@ -18377,10 +18407,12 @@ function agMigRow() {
       <div class="ag-acols">
         <aside class="ag-brief" aria-label="Summary of ${doc.name}">
           <p class="ag-brief-eyebrow"><svg class="ag-brief-spark" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg><span>Read for you</span><i>${doc.version}</i></p>
-          <h3 class="ag-brief-title">What you're agreeing to</h3>
+          <h3 class="ag-brief-title">In short</h3>
           <ol class="ag-brief-list">${points}</ol>
-          <div class="ag-brief-map" role="group" aria-label="Clauses in this document">${ticks}</div>
-          <p class="ag-brief-meter"><b id="agReadCount">0</b> of ${doc.sections.length} clauses read</p>
+          <div class="ag-brief-read${state.docRead[doc.id] ? " is-read" : ""}" id="agReadState" data-doc="${doc.id}" role="status">
+            <span class="ag-brief-bar"><i style="width:${state.docRead[doc.id] ? 100 : 0}%"></i></span>
+            <span class="ag-brief-readtxt">${state.docRead[doc.id] ? "You've read it all" : "Scroll to the end to accept"}</span>
+          </div>
         </aside>
         <article class="ag-paper" aria-label="Full text of ${doc.name}">
           <header class="ag-paper-head">
@@ -18392,9 +18424,9 @@ function agMigRow() {
       </div>
     </div>
     <div class="ag-actions is-approve">
-      <p class="ag-approve-note">You are approving <b>${agEsc(next.name)}</b> on behalf of <b>${agEsc(company)}</b>. Select <b>Accept ${agEsc(next.name)}</b> to record your acceptance of the terms above. Your approval is saved to the audit log.</p>
+      <p class="ag-approve-note" id="agApproveNote" data-ready="1">${state.docRead[next.id] ? "" : ""}You are approving <b>${agEsc(next.name)}</b> on behalf of <b>${agEsc(company)}</b>. Select <b>Accept ${agEsc(next.name)}</b> to record your acceptance of the terms above. Your approval is saved to the audit log.</p>
       <div class="ag-dock-btns">
-        <button type="button" class="ag-btn is-primary" data-action="ag-accept">${I("check", "sm")}Accept ${agEsc(next.name)}</button>
+        <button type="button" class="ag-btn is-primary" id="agAcceptBtn" data-action="ag-accept" data-doc="${next.id}"${state.docRead[next.id] ? "" : ' disabled aria-disabled="true"'} title="${state.docRead[next.id] ? "" : "Scroll to the end of " + agEsc(next.name) + " to accept"}">${I("check", "sm")}Accept ${agEsc(next.name)}</button>
       </div>
     </div>`;
   }
@@ -19672,7 +19704,7 @@ function agMigRow() {
       }
       if (act.dataset.action === "ag-accept") {
         const next = AG_DOCS.find((item) => !state.docSigned[item.id]);
-        if (!next) return;
+        if (!next || !state.docRead[next.id]) return;
         agBusy(act, "Accepting…", 700).then(() => {
           state.docSigned[next.id] = true;
           state.docAgree = false;
