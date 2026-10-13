@@ -13949,6 +13949,23 @@ body > .kyc-ai-chip.is-out, .kyc-ai-chip.is-out{ transform:translateX(-50%) tran
 /* ---- Route page: background fills the whole window, content stays in its own lane ---- */
 .ag-nextup.op-nfull{ background:radial-gradient(70% 60% at 100% 0%, rgba(160,186,250,.28), transparent 70%), radial-gradient(60% 60% at 0% 100%, rgba(214,229,255,.5), transparent 70%), #f8fafd !important; overflow-y:auto; }
 .ag-nextup.op-nfull > .op-route{ background:none !important; width:100% !important; max-width:1320px !important; margin:0 auto !important; box-sizing:border-box; }
+body.ag-app-ready #agTelCard, body.ag-app-ready #opLogo, body.ag-app-tour #opLogo, body.ag-app-tour #agTelCard{ display:none !important; }
+body.ag-app-ready .cl-overview-brand .cl-overview-logo, body.ag-app-ready .cl-overview-logo{ position:static !important; }
+/* after the walkthrough the full app sidebar stays */
+body.ag-app-ready .setup-layout .cl-overview, body.ag-app-ready .setup-layout .cl-overview{ width:236px !important; min-width:236px !important; max-width:236px !important; padding:16px 12px 12px !important; background:#fff !important; border-right:1px solid #e6edf8 !important; box-shadow:none !important; overflow-y:auto !important; transition:width 360ms cubic-bezier(.22,1,.36,1); }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-brand{ position:static !important; width:100% !important; max-width:none !important; min-width:0 !important; height:44px !important; max-height:none !important; border-radius:12px !important; clip-path:none !important; background:transparent !important; margin:0 0 8px !important; box-shadow:none !important; overflow:visible; }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-logo{ position:static !important; transform:none !important; height:26px !important; clip-path:none !important; }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-foot{ position:static !important; width:100% !important; height:auto !important; margin-top:auto !important; }
+body.ag-app-ready .setup-layout .cl-overview .stages.is-app-nav{ display:block !important; }
+body.ag-app-ready .ag-app-item{ white-space:nowrap; }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-user-meta{ display:flex !important; flex-direction:column; gap:2px; min-width:0; text-align:left; opacity:1 !important; width:auto !important; max-width:none !important; position:static !important; clip:auto !important; }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-user-btn{ display:flex !important; align-items:center; gap:10px; width:100% !important; height:auto !important; padding:10px 8px !important; border-radius:14px !important; }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-foot, body.ag-app-ready .setup-layout .cl-overview .cl-overview-user{ position:static !important; width:100% !important; height:auto !important; border-top:1px solid #e6edf8 !important; padding-top:8px !important; }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-user-btn{ background:transparent !important; box-shadow:none !important; color:#0b1a33 !important; }
+body.ag-app-ready .setup-layout .cl-overview .cl-overview-user-btn *{ color:inherit; }
+body.ag-app-ready .ag-app-item{ font-size:13.5px !important; }
+body.ag-app-ready .cl-overview::before, body.ag-app-ready .cl-overview::after, body.ag-app-ready .cl-overview-brand::before, body.ag-app-ready .cl-overview-brand::after{ display:none !important; }
+body.ag-app-ready #opMig{ left:auto !important; right:24px !important; bottom:20px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
