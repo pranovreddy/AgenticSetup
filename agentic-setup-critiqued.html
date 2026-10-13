@@ -13178,6 +13178,70 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 
 .op-lnarr{ height:auto !important; max-height:150px; }
 
+
+/* ---- Cards: finesse pass ---- */
+.op-grid{ gap:18px; }
+.op-card{ gap:18px; padding:22px 22px 20px; border-radius:20px; border:1px solid rgba(196,214,245,.7);
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.9) inset, 0 1px 1px rgba(15,23,42,.03), 0 2px 6px -2px rgba(37,99,235,.06), 0 22px 40px -28px rgba(37,99,235,.28); overflow:hidden; }
+.op-card::before{ content:""; position:absolute; left:0; right:0; top:0; height:72px; pointer-events:none; background:linear-gradient(180deg,rgba(228,239,255,.55),rgba(228,239,255,0)); }
+.op-card > *{ position:relative; }
+.op-card:hover{ transform:translateY(-3px); border-color:#b9d0f7; box-shadow:0 0 0 1px rgba(255,255,255,.9) inset, 0 2px 4px rgba(15,23,42,.04), 0 30px 48px -26px rgba(37,99,235,.36); }
+.op-card-hd{ min-height:50px; gap:14px; }
+.op-card .op-av{ width:46px; height:46px; background:linear-gradient(145deg,#f1f6ff,#d6e5ff); box-shadow:0 0 0 3px #fff, 0 0 0 4px rgba(37,99,235,.10), 0 6px 14px -6px rgba(37,99,235,.35); }
+.op-card .op-who b{ font-size:15.5px; letter-spacing:-.15px; }
+.op-card .op-who > span{ font-size:13px; }
+/* facts as quiet label / value rows */
+.op-card .op-facts{ gap:0; }
+.op-card .op-facts div{ padding:9px 0; border-bottom:1px dashed var(--op-line); align-items:baseline; }
+.op-card .op-facts div:last-child{ border-bottom:0; }
+.op-card .op-facts dt{ font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:#6b7c9e; }
+.op-card .op-facts dd{ font-size:13.5px; font-variant-numeric:tabular-nums; }
+/* role footer */
+.op-card-ft{ flex-direction:column; align-items:flex-start; gap:8px; border-top:0; padding:14px 0 0; position:relative; }
+.op-card-ft::before{ content:""; position:absolute; left:-22px; right:-22px; top:0; height:1px; background:linear-gradient(90deg,transparent,var(--op-line) 12%,var(--op-line) 88%,transparent); }
+.op-card-ft .op-pill{ height:26px; padding:0 11px 0 9px; gap:7px; font-size:12px; background:linear-gradient(180deg,#f3f8ff,#e8f0ff); box-shadow:0 0 0 1px rgba(37,99,235,.14) inset; }
+.op-card-ft .op-pill::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--op-blue); box-shadow:0 0 0 3px rgba(37,99,235,.14); }
+.op-card-ft .op-why{ font-size:12.5px; line-height:1.4; }
+/* brands: chips and label */
+.op-card-k{ margin:0 0 -10px; color:#6b7c9e; }
+.op-card .op-chips i{ background:linear-gradient(180deg,#fff,#f4f8ff); box-shadow:0 0 0 1px var(--op-line) inset; }
+/* partners: state, rates */
+.op-state{ display:inline-flex; align-items:center; gap:6px; }
+.op-state::before{ content:""; width:7px; height:7px; border-radius:50%; background:#c3cde0; }
+.op-state.is-on{ color:var(--op-deep) !important; font-weight:600; }
+.op-state.is-on::before{ background:var(--op-blue); box-shadow:0 0 0 3px rgba(37,99,235,.16); }
+.op-card-why{ min-height:3 * 1.45em; }
+.op-phases{ border-top:0; position:relative; padding-top:6px; }
+.op-phases::before{ content:""; position:absolute; left:-22px; right:-22px; top:0; height:1px; background:linear-gradient(90deg,transparent,var(--op-line) 12%,var(--op-line) 88%,transparent); }
+.op-phases dt{ font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:#6b7c9e; }
+.op-phases .is-best dd b{ padding:2px 8px; border-radius:8px; background:var(--op-soft); box-shadow:0 0 0 1px rgba(37,99,235,.14) inset; }
+.op-card.is-pick{ background:linear-gradient(180deg,#fff 0%,#f5f9ff 100%); }
+.op-card.is-pick::after{ content:""; position:absolute; left:22px; right:22px; top:0; height:2px; border-radius:0 0 2px 2px; background:linear-gradient(90deg,#5b95ff,#2563eb); }
+.op-card.is-dim{ background:rgba(255,255,255,.55); }
+.op-card.is-dim::before{ display:none; }
+/* templates: ring and stats */
+.op-card-ring{ gap:16px; padding:2px 0; }
+.op-card-ring .op-ring{ width:60px; height:60px; filter:drop-shadow(0 6px 10px rgba(37,99,235,.18)); }
+.op-card-ring .op-ring circle{ stroke-width:3.6; }
+.op-card-ring span{ font-size:12.5px; color:var(--op-mute); line-height:1.4; }
+.op-card-ring span b{ display:block; font-size:13.5px; font-weight:620; color:var(--op-ink); white-space:nowrap; }
+.op-facts.is-row{ border-top:0; position:relative; padding-top:16px; }
+.op-facts.is-row::before{ content:""; position:absolute; left:-22px; right:-22px; top:0; height:1px; background:linear-gradient(90deg,transparent,var(--op-line) 12%,var(--op-line) 88%,transparent); }
+.op-card .op-facts.is-row div{ padding:0 0 0 14px; border-bottom:0; flex-direction:column; align-items:flex-start; }
+.op-card .op-facts.is-row dt{ font-size:10.5px; white-space:nowrap; }
+.op-card .op-facts.is-row dd{ font-size:20px; font-weight:680; color:var(--op-ink); }
+@media (prefers-reduced-motion:reduce){ .op-card, .op-card:hover{ transform:none; } }
+.op-grid.is-2 .op-card-hd{ min-height:66px; align-items:flex-start; }
+.op-grid.is-2 .op-card .op-facts dd{ white-space:normal; overflow:visible; text-overflow:clip; }
+.op-grid.is-e1 .op-card-hd{ padding-right:0; }
+.op-grid.is-e1 .op-card-why{ min-height:57px; }
+.op-grid.is-e1 .op-phases div{ height:42px; align-items:center; padding:0; }
+.op-phases .is-best dd b{ padding:1px 8px; }
+.op-card .op-facts.is-row dt{ text-transform:none; letter-spacing:0; font-size:12px; font-weight:500; white-space:normal; line-height:1.25; min-height:30px; display:flex; align-items:flex-end; }
+.op-card .op-facts.is-row div{ flex:1 1 0; min-width:0; }
+.op-card.is-pick::after{ top:-1px; left:28px; right:28px; height:3px; }
+.op-card .op-facts.is-row div:first-child{ padding-left:0; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23340,12 +23404,12 @@ function agMigRow() {
     return [who, `<span class="op-cell is-end"><span class="op-pill">${it.pill}</span></span>`];
   }
   function opCards(m) {
-    const card = (it, n, body, foot) => `<article class="op-card op-item${it.dim ? " is-dim" : ""}${m.key === "e1" && it.on ? " is-pick" : ""}" style="--n:${n}"><header class="op-card-hd">${it.lead}<span class="op-who"><b>${it.name}</b><span>${it.sub}</span></span></header>${body}${foot ? `<footer class="op-card-ft">${foot}</footer>` : ""}</article>`;
+    const card = (it, n, body, foot) => `<article class="op-card op-item${it.dim ? " is-dim" : ""}${m.key === "e1" && it.on ? " is-pick" : ""}" style="--n:${n}"><header class="op-card-hd">${it.lead}<span class="op-who"><b>${it.name}</b>${m.key === "e1" ? `<span class="op-state${it.on ? " is-on" : ""}">${it.sub}</span>` : `<span>${it.sub}</span>`}</span></header>${body}${foot ? `<footer class="op-card-ft">${foot}</footer>` : ""}</article>`;
     let html = "";
     if (m.key === "2") html = m.items.map((it, n) => card(it, n, `<dl class="op-facts"><div><dt>Email</dt><dd>${it.contact[0]}</dd></div><div><dt>Mobile</dt><dd>${it.contact[1]}</dd></div><div><dt>Department</dt><dd>${it.dept}</dd></div></dl>`, `<span class="op-pill">${it.pill}</span><span class="op-why is-wrap">${it.why}</span>`)).join("");
     else if (m.key === "e0") html = m.items.map((it, n) => card(it, n, `<p class="op-card-k">Lines of business</p><span class="op-chips">${it.chips.map((c) => `<i>${c}</i>`).join("")}</span>`, "")).join("");
     else if (m.key === "e1") html = m.items.map((it, n) => card(it, n, `<p class="op-card-why">${it.why}</p><dl class="op-phases">${it.phases.map((ph) => `<div class="${ph.best ? "is-best" : ""}"><dt>${ph.label}</dt><dd><b>${ph.rate}</b>${ph.share ? `<em>takes ${ph.share}</em>` : ph.best ? "<em>lowest</em>" : ""}</dd></div>`).join("")}</dl>`, "")).join("");
-    else html = m.items.map((it, n) => card(it, n, `<div class="op-card-ring">${opRing(it.pct)}<span>high<br>confidence</span></div><dl class="op-facts is-row">${it.facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`, "")).join("");
+    else html = m.items.map((it, n) => card(it, n, `<div class="op-card-ring">${opRing(it.pct)}<span><b>High confidence</b>of templates mapped</span></div><dl class="op-facts is-row">${it.facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`, "")).join("");
     return `<section class="op-grid is-${m.key}">${html}</section>`;
   }
   function opSumMarkup(key, v) {
