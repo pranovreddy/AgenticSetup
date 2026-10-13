@@ -18292,7 +18292,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     document.getElementById("opKvOverlay")?.remove();
     const ov = document.createElement("div");
     ov.id = "opKvOverlay";
-    ov.innerHTML = `<div class="op-kv-wrap"><p class="op-kv-k"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Verifying your submission</p><div class="op-kv-stage"><iframe class="op-kv-frame" title="Verifying your business details" scrolling="no"></iframe></div><p class="op-kv-line" id="opKvLine">Checking your details with the telecom operators</p></div>`;
+    ov.innerHTML = `<div class="op-kv-wrap"><p class="op-kv-k"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Verifying your submission</p><div class="op-kv-stage"><iframe class="op-kv-frame" title="Verifying your business details" scrolling="no"></iframe></div><p class="op-kv-line" id="opKvLine">Reading your submission and running risk checks</p></div>`;
     document.body.appendChild(ov);
     const frame = ov.querySelector("iframe");
     frame.srcdoc = AG_LOADER_DOC.replace("__AG_ID__", "kycv").replace("__AG_VI__", "0");
@@ -18310,7 +18310,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       if (e.source !== frame.contentWindow) return;
       const d = e.data;
       if (!d || !d.agLoader) return;
-      if (d.step === 1 && line) line.textContent = "Waiting for each operator's decision";
+      if (d.step === 2 && line) line.textContent = "Waiting for each operator's decision";
       if (d.state === "done") done();
     };
     window.addEventListener("message", onMsg);
