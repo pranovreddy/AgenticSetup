@@ -13430,6 +13430,65 @@ body.ag-gate .ag-actions .ag-btn.is-primary:disabled{ box-shadow:none !important
 body.op-strip-on .ag-nextup{ padding-top:24px; }
 body.op-strip-on #agSumReopen{ top:auto; }
 
+/* ---- Summary F: review left, info panel right ---- */
+.op-wrap.is-f{ padding:0; min-height:100%; }
+.op-fsplit{ display:grid; grid-template-columns:minmax(0,1fr) minmax(340px,44%); min-height:100%; }
+.op-fl{ display:flex; flex-direction:column; gap:22px; padding:56px 48px 28px var(--op-left); min-width:0; }
+.op-fl-hd .op-h{ font-size:30px; }
+.op-fl-list{ min-width:0; }
+.op-fl-ft{ margin-top:auto; display:flex; flex-direction:column; gap:14px; padding-top:8px; }
+.op-fl-ft .op-count{ margin:0; }
+.op-acts.is-row{ display:flex; align-items:center; gap:8px; }
+.op-acts.is-row .op-btn.is-primary{ order:3; flex:1; }
+.op-acts.is-row .op-btn.is-ghost{ order:2; }
+.op-acts.is-row .op-link{ order:1; margin-right:auto; }
+.op-fr{ position:sticky; top:16px; align-self:start; height:calc(100vh - 32px); margin:16px 16px 16px 0; border-radius:28px; overflow:hidden; background:linear-gradient(160deg,#f7f9ff 0%,#e8eeff 42%,#a9bcf7 82%,#8aa4f4 100%); box-shadow:0 0 0 1px rgba(196,214,245,.7) inset; animation:op-rise 600ms var(--op-ease) 120ms both; }
+.op-fr-art{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.op-fr-in{ position:relative; height:100%; display:flex; flex-direction:column; justify-content:center; gap:14px; padding:32px clamp(24px,4vw,56px); overflow:auto; scrollbar-width:none; }
+.op-fcard{ border-radius:20px; background:rgba(255,255,255,.82); box-shadow:0 0 0 1px rgba(255,255,255,.9) inset, 0 18px 36px -24px rgba(37,99,235,.45); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); padding:20px 22px; }
+.op-fcard-k{ display:flex; align-items:center; gap:10px; margin:0 0 14px; font-size:15px; font-weight:640; color:var(--op-ink); }
+.op-fcard-k.is-plain{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#5f7298; margin-bottom:10px; }
+.op-fcard-k .op-mark{ width:24px; height:24px; }
+.op-ftrace{ list-style:none; margin:0 0 16px; padding:0; display:flex; flex-direction:column; gap:10px; }
+.op-ftrace li{ display:flex; gap:10px; align-items:flex-start; font-size:13.5px; line-height:1.45; color:var(--op-ink2); animation:op-rise 480ms var(--op-ease) calc(240ms + var(--n) * 80ms) both; }
+.op-ftrace li i{ flex:none; display:grid; place-items:center; width:18px; height:18px; margin-top:1px; border-radius:50%; background:var(--op-blue); color:#fff; font-style:normal; } .op-ftrace li i svg{ width:10px; height:10px; }
+.op-fstats{ display:grid; grid-template-columns:1fr 1fr; border-top:1px solid var(--op-line); }
+.op-fstats div{ display:flex; flex-direction:column; gap:4px; padding:14px 0 0; }
+.op-fstats div:nth-child(odd){ padding-right:14px; border-right:1px solid var(--op-line); }
+.op-fstats div:nth-child(even){ padding-left:18px; }
+.op-fstats div:nth-child(n+3){ margin-top:14px; border-top:1px solid var(--op-line); }
+.op-fstats b{ font-size:24px; line-height:1; font-weight:700; letter-spacing:-.6px; color:#12306b; font-variant-numeric:tabular-nums; }
+.op-fstats span{ font-size:12.5px; color:var(--op-mute); }
+.op-fcard-src{ padding:16px 22px; }
+.op-fcard-tip{ display:flex; gap:12px; align-items:flex-start; background:rgba(255,255,255,.62); }
+.op-fcard-ico{ flex:none; display:grid; place-items:center; width:28px; height:28px; border-radius:9px; background:var(--op-soft); color:var(--op-blue); } .op-fcard-ico svg{ width:14px; height:14px; }
+.op-fcard-tip b{ display:block; font-size:13.5px; font-weight:620; color:var(--op-ink); }
+.op-fcard-tip p{ margin:3px 0 0; font-size:12.5px; line-height:1.5; color:var(--op-mute); }
+@media (max-width:1100px){ .op-fsplit{ grid-template-columns:minmax(0,1fr); } .op-fl{ padding:40px 24px 16px; } .op-fr{ position:relative; top:auto; height:auto; margin:8px 16px 16px; } .op-fr-in{ height:auto; } }
+@media (prefers-reduced-motion:reduce){ .op-fr, .op-ftrace li{ animation:none !important; } }
+
+.op-wrap.is-f, .op-wrap.is-f .op-fsplit{ height:100%; min-height:0; }
+.op-scroll:has(.op-wrap.is-f){ overflow:hidden; }
+.op-fl{ height:100%; padding:40px 40px 24px var(--op-left); gap:18px; }
+.op-fl-hd .op-h{ font-size:26px; }
+.op-fl-list{ flex:1 1 auto; min-height:0; overflow-y:auto; scrollbar-width:thin; padding:2px 2px 8px; margin:0 -2px; -webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 20px),transparent); mask-image:linear-gradient(180deg,#000 calc(100% - 20px),transparent); }
+.op-fl-ft{ margin-top:0; flex:none; }
+.op-fr-art path[stroke]{ stroke:rgba(255,255,255,.75); }
+
+body.op-strip-on .op-wrap{ padding-top:64px !important; }
+body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100% !important; }
+.op-wrap.is-f .op-fsplit{ height:100% !important; }
+.op-wrap.is-f .op-fsplit{ grid-template-rows:minmax(0,1fr); }
+.op-fl{ min-height:0; overflow:hidden; }
+.op-fr{ height:calc(100% - 32px); }
+.op-sum .op-scroll:has(.op-wrap.is-f){ padding-bottom:0 !important; }
+@media (max-width:1100px){
+  .op-sum .op-scroll:has(.op-wrap.is-f){ overflow-y:auto; }
+  body.op-strip-on .op-wrap.is-f, .op-wrap.is-f, .op-wrap.is-f .op-fsplit{ height:auto !important; }
+  .op-fl{ height:auto; overflow:visible; }
+  .op-fl-list{ overflow:visible; -webkit-mask-image:none; mask-image:none; }
+  .op-fr{ height:auto; }
+}
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23387,7 +23446,7 @@ function agMigRow() {
 
 
   /* ======== Opus: versions per screen. The viewer picks one per screen in the Versions panel. ======== */
-  const OP_SUM_OPTS = [["a", "List", "One list across the full width, with column headings"], ["b", "Cards", "One card per item, side by side"], ["c", "Brief", "What I did on the left, the items on the right"], ["d", "Board", "Each item with the agent's reason and a switch; actions on top"], ["e", "Chat", "The agent proposes, you reply or ask why"]];
+  const OP_SUM_OPTS = [["a", "List", "One list across the full width, with column headings"], ["b", "Cards", "One card per item, side by side"], ["c", "Brief", "What I did on the left, the items on the right"], ["d", "Board", "Each item with the agent's reason and a switch; actions on top"], ["e", "Chat", "The agent proposes, you reply or ask why"], ["f", "Panel", "The review on the left, supporting info and a visual panel on the right"]];
   const OP_SCREENS = [
     { id: "loader", label: "Agent at work", hint: "Every loader", opts: [["a", "Caption", "One live line under the animation"], ["b", "In scene", "The pill beside the agent is the only live line"], ["c", "Stepper", "Every step named across the top"], ["d", "Findings", "Results stream in beside the animation as each check finishes"], ["e", "Narrated", "The agent says what it sees, line by line, under the animation"]], preview: ["loader", "2"] },
     { id: "sum-2", label: "Team summary", opts: OP_SUM_OPTS, preview: ["summary", "2"] },
@@ -23699,10 +23758,51 @@ function agMigRow() {
     const inp = ev.target.closest && ev.target.closest(".op-fsearch input");
     if (inp) opFilterApply(inp.closest(".op-wrap"));
   });
+
+  /* ---- F: review on the left, supporting info on the right ---- */
+  const OP_TIP = {
+    "2": ["Roles can be changed any time", "Invites go out only when you send them. You can edit a role later from Team settings."],
+    e0: ["Add or rename later", "Brands and lines of business can be edited whenever your setup changes."],
+    e1: ["Rates are locked in on approval", "Approving accepts each partner's rate card terms. Volume split can be revisited later."],
+    e2: ["Low confidence ones come first", "Templates the agent is unsure about are flagged for you to check after this step."],
+  };
+  function opPanelInfo(m) {
+    const e = agSumEsc;
+    const tip = OP_TIP[m.key] || ["", ""];
+    const stat = (v, l) => `<div><b>${e(v)}</b><span>${e(l)}</span></div>`;
+    return `<aside class="op-fr" aria-label="About this step">
+      <svg class="op-fr-art" viewBox="0 0 600 500" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><path d="M600 120 L600 500 L150 500 Z" fill="rgba(255,255,255,.14)"/><path d="M600 250 L600 500 L300 500 Z" fill="rgba(255,255,255,.14)"/><path d="M150 500 L330 330 L600 120" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/><path d="M300 500 L430 400 L600 250" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/></svg>
+      <div class="op-fr-in">
+        <section class="op-fcard op-fcard-main">
+          <p class="op-fcard-k"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>How I put this together</p>
+          <ol class="op-ftrace">${m.trace.map((t, n) => `<li style="--n:${n}"><i>${OP_CHECK}</i>${e(t)}</li>`).join("")}</ol>
+          <div class="op-fstats">${m.stats.map(([v, l]) => stat(v, l)).join("")}${stat(m.sources.length, "sources read")}${stat("0", "changes made live")}</div>
+        </section>
+        <section class="op-fcard op-fcard-src"><p class="op-fcard-k is-plain">Where I looked</p><span class="op-chips">${m.sources.map((x) => `<i>${e(x)}</i>`).join("")}</span></section>
+        <section class="op-fcard op-fcard-tip"><span class="op-fcard-ico" aria-hidden="true">${I("check")}</span><div><b>${e(tip[0])}</b><p>${e(tip[1])}</p></div></section>
+      </div>
+    </aside>`;
+  }
+  function opFullMarkup(m) {
+    const e = agSumEsc;
+    return `<div class="op-scroll"><div class="op-wrap is-f"><div class="op-fsplit">
+      <section class="op-fl">
+        <header class="op-fl-hd">
+          <p class="op-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span><span>Agent summary</span><i aria-hidden="true"></i><span class="op-kick-area">${e(m.area)}</span></p>
+          <h2 class="op-h">${e(m.did)}</h2>
+          <p class="op-sub">${e(m.next)}</p>
+        </header>
+        <div class="op-fl-list">${opList(m, true)}</div>
+        <div class="op-fl-ft"><p class="op-count"><i>${I("check")}</i>${e(m.count)}</p>${opActions(m, "is-row")}</div>
+      </section>
+      ${opPanelInfo(m)}
+    </div></div></div>`;
+  }
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
     if (v === "e") return opChat(m);
+    if (v === "f") return opFullMarkup(m);
     const bar = `<footer class="op-foot"><p class="op-count"><i>${I("check")}</i>${agSumEsc(m.count)}</p>${opActions(m)}</footer>`;
     if (v === "c") {
       return `<div class="op-scroll"><div class="op-wrap is-c"><div class="op-brief">
