@@ -13946,6 +13946,9 @@ body.ag-gate .ag-brief-title{ color:#2563eb !important; margin-bottom:8px !impor
 /* ---- "Filling with AI" chip: bottom centre of the form, above the CTA ---- */
 body > .kyc-ai-chip, .kyc-ai-chip{ position:fixed !important; top:auto !important; right:auto !important; bottom:112px !important; left:calc(50% + 290px) !important; transform:translateX(-50%) !important; z-index:60 !important; }
 body > .kyc-ai-chip.is-out, .kyc-ai-chip.is-out{ transform:translateX(-50%) translateY(6px) !important; }
+/* ---- Route page: background fills the whole window, content stays in its own lane ---- */
+.ag-nextup.op-nfull{ background:radial-gradient(70% 60% at 100% 0%, rgba(160,186,250,.28), transparent 70%), radial-gradient(60% 60% at 0% 100%, rgba(214,229,255,.5), transparent 70%), #f8fafd !important; overflow-y:auto; }
+.ag-nextup.op-nfull > .op-route{ background:none !important; width:100% !important; max-width:1320px !important; margin:0 auto !important; box-sizing:border-box; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
