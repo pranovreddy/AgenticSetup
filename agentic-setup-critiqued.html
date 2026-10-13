@@ -13524,6 +13524,24 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
 .op-fr{ background:radial-gradient(120% 95% at 100% 100%, rgba(118,154,246,.62) 0%, rgba(160,186,250,.4) 30%, rgba(204,218,254,.22) 56%, rgba(226,235,255,0) 82%) !important; }
 .op-fr-in{ align-items:center; padding-left:clamp(28px,5vw,72px); padding-right:clamp(28px,5vw,72px); }
 .op-fr-in > *{ width:100%; max-width:360px; }
+/* ---- F panel: collapsed rows, one open at a time ---- */
+.op-fr-in{ justify-content:center; gap:0 !important; }
+.op-facc{ border-top:1px solid rgba(255,255,255,.65); }
+.op-facc:last-child{ border-bottom:1px solid rgba(255,255,255,.65); }
+.op-facc-h{ display:flex; align-items:center; gap:10px; width:100%; padding:16px 2px; border:0; background:none; font:inherit; font-size:14px; font-weight:620; color:var(--op-ink); text-align:left; cursor:pointer; }
+.op-facc-h .op-mark{ width:22px; height:22px; }
+.op-facc-h i{ margin-left:auto; width:8px; height:8px; border-right:1.6px solid #5f7298; border-bottom:1.6px solid #5f7298; transform:rotate(45deg) translateY(-2px); transition:transform 260ms var(--op-ease); }
+.op-facc.is-open .op-facc-h i{ transform:rotate(-135deg) translateY(-2px); }
+.op-facc-b{ display:grid; grid-template-rows:0fr; transition:grid-template-rows 320ms var(--op-ease); }
+.op-facc.is-open .op-facc-b{ grid-template-rows:1fr; }
+.op-facc-b > div{ min-height:0; overflow:hidden; padding:0 2px; }
+.op-facc.is-open .op-facc-b > div{ padding-bottom:16px; }
+.op-facc-b p{ margin:0; font-size:13px; line-height:1.55; color:var(--op-ink2); }
+.op-facc .op-ftrace{ margin-bottom:12px; }
+.op-facc .op-fstats{ border-top:1px solid rgba(255,255,255,.65); }
+@media (prefers-reduced-motion:reduce){ .op-facc-b, .op-facc-h i{ transition:none; } }
+.op-fr-in{ justify-content:flex-start !important; padding-top:calc(var(--op-fr-top, 192px) - 16px) !important; }
+@media (max-width:1100px){ .op-fr-in{ padding-top:16px !important; } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23807,17 +23825,33 @@ function agMigRow() {
     const stat = (v, l) => `<div><b>${e(v)}</b><span>${e(l)}</span></div>`;
     return `<aside class="op-fr" aria-label="About this step">
       <svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs><radialGradient id="ofm" cx="100%" cy="100%" r="95%"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="ofmask"><rect width="600" height="600" fill="url(#ofm)"/></mask><pattern id="ofp" width="150" height="150" patternUnits="userSpaceOnUse"><g transform="translate(18 18) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g><g transform="translate(93 93) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g></pattern></defs><rect width="600" height="600" fill="url(#ofp)" mask="url(#ofmask)"/></svg>
-      <div class="op-fr-in">
-        <section class="op-fcard op-fcard-main">
-          <p class="op-fcard-k"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>How I put this together</p>
-          <ol class="op-ftrace">${m.trace.map((t, n) => `<li style="--n:${n}"><i>${OP_CHECK}</i>${e(t)}</li>`).join("")}</ol>
-          <div class="op-fstats">${m.stats.map(([v, l]) => stat(v, l)).join("")}${stat(m.sources.length, "sources read")}${stat("0", "changes made live")}</div>
+      <div class="op-fr-in" data-op-acc>
+        <section class="op-facc is-open">
+          <button type="button" class="op-facc-h" aria-expanded="true"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>How I put this together<i aria-hidden="true"></i></button>
+          <div class="op-facc-b"><div>
+            <ol class="op-ftrace">${m.trace.map((t, n) => `<li style="--n:${n}"><i>${OP_CHECK}</i>${e(t)}</li>`).join("")}</ol>
+            <div class="op-fstats">${m.stats.map(([v, l]) => stat(v, l)).join("")}</div>
+          </div></div>
         </section>
-        <section class="op-fcard op-fcard-src"><p class="op-fcard-k is-plain">Where I looked</p><span class="op-chips">${m.sources.map((x) => `<i>${e(x)}</i>`).join("")}</span></section>
-        <section class="op-fcard op-fcard-tip"><span class="op-fcard-ico" aria-hidden="true">${I("check")}</span><div><b>${e(tip[0])}</b><p>${e(tip[1])}</p></div></section>
+        <section class="op-facc">
+          <button type="button" class="op-facc-h" aria-expanded="false">Where I looked<i aria-hidden="true"></i></button>
+          <div class="op-facc-b"><div><span class="op-chips">${m.sources.map((x) => `<i>${e(x)}</i>`).join("")}</span></div></div>
+        </section>
+        <section class="op-facc">
+          <button type="button" class="op-facc-h" aria-expanded="false">${e(tip[0])}<i aria-hidden="true"></i></button>
+          <div class="op-facc-b"><div><p>${e(tip[1])}</p></div></div>
+        </section>
       </div>
     </aside>`;
   }
+  document.addEventListener("click", (ev) => {
+    const h = ev.target.closest && ev.target.closest(".op-facc-h");
+    if (!h) return;
+    const sec = h.closest(".op-facc");
+    const wasOpen = sec.classList.contains("is-open");
+    h.closest("[data-op-acc]").querySelectorAll(".op-facc").forEach((x) => { x.classList.remove("is-open"); x.querySelector(".op-facc-h").setAttribute("aria-expanded", "false"); });
+    if (!wasOpen) { sec.classList.add("is-open"); h.setAttribute("aria-expanded", "true"); }
+  });
   function opFullMarkup(m) {
     const e = agSumEsc;
     return `<div class="op-scroll"><div class="op-wrap is-f"><div class="op-fsplit">
