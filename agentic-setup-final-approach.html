@@ -18615,7 +18615,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     </div>`;
     document.body.appendChild(ov);
     const frame = ov.querySelector("iframe");
-    frame.srcdoc = AG_LOADER_DOC.replace("__AG_ID__", "kycv").replace("__AG_VI__", "0").replace("</head>", "<style>.copy{visibility:hidden !important}</style></head>");
+    frame.srcdoc = AG_LOADER_DOC.replace("__AG_ID__", "kycv").replace("__AG_VI__", "0").replace("</head>", "<style>.copy{visibility:hidden !important}.chk-scroll{left:390px !important}</style></head>");
     const cap = ov.querySelector("#opKvCap");
     const bars = [...ov.querySelectorAll(".op-lcap-bar i")];
     const setCap = (t, n) => { cap.querySelector("b").textContent = t; bars.forEach((b, k) => { b.className = k < n - 1 ? "is-done" : k === n - 1 ? "is-active" : ""; }); };
