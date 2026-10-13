@@ -13545,6 +13545,23 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
 .op-fsplit{ grid-template-columns:minmax(0,1fr) minmax(300px,34%) !important; }
 .op-fl{ padding-right:56px; }
 .op-fr-in > *{ max-width:340px; }
+/* ---- F panel accordion: refined look ---- */
+[data-op-acc]{ counter-reset:facc; }
+.op-facc{ counter-increment:facc; border:0 !important; border-radius:16px; margin-bottom:4px; transition:background 260ms, box-shadow 260ms; }
+.op-facc:hover:not(.is-open){ background:rgba(255,255,255,.4); }
+.op-facc.is-open{ background:rgba(255,255,255,.62); box-shadow:0 0 0 1px rgba(255,255,255,.85) inset, 0 14px 28px -22px rgba(37,99,235,.5); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+.op-facc-h{ padding:14px 16px !important; gap:12px !important; font-size:14px; }
+.op-facc-h::before{ content:counter(facc); flex:none; display:grid; place-items:center; width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,.8); box-shadow:0 0 0 1px rgba(37,99,235,.14) inset; color:var(--op-deep); font-size:11.5px; font-weight:700; }
+.op-facc.is-open .op-facc-h::before{ background:var(--op-blue); color:#fff; box-shadow:0 4px 10px rgba(37,99,235,.35); }
+.op-facc-h .op-mark{ display:none; }
+.op-facc-b > div{ padding:0 16px !important; }
+.op-facc.is-open .op-facc-b > div{ padding-bottom:16px !important; }
+.op-facc .op-ftrace li{ font-size:13px; }
+.op-facc .op-fstats{ border-top:1px solid rgba(37,99,235,.12); }
+.op-facc .op-fstats b{ font-size:26px; }
+.op-facc .op-fstats div:nth-child(odd){ border-right-color:rgba(37,99,235,.12); }
+.op-facc .op-chips i{ background:rgba(255,255,255,.9); box-shadow:0 0 0 1px rgba(37,99,235,.1) inset; }
+.op-facc-b p{ font-size:13px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
