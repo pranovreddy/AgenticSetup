@@ -14060,6 +14060,7 @@ html body.op-capsule-on #agTelCard.ag-telcard, html body.op-capsule-on.ag-gate #
   animation:op-co-orbit 1.6s linear infinite !important; box-shadow:none; }
 .op-co-node.is-on i::before{ inset:-10px !important; box-shadow:0 0 0 1.5px rgba(37,99,235,.16) inset; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,.14), transparent 68%) !important; }
 @keyframes op-co-orbit{ to{ transform:rotate(360deg); } }
+.op-dside-hd .op-sumchip{ margin:0 0 14px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24580,7 +24581,7 @@ function agMigRow() {
     aside?.remove();
     const info = opPanelInfo(key === "1" ? opProfileModel() : opSumModel(key));
     const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
-    const head = key === "1" ? `<header class="op-dside-hd"><h2 class="op-h"></h2><p class="op-sub"></p></header>` : "";
+    const head = key === "1" ? `<header class="op-dside-hd"><p class="op-sumchip"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Summary</p><h2 class="op-h"></h2><p class="op-sub"></p></header>` : "";
     body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${head}${v === "g" ? opCollapse(acc) : acc}</div></aside>`);
     if (key === "1") {
       const t = AG_TELE.kyc;
