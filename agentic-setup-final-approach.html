@@ -24091,7 +24091,7 @@ function agMigRow() {
   function opDetailSync() {
     const key = String(state.ag && state.ag.focus);
     const body = document.querySelector(".ag-step.is-focused .ag-step-body");
-    const v = opGet("details");
+    const v = key === "1" ? "g" : opGet("details"); /* business profile always uses G */
     const ok = body && ["1", "2", "e0", "e1", "e2"].includes(key) && v !== "a" && !document.getElementById("agSummary") && !document.querySelector(".ag-step-ai--loader, .ag-loader-frame") && body.querySelector(".ag-live.is-revealed, .ag-profile");
     document.querySelectorAll(".ag-step-body.op-dl").forEach((b) => { if (b !== body || !ok) { b.classList.remove("op-dl", "op-dl-f", "op-dl-g"); b.querySelector(":scope > .op-dside")?.remove(); } });
     if (!ok) return;
