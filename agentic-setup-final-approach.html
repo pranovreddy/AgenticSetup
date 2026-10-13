@@ -14011,6 +14011,7 @@ html body.op-capsule-on #agTelCard.ag-telcard, html body.op-capsule-on.ag-gate #
 .ag-mig-wait h3{ font-size:18px; margin-bottom:18px; } .ag-mig-clock{ gap:12px; margin-bottom:20px; }
 .ag-mig-clock b{ width:58px; height:68px; font-size:28px; border-radius:10px; } .ag-mig-clock i{ font-size:22px; line-height:68px; } .ag-mig-clock span{ font-size:11px; }
 .ag-mig-wait p{ font-size:13.5px; max-width:470px; }
+.op-list .op-item.is-dim{ opacity:.62; filter:saturate(.5); } .op-list .op-item.is-dim .op-reason{ background:transparent !important; box-shadow:none !important; } .op-list .op-item.is-dim .op-pill{ background:#eef1f6 !important; color:#6b7890 !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24290,7 +24291,7 @@ function agMigRow() {
     const sel = m.key === "e1" && compact ? `<p class="op-selcount"><b>${m.items.filter((x) => x.on).length} of ${m.items.length}</b> partners selected <span>· the others did not clear the best-rate bar</span></p>` : "";
     return metrics + peopleBar + sel + `<section class="op-list${compact ? " is-compact" : ""}" style="--cols:${compact ? opCompactCols(m) : m.cols}">
       ${compact ? "" : `<div class="op-row is-head">${m.head.map((h) => `<span>${agSumEsc(h)}</span>`).join("")}</div>`}
-      ${(m.key === "e1" && compact ? m.items.filter((x) => x.on) : m.items).map((it, n) => `<div${m.key === "2" ? ` data-role="${it.pill}" data-q="${(it.name + " " + it.contact[0] + " " + (it.dept || "") + " " + (it.sub || "")).toLowerCase()}"` : ""} class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
+      ${(m.key === "e1" && compact ? [...m.items.filter((x) => x.on), ...m.items.filter((x) => !x.on)] : m.items).map((it, n) => `<div${m.key === "2" ? ` data-role="${it.pill}" data-q="${(it.name + " " + it.contact[0] + " " + (it.dept || "") + " " + (it.sub || "")).toLowerCase()}"` : ""} class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
     </section>`;
   }
   const opRate = (ph) => `<span class="op-rate${ph.best ? " is-best" : ""}"><b>${ph.rate}</b>${ph.share ? `<em>takes ${ph.share}</em>` : ph.best ? "<em>lowest</em>" : ""}</span>`;
@@ -24302,7 +24303,7 @@ function agMigRow() {
     const bestChips = it.phases.filter((ph) => ph.best).length ? `<span class="op-reason-chips">${it.phases.filter((ph) => ph.best).map((ph) => `<span class="op-rc">Lowest ${ph.label.toLowerCase()} <b>${ph.rate}</b></span>`).join("")}</span>` : "";
     const rows = it.phases.map((ph) => `<div><dt>${ph.label}</dt><dd><b>${ph.rate}</b><em>${ph.share ? `takes ${ph.share}` : "not allocated"}</em></dd></div>`).join("");
     return `<span class="op-cell is-lead">${it.lead}<span class="op-who"><span class="op-nameline"><b class="op-gname">${it.name}</b><span class="op-info"><button type="button" class="op-info-b" aria-label="Rates and split for ${e(it.name)}">i</button><dl class="op-info-p" role="tooltip">${rows}</dl></span></span>
-      <span class="op-reason${it.on ? "" : " is-muted"}"><span class="op-reason-k">Why I picked it</span><span class="op-reason-t">${it.why}</span>${bestChips}</span></span></span>`;
+      <span class="op-reason${it.on ? "" : " is-muted"}"><span class="op-reason-k">${it.on ? "Why I picked it" : "Why I did not pick it"}</span><span class="op-reason-t">${it.why}</span>${bestChips}</span></span></span>`;
   }
   function opCompactCells(m, it) {
     const extra = m.key === "2" ? `<span class="op-meta"><span class="op-mseg">${it.contact[0]}</span><i></i><span class="op-mseg">${it.contact[1]}</span></span>`
