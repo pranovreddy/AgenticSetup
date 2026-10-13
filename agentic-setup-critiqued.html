@@ -13279,6 +13279,31 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 @media (max-height:760px){ .op-split .op-art{ height:230px; } .op-split-aside{ top:32px; } }
 @media (max-height:640px){ .op-split .op-art{ display:none; } }
 @media (max-width:1100px){ .op-split{ grid-template-columns:minmax(0,1fr); gap:24px; } .op-split-aside{ position:static; } }
+
+/* ---- Team list: roles + people with role dropdown ---- */
+.op-roles{ margin-top:8px; }
+.op-rs{ display:grid; grid-template-columns:minmax(240px,320px) minmax(0,1fr); gap:56px; padding:32px 0; border-top:1px solid var(--op-line); animation:op-rise 520ms var(--op-ease) calc(120ms + var(--n,0) * 90ms) both; }
+.op-roles.is-still .op-rs{ animation:none; }
+.op-rs:first-child{ border-top:0; padding-top:20px; }
+.op-rs-l{ display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+.op-rs-l .op-pill{ height:30px; font-size:13px; }
+.op-rs-l p{ margin:0; font-size:14px; line-height:1.6; color:var(--op-mute); max-width:300px; }
+.op-rs-count{ font-size:12.5px; color:#6b7c9e; }
+.op-rs-panel{ background:rgba(232,240,252,.62); border-radius:18px; padding:8px 22px 6px; box-shadow:0 0 0 1px rgba(196,214,245,.5) inset; }
+.op-rs-head, .op-rs-row{ display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,.9fr) 168px; gap:16px; align-items:center; }
+.op-rs-head{ padding:14px 0 10px; font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#6b7c9e; }
+.op-rs-row{ padding:14px 0; border-top:1px solid rgba(190,208,238,.6); transition:background 700ms; }
+.op-rs-row.is-moved{ animation:op-moved 1400ms var(--op-ease); }
+@keyframes op-moved{ 0%{ background:rgba(37,99,235,.14); } 100%{ background:transparent; } }
+.op-rs-who{ display:flex; align-items:center; gap:14px; min-width:0; }
+.op-rs-who .op-who{ min-width:0; display:flex; flex-direction:column; gap:2px; }
+.op-rs-who .op-who b{ font-size:14.5px; font-weight:620; color:var(--op-ink); }
+.op-rs-who .op-who span{ font-size:12.5px; color:var(--op-mute); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.op-rs-dept{ font-size:13px; color:var(--op-ink2); }
+.op-rolesel{ appearance:none; -webkit-appearance:none; width:100%; height:38px; padding:0 34px 0 14px; border:0; border-radius:10px; background:#0f1f3d url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8l3.5-3.5' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center; color:#fff; font:600 13px/1 inherit; font-family:inherit; cursor:pointer; transition:background-color 160ms, box-shadow 160ms; }
+.op-rolesel:hover{ background-color:#1b3160; }
+.op-rolesel option{ color:#0f1f3d; background:#fff; }
+@media (max-width:1000px){ .op-rs{ grid-template-columns:minmax(0,1fr); gap:16px; } .op-rs-head{ display:none; } .op-rs-row{ grid-template-columns:minmax(0,1fr) 150px; } .op-rs-dept{ display:none; } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23478,6 +23503,38 @@ function agMigRow() {
     }
     return `<svg viewBox="0 0 320 380" role="presentation" aria-hidden="true" focusable="false"><defs><linearGradient id="aoG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7aa9ff"/><stop offset="1" stop-color="#2563eb"/></linearGradient><linearGradient id="aoS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1f6ff"/><stop offset="1" stop-color="#d6e5ff"/></linearGradient><linearGradient id="aoB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7aa9ff"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>${scene}</svg>`;
   }
+
+  /* ---- Team list: roles on the left with what each can do, people on the right with a role dropdown ---- */
+  const OP_ROLE_PICK = {};
+  const opRoleName = (it) => OP_ROLE_PICK[it.name] || it.pill;
+  function opRolesMarkup(m) {
+    const e = agSumEsc;
+    const chev = "";
+    const secs = INVITE_ROLES.map((r) => ({ r, people: m.items.filter((it) => opRoleName(it) === r.pill) })).filter((x) => x.people.length);
+    return secs.map(({ r, people }, si) => `<section class="op-rs" data-role="${r.id}" style="--n:${si}">
+      <div class="op-rs-l"><span class="op-pill">${e(r.pill)}</span><p>${e(r.text)}</p><span class="op-rs-count">${people.length} ${people.length === 1 ? "person" : "people"}</span></div>
+      <div class="op-rs-r"><div class="op-rs-panel">
+        <div class="op-rs-head"><span>Name</span><span>Department</span><span>Role</span></div>
+        ${people.map((it) => `<div class="op-rs-row${it.name === OP_ROLE_PICK.__moved ? " is-moved" : ""}">
+          <span class="op-rs-who">${it.lead}<span class="op-who"><b>${it.name}</b><span>${it.contact[0]}</span></span></span>
+          <span class="op-rs-dept">${it.dept}</span>
+          <span class="op-rs-sel"><select class="op-rolesel" data-op-person="${e(it.name)}" aria-label="Role for ${e(it.name)}">${INVITE_ROLES.map((o) => `<option value="${o.pill}"${o.pill === r.pill ? " selected" : ""}>${o.pill}</option>`).join("")}</select></span>
+        </div>`).join("")}
+      </div></div>
+    </section>`).join("");
+  }
+  document.addEventListener("change", (ev) => {
+    const sel = ev.target.closest && ev.target.closest(".op-rolesel");
+    if (!sel) return;
+    const wrap = sel.closest(".op-roles");
+    if (!wrap) return;
+    const m = opSumModel("2");
+    OP_ROLE_PICK[sel.dataset.opPerson] = sel.value;
+    OP_ROLE_PICK.__moved = sel.dataset.opPerson;
+    wrap.innerHTML = opRolesMarkup(m);
+    wrap.classList.add("is-still");
+    delete OP_ROLE_PICK.__moved;
+  });
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
@@ -23495,6 +23552,7 @@ function agMigRow() {
         <div class="op-main">${opList(m, true)}</div>
       </div></div></div>`;
     }
+    if (v === "a" && key === "2") return `<div class="op-scroll"><div class="op-wrap is-a is-roles">${opHeader(m)}<div class="op-roles">${opRolesMarkup(m)}</div>${opSources(m)}</div></div>${bar}`;
     if (v === "a") return `<div class="op-scroll"><div class="op-wrap is-a"><div class="op-split"><aside class="op-split-aside">${opHeader(m, true)}<div class="op-art is-${m.key}" aria-hidden="true">${opArt(m.key)}</div></aside><div class="op-split-main">${opList(m, true)}${opSources(m)}</div></div></div></div>${bar}`;
     return `<div class="op-scroll"><div class="op-wrap is-${v}">${opHeader(m)}${v === "b" ? opCards(m) : opList(m)}${opSources(m)}</div></div>${bar}`;
   }
