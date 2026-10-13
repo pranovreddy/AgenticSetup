@@ -13542,6 +13542,9 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
 @media (prefers-reduced-motion:reduce){ .op-facc-b, .op-facc-h i{ transition:none; } }
 .op-fr-in{ justify-content:flex-start !important; padding-top:calc(var(--op-fr-top, 192px) - 16px) !important; }
 @media (max-width:1100px){ .op-fr-in{ padding-top:16px !important; } }
+.op-fsplit{ grid-template-columns:minmax(0,1fr) minmax(300px,34%) !important; }
+.op-fl{ padding-right:56px; }
+.op-fr-in > *{ max-width:340px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
