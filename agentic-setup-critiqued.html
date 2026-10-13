@@ -13391,6 +13391,45 @@ body:has(.ag-nextup) .cl-overview{ opacity:0 !important; visibility:hidden !impo
 .ag-nextup-head .ag-nextup-title{ margin:0 0 4px !important; text-align:left; align-self:end; }
 .ag-nextup-head .ag-nextup-sub{ margin:0 !important; text-align:left; align-self:start; max-width:none; }
 
+/* ---- Rail: on hover a pill grows out to the right with the step name ---- */
+.ag-tel-ico{ overflow:visible; }
+.ag-tel-tip{ z-index:-1 !important; left:0 !important; top:0 !important; height:100% !important; display:flex; align-items:center; box-sizing:border-box; transform:none !important; padding:0 16px 0 46px !important; border-radius:99px !important; background:#fff !important; color:var(--cv-ink,#0b1a33) !important; font-size:12.5px !important; font-weight:600 !important; border:1px solid #cfdcf7; box-shadow:0 8px 20px -8px rgba(37,99,235,.35), 0 0 0 3px rgba(37,99,235,.06); opacity:1 !important; clip-path:inset(-4px 100% -4px 0 round 99px); transition:clip-path 320ms cubic-bezier(.22,1,.36,1) !important; }
+.ag-tel-tip::before{ display:none !important; }
+.ag-tel-ico:hover .ag-tel-tip, .ag-tel-ico:focus-visible .ag-tel-tip{ clip-path:inset(-4px -12px -4px 0 round 99px); }
+.ag-tel-ico:hover, .ag-tel-ico:focus-visible{ z-index:30; }
+.setup-layout .cl-overview{ z-index:60 !important; }
+@media (prefers-reduced-motion:reduce){ .ag-tel-tip{ transition:none !important; } }
+
+/* ---- One button size across the app: 36px, 8px radius, 13.5px ---- */
+body.ag-gate .ag-actions .ag-btn.is-primary, body.ag-gate .ag-actions .ag-btn, .ag-nextup .ag-btn.is-primary{ height:36px !important; min-width:0 !important; padding:0 16px !important; border-radius:8px !important; font-size:13.5px !important; font-weight:600 !important; box-shadow:0 6px 14px rgba(37,99,235,.24), inset 0 1px 0 rgba(255,255,255,.25) !important; }
+body.ag-gate .ag-actions .ag-btn.is-primary:disabled{ box-shadow:none !important; }
+.op-btn{ height:36px !important; padding:0 16px !important; border-radius:8px !important; font-size:13.5px !important; }
+.op-btn.is-primary{ min-width:0 !important; }
+.op-link{ height:32px !important; }
+.op-chip{ height:32px !important; }
+
+/* ---- Team cards: filter bar ---- */
+.op-ftools{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin:0 0 16px; }
+.op-fchips{ display:flex; flex-wrap:wrap; gap:8px; min-width:0; }
+.op-fchip{ display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px; border-radius:99px; border:1px solid #d6e2f6; background:#fff; color:var(--op-ink2); font:inherit; font-size:13px; font-weight:560; cursor:pointer; transition:background 160ms, border-color 160ms, color 160ms; }
+.op-fchip em{ font-style:normal; font-size:11.5px; font-weight:600; color:#6b7c9e; }
+.op-fchip:hover{ border-color:#b9cdf1; background:#f8fbff; }
+.op-fchip.is-on{ background:var(--op-blue); border-color:var(--op-blue); color:#fff; }
+.op-fchip.is-on em{ color:rgba(255,255,255,.8); }
+.op-fsearch{ position:relative; flex:none; width:240px; }
+.op-fsearch svg{ position:absolute; left:12px; top:50%; width:14px; height:14px; transform:translateY(-50%); color:#6b7c9e; pointer-events:none; }
+.op-fsearch input{ width:100%; height:34px; padding:0 12px 0 34px; border:1px solid #d6e2f6; border-radius:10px; background:#fff; color:var(--op-ink); font:inherit; font-size:13px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+.op-fsearch input::placeholder{ color:#8094ba; }
+.op-fsearch input:focus{ outline:none !important; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12); }
+.op-card[hidden]{ display:none; }
+.op-fempty{ margin:24px 0; text-align:center; font-size:13.5px; color:var(--op-mute); }
+@media (max-width:900px){ .op-ftools{ flex-direction:column; align-items:stretch; } .op-fsearch{ width:100%; } }
+
+/* ---- Version bar removed (versions stay in the Versions panel) ---- */
+#opStrip{ display:none !important; }
+body.op-strip-on .ag-nextup{ padding-top:24px; }
+body.op-strip-on #agSumReopen{ top:auto; }
+
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18030,7 +18069,6 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       el.classList.add("is-leaving");
       setTimeout(() => {
         el.remove();
-        agDoneToastShow("0");
         agGo("1");
       }, 280);
     });
@@ -23557,7 +23595,7 @@ function agMigRow() {
     return [who, `<span class="op-cell is-end"><span class="op-pill">${it.pill}</span></span>`];
   }
   function opCards(m) {
-    const card = (it, n, body, foot) => `<article class="op-card op-item${it.dim ? " is-dim" : ""}${m.key === "e1" && it.on ? " is-pick" : ""}" style="--n:${n}"><header class="op-card-hd">${it.lead}<span class="op-who"><b>${it.name}</b>${m.key === "e1" ? `<span class="op-state${it.on ? " is-on" : ""}">${it.sub}</span>` : `<span>${it.sub}</span>`}</span></header>${body}${foot ? `<footer class="op-card-ft">${foot}</footer>` : ""}</article>`;
+    const card = (it, n, body, foot) => `<article${m.key === "2" ? ` data-role="${it.pill}" data-q="${(it.name + " " + it.contact[0] + " " + (it.dept || "") + " " + (it.sub || "")).toLowerCase()}"` : ""} class="op-card op-item${it.dim ? " is-dim" : ""}${m.key === "e1" && it.on ? " is-pick" : ""}" style="--n:${n}"><header class="op-card-hd">${it.lead}<span class="op-who"><b>${it.name}</b>${m.key === "e1" ? `<span class="op-state${it.on ? " is-on" : ""}">${it.sub}</span>` : `<span>${it.sub}</span>`}</span></header>${body}${foot ? `<footer class="op-card-ft">${foot}</footer>` : ""}</article>`;
     let html = "";
     if (m.key === "2") html = m.items.map((it, n) => card(it, n, `<dl class="op-facts"><div><dt>Email</dt><dd>${it.contact[0]}</dd></div><div><dt>Mobile</dt><dd>${it.contact[1]}</dd></div><div><dt>Department</dt><dd>${it.dept}</dd></div></dl>`, `<span class="op-pill">${it.pill}</span><span class="op-why is-wrap">${it.why}</span>`)).join("");
     else if (m.key === "e0") html = m.items.map((it, n) => card(it, n, `<p class="op-card-k">Lines of business</p><span class="op-chips">${it.chips.map((c) => `<i>${c}</i>`).join("")}</span>`, "")).join("");
@@ -23626,6 +23664,41 @@ function agMigRow() {
     wrap.classList.add("is-still");
     delete OP_ROLE_PICK.__moved;
   });
+
+  /* ---- Team cards: role chips and search ---- */
+  function opFilterBar(m) {
+    const e = agSumEsc;
+    const roles = [...new Set(m.items.map((it) => it.pill))];
+    const chip = (label, role, n, on) => `<button type="button" class="op-fchip${on ? " is-on" : ""}" data-op-frole="${role}" aria-pressed="${on}">${label}<em>${n}</em></button>`;
+    return `<div class="op-ftools"><div class="op-fchips" role="group" aria-label="Filter by role">${chip("All", "", m.items.length, true)}${roles.map((r) => chip(r, r, m.items.filter((it) => it.pill === r).length, false)).join("")}</div>
+      <label class="op-fsearch"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input type="search" placeholder="Search people" aria-label="Search people" autocomplete="off"></label></div>`;
+  }
+  function opFilterApply(root) {
+    const on = root.querySelector(".op-fchip.is-on");
+    const role = on ? on.dataset.opFrole : "";
+    const q = (root.querySelector(".op-fsearch input")?.value || "").trim().toLowerCase();
+    let shown = 0;
+    root.querySelectorAll(".op-grid.is-2 .op-card").forEach((c) => {
+      const ok = (!role || c.dataset.role === role) && (!q || c.dataset.q.includes(q));
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+    let empty = root.querySelector(".op-fempty");
+    if (!shown) {
+      if (!empty) { empty = document.createElement("p"); empty.className = "op-fempty"; empty.textContent = "No one matches. Try another role or search."; root.querySelector(".op-grid.is-2").after(empty); }
+    } else empty?.remove();
+  }
+  document.addEventListener("click", (ev) => {
+    const ch = ev.target.closest && ev.target.closest(".op-fchip");
+    if (!ch) return;
+    const root = ch.closest(".op-wrap");
+    root.querySelectorAll(".op-fchip").forEach((x) => { const on = x === ch; x.classList.toggle("is-on", on); x.setAttribute("aria-pressed", String(on)); });
+    opFilterApply(root);
+  });
+  document.addEventListener("input", (ev) => {
+    const inp = ev.target.closest && ev.target.closest(".op-fsearch input");
+    if (inp) opFilterApply(inp.closest(".op-wrap"));
+  });
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
@@ -23645,7 +23718,7 @@ function agMigRow() {
     }
     if (v === "a" && key === "2") return `<div class="op-scroll"><div class="op-wrap is-a is-roles">${opHeader(m)}<div class="op-roles">${opRolesMarkup(m)}</div>${opSources(m)}</div></div>${bar}`;
     if (v === "a") return `<div class="op-scroll"><div class="op-wrap is-a"><div class="op-split"><aside class="op-split-aside">${opHeader(m, true)}<div class="op-art is-${m.key}" aria-hidden="true">${opArt(m.key)}</div></aside><div class="op-split-main">${opList(m, true)}${opSources(m)}</div></div></div></div>${bar}`;
-    return `<div class="op-scroll"><div class="op-wrap is-${v}">${opHeader(m)}${v === "b" ? opCards(m) : opList(m)}${opSources(m)}</div></div>${bar}`;
+    return `<div class="op-scroll"><div class="op-wrap is-${v}">${opHeader(m)}${v === "b" ? (m.key === "2" ? opFilterBar(m) : "") + opCards(m) : opList(m)}${opSources(m)}</div></div>${bar}`;
   }
 
   /* ---- After approve: three ways to confirm, then straight on to the next loader ---- */
