@@ -13675,6 +13675,26 @@ body .shell .cl-detail-card .welcome-card.is-agentic, body .shell .cl-detail-car
 .op-dl > .ag-live{ height:auto !important; max-height:none !important; overflow:visible !important; }
 .op-dl .ag-profile{ padding-bottom:24px; }
 .op-fr-art, .op-g-art, .op-dside .op-fr-art{ display:none !important; }
+/* ---- Next-up Route: better structure, CTA on the right ---- */
+.op-route{ background:radial-gradient(70% 60% at 100% 0%, rgba(160,186,250,.28), transparent 70%), radial-gradient(60% 60% at 0% 100%, rgba(214,229,255,.5), transparent 70%); }
+.op-route-copy h2{ font-size:40px; }
+.op-route-kick{ display:inline-flex !important; align-items:center; gap:8px; margin:0 0 16px !important; padding:5px 12px 5px 8px; border-radius:99px; background:rgba(255,255,255,.8); box-shadow:0 0 0 1px rgba(37,99,235,.14) inset; color:var(--op-deep) !important; font-size:12.5px !important; font-weight:640; }
+.op-route-kick .op-mark{ width:20px; height:20px; }
+.op-route-pts{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; max-width:46ch; }
+.op-route-pts li{ display:flex; gap:12px; align-items:flex-start; animation:op-rise 520ms var(--op-ease) both; }
+.op-route-pts li:nth-child(1){ animation-delay:300ms } .op-route-pts li:nth-child(2){ animation-delay:380ms } .op-route-pts li:nth-child(3){ animation-delay:460ms }
+.op-route-pts i{ flex:none; display:grid; place-items:center; width:22px; height:22px; margin-top:1px; border-radius:50%; background:var(--op-blue); color:#fff; font-style:normal; } .op-route-pts i svg{ width:11px; height:11px; }
+.op-route-pts b{ display:block; font-size:14.5px; font-weight:630; color:var(--op-ink); }
+.op-route-pts span{ font-size:13.5px; line-height:1.5; color:var(--op-mute); }
+.op-route-side{ display:flex; flex-direction:column; gap:20px; padding:24px 28px 20px; border-radius:24px; background:rgba(255,255,255,.7); box-shadow:0 0 0 1px rgba(196,214,245,.7) inset, 0 28px 60px -34px rgba(37,99,235,.4); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+.op-route-cta{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding-top:16px; border-top:1px solid var(--op-line); }
+.op-route-time{ font-size:12.5px; color:#5f7298; }
+.op-route-cta .op-btn{ animation:none; }
+@media (max-width:1000px){ .op-route{ grid-template-columns:minmax(0,1fr); } }
+#opLogo{ position:fixed; top:22px; left:28px; z-index:95; display:flex; align-items:center; pointer-events:none; }
+#opLogo[hidden]{ display:none; }
+#opLogo img{ height:26px; width:auto; display:block; }
+@media (max-width:700px){ #opLogo{ left:16px; top:14px; } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24102,6 +24122,22 @@ function agMigRow() {
     body.querySelector(":scope > .op-substep").textContent = txt;
   }
   setInterval(opSubSync, 350);
+
+  /* wordmark top-left on the agreements and the next-steps screens */
+  function opLogoSync() {
+    let el = document.getElementById("opLogo");
+    if (!el) {
+      const src = document.querySelector(".cl-overview-logo")?.src;
+      if (!src) return;
+      el = document.createElement("div");
+      el.id = "opLogo";
+      el.setAttribute("aria-label", "DigiConsent");
+      el.innerHTML = `<img alt="DigiConsent" src="${src}">`;
+      document.body.appendChild(el);
+    }
+    el.hidden = !((document.body.classList.contains("ag-gate") && document.body.classList.contains("ag-booted")) || document.querySelector(".op-route"));
+  }
+  setInterval(opLogoSync, 300);
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
@@ -24562,12 +24598,18 @@ function agMigRow() {
     if (v === "d") {
       return `<div class="op-route">
         <div class="op-route-copy">
+          <p class="op-route-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Your setup plan</p>
           <h2>Five stops, then you migrate.</h2>
-          <p>I go first at every stop and do the work. You arrive to a summary, check it and approve. Nothing goes live until you do.</p>
-          <button type="button" class="op-btn is-primary" data-nextup-go>Start with your business profile${I("arrow", "sm")}</button>
+          <p>I go first at every stop and do the work. You arrive to a summary, check it and approve.</p>
+          <ul class="op-route-pts">
+            <li><i>${I("check")}</i><span><b>I do the work</b>Details, people, brands, partners and templates, prepared for you.</span></li>
+            <li><i>${I("check")}</i><span><b>You review and edit</b>Every stop ends with a summary you can change.</span></li>
+            <li><i>${I("check")}</i><span><b>Nothing goes live</b>Until you approve it.</span></li>
+          </ul>
         </div>
-        <ol class="op-route-map">${AG_NEXTUP.map(([ic, t], n) => `<li style="--n:${n}" class="${n === 0 ? "is-here" : ""}"><span class="op-route-dot">${n === 0 ? opOrb() : I(ic)}</span><span class="op-route-t"><b>${t}</b><span>${OP_PLAN[n][0]}</span><em>You: ${OP_PLAN[n][1].toLowerCase()}</em></span>${n === 0 ? `<span class="op-route-here">I'm starting here</span>` : ""}</li>`).join("")}
+        <div class="op-route-side"><ol class="op-route-map">${AG_NEXTUP.map(([ic, t], n) => `<li style="--n:${n}" class="${n === 0 ? "is-here" : ""}"><span class="op-route-dot">${n === 0 ? opOrb() : I(ic)}</span><span class="op-route-t"><b>${t}</b><span>${OP_PLAN[n][0]}</span><em>You: ${OP_PLAN[n][1].toLowerCase()}</em></span>${n === 0 ? `<span class="op-route-here">I'm starting here</span>` : ""}</li>`).join("")}
           <li class="is-end" style="--n:5"><span class="op-route-dot">${I("migration")}</span><span class="op-route-t"><b>Migration</b><span>Your consent records move to DigiConsent</span></span></li></ol>
+        <div class="op-route-cta"><span class="op-route-time">Five stops, then migration</span><button type="button" class="op-btn is-primary" data-nextup-go>Start with your business profile${I("arrow", "sm")}</button></div></div>
       </div>`;
     }
     return `<div class="op-nchat"><div class="op-chat">
