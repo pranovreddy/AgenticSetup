@@ -13498,6 +13498,16 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
 
 .setup-layout .cl-overview .cl-overview-brand:hover, .setup-layout .cl-overview .cl-overview-brand:focus-visible{ background:#fff !important; box-shadow:0 0 0 1px #cfdcf7, 0 8px 20px -8px rgba(37,99,235,.35) !important; width:166px !important; max-width:166px !important; }
 .setup-layout .cl-overview .cl-overview-brand{ border-radius:19px !important; }
+/* ---- F panel: no card, a smooth gradient rising from the bottom right with the logo pattern ---- */
+.op-fr{ margin:0 !important; height:100% !important; border-radius:0 !important; box-shadow:none !important; background:radial-gradient(110% 85% at 100% 100%, rgba(112,150,246,.78) 0%, rgba(158,184,250,.52) 28%, rgba(206,220,254,.28) 54%, rgba(226,235,255,0) 80%) !important; overflow:hidden; }
+.op-fr-art{ position:absolute; right:-70px; bottom:-90px; left:auto; top:auto; width:min(720px,115%); height:auto; aspect-ratio:1/1; opacity:.9; pointer-events:none; }
+.op-fr-art .op-fr-mark{ transform-box:view-box; transform-origin:300px 300px; animation:op-fr-turn 90s linear infinite; }
+.op-fr-art .op-fr-mark.is-sm{ animation-direction:reverse; }
+@keyframes op-fr-turn{ to{ transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce){ .op-fr-art .op-fr-mark{ animation:none; } }
+@media (max-width:1100px){ .op-fr{ height:auto !important; } }
+.op-fr-art{ right:-150px; bottom:-170px; width:min(820px,130%); opacity:1; }
+.op-fr{ background:radial-gradient(120% 95% at 100% 100%, rgba(98,138,244,.88) 0%, rgba(144,172,249,.6) 30%, rgba(200,216,254,.32) 56%, rgba(226,235,255,0) 82%) !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23780,7 +23790,7 @@ function agMigRow() {
     const tip = OP_TIP[m.key] || ["", ""];
     const stat = (v, l) => `<div><b>${e(v)}</b><span>${e(l)}</span></div>`;
     return `<aside class="op-fr" aria-label="About this step">
-      <svg class="op-fr-art" viewBox="0 0 600 500" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><path d="M600 120 L600 500 L150 500 Z" fill="rgba(255,255,255,.14)"/><path d="M600 250 L600 500 L300 500 Z" fill="rgba(255,255,255,.14)"/><path d="M150 500 L330 330 L600 120" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/><path d="M300 500 L430 400 L600 250" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/></svg>
+      <svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax meet" aria-hidden="true"><defs><linearGradient id="ofg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".78"/><stop offset="1" stop-color="#fff" stop-opacity=".2"/></linearGradient></defs><g class="op-fr-mark"><g transform="rotate(0 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(60 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(120 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(180 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(240 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(300 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g></g><g class="op-fr-mark is-sm" transform="translate(40 -40) scale(.42)" style="transform-origin:300px 300px"><g transform="rotate(0 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(60 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(120 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(180 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(240 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(300 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g></g></svg>
       <div class="op-fr-in">
         <section class="op-fcard op-fcard-main">
           <p class="op-fcard-k"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>How I put this together</p>
