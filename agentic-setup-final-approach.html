@@ -13901,6 +13901,9 @@ body.ag-gate .ag-actions.is-approve{ background:#fff !important; position:relati
 .op-cv-node.is-done em{ color:#2a4a8a; }
 .ag-boot.is-complete .ag-boot-mark{ transform:scale(1.12); transition:transform 500ms cubic-bezier(.22,1,.36,1); }
 .op-cv-mark::after{ opacity:.7; }
+.op-kv-wrap.is-loader{ gap:6px; }
+.op-kv-wrap.is-loader .op-ltop{ padding-top:0; width:min(760px,calc(100vw - 48px)); }
+.op-kv-wrap.is-loader .op-lcap{ margin-top:10px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18393,25 +18396,31 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     document.getElementById("opKvOverlay")?.remove();
     const ov = document.createElement("div");
     ov.id = "opKvOverlay";
-    ov.innerHTML = `<div class="op-kv-wrap"><p class="op-kv-k"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Verifying your submission</p><div class="op-kv-stage"><iframe class="op-kv-frame" title="Verifying your business details" scrolling="no"></iframe></div><p class="op-kv-line" id="opKvLine">Reading your submission and running risk checks</p></div>`;
+    ov.innerHTML = `<div class="op-kv-wrap is-loader">
+      <header class="op-ltop"><h2 class="op-ltitle">Verifying your submission</h2><p class="op-lwhy">I'm checking your business details against official records and the telecom operators.</p></header>
+      <div class="op-kv-stage"><iframe class="op-kv-frame" title="Verifying your business details" scrolling="no"></iframe></div>
+      <div class="op-lcap"><p class="op-lcap-t" id="opKvCap"><span class="op-lspin" aria-hidden="true"></span><b>Reading your submission</b><em>1 of 2</em></p><div class="op-lcap-bar" aria-hidden="true"><i class="is-active"></i><i></i></div></div>
+    </div>`;
     document.body.appendChild(ov);
     const frame = ov.querySelector("iframe");
     frame.srcdoc = AG_LOADER_DOC.replace("__AG_ID__", "kycv").replace("__AG_VI__", "0");
-    const line = ov.querySelector("#opKvLine");
+    const cap = ov.querySelector("#opKvCap");
+    const bars = [...ov.querySelectorAll(".op-lcap-bar i")];
+    const setCap = (t, n) => { cap.querySelector("b").textContent = t; cap.querySelector("em").textContent = n + " of 2"; bars.forEach((b, k) => { b.className = k < n - 1 ? "is-done" : k === n - 1 ? "is-active" : ""; }); };
     const fit = () => { const w = Math.min(window.innerWidth - 48, 860); const sc = Math.min(1.25, w / 720); frame.style.transform = `scale(${sc})`; ov.querySelector(".op-kv-stage").style.height = Math.round(360 * sc) + "px"; ov.querySelector(".op-kv-stage").style.width = Math.round(720 * sc) + "px"; };
     fit();
     let finished = false;
     const done = () => {
       if (finished) return; finished = true;
       window.removeEventListener("message", onMsg);
-      if (line) line.textContent = "Approved by all telecom operators";
+      setCap("Approved by all telecom operators", 2); bars.forEach((b) => { b.className = "is-done"; }); cap.querySelector(".op-lspin")?.replaceWith(Object.assign(document.createElement("span"), { className: "op-ltick", innerHTML: I("check", "sm") }));
       setTimeout(() => { ov.classList.add("is-leaving"); setTimeout(() => { ov.remove(); if (token === kycVerifyToken) finishKycVerify(false); }, 360); }, 1100);
     };
     const onMsg = (e) => {
       if (e.source !== frame.contentWindow) return;
       const d = e.data;
       if (!d || !d.agLoader) return;
-      if (d.step === 2 && line) line.textContent = "Waiting for each operator's decision";
+      if (d.step === 2) setCap("Waiting for each operator's decision", 2);
       if (d.state === "done") done();
     };
     window.addEventListener("message", onMsg);
