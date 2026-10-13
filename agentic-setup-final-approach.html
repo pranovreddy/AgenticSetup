@@ -13867,6 +13867,22 @@ body.ag-gate .ag-actions.is-approve{ background:#fff !important; position:relati
 .op-route-map::before{ left:16px !important; top:26px !important; bottom:26px !important; }
 .op-route-t b{ font-size:14.5px !important; } .op-route-t span{ font-size:12.5px !important; }
 .op-route-here{ margin-left:auto; }
+/* ---- Route stepper in the rail's capsule style ---- */
+.op-route-map{ position:relative !important; padding:8px 0 !important; }
+.op-route-map::after{ content:""; position:absolute; left:0; top:0; bottom:0; width:96px; border-radius:99px; background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(242,246,255,.7)); box-shadow:0 0 0 1px rgba(196,214,245,.75) inset, 0 24px 50px -28px rgba(37,99,235,.45); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); z-index:0; }
+.op-route-map::before{ left:47px !important; top:52px !important; bottom:52px !important; width:1.5px !important; z-index:1 !important; background:linear-gradient(180deg,#8fb0f4,#dbe6f9 40%,#dbe6f9) !important; }
+.op-route-map li{ position:relative; z-index:2; height:88px !important; padding:0 0 0 124px !important; margin:0 !important; display:flex; align-items:center !important; gap:16px !important; }
+.op-route-dot{ position:absolute !important; left:48px; top:50%; transform:translate(-50%,-50%); width:52px !important; height:52px !important; border-radius:50%; background:#fff !important; border:0 !important; box-shadow:0 0 0 6px rgba(255,255,255,.65), 0 8px 18px -10px rgba(37,99,235,.3) !important; color:#8ea3c8 !important; }
+.op-route-dot svg{ width:22px !important; height:22px !important; }
+.op-route-map li.is-here .op-route-dot{ width:68px !important; height:68px !important; background:none !important; box-shadow:none !important; }
+.op-route-map li.is-here .op-orb{ width:68px !important; height:68px !important; box-shadow:0 0 0 8px rgba(37,99,235,.14), 0 14px 26px -8px rgba(37,99,235,.55) !important; }
+.op-route-t{ gap:3px !important; justify-content:center; } .op-route-t b{ font-size:15.5px !important; } .op-route-t span{ font-size:13px !important; }
+.op-route-here{ margin-left:auto !important; align-self:center !important; }
+.op-route-cta{ margin-top:6px; }
+.op-route-map li.is-here, .op-route-map li:hover, .op-route-map li:first-child{ padding:0 0 0 124px !important; margin:0 !important; }
+.op-route-map li.is-here .op-route-t{ margin:0 !important; }
+.op-route-here{ display:none !important; }
+.op-route-t{ flex:1; min-width:0; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
