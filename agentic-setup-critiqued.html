@@ -13268,6 +13268,17 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 @media (max-width:1100px){ .op-split{ grid-template-columns:minmax(0,1fr); } .op-art{ display:none; } }
 @media (max-height:700px){ .op-art{ top:72px; height:320px; } }
 @media (prefers-reduced-motion:reduce){ .op-art *{ animation:none !important; } }
+
+/* List view v2: agent text and art left, review right */
+.op-split{ grid-template-columns:minmax(300px,380px) minmax(0,1fr); gap:56px; }
+.op-split-aside{ position:sticky; top:48px; display:flex; flex-direction:column; gap:8px; animation:op-rise 520ms var(--op-ease) both; }
+.op-split-aside .op-hd.is-stacked{ margin:0; }
+.op-split-aside .op-stats{ margin-top:8px; }
+.op-split .op-art{ position:relative; top:auto; height:300px; margin-top:4px; }
+.op-split-main{ padding-top:16px; }
+@media (max-height:760px){ .op-split .op-art{ height:230px; } .op-split-aside{ top:32px; } }
+@media (max-height:640px){ .op-split .op-art{ display:none; } }
+@media (max-width:1100px){ .op-split{ grid-template-columns:minmax(0,1fr); gap:24px; } .op-split-aside{ position:static; } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -13291,7 +13302,7 @@ body.op-strip-on #agSumReopen{ top:64px; }
 }
 /* 3 Versions button must not sit over page content */
 @media (max-height:700px), (max-width:1100px){
-  #opVpBtn{ left:auto !important; right:12px; bottom:12px; }
+  #opVpBtn{ left:auto !important; right:12px; bottom:96px; }
 }
 /* 7 contrast to WCAG AA */
 :root{ --op-mute:#5a6987; }
@@ -23484,7 +23495,7 @@ function agMigRow() {
         <div class="op-main">${opList(m, true)}</div>
       </div></div></div>`;
     }
-    if (v === "a") return `<div class="op-scroll"><div class="op-wrap is-a">${opHeader(m)}<div class="op-split"><div class="op-split-main">${opList(m, true)}${opSources(m)}</div><aside class="op-art is-${m.key}" aria-hidden="true">${opArt(m.key)}</aside></div></div></div>${bar}`;
+    if (v === "a") return `<div class="op-scroll"><div class="op-wrap is-a"><div class="op-split"><aside class="op-split-aside">${opHeader(m, true)}<div class="op-art is-${m.key}" aria-hidden="true">${opArt(m.key)}</div></aside><div class="op-split-main">${opList(m, true)}${opSources(m)}</div></div></div></div>${bar}`;
     return `<div class="op-scroll"><div class="op-wrap is-${v}">${opHeader(m)}${v === "b" ? opCards(m) : opList(m)}${opSources(m)}</div></div>${bar}`;
   }
 
