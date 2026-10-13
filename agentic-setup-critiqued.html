@@ -13489,6 +13489,13 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
   .op-fl-list{ overflow:visible; -webkit-mask-image:none; mask-image:none; }
   .op-fr{ height:auto; }
 }
+/* ---- Rail logo: on hover it grows into the full wordmark, like the steps below ---- */
+.setup-layout .cl-overview .cl-overview-brand{ clip-path:inset(0 round 19px) !important; transition:width 320ms cubic-bezier(.22,1,.36,1), max-width 320ms cubic-bezier(.22,1,.36,1), box-shadow 240ms !important; }
+.setup-layout .cl-overview .cl-overview-logo{ transition:clip-path 320ms cubic-bezier(.22,1,.36,1); }
+.setup-layout .cl-overview .cl-overview-brand:hover, .setup-layout .cl-overview .cl-overview-brand:focus-visible{ width:172px !important; max-width:172px !important; box-shadow:inset 0 0 0 1px rgba(255,255,255,.85), 0 8px 20px -8px rgba(37,99,235,.35) !important; }
+.setup-layout .cl-overview .cl-overview-brand:hover .cl-overview-logo, .setup-layout .cl-overview .cl-overview-brand:focus-visible .cl-overview-logo{ clip-path:inset(0 0 0 0); }
+@media (prefers-reduced-motion:reduce){ .setup-layout .cl-overview .cl-overview-brand, .setup-layout .cl-overview .cl-overview-logo{ transition:none !important; } }
+
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
