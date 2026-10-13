@@ -13518,6 +13518,12 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
 .op-fcard-src{ border-top:1px solid rgba(255,255,255,.6); margin-top:2px; }
 .op-fcard-src .op-chips i{ background:rgba(255,255,255,.7); }
 .op-fcard-ico{ background:rgba(255,255,255,.75); }
+/* ---- F panel: narrower content, subtle logo-icon pattern ---- */
+.op-fr-art{ right:0 !important; bottom:0 !important; left:0 !important; top:0 !important; width:100% !important; height:100% !important; aspect-ratio:auto !important; opacity:.9 !important; }
+.op-fr-art .op-fr-mark{ animation:none; }
+.op-fr{ background:radial-gradient(120% 95% at 100% 100%, rgba(118,154,246,.62) 0%, rgba(160,186,250,.4) 30%, rgba(204,218,254,.22) 56%, rgba(226,235,255,0) 82%) !important; }
+.op-fr-in{ align-items:center; padding-left:clamp(28px,5vw,72px); padding-right:clamp(28px,5vw,72px); }
+.op-fr-in > *{ width:100%; max-width:360px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -15999,7 +16005,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       const sideW = side ? side.offsetWidth + 56 : 0;
       const narr = host.querySelector(".op-lnarr");
       const narrH = narr ? 176 : 0;
-      const s = Math.max(0.45, Math.min((host.clientWidth - 64 - sideW) / bw, (host.clientHeight - topH - capH - narrH - 96) / bh, narr ? 0.8 : 1));
+      const s = Math.max(0.45, Math.min((host.clientWidth - 64 - sideW) / bw, (host.clientHeight - topH - capH - narrH - 96) / bh, narr ? 0.8 : 1.3));
       crop.style.width = Math.round(bw * s) + "px";
       crop.style.height = Math.round(bh * s) + "px";
       frame.style.transform = `translate(${-x0 * s}px, ${-y0 * s}px) scale(${s})`;
@@ -23800,7 +23806,7 @@ function agMigRow() {
     const tip = OP_TIP[m.key] || ["", ""];
     const stat = (v, l) => `<div><b>${e(v)}</b><span>${e(l)}</span></div>`;
     return `<aside class="op-fr" aria-label="About this step">
-      <svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax meet" aria-hidden="true"><defs><linearGradient id="ofg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".78"/><stop offset="1" stop-color="#fff" stop-opacity=".2"/></linearGradient></defs><g class="op-fr-mark"><g transform="rotate(0 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(60 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(120 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(180 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(240 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(300 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g></g><g class="op-fr-mark is-sm" transform="translate(40 -40) scale(.42)" style="transform-origin:300px 300px"><g transform="rotate(0 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(60 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(120 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(180 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(240 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g><g transform="rotate(300 300 300)"><path d="M300 92 L352 182 L248 182 Z" fill="url(#ofg)" stroke="rgba(255,255,255,.7)" stroke-width="1.2" stroke-linejoin="round"/></g></g></svg>
+      <svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs><radialGradient id="ofm" cx="100%" cy="100%" r="95%"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="ofmask"><rect width="600" height="600" fill="url(#ofm)"/></mask><pattern id="ofp" width="150" height="150" patternUnits="userSpaceOnUse"><g transform="translate(18 18) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g><g transform="translate(93 93) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g></pattern></defs><rect width="600" height="600" fill="url(#ofp)" mask="url(#ofmask)"/></svg>
       <div class="op-fr-in">
         <section class="op-fcard op-fcard-main">
           <p class="op-fcard-k"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>How I put this together</p>
