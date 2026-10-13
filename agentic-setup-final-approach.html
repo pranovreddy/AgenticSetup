@@ -13758,6 +13758,21 @@ body .shell .cl-detail-card .welcome-card.is-agentic, body .shell .cl-detail-car
 .op-dl-prof .ag-profile{ height:100%; display:flex; flex-direction:column; }
 .op-dl-prof .kyc-card{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; overflow:auto; }
 .op-dl-prof .kyc-footer{ margin-top:auto; position:sticky; bottom:0; background:linear-gradient(180deg,rgba(248,250,253,0),#f8fafd 40%); padding-top:18px; }
+body .ag-step-body.op-dl-prof > .ag-live{ height:calc(100vh - 24px) !important; max-height:none !important; min-height:0 !important; }
+body .ag-step-body.op-dl-prof .ag-profile{ height:100% !important; min-height:0 !important; }
+body .ag-step-body.op-dl-prof .kyc-card{ height:100% !important; overflow:visible !important; }
+body .ag-step-body.op-dl-prof{ grid-template-rows:minmax(0,1fr) !important; align-items:stretch !important; align-content:stretch !important; height:100% !important; }
+body .ag-step-body.op-dl-prof > .op-dside{ align-self:start !important; }
+/* ---- Route: simple, no card around the stops ---- */
+.op-route-prog{ display:none !important; }
+.op-route-side{ background:none !important; box-shadow:none !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; padding:0 !important; border-radius:0 !important; gap:18px !important; }
+.op-route-map li, .op-route-map li:hover, .op-route-map li.is-here{ background:none !important; box-shadow:none !important; border-radius:0 !important; padding:9px 0 !important; margin:0 !important; }
+.op-route-map::before{ left:19px !important; top:34px !important; bottom:34px !important; }
+.op-route-t em{ background:none !important; padding:0 !important; margin-top:3px !important; font-size:12.5px !important; color:#5f7298 !important; }
+.op-route-t em::before{ content:"You: " !important; margin:0 !important; padding:0 !important; border:0 !important; text-transform:none !important; letter-spacing:0 !important; font-size:12.5px !important; font-weight:600 !important; }
+.op-route-cta{ background:none !important; border-radius:0 !important; margin:0 !important; padding:16px 0 0 !important; border-top:1px solid var(--op-line); justify-content:flex-end !important; }
+.op-route-time{ display:none; }
+.op-route-t em::before{ margin-right:5px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24730,7 +24745,6 @@ function agMigRow() {
           <p class="op-route-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Your setup plan</p>
           <h2>Five stops, then you migrate.</h2>
           <p>I go first at every stop and do the work. You arrive to a summary, check it and approve.</p>
-          <div class="op-route-prog" aria-label="Setup progress"><span class="is-on"></span><span></span><span></span><span></span><span></span><span class="is-end"></span><em>Step 1 of 5, then migration</em></div>
           <ul class="op-route-pts">
             <li><i>${I("check")}</i><span><b>I do the work</b>Details, people, brands, partners and templates, prepared for you.</span></li>
             <li><i>${I("check")}</i><span><b>You review and edit</b>Every stop ends with a summary you can change.</span></li>
