@@ -13380,6 +13380,11 @@ body.ag-gate .ag-atabs{ margin:0 !important; padding:8px 44px !important; justif
 body.ag-gate .ag-atab{ height:32px !important; padding:0 16px !important; font-size:13px !important; border-radius:11px !important; }
 body.ag-gate .ag-brief-read{ top:48px !important; }
 
+/* ---- Next steps after the agreements: no rail behind the dialog ---- */
+.cl-overview{ transition:opacity 260ms ease, visibility 0s linear 0s; }
+body:has(.ag-nextup) .cl-overview{ opacity:0 !important; visibility:hidden !important; pointer-events:none; }
+.ag-nextup{ align-content:safe center; }
+
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
