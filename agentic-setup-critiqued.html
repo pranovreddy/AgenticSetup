@@ -13645,6 +13645,7 @@ body:has(.op-dl) .welcome-card.is-agentic{ display:none !important; }
 .op-dl-g{ grid-template-columns:292px minmax(0,1fr) !important; }
 .op-dl-f{ grid-template-columns:minmax(0,1fr) 292px !important; }
 .welcome-card.is-agentic #welcomeAiLines, .welcome-card.is-agentic .welcome-ai-dots{ display:none !important; }
+.op-fl-ft .op-count{ display:none !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23968,6 +23969,7 @@ function agMigRow() {
     if (!wasOpen) { sec.classList.add("is-open"); h.setAttribute("aria-expanded", "true"); }
   });
 
+  const opCollapse = (h) => h.replace('class="op-facc is-open"', 'class="op-facc"').replace('aria-expanded="true"', 'aria-expanded="false"');
   function opGMarkup(m) {
     const e = agSumEsc;
     const info = opPanelInfo(m);
@@ -23978,7 +23980,7 @@ function agMigRow() {
         <p class="op-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span><span>Agent summary</span><i aria-hidden="true"></i><span class="op-kick-area">${e(m.area)}</span></p>
         <h2 class="op-h">${e(m.did)}</h2>
         <p class="op-sub">${e(m.next)}</p>
-        <div class="op-g-acc">${acc}</div>
+        <div class="op-g-acc">${opCollapse(acc)}</div>
       </aside>
       <section class="op-gr">
         <div class="op-fl-list">${opList(m, true)}</div>
@@ -24019,7 +24021,7 @@ function agMigRow() {
     aside?.remove();
     const info = opPanelInfo(key === "1" ? opProfileModel() : opSumModel(key));
     const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
-    body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${acc}</div></aside>`);
+    body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${v === "g" ? opCollapse(acc) : acc}</div></aside>`);
     body.classList.add("op-dl");
     body.classList.toggle("op-dl-f", v === "f");
     body.classList.toggle("op-dl-g", v === "g");
