@@ -13593,6 +13593,34 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
 .op-gr{ padding-top:56px; padding-left:16px; }
 .op-g-acc .op-facc-h{ white-space:nowrap; }
 .op-g-acc .op-fstats span{ white-space:nowrap; }
+body .shell .cl-detail-card .welcome-card.is-agentic, body .shell .cl-detail-card > .welcome-card.is-agentic.has-tele{ position:fixed !important; left:50% !important; right:auto !important; top:auto !important; bottom:84px !important; transform:translateX(-50%) !important; width:min(640px, calc(100vw - 240px)) !important; max-width:none !important; height:auto !important; margin:0 !important; z-index:45; }
+/* ---- Partners list layout ---- */
+.op-selcount{ margin:0 0 10px; font-size:13px; color:var(--op-mute); } .op-selcount b{ font-size:15px; color:var(--op-ink); font-weight:650; }
+.op-gname{ font-size:15px; }
+.op-reason{ display:flex; align-items:flex-start; gap:8px; margin-top:6px; padding:8px 12px; border-radius:12px; background:rgba(238,244,255,.85); box-shadow:0 0 0 1px rgba(37,99,235,.1) inset; font-size:13px; line-height:1.45; color:var(--op-ink2); }
+.op-reason i{ flex:none; display:grid; place-items:center; width:16px; height:16px; margin-top:1px; border-radius:50%; background:var(--op-blue); color:#fff; font-style:normal; } .op-reason i svg{ width:9px; height:9px; }
+.op-reason.is-muted{ background:rgba(241,244,249,.7); box-shadow:none; color:var(--op-mute); } .op-reason.is-muted i{ background:#b6c2d8; }
+.op-info{ position:relative; flex:none; align-self:flex-start; margin-left:6px; }
+.op-info-b{ width:22px; height:22px; border-radius:50%; border:1px solid #cfdcf7; background:#fff; color:var(--op-deep); font:italic 700 12px/1 Georgia, serif; cursor:pointer; display:grid; place-items:center; transition:background 160ms, border-color 160ms; }
+.op-info-b:hover, .op-info-b:focus-visible{ background:var(--op-soft); border-color:#9db9ef; }
+.op-info-p{ position:absolute; z-index:30; right:-8px; top:30px; width:250px; margin:0; padding:12px 14px; border-radius:14px; background:#fff; box-shadow:0 18px 40px -14px rgba(15,23,42,.3), 0 0 0 1px rgba(196,214,245,.8); opacity:0; visibility:hidden; transform:translateY(-4px); transition:opacity 160ms, transform 200ms, visibility 0s linear 200ms; }
+.op-info:hover .op-info-p, .op-info:focus-within .op-info-p{ opacity:1; visibility:visible; transform:none; transition-delay:0s; }
+.op-info-p div{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; padding:6px 0; font-size:12.5px; } .op-info-p div + div{ border-top:1px solid var(--op-line); }
+.op-info-p dt{ color:var(--op-mute); } .op-info-p dd{ margin:0; display:flex; gap:8px; align-items:baseline; font-variant-numeric:tabular-nums; } .op-info-p b{ font-size:14px; color:var(--op-ink); } .op-info-p em{ font-style:normal; font-size:11.5px; color:#6b7c9e; }
+.op-list.is-compact .op-cell.is-lead:has(.op-info){ align-items:flex-start; }
+/* ---- Left side lighter ---- */
+.op-facc.is-open{ background:rgba(255,255,255,.46) !important; box-shadow:0 0 0 1px rgba(255,255,255,.7) inset !important; }
+.op-facc-h{ font-weight:600 !important; }
+.op-facc-h::before{ width:22px !important; height:22px !important; box-shadow:none !important; background:rgba(255,255,255,.7); }
+.op-facc.is-open .op-facc-h::before{ box-shadow:none !important; }
+.op-facc .op-ftrace li i{ width:16px; height:16px; background:rgba(37,99,235,.85); }
+.op-facc .op-fstats b{ font-size:22px; font-weight:650; }
+.op-nameline{ display:flex; align-items:center; gap:8px; }
+.op-nameline .op-info{ margin:0; align-self:center; }
+.op-info-p{ left:-8px !important; right:auto !important; }
+.op-row:has(.op-info:hover), .op-row:has(.op-info:focus-within){ position:relative; z-index:20; }
+.op-fl-list:has(.op-info:hover), .op-fl-list:has(.op-info:focus-within){ -webkit-mask-image:none; mask-image:none; }
+.op-row .op-cell, .op-row .op-who, .op-nameline, .op-row{ overflow:visible !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23739,13 +23767,22 @@ function agMigRow() {
     return [who, `<span class="op-cell is-num">${it.facts[0][1]}</span>`, `<span class="op-meter"><span class="op-bar-in"><i style="width:${it.pct}%"></i></span><em>${it.pct}%</em></span>`, `<span class="op-pill">${it.pill}</span>`];
   }
   function opList(m, compact) {
-    return `<section class="op-list${compact ? " is-compact" : ""}" style="--cols:${compact ? opCompactCols(m) : m.cols}">
+    const sel = m.key === "e1" && compact ? `<p class="op-selcount"><b>${m.items.filter((x) => x.on).length} of ${m.items.length}</b> partners selected</p>` : "";
+    return sel + `<section class="op-list${compact ? " is-compact" : ""}" style="--cols:${compact ? opCompactCols(m) : m.cols}">
       ${compact ? "" : `<div class="op-row is-head">${m.head.map((h) => `<span>${agSumEsc(h)}</span>`).join("")}</div>`}
       ${m.items.map((it, n) => `<div class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
     </section>`;
   }
   const opRate = (ph) => `<span class="op-rate${ph.best ? " is-best" : ""}"><b>${ph.rate}</b>${ph.share ? `<em>takes ${ph.share}</em>` : ph.best ? "<em>lowest</em>" : ""}</span>`;
   const opCompactCols = (m) => (m.key === "2" ? "minmax(0,1fr) 210px" : "minmax(0,1fr) 120px");
+
+  /* ---- Partners: logo and name, the reason up front, rates and split behind an info icon ---- */
+  function opGtmWho(m, it) {
+    const e = agSumEsc;
+    const rows = it.phases.map((ph) => `<div><dt>${ph.label}</dt><dd><b>${ph.rate}</b><em>${ph.share ? `takes ${ph.share}` : "not allocated"}</em></dd></div>`).join("");
+    return `<span class="op-cell is-lead">${it.lead}<span class="op-who"><span class="op-nameline"><b class="op-gname">${it.name}</b><span class="op-info"><button type="button" class="op-info-b" aria-label="Rates and split for ${e(it.name)}">i</button><dl class="op-info-p" role="tooltip">${rows}</dl></span></span>
+      <span class="op-reason${it.on ? "" : " is-muted"}"><i aria-hidden="true">${I("check")}</i>${it.why}</span></span></span>`;
+  }
   function opCompactCells(m, it) {
     const extra = m.key === "2" ? `<span class="op-meta"><span class="op-mseg">${it.contact[0]}</span><i></i><span class="op-mseg">${it.contact[1]}</span></span>`
       : m.key === "e0" ? `<span class="op-chips is-sm">${it.chips.map((c) => `<i>${c}</i>`).join("")}</span>`
@@ -23754,7 +23791,7 @@ function agMigRow() {
     const who = `<span class="op-cell is-lead">${it.lead}<span class="op-who"><b>${it.name}</b><span>${m.key === "e1" ? it.why : it.sub}</span>${extra}</span></span>`;
     if (m.key === "2") return [who, `<span class="op-cell is-end is-stack"><span class="op-pill">${it.pill}</span><span class="op-why">${it.why}</span></span>`];
     if (m.key === "e0") return [who, `<span class="op-pill">${it.pill}</span>`];
-    if (m.key === "e1") return [who, `<span class="op-cell is-end"><span class="op-pill${it.on ? " is-on" : " is-off"}">${it.pill}</span></span>`];
+    if (m.key === "e1") return [opGtmWho(m, it), `<span class="op-cell is-end"><span class="op-pill${it.on ? " is-on" : " is-off"}">${it.pill}</span></span>`];
     return [who, `<span class="op-cell is-end"><span class="op-pill">${it.pill}</span></span>`];
   }
   function opCards(m) {
@@ -23870,7 +23907,7 @@ function agMigRow() {
     e1: ["Rates are locked in on approval", "Approving accepts each partner's rate card terms. Volume split can be revisited later."],
     e2: ["Low confidence ones come first", "Templates the agent is unsure about are flagged for you to check after this step."],
   };
-  const OP_FR_ART = `<svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs><radialGradient id="ofm" cx="100%" cy="100%" r="95%"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="ofmask"><rect width="600" height="600" fill="url(#ofm)"/></mask><pattern id="ofp" width="150" height="150" patternUnits="userSpaceOnUse"><g transform="translate(18 18) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g><g transform="translate(93 93) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g></pattern></defs><rect width="600" height="600" fill="url(#ofp)" mask="url(#ofmask)"/></svg>`;
+  const OP_FR_ART = `<svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs><radialGradient id="ofm" cx="100%" cy="100%" r="95%"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="ofmask"><rect width="600" height="600" fill="url(#ofm)"/></mask><pattern id="ofp" width="230" height="230" patternUnits="userSpaceOnUse"><g transform="translate(26 26) scale(.52)" fill="#fff" fill-opacity=".34"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g><g transform="translate(141 141) scale(.52)" fill="#fff" fill-opacity=".34"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g></pattern></defs><rect width="600" height="600" fill="url(#ofp)" mask="url(#ofmask)"/></svg>`;
   function opPanelInfo(m) {
     const e = agSumEsc;
     const tip = OP_TIP[m.key] || ["", ""];
