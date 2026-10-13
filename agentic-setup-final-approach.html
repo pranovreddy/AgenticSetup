@@ -13784,7 +13784,7 @@ body .ag-step-body.op-dl-prof > .op-dside{ align-self:start !important; }
 .op-selcount span{ color:#5f7298; }
 /* ---- Route: stops glide to the rail when processing starts ---- */
 .ag-nextup.is-flying .op-route-copy, .ag-nextup.is-flying .op-route-cta{ opacity:0; transform:translateY(8px); transition:opacity 260ms ease, transform 260ms ease; }
-.ag-nextup.is-flying .op-route-map{ transform:translate(var(--fly-x,-600px), var(--fly-y,0px)); transform-origin:left top; transition:transform 650ms cubic-bezier(.65,0,.35,1); }
+.ag-nextup.is-flying .op-route-map{ transform:translate(var(--fly-x,-600px), var(--fly-y,0px)) scale(var(--fly-s,.6)); transform-origin:0 0; transition:transform 780ms cubic-bezier(.65,0,.35,1); }
 .ag-nextup.is-flying .op-route-t, .ag-nextup.is-flying .op-route-here{ opacity:0; transition:opacity 220ms ease; }
 .ag-nextup.is-flying .op-route-map::before{ background:linear-gradient(180deg,var(--op-blue),#cfdcf3 60%,#cfdcf3); }
 .ag-nextup.is-flying .op-route-map li{ animation:none; }
@@ -18636,17 +18636,16 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       const map = el.querySelector(".op-route-map");
       if (map && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
         /* the stops glide left onto the rail, so the plan and the rail read as one thing */
-        const ico = document.querySelector('.ag-tel-ico[data-tel-go="1"]');
-        const first = map.querySelector(".op-route-dot");
-        const fr = first.getBoundingClientRect();
-        const tr = ico ? ico.getBoundingClientRect() : { left: 40, top: 264, width: 34, height: 34 };
-        const dx = (tr.left + tr.width / 2) - (fr.left + fr.width / 2);
-        const dy = (tr.top + tr.height / 2) - (fr.top + fr.height / 2);
-        map.style.setProperty("--fly-x", dx + "px");
-        map.style.setProperty("--fly-y", dy + "px");
+        const card = document.querySelector("#agTelCard");
+        const mr = map.getBoundingClientRect();
+        const cr = card ? card.getBoundingClientRect() : { left: 14, top: 255, width: 58, height: 310 };
+        const sc = cr.width / 96;
+        map.style.setProperty("--fly-x", (cr.left - mr.left) + "px");
+        map.style.setProperty("--fly-y", (cr.top - mr.top - 8 * sc) + "px");
+        map.style.setProperty("--fly-s", String(sc));
         el.classList.add("is-flying");
-        setTimeout(() => { el.classList.add("is-leaving"); }, 650);
-        setTimeout(() => { el.remove(); agGo("1"); }, 950);
+        setTimeout(() => { el.classList.add("is-leaving"); }, 780);
+        setTimeout(() => { el.remove(); agGo("1"); }, 1080);
         return;
       }
       el.classList.add("is-leaving");
@@ -24434,7 +24433,7 @@ function agMigRow() {
       el.innerHTML = `<img alt="DigiConsent" src="${src}">`;
       document.body.appendChild(el);
     }
-    el.hidden = !((document.body.classList.contains("ag-gate") && document.body.classList.contains("ag-booted")) || document.querySelector(".op-route"));
+    el.hidden = !((document.body.classList.contains("ag-gate") && document.body.classList.contains("ag-booted") && (document.getElementById("agAcceptBtn") || document.getElementById("agNextUp"))) || document.querySelector(".op-route"));
   }
   setInterval(opLogoSync, 300);
 
