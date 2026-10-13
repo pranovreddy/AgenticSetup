@@ -157,6 +157,21 @@ All new code is prefixed `op` (CSS `.op-*`, JS `op*`) and sits in one CSS block 
 - **Session 3b: two whole-experience directions** on every screen, plus "Whole experience" presets at the top of the panel (A–C Refined / D Board / E Conversation; picking D or E plays from the Team loader). D = loader with a Findings column streaming results (`OP_FIND`), decision board with a reason and an include switch per item and actions on top (GTM shows a rate race per phase), signed receipt on approve, full-screen route for what happens next. E = loader narrated line by line (`OP_NARR`), summary as an agent message with item tiles, reply chips, "How did you decide?" and a working ask box, approve shows your reply then the agent's confirmation, next-up as a chat. Code is in the `Opus 2` JS block (`opBoard`, `opChat`, `opSumBind`, `opSuccessPaint2`, `opNextUpMarkup`).
 - **Version bar** (`opStrip`, top centre): appears on any loader, summary, confirmation or next-up screen, names the screen and swaps its version in place. Choosing a version in the panel jumps straight to that screen (`opSetAndShow`).
 
+## 8d. Handoff after session 3 (read this first on a new account)
+
+- **Branch:** `claude/optimistic-heisenberg-i0otau` (contains everything from sessions 1 and 2 plus session 3). Check it out first.
+- **Newest file:** `agentic-setup-telemetry-opus.html`, titled "DigiConsent Agentic Telemetry Opus".
+- **Published preview (owned by the old account):** https://claude.ai/artifact/36NT37teZnfB3sAm6MQAgD. A new account cannot update it; publish the file again from the new account to get your own URL (it will be a new link). The comment wake subscription never registered, so paste comments into the session.
+- **Also published from session 3:** an unchanged preview of `agentic-setup-telemetry.html` at https://claude.ai/artifact/PmtoaK9yfTXPoXJTbB65E5.
+- **Where the user is:** they reviewed versions A to C ("these look good") and asked for D (Board) and E (Conversation), which are built. Next expected step: they send their picks (the panel's "Copy picks" text, one line per screen), then the chosen version per screen is made the only one and the rest are removed.
+- **Not yet checked for D and E:** narrow or short windows (1000x650), reduced motion, and the business profile loader in D/E during a full run.
+- **Known leftover:** the template "download" link does nothing inside the artifact viewer (viewer blocks downloads), pre-existing.
+- **Test scripts:** `references/tools/session3/` (screenshots go to `/tmp/shots`, create it first; run from the repo root with `node references/tools/session3/<file>`):
+  - `flow.js` plays the whole real flow (gate, accept, next-up, profile, each loader and summary) and screenshots each stage. ~3 min.
+  - `pv.js <tag> "step|step"` opens the page and runs steps: `set:<screen>=<letter>` (picks a version through the panel, which also jumps to it), `prev:<screen>`, `wait:<ms>`, `shot:<name>`, `click:<css>`, `eval:<js>`. Screens: `loader`, `sum-2`, `sum-e0`, `sum-e1`, `sum-e2`, `success`, `nextup`. `window.__opPreview(kind, key)` jumps directly (kind = loader | summary | success | nextup).
+  - `pvrm.js` is the same with reduced motion; `exp.js d|e` plays a whole experience preset end to end; `measure.js` measures loader content boxes.
+  - Use `W=1000 H=650` env vars for small windows. Chromium is at `/opt/pw-browsers/chromium`, Playwright at `/opt/node22/lib/node_modules/playwright`.
+
 ## 9. User preferences for how to respond
 
 Be brief; say what changed and what was not checked; never claim something was tested unless it was; propose a next step as a question. When a comment arrives from an artifact, reply in that thread with `ArtifactComments` and resolve it, and give one short line in the session.

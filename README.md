@@ -2,7 +2,7 @@
 
 Clickable HTML prototypes of agentic onboarding for DigiConsent.
 
-**For a new Claude session: read `references/CONTEXT.md` first** (section 8b is the latest state, then `references/agentic-onboarding-requirements.md`). Work lives on branch `claude/dazzling-wozniak-oqrxqs`; check it out before doing anything.
+**For a new Claude session: read `references/CONTEXT.md` first** (section 8b is the latest state, then `references/agentic-onboarding-requirements.md`). Latest work lives on branch `claude/optimistic-heisenberg-i0otau` (see CONTEXT.md 8d); check it out before doing anything.
 
 ## Open a preview
 Each prototype is one self-contained HTML file. To preview, publish it with the `Artifact` tool (same file path to update an existing one; the artifact URLs are listed in `references/CONTEXT.md`):
