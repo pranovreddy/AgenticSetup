@@ -14012,6 +14012,23 @@ html body.op-capsule-on #agTelCard.ag-telcard, html body.op-capsule-on.ag-gate #
 .ag-mig-clock b{ width:58px; height:68px; font-size:28px; border-radius:10px; } .ag-mig-clock i{ font-size:22px; line-height:68px; } .ag-mig-clock span{ font-size:11px; }
 .ag-mig-wait p{ font-size:13.5px; max-width:470px; }
 .op-list .op-item.is-dim{ opacity:.62; filter:saturate(.5); } .op-list .op-item.is-dim .op-reason{ background:transparent !important; box-shadow:none !important; } .op-list .op-item.is-dim .op-pill{ background:#eef1f6 !important; color:#6b7890 !important; }
+.op-cv-mark{ margin-bottom:104px !important; }
+.op-co{ position:absolute; left:50%; top:50%; width:400px; height:400px; margin:-200px 0 0 -200px; pointer-events:none; opacity:0; transform:scale(.86); transition:opacity 600ms ease, transform 700ms cubic-bezier(.22,1,.36,1); }
+.op-co.is-in{ opacity:1; transform:none; }
+.op-co-svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.op-co-ring{ fill:none; stroke:#cfdcf3; stroke-width:1.5; stroke-dasharray:3 7; stroke-linecap:round; transform-origin:200px 200px; animation:op-co-spin 38s linear infinite; }
+.op-co-spoke{ stroke:#dbe6f8; stroke-width:1.5; stroke-dasharray:4 6; transition:stroke 400ms; }
+.op-co-spoke.is-done{ stroke:#9fbdf3; stroke-dasharray:none; }
+.op-co-spoke.is-on{ stroke:#2563eb; stroke-width:2; stroke-dasharray:6 8; animation:op-co-flow 700ms linear infinite; filter:drop-shadow(0 0 4px rgba(37,99,235,.6)); }
+@keyframes op-co-flow{ to{ stroke-dashoffset:-14; } } @keyframes op-co-spin{ to{ transform:rotate(360deg); } }
+.op-co-node{ position:absolute !important; width:0 !important; transform:translate(0,0); display:flex; flex-direction:column; align-items:center; }
+.op-co-node i{ position:absolute; left:-24px; top:-24px; }
+.op-co-node em{ position:absolute; top:32px; left:-50px; width:100px; text-align:center; }
+.op-co-node[data-i="0"] em{ top:-48px; }
+.op-co-node.is-on i::after{ content:""; position:absolute; inset:-12px; border-radius:50%; border:1.5px dashed rgba(37,99,235,.65); animation:op-co-spin 6s linear infinite; }
+.op-co-node.is-on i::before{ content:""; position:absolute; inset:-6px; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,.22), transparent 70%); animation:op-co-pulse 1.4s ease-in-out infinite; }
+@keyframes op-co-pulse{ 50%{ transform:scale(1.35); opacity:.4; } }
+.op-co-node i{ position:absolute; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18695,14 +18712,23 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     copy.dataset.old = copy.innerHTML;
     copy.innerHTML = `<div class="op-cv" aria-live="polite">
       <div class="op-cv-status"><span class="op-cv-count"><b id="opCvN">1</b> / ${STEPS.length}</span><span class="op-cv-line" id="opCvLine">${STEPS[0][0]}</span></div>
-      <div class="op-cv-track"><i class="op-cv-fill" id="opCvFill"></i>${STEPS.map(([t, ic], i) => `<span class="op-cv-node" data-i="${i}"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}</div>
     </div>`;
     mark?.classList.add("op-cv-mark");
-    const line = copy.querySelector("#opCvLine"), n = copy.querySelector("#opCvN"), fill = copy.querySelector("#opCvFill");
-    const nodes = [...copy.querySelectorAll(".op-cv-node")];
+    const line = copy.querySelector("#opCvLine"), n = copy.querySelector("#opCvN");
+    const fill = { style: {} };
+    const PT = [[200, 62], [319, 268], [81, 268]];
+    const orbit = document.createElement("div");
+    orbit.className = "op-co";
+    orbit.setAttribute("aria-hidden", "true");
+    orbit.innerHTML = `<svg viewBox="0 0 400 400" class="op-co-svg"><circle class="op-co-ring" cx="200" cy="200" r="136"/>${PT.map(([x, y], i) => `<line class="op-co-spoke" data-i="${i}" x1="200" y1="200" x2="${x}" y2="${y}"/>`).join("")}</svg>${STEPS.map(([t, ic], i) => `<span class="op-cv-node op-co-node" data-i="${i}" style="left:${PT[i][0]}px;top:${PT[i][1]}px"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}`;
+    mark?.appendChild(orbit);
+    const nodes = [...orbit.querySelectorAll(".op-cv-node")];
+    const spokes = [...orbit.querySelectorAll(".op-co-spoke")];
+    requestAnimationFrame(() => orbit.classList.add("is-in"));
     await wait(350);
     for (let i = 0; i < STEPS.length; i += 1) {
       nodes.forEach((nd, k) => { nd.classList.toggle("is-on", k === i); nd.classList.toggle("is-done", k < i); });
+      spokes.forEach((sp, k) => { sp.classList.toggle("is-on", k === i); sp.classList.toggle("is-done", k < i); });
       line.classList.add("is-swap");
       await wait(180);
       line.textContent = STEPS[i][0]; n.textContent = String(i + 1);
@@ -18713,12 +18739,13 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       await wait(450);
     }
     nodes.forEach((nd) => { nd.classList.remove("is-on"); nd.classList.add("is-done"); });
+    spokes.forEach((sp) => { sp.classList.remove("is-on"); sp.classList.add("is-done"); });
     line.textContent = "Your workspace is ready";
     boot.classList.add("is-complete");
     await wait(900);
     boot.classList.add("is-out");
     go();
-    setTimeout(() => { boot.hidden = true; boot.style.zIndex = ""; boot.classList.remove("is-complete"); mark?.classList.remove("op-cv-mark"); if (copy.dataset.old) copy.innerHTML = copy.dataset.old; }, 700);
+    setTimeout(() => { boot.hidden = true; boot.style.zIndex = ""; boot.classList.remove("is-complete"); mark?.classList.remove("op-cv-mark"); orbit.remove(); if (copy.dataset.old) copy.innerHTML = copy.dataset.old; }, 700);
   }
   function agNextUpShow() {
     if (!opCoverShown) { opCoverThen(agNextUpShow); return; }
