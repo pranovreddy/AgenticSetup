@@ -13983,6 +13983,7 @@ body.ag-gate.op-capsule-on .setup-layout .cl-overview{ pointer-events:none !impo
 body.op-capsule-on .setup-layout .cl-overview{ opacity:1 !important; visibility:visible !important; background:transparent !important; pointer-events:none !important; }
 body.op-capsule-on:has(#agNextUp) .setup-layout .cl-overview::before, body.op-capsule-on:has(#agNextUp) .setup-layout .cl-overview .cl-overview-brand, body.op-capsule-on:has(#agNextUp) .setup-layout .cl-overview .cl-overview-foot{ opacity:1 !important; visibility:visible !important; }
 body.op-capsule-on #agTelCard, body.op-capsule-on .ag-telcard{ opacity:0 !important; }
+.ag-nextup.op-nfull > .op-route{ padding-left:96px !important; padding-right:96px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24513,7 +24514,7 @@ function agMigRow() {
     }
     const on = ((document.body.classList.contains("ag-gate") && document.body.classList.contains("ag-booted") && (document.getElementById("agAcceptBtn") || document.getElementById("agNextUp"))) || document.querySelector(".op-route"));
     el.hidden = true;
-    document.body.classList.toggle("op-capsule-on", !!on && !document.body.classList.contains("ag-app-tour") && !document.querySelector(".op-route"));
+    document.body.classList.toggle("op-capsule-on", !!on && !document.body.classList.contains("ag-app-tour"));
   }
   setInterval(opLogoSync, 300);
 
