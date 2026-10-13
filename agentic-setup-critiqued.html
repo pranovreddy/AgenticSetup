@@ -13342,6 +13342,8 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 .op-composer input{ font-size:13.5px; }
 .op-composer button{ width:32px; height:32px; } .op-composer button svg{ width:13px; height:13px; }
 .op-composer{ min-height:0; height:48px !important; }
+.op-grid.is-2{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+@media (max-width:1000px){ .op-grid.is-2{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -13744,20 +13746,26 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       icon: "users",
       title: "Team",
       idle: "The setup agent will look for people to invite.",
-      lead: "4 members found",
+      lead: "6 members found",
       people: [
         { initials: "AK", name: "Anita Kulkarni", email: "anita.kulkarni@hdfc.com",
           platformRole: "Regulatory / Legal", designation: "VP — Legal & Compliance",
           department: "Legal & Compliance", mobile: "+91 98103 47291" },
+        { initials: "MI", name: "Meera Iyer", email: "meera.iyer@hdfc.com",
+          platformRole: "Regulatory / Legal", designation: "Compliance Manager",
+          department: "Legal & Compliance", mobile: "+91 98200 66418" },
+        { initials: "AM", name: "Arjun Menon", email: "arjun.menon@hdfc.com",
+          platformRole: "Regulatory / Legal", designation: "Head of Risk and Audit",
+          department: "Risk & Audit", mobile: "+91 98670 30952" },
         { initials: "SP", name: "Sanjay Prabhu", email: "sanjay.prabhu@hdfc.com",
           platformRole: "Business Admin", designation: "Head of Marketing Operations",
           department: "Marketing", mobile: "+91 98450 11234" },
+        { initials: "KR", name: "Kavya Reddy", email: "kavya.reddy@hdfc.com",
+          platformRole: "Business Admin", designation: "Digital Campaigns Lead",
+          department: "Marketing", mobile: "+91 99001 72684" },
         { initials: "DN", name: "Divya Nair", email: "divya.nair@hdfc.com",
           platformRole: "Super Admin", designation: "Senior Manager — Technology",
           department: "Technology", mobile: "+91 99870 55321" },
-        { initials: "RM", name: "Rohit Mehta", email: "rohit.mehta@hdfc.com",
-          platformRole: "Finance Admin", designation: "Finance Controller",
-          department: "Finance Operations", mobile: "+91 90040 22817" },
       ],
       ctas: [{ label: "Review", action: "ag-view-team" }],
     },
@@ -13894,7 +13902,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
           /* While focused and prepared, last AI step (invite pack) is done; user send is out of scope */
           if (ready && !sent) S[3] = "done";
           return [
-            { label: "Found people in your organisation", detail: "4 members matched from your organisation records", status: S[0] },
+            { label: "Found people in your organisation", detail: "6 members matched from your organisation records", status: S[0] },
             { label: "Recommended platform roles", detail: "Super Admin, Regulatory / Legal, Finance, Business, Auditor", status: S[1] },
             { label: "Wrote role rationale per person", detail: "Why each role fits their title", status: S[2] },
             { label: "Prepared the invite batch", detail: "Invite payload staged", status: S[3] },
@@ -23548,7 +23556,7 @@ function agMigRow() {
   function opRolesMarkup(m) {
     const e = agSumEsc;
     const chev = "";
-    const secs = INVITE_ROLES.map((r) => ({ r, people: m.items.filter((it) => opRoleName(it) === r.pill) })).filter((x) => x.people.length);
+    const secs = INVITE_ROLES.map((r) => ({ r, people: m.items.filter((it) => opRoleName(it) === r.pill) })).filter((x) => x.people.length).sort((x, y) => y.people.length - x.people.length);
     return secs.map(({ r, people }, si) => `<section class="op-rs" data-role="${r.id}" style="--n:${si}">
       <div class="op-rs-l"><span class="op-pill">${e(r.pill)}</span><p>${e(r.text)}</p><span class="op-rs-count">${people.length} ${people.length === 1 ? "person" : "people"}</span></div>
       <div class="op-rs-r"><div class="op-rs-panel">
