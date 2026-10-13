@@ -12989,6 +12989,7 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 .op-vp-seg{ flex-wrap:wrap; }
 .op-vp-seg button{ flex:1 1 calc(33.3% - 4px); min-width:0; }
 .op-vp-seg.is-3 button{ flex-basis:calc(33.3% - 4px); }
+.op-vp-seg.is-5 button{ flex-basis:calc(20% - 4px); }
 .op-vp-row.is-exp{ padding:14px; margin:8px -6px 6px; border-radius:16px; background:linear-gradient(180deg,#f2f7ff,#fff); border:1px solid #dbe7fb !important; }
 .op-vp-row.is-exp + .op-vp-row{ border-top:0; }
 
@@ -13164,7 +13165,7 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 .op-finds li > span{ align-items:flex-start; text-align:left; }
 .op-finds b, .op-finds em{ display:block; margin:0; }
 .op-lnarr{ text-align:left; }
-.op-vp-seg.is-3 button b{ width:auto; padding:0 5px; }
+.op-vp-seg.is-3 button b, .op-vp-seg.is-5 button b{ width:auto; padding:0 5px; }
 
 .op-composer{ left:var(--op-left) !important; right:var(--op-right) !important; width:auto !important; max-width:780px; margin:0 auto !important; transform:none !important; }
 
@@ -23926,6 +23927,7 @@ function agMigRow() {
   /* ---- F: review on the left, supporting info on the right ---- */
   const OP_TIP = {
     "2": ["Roles can be changed any time", "Invites go out only when you send them. You can edit a role later from Team settings."],
+    "1": ["Every field has a source", "Hover a field to see where it came from. Edit anything before you submit."],
     e0: ["Add or rename later", "Brands and lines of business can be edited whenever your setup changes."],
     e1: ["Rates are locked in on approval", "Approving accepts each partner's rate card terms. Volume split can be revisited later."],
     e2: ["Low confidence ones come first", "Templates the agent is unsure about are flagged for you to check after this step."],
@@ -23999,18 +24001,22 @@ function agMigRow() {
     </div></div></div>`;
   }
 
+  function opProfileModel() {
+    const tele = AG_TELE.kyc;
+    return { key: "1", area: "Business profile", trace: tele.steps.map((x) => x[1]), stats: [[PROFILE_FIELDS.filter((f) => f.kind !== "logo").length, "fields prepared"], [4, "sources checked"]], sources: ["DLT registry", "MCA", "GSTIN", "Your website"] };
+  }
   /* ---- Step details: agent notes on one side ---- */
   function opDetailSync() {
     const key = String(state.ag && state.ag.focus);
     const body = document.querySelector(".ag-step.is-focused .ag-step-body");
     const v = opGet("details");
-    const ok = body && ["2", "e0", "e1", "e2"].includes(key) && v !== "a" && !document.getElementById("agSummary") && body.querySelector(".ag-live.is-revealed");
+    const ok = body && ["1", "2", "e0", "e1", "e2"].includes(key) && v !== "a" && !document.getElementById("agSummary") && body.querySelector(".ag-live.is-revealed, .ag-profile");
     document.querySelectorAll(".ag-step-body.op-dl").forEach((b) => { if (b !== body || !ok) { b.classList.remove("op-dl", "op-dl-f", "op-dl-g"); b.querySelector(":scope > .op-dside")?.remove(); } });
     if (!ok) return;
     let aside = body.querySelector(":scope > .op-dside");
     if (aside && aside.dataset.key === key) { body.classList.toggle("op-dl-f", v === "f"); body.classList.toggle("op-dl-g", v === "g"); return; }
     aside?.remove();
-    const info = opPanelInfo(opSumModel(key));
+    const info = opPanelInfo(key === "1" ? opProfileModel() : opSumModel(key));
     const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
     body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${acc}</div></aside>`);
     body.classList.add("op-dl");
@@ -24085,7 +24091,7 @@ function agMigRow() {
     const ex = opExpNow();
     opPanel.querySelector(".op-vp-rows").innerHTML = `<div class="op-vp-row is-exp">
         <div class="op-vp-lab"><b>Whole experience</b><span>Sets every screen</span></div>
-        <div class="op-vp-seg is-3" role="radiogroup" aria-label="Whole experience">${OP_EXP.map(([k, name, desc]) => `<button type="button" role="radio" aria-checked="${k === ex}" class="${k === ex ? "is-on" : ""}" data-op-exp="${k}" title="${e(desc)}"><b>${k === "mix" ? "A–C" : k.toUpperCase()}</b>${e(name)}</button>`).join("")}</div>
+        <div class="op-vp-seg is-5" role="radiogroup" aria-label="Whole experience">${OP_EXP.map(([k, name, desc]) => `<button type="button" role="radio" aria-checked="${k === ex}" class="${k === ex ? "is-on" : ""}" data-op-exp="${k}" title="${e(desc)}"><b>${k === "mix" ? "A–C" : k.toUpperCase()}</b>${e(name)}</button>`).join("")}</div>
         <p class="op-vp-desc">${e(OP_EXP.find((o) => o[0] === ex)[2])}${ex === "mix" ? "" : ". Starts at the Team step."}</p>
       </div>` + OP_SCREENS.map((s) => {
       const v = opGet(s.id);
@@ -24213,13 +24219,14 @@ function agMigRow() {
 
 
   /* ======== Opus 2: two whole-experience directions, D (Board) and E (Conversation) ======== */
-  const OP_EXP = [["mix", "Refined", "Your picks from A to C"], ["d", "Board", "Live findings, a decision board with your controls, a signed receipt"], ["e", "Conversation", "The agent narrates, proposes and answers; you reply"]];
+  const OP_EXP = [["mix", "Refined", "Your picks from A to C"], ["d", "Board", "Live findings, a decision board with your controls, a signed receipt"], ["e", "Conversation", "The agent narrates, proposes and answers; you reply"], ["f", "Panel", "Review on the left, agent notes on the right, on summaries and details"], ["g", "Split", "Agent notes on the left, review wide on the right, on summaries and details"]];
   function opExpNow() {
     const vs = OP_SCREENS.map((s) => opGet(s.id));
-    return vs.every((v) => v === "d") ? "d" : vs.every((v) => v === "e") ? "e" : "mix";
+    const side = OP_SCREENS.filter((s) => s.id.startsWith("sum-") || s.id === "details").map((s) => opGet(s.id));
+    return vs.every((v) => v === "d") ? "d" : vs.every((v) => v === "e") ? "e" : side.every((v) => v === "f") ? "f" : side.every((v) => v === "g") ? "g" : "mix";
   }
   function opSetExp(x) {
-    OP_SCREENS.forEach((s) => { opV[s.id] = x === "mix" ? (opV["mix:" + s.id] || OP_DEFAULT[s.id]) : x; });
+    OP_SCREENS.forEach((s) => { opV[s.id] = x === "mix" ? (opV["mix:" + s.id] || OP_DEFAULT[s.id]) : (x === "f" || x === "g") ? (s.id.startsWith("sum-") || s.id === "details" ? x : (opV["mix:" + s.id] || OP_DEFAULT[s.id])) : x; });
     try { localStorage.setItem(OP_STORE, JSON.stringify(opV)); } catch (e) { /* this visit only */ }
     document.body.dataset.opLoader = opGet("loader");
     opPanelPaint();
