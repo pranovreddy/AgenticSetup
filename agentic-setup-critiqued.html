@@ -13562,6 +13562,37 @@ body.op-strip-on .op-wrap.is-f, .op-wrap.is-f{ padding:0 !important; height:100%
 .op-facc .op-fstats div:nth-child(odd){ border-right-color:rgba(37,99,235,.12); }
 .op-facc .op-chips i{ background:rgba(255,255,255,.9); box-shadow:0 0 0 1px rgba(37,99,235,.1) inset; }
 .op-facc-b p{ font-size:13px; }
+/* ---- Migration Manager strip: bottom centre of the screen ---- */
+.cl-detail-card > .welcome-card.is-agentic, .cl-detail-card .welcome-card.is-agentic{ position:fixed !important; left:50% !important; right:auto !important; top:auto !important; bottom:20px !important; transform:translateX(-50%) !important; z-index:45; width:min(640px, calc(100vw - 240px)) !important; max-width:none !important; margin:0 !important; padding:10px 18px !important; border-radius:18px !important; background:rgba(255,255,255,.86) !important; border:1px solid rgba(196,214,245,.8) !important; box-shadow:0 18px 40px -18px rgba(37,99,235,.35), 0 2px 8px rgba(15,23,42,.05) !important; -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
+.welcome-card.is-agentic .welcome-ai-bubble{ background:none !important; }
+@media (max-width:1100px){ .cl-detail-card .welcome-card.is-agentic{ width:calc(100vw - 32px) !important; } }
+/* ---- Summary G: title and notes left, wide review right, pattern bottom-left ---- */
+.op-wrap.is-g, .op-wrap.is-g .op-gsplit{ padding:0 !important; height:100% !important; }
+.op-scroll:has(.op-wrap.is-g){ overflow:hidden; padding-bottom:0 !important; }
+.op-gsplit{ display:grid; grid-template-columns:minmax(300px,380px) minmax(0,1fr); grid-template-rows:minmax(0,1fr); }
+.op-gl{ position:relative; display:flex; flex-direction:column; gap:10px; padding:56px 28px 28px var(--op-left); min-height:0; overflow:hidden; }
+.op-gl > *{ position:relative; }
+.op-gl .op-h{ font-size:24px; margin:4px 0 0; }
+.op-gl .op-sub{ margin:0 0 14px; font-size:14px; }
+.op-gl::before{ content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 70% at 0% 100%, rgba(118,154,246,.5) 0%, rgba(160,186,250,.3) 35%, rgba(226,235,255,0) 80%); }
+.op-g-art{ position:absolute !important; inset:0; width:100% !important; height:100% !important; right:auto !important; bottom:auto !important; opacity:.9; transform:scaleX(-1); pointer-events:none; }
+.op-g-acc .op-fr-in{ height:auto !important; padding:0 !important; justify-content:flex-start !important; display:flex; flex-direction:column; overflow:visible; }
+.op-g-acc .op-fr-in > *{ max-width:none; }
+.op-gr{ display:flex; flex-direction:column; gap:18px; padding:56px 48px 24px 24px; min-width:0; min-height:0; height:100%; }
+.op-gr .op-fl-list{ flex:1 1 auto; min-height:0; }
+@media (max-width:1100px){
+  .op-gsplit{ grid-template-columns:minmax(0,1fr); height:auto; }
+  .op-wrap.is-g, .op-wrap.is-g .op-gsplit{ height:auto !important; }
+  .op-scroll:has(.op-wrap.is-g){ overflow-y:auto; }
+  .op-gl{ padding:40px 24px 8px; } .op-gr{ padding:8px 24px 24px; height:auto; }
+  .op-gr .op-fl-list{ overflow:visible; -webkit-mask-image:none; mask-image:none; }
+}
+.op-gsplit{ grid-template-columns:minmax(300px,480px) minmax(0,1fr) !important; }
+.op-gl{ overflow-y:auto; scrollbar-width:none; padding-top:48px; padding-right:32px; }
+.op-gl .op-h{ font-size:23px; }
+.op-gr{ padding-top:56px; padding-left:16px; }
+.op-g-acc .op-facc-h{ white-space:nowrap; }
+.op-g-acc .op-fstats span{ white-space:nowrap; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23519,7 +23550,7 @@ function agMigRow() {
 
 
   /* ======== Opus: versions per screen. The viewer picks one per screen in the Versions panel. ======== */
-  const OP_SUM_OPTS = [["a", "List", "One list across the full width, with column headings"], ["b", "Cards", "One card per item, side by side"], ["c", "Brief", "What I did on the left, the items on the right"], ["d", "Board", "Each item with the agent's reason and a switch; actions on top"], ["e", "Chat", "The agent proposes, you reply or ask why"], ["f", "Panel", "The review on the left, supporting info and a visual panel on the right"]];
+  const OP_SUM_OPTS = [["a", "List", "One list across the full width, with column headings"], ["b", "Cards", "One card per item, side by side"], ["c", "Brief", "What I did on the left, the items on the right"], ["d", "Board", "Each item with the agent's reason and a switch; actions on top"], ["e", "Chat", "The agent proposes, you reply or ask why"], ["f", "Panel", "The review on the left, supporting info and a visual panel on the right"], ["g", "Split", "Title and agent notes on the left, the review wide on the right"]];
   const OP_SCREENS = [
     { id: "loader", label: "Agent at work", hint: "Every loader", opts: [["a", "Caption", "One live line under the animation"], ["b", "In scene", "The pill beside the agent is the only live line"], ["c", "Stepper", "Every step named across the top"], ["d", "Findings", "Results stream in beside the animation as each check finishes"], ["e", "Narrated", "The agent says what it sees, line by line, under the animation"]], preview: ["loader", "2"] },
     { id: "sum-2", label: "Team summary", opts: OP_SUM_OPTS, preview: ["summary", "2"] },
@@ -23839,12 +23870,13 @@ function agMigRow() {
     e1: ["Rates are locked in on approval", "Approving accepts each partner's rate card terms. Volume split can be revisited later."],
     e2: ["Low confidence ones come first", "Templates the agent is unsure about are flagged for you to check after this step."],
   };
+  const OP_FR_ART = `<svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs><radialGradient id="ofm" cx="100%" cy="100%" r="95%"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="ofmask"><rect width="600" height="600" fill="url(#ofm)"/></mask><pattern id="ofp" width="150" height="150" patternUnits="userSpaceOnUse"><g transform="translate(18 18) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g><g transform="translate(93 93) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g></pattern></defs><rect width="600" height="600" fill="url(#ofp)" mask="url(#ofmask)"/></svg>`;
   function opPanelInfo(m) {
     const e = agSumEsc;
     const tip = OP_TIP[m.key] || ["", ""];
     const stat = (v, l) => `<div><b>${e(v)}</b><span>${e(l)}</span></div>`;
     return `<aside class="op-fr" aria-label="About this step">
-      <svg class="op-fr-art" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs><radialGradient id="ofm" cx="100%" cy="100%" r="95%"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="ofmask"><rect width="600" height="600" fill="url(#ofm)"/></mask><pattern id="ofp" width="150" height="150" patternUnits="userSpaceOnUse"><g transform="translate(18 18) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g><g transform="translate(93 93) scale(.34)" fill="#fff" fill-opacity=".5"><g><path d="M103 0 L163 45 L103 92Z"/><path d="M205 58 L143 105 L207 130Z"/><path d="M148 145 L207 168 L150 208Z"/><path d="M104 146 L46 186 L105 232Z"/><path d="M0 100 L68 125 L2 185Z"/><path d="M62 22 L2 62 L62 92Z"/></g></g></pattern></defs><rect width="600" height="600" fill="url(#ofp)" mask="url(#ofmask)"/></svg>
+      ${OP_FR_ART}
       <div class="op-fr-in" data-op-acc>
         <section class="op-facc is-open">
           <button type="button" class="op-facc-h" aria-expanded="true"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>How I put this together<i aria-hidden="true"></i></button>
@@ -23872,6 +23904,25 @@ function agMigRow() {
     h.closest("[data-op-acc]").querySelectorAll(".op-facc").forEach((x) => { x.classList.remove("is-open"); x.querySelector(".op-facc-h").setAttribute("aria-expanded", "false"); });
     if (!wasOpen) { sec.classList.add("is-open"); h.setAttribute("aria-expanded", "true"); }
   });
+
+  function opGMarkup(m) {
+    const e = agSumEsc;
+    const info = opPanelInfo(m);
+    const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
+    return `<div class="op-scroll"><div class="op-wrap is-g"><div class="op-gsplit">
+      <aside class="op-gl">
+        ${OP_FR_ART.replace('class="op-fr-art"', 'class="op-fr-art op-g-art"')}
+        <p class="op-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span><span>Agent summary</span><i aria-hidden="true"></i><span class="op-kick-area">${e(m.area)}</span></p>
+        <h2 class="op-h">${e(m.did)}</h2>
+        <p class="op-sub">${e(m.next)}</p>
+        <div class="op-g-acc">${acc}</div>
+      </aside>
+      <section class="op-gr">
+        <div class="op-fl-list">${opList(m, true)}</div>
+        <div class="op-fl-ft"><p class="op-count"><i>${I("check")}</i>${e(m.count)}</p>${opActions(m, "is-row")}</div>
+      </section>
+    </div></div></div>`;
+  }
   function opFullMarkup(m) {
     const e = agSumEsc;
     return `<div class="op-scroll"><div class="op-wrap is-f"><div class="op-fsplit">
@@ -23892,6 +23943,7 @@ function agMigRow() {
     if (v === "d") return opBoard(m);
     if (v === "e") return opChat(m);
     if (v === "f") return opFullMarkup(m);
+    if (v === "g") return opGMarkup(m);
     const bar = `<footer class="op-foot"><p class="op-count"><i>${I("check")}</i>${agSumEsc(m.count)}</p>${opActions(m)}</footer>`;
     if (v === "c") {
       return `<div class="op-scroll"><div class="op-wrap is-c"><div class="op-brief">
