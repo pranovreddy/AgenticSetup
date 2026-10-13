@@ -13911,6 +13911,10 @@ body .ag-step-body.op-dl-prof .ag-profile{ padding-top:50px !important; }
 .op-route{ align-items:center !important; }
 .op-route-side{ position:relative; align-self:center; }
 .op-route-cta{ position:absolute !important; left:0; right:0; top:100%; margin-top:16px !important; padding-top:14px !important; }
+/* ---- Approval status page waits for confirmation ---- */
+body.op-kyc-confirm .ag-redirect, body.op-kyc-confirm .ag-step-body .ag-actions{ display:none !important; }
+#opKycGo{ position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:70; display:flex; align-items:center; gap:22px; padding:12px 14px 12px 24px; border-radius:99px; background:rgba(255,255,255,.92); box-shadow:0 0 0 1px rgba(196,214,245,.8) inset, 0 20px 44px -18px rgba(37,99,235,.45); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); animation:op-rise 480ms var(--op-ease,ease) both; }
+#opKycGo p{ margin:0; font-size:14px; color:#2b3a55; } #opKycGo b{ color:#0f1f3d; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18421,7 +18425,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       if (finished) return; finished = true;
       window.removeEventListener("message", onMsg);
       setCap("Approved by all telecom operators", 2); bars.forEach((b) => { b.className = "is-done"; }); cap.querySelector(".op-lspin")?.replaceWith(Object.assign(document.createElement("span"), { className: "op-ltick", innerHTML: I("check", "sm") }));
-      setTimeout(() => { ov.classList.add("is-leaving"); setTimeout(() => { ov.remove(); if (token === kycVerifyToken) finishKycVerify(false); }, 360); }, 1100);
+      setTimeout(() => { ov.classList.add("is-leaving"); setTimeout(() => { ov.remove(); if (token === kycVerifyToken) opKycApproved(token); }, 360); }, 1100);
     };
     const onMsg = (e) => {
       if (e.source !== frame.contentWindow) return;
@@ -24466,6 +24470,32 @@ function agMigRow() {
   }
   setInterval(opMigSync, 1000);
   opMigSync();
+
+  /* After the operators approve: show the approval status page and wait for the user to continue */
+  function opKycApproved(token) {
+    kycVerifyToken += 1;
+    if (window.stopKycvLoader) window.stopKycvLoader();
+    teardownVerifyLoader();
+    kycHashStop();
+    agClearTimers();
+    state.kycVerified = true;
+    state.doneAt.kyc = agStamp();
+    state.ag.focus = 1;
+    agFileIntoFolder("1");
+    render();
+    document.getElementById("opKycGo")?.remove();
+    const bar = document.createElement("div");
+    bar.id = "opKycGo";
+    bar.innerHTML = `<p><b>Approved by all 4 telecom operators.</b> Confirm to continue to your team.</p><button type="button" class="ag-btn is-primary">Continue${I("arrow", "sm")}</button>`;
+    document.body.appendChild(bar);
+    document.body.classList.add("op-kyc-confirm");
+    bar.querySelector("button").addEventListener("click", () => {
+      bar.remove();
+      document.body.classList.remove("op-kyc-confirm");
+      state.kycAutoNext = true;
+      successAutoArm("1");
+    });
+  }
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
