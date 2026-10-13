@@ -13370,6 +13370,16 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 .op-finds b{ font-size:13.5px; color:var(--op-ink) !important; }
 .op-finds em{ color:var(--op-ink2) !important; font-size:12.5px; opacity:.82; }
 .op-finds li.is-active{ background:rgba(255,255,255,.55); }
+/* ---- Agreements gate: compact header ---- */
+body.ag-gate .ag-gate-hero{ display:grid !important; grid-template-columns:auto 1fr; column-gap:14px; align-items:center; text-align:left !important; padding:20px 44px 12px !important; }
+body.ag-gate .ag-gate-hero .ag-sum-gem{ grid-row:1 / span 2; width:44px !important; height:44px !important; margin:0 !important; }
+body.ag-gate .ag-gate-hero .ag-sum-gem i{ transform:scale(.62); }
+body.ag-gate .ag-gate-hero h2{ margin:0 !important; font-size:19px !important; line-height:1.25 !important; align-self:end; }
+body.ag-gate .ag-gate-hero p{ margin:2px 0 0 !important; max-width:none !important; font-size:13px !important; line-height:1.4 !important; align-self:start; }
+body.ag-gate .ag-atabs{ margin:0 !important; padding:8px 44px !important; justify-content:flex-start !important; box-shadow:0 6px 16px rgba(37,99,235,.05) !important; }
+body.ag-gate .ag-atab{ height:32px !important; padding:0 16px !important; font-size:13px !important; border-radius:11px !important; }
+body.ag-gate .ag-brief-read{ top:48px !important; }
+
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
