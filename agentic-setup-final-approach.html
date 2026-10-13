@@ -13916,6 +13916,23 @@ body.op-kyc-confirm .ag-redirect, body.op-kyc-confirm .ag-step-body .ag-actions{
 #opKycGo{ position:fixed; left:0; right:0; margin:0 auto; width:max-content; max-width:calc(100vw - 48px); bottom:28px; z-index:70; white-space:nowrap; display:flex; align-items:center; gap:22px; padding:12px 14px 12px 24px; border-radius:99px; background:rgba(255,255,255,.92); box-shadow:0 0 0 1px rgba(196,214,245,.8) inset, 0 20px 44px -18px rgba(37,99,235,.45); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); animation:op-rise 480ms var(--op-ease,ease) both; }
 #opKycGo p{ margin:0; font-size:14px; color:#2b3a55; } #opKycGo b{ color:#0f1f3d; }
 .op-metrics{ background:rgba(255,255,255,.55) !important; box-shadow:0 0 0 1px rgba(196,214,245,.5) inset !important; }
+/* ---- Walkthrough: the setup rail, logo and countdown give way to the expanded app sidebar ---- */
+body.ag-app-tour #agTelCard, body.ag-app-tour #opMig, body.ag-app-tour #opLogo,
+body:has(.ag-app-nav.is-app) #agTelCard, body.ag-app-tour .ag-tel-icons{ display:none !important; }
+body.ag-app-tour .setup-layout .cl-overview, body.ag-app-tour.ag-app-ready .setup-layout .cl-overview{ width:236px !important; min-width:236px !important; max-width:236px !important; padding:16px 12px 12px !important; background:#fff !important; border-right:1px solid #e6edf8 !important; box-shadow:none !important; overflow-y:auto !important; transition:width 360ms cubic-bezier(.22,1,.36,1); }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-brand{ position:static !important; width:100% !important; max-width:none !important; min-width:0 !important; height:44px !important; max-height:none !important; border-radius:12px !important; clip-path:none !important; background:transparent !important; margin:0 0 8px !important; box-shadow:none !important; overflow:visible; }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-logo{ position:static !important; transform:none !important; height:26px !important; clip-path:none !important; }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-foot{ position:static !important; width:100% !important; height:auto !important; margin-top:auto !important; }
+body.ag-app-tour .setup-layout .cl-overview .stages.is-app-nav{ display:block !important; }
+body.ag-app-tour .ag-app-item{ white-space:nowrap; }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-user-meta{ display:flex !important; flex-direction:column; gap:2px; min-width:0; text-align:left; opacity:1 !important; width:auto !important; max-width:none !important; position:static !important; clip:auto !important; }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-user-btn{ display:flex !important; align-items:center; gap:10px; width:100% !important; height:auto !important; padding:10px 8px !important; border-radius:14px !important; }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-foot, body.ag-app-tour .setup-layout .cl-overview .cl-overview-user{ position:static !important; width:100% !important; height:auto !important; border-top:1px solid #e6edf8 !important; padding-top:8px !important; }
+body.ag-app-tour .ag-app-tour-top{ display:flex; align-items:center; justify-content:space-between; }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-user-btn{ background:transparent !important; box-shadow:none !important; color:#0b1a33 !important; }
+body.ag-app-tour .setup-layout .cl-overview .cl-overview-user-btn *{ color:inherit; }
+.ag-mig-empty-ico{ color:#2563eb; }
+body.ag-app-tour .ag-app-item{ font-size:13.5px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -15435,7 +15452,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       <div class="ag-app-tour-card" data-step="${step}">
         <div class="ag-app-tour-top">
           <span class="ag-app-tour-badge" aria-hidden="true">${I(beat.icon, "sm")}</span>
-          
+          ${last ? "" : `<button type="button" class="ag-app-tour-skip" data-action="ag-tour-done">Skip walkthrough</button>`}
         </div>
         <p class="ag-app-tour-kicker">App walkthrough · ${step + 1} of ${beats.length}</p>
         <h3 id="agAppTourTitle">${agEsc(beat.title)}</h3>
@@ -20666,7 +20683,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       </header>
       <div class="ag-mig-stages" aria-label="Migration stages">${stageHtml}</div>
       <div class="ag-mig-empty" role="status">
-        <span class="ag-mig-empty-ico" aria-hidden="true"><img src="${assetUrl("mig-upload.svg")}" width="32" height="32" alt=""></span>
+        <span class="ag-mig-empty-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M4.5 15v3a1.5 1.5 0 001.5 1.5h12a1.5 1.5 0 001.5-1.5v-3"/></svg></span>
         <h3>No Consents Uploaded Yet</h3>
         <p>Upload a CSV with consent records to migrate them into DigiConsent. AI will help validate and resolve errors automatically.</p>
         <button type="button" class="ag-btn is-primary" data-action="ag-mig-new-upload"><img src="${assetUrl("mig-new-upload.svg")}" width="14" height="14" alt="">New Upload</button>
