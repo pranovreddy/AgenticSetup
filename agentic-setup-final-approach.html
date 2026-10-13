@@ -14061,6 +14061,8 @@ html body.op-capsule-on #agTelCard.ag-telcard, html body.op-capsule-on.ag-gate #
 .op-co-node.is-on i::before{ inset:-10px !important; box-shadow:0 0 0 1.5px rgba(37,99,235,.16) inset; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,.14), transparent 68%) !important; }
 @keyframes op-co-orbit{ to{ transform:rotate(360deg); } }
 .op-dside-hd .op-sumchip{ margin:0 0 14px; }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card::before, body.ag-gate .cl-detail-card::before{ display:none !important; }
+body.ag-gate .ag-brief::before{ display:none !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
