@@ -14102,35 +14102,6 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-route-cta .op-btn.is-primary{ height:32px !important; padding:0 14px !important; font-size:13px !important; min-width:0 !important; border-radius:10px !important; gap:7px; }
 .op-route-cta .op-btn:focus, .op-route-cta .op-btn:focus-visible{ outline:none !important; }
 .op-tm{ background:none !important; box-shadow:none !important; padding:2px 2px 12px !important; margin:0 !important; gap:28px !important; }
-/* cover: steps shown like the loader scenes - blob, a column of step cards, focus cone, brackets on the active one */
-.op-cv-mark{ left:-104px; }
-.op-lv .op-co-cone{ left:200px; top:200px; width:var(--l,150px) !important; height:64px !important; margin-top:-32px !important; transform-origin:0 50%; }
-.op-lv{ margin:-200px 0 0 -200px; }
-.op-lv-card{ position:absolute; width:178px; height:52px; margin:-26px 0 0 0; display:flex; align-items:center; gap:12px; padding:0 14px 0 8px; border-radius:14px; background:rgba(255,255,255,.9); box-shadow:0 0 0 1px #dfe8f8, 0 10px 22px -14px rgba(15,31,61,.28); color:#6b7c9e; transition:box-shadow 500ms ease, transform 600ms cubic-bezier(.22,1,.36,1), background 400ms ease, color 400ms ease; opacity:.0; transform:translateX(14px); }
-.op-lv.is-in .op-lv-card{ opacity:1; transform:none; transition-delay:calc(var(--d,0) * 1ms); }
-.op-lv-card:nth-child(2){ --d:60; } .op-lv-card:nth-child(3){ --d:140; } .op-lv-card:nth-child(4){ --d:220; }
-.op-lv-ico{ display:grid; place-items:center; width:34px; height:34px; border-radius:10px; background:#eef3ff; color:#8aa3d6; flex:none; transition:background 500ms ease, color 500ms ease; }
-.op-lv-ico svg{ width:17px; height:17px; }
-.op-lv-card b{ font-size:13.5px; font-weight:600; letter-spacing:-.005em; }
-.op-lv-tick{ position:absolute; right:-7px; top:-7px; width:20px; height:20px; border-radius:50%; background:#2563eb; color:#fff; border:2px solid #fff; display:grid; place-items:center; transform:scale(0); transition:transform 420ms cubic-bezier(.34,1.56,.64,1); text-decoration:none; }
-.op-lv-tick svg{ width:10px; height:10px; stroke-width:3; }
-.op-lv-card.is-done{ color:#1b2b4a; } .op-lv-card.is-done .op-lv-tick{ transform:scale(1); } .op-lv-card.is-done .op-lv-ico{ background:#e3edff; color:#2563eb; }
-.op-lv-card.is-on{ background:#fff; color:#0f1f3d; box-shadow:0 0 0 1px #c6d8f7, 0 16px 30px -14px rgba(37,99,235,.5); transform:translateX(6px) !important; }
-.op-lv-card.is-on .op-lv-ico{ background:linear-gradient(155deg,#5b95ff,#2563eb); color:#fff; box-shadow:0 8px 16px -8px rgba(37,99,235,.7); }
-.op-lv-card.is-on::after{ content:""; position:absolute; inset:-8px; border-radius:18px; pointer-events:none; animation:op-co-brk 500ms cubic-bezier(.22,1,.36,1) both; background:
-  linear-gradient(#2563eb,#2563eb) 0 0/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 0 0/2.5px 12px no-repeat,
-  linear-gradient(#2563eb,#2563eb) 100% 0/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 0/2.5px 12px no-repeat,
-  linear-gradient(#2563eb,#2563eb) 0 100%/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 0 100%/2.5px 12px no-repeat,
-  linear-gradient(#2563eb,#2563eb) 100% 100%/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 100%/2.5px 12px no-repeat; }
-.op-cv-mark{ left:-150px; }
-.op-lv .op-co-cone{ height:78px !important; margin-top:-39px !important; clip-path:polygon(0 44%, 100% 0, 100% 100%, 0 56%) !important;
-  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 22%, #000 78%, transparent 100%) !important; mask-image:linear-gradient(90deg, transparent 0, #000 22%, #000 78%, transparent 100%) !important; }
-.op-lv-card.is-on::after{ inset:-9px; background:
-  linear-gradient(#2563eb,#2563eb) 0 0/16px 3px no-repeat, linear-gradient(#2563eb,#2563eb) 0 0/3px 16px no-repeat,
-  linear-gradient(#2563eb,#2563eb) 100% 0/16px 3px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 0/3px 16px no-repeat,
-  linear-gradient(#2563eb,#2563eb) 0 100%/16px 3px no-repeat, linear-gradient(#2563eb,#2563eb) 0 100%/3px 16px no-repeat,
-  linear-gradient(#2563eb,#2563eb) 100% 100%/16px 3px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 100%/3px 16px no-repeat; }
-.op-lv .op-co-cone{ height:62px !important; margin-top:-31px !important; }
 .op-ts{ margin:20px 0 6px; padding:14px 16px 12px; border-radius:16px; background:rgba(255,255,255,.7); box-shadow:0 0 0 1px rgba(196,214,245,.55) inset, 0 14px 26px -22px rgba(37,99,235,.4); max-width:340px; }
 .op-ts-top{ display:flex; gap:12px; } .op-ts-n{ flex:1; display:flex; flex-direction:column; gap:2px; padding:2px 0 10px; }
 .op-ts-n b{ font-size:30px; line-height:1; font-weight:700; letter-spacing:-.8px; color:#0f1f3d; background:linear-gradient(160deg,#0f1f3d,#2563eb); -webkit-background-clip:text; background-clip:text; color:transparent; }
@@ -18834,25 +18805,25 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     mark?.classList.add("op-cv-mark");
     const line = copy.querySelector("#opCvLine");
     const fill = { style: {} };
-    const LBL = (t) => t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "").replace(/^./, (c) => c.toUpperCase());
-    const CX = 168, GAP = 66;
-    const PT = STEPS.map((_, i) => [CX, (i - 1) * GAP]);
+    const PT = [[200, 62], [319, 268], [81, 268]];
     const orbit = document.createElement("div");
-    orbit.className = "op-co op-lv";
+    orbit.className = "op-co";
     orbit.setAttribute("aria-hidden", "true");
-    orbit.innerHTML = `<i class="op-co-cone"></i>${STEPS.map(([t, ic], i) => `<span class="op-lv-card" data-i="${i}" style="left:${200 + CX}px;top:${200 + PT[i][1]}px"><i class="op-lv-ico">${I(ic)}</i><b>${LBL(t)}</b><u class="op-lv-tick">${I("check")}</u></span>`).join("")}`;
+    orbit.innerHTML = `<svg viewBox="0 0 400 400" class="op-co-svg"><circle class="op-co-ring" cx="200" cy="200" r="136"/><circle class="op-co-arc" cx="200" cy="200" r="136" pathLength="100"/></svg><i class="op-co-cone"></i>${STEPS.map(([t, ic], i) => `<span class="op-cv-node op-co-node" data-i="${i}" style="left:${PT[i][0]}px;top:${PT[i][1]}px"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}`;
     mark?.appendChild(orbit);
-    const nodes = [...orbit.querySelectorAll(".op-lv-card")];
+    const nodes = [...orbit.querySelectorAll(".op-cv-node")];
     const segs = [...copy.querySelectorAll(".op-seg")];
     const arcEl = copy.querySelector("#opCvArc");
     const cone = orbit.querySelector(".op-co-cone");
-    const ANG = PT.map(([x, y]) => Math.atan2(y, x - 10) * 180 / Math.PI);
-    const LEN = PT.map(([x, y]) => Math.hypot(x - 10, y));
+    const arc = orbit.querySelector(".op-co-arc");
+    const spokes = [];
+    const ANG = PT.map(([x, y]) => Math.atan2(y - 200, x - 200) * 180 / Math.PI);
     requestAnimationFrame(() => orbit.classList.add("is-in"));
     await wait(350);
     for (let i = 0; i < STEPS.length; i += 1) {
       nodes.forEach((nd, k) => { nd.classList.toggle("is-on", k === i); nd.classList.toggle("is-done", k < i); });
-      cone.style.setProperty("--a", ANG[i] + "deg"); cone.style.setProperty("--l", LEN[i] + "px"); cone.classList.add("is-on");
+      cone.style.setProperty("--a", ANG[i] + "deg"); cone.classList.add("is-on");
+      arc.style.strokeDashoffset = String(100 - i * (100 / 3));
       if (i > 0) {
         const prev = line.querySelector(".is-now");
         const nx = document.createElement("span");
@@ -18874,6 +18845,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     }
     nodes.forEach((nd) => { nd.classList.remove("is-on"); nd.classList.add("is-done"); });
     cone.classList.remove("is-on");
+    arc.style.strokeDashoffset = "0";
     { const prev = line.querySelector(".is-now"); const nx = document.createElement("span"); nx.className = "is-now is-enter is-ready"; nx.textContent = "Your workspace is ready"; line.appendChild(nx); prev?.classList.replace("is-now", "is-leave"); requestAnimationFrame(() => requestAnimationFrame(() => nx.classList.remove("is-enter"))); setTimeout(() => prev?.remove(), 600); }
     segs.forEach((sg) => { sg.classList.remove("is-run"); sg.classList.add("is-done"); });
     boot.classList.add("is-complete");
