@@ -24513,7 +24513,7 @@ function agMigRow() {
     }
     const on = ((document.body.classList.contains("ag-gate") && document.body.classList.contains("ag-booted") && (document.getElementById("agAcceptBtn") || document.getElementById("agNextUp"))) || document.querySelector(".op-route"));
     el.hidden = true;
-    document.body.classList.toggle("op-capsule-on", !!on && !document.body.classList.contains("ag-app-tour"));
+    document.body.classList.toggle("op-capsule-on", !!on && !document.body.classList.contains("ag-app-tour") && !document.querySelector(".op-route"));
   }
   setInterval(opLogoSync, 300);
 
