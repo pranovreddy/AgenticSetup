@@ -13883,6 +13883,24 @@ body.ag-gate .ag-actions.is-approve{ background:#fff !important; position:relati
 .op-route-map li.is-here .op-route-t{ margin:0 !important; }
 .op-route-here{ display:none !important; }
 .op-route-t{ flex:1; min-width:0; }
+/* ---- Setup cover: one seamless sequence ---- */
+.op-cv{ display:flex; flex-direction:column; align-items:center; gap:30px; width:min(520px, calc(100vw - 48px)); margin-top:26px; }
+.op-cv-status{ display:inline-flex; align-items:center; gap:12px; padding:9px 18px 9px 10px; border-radius:99px; background:rgba(255,255,255,.85); box-shadow:0 0 0 1px rgba(196,214,245,.8) inset, 0 16px 34px -20px rgba(37,99,235,.45); }
+.op-cv-count{ display:inline-flex; align-items:center; padding:4px 10px; border-radius:99px; background:#eef2f8; font-size:12.5px; font-weight:600; color:#8094ba; font-variant-numeric:tabular-nums; } .op-cv-count b{ color:#0f1f3d; margin-right:3px; }
+.op-cv-line{ font-size:15px; font-weight:580; color:#0f1f3d; transition:opacity 180ms, filter 180ms, transform 180ms; }
+.op-cv-line.is-swap{ opacity:0; filter:blur(4px); transform:translateY(4px); }
+.op-cv-track{ position:relative; width:100%; display:flex; justify-content:space-between; padding:0 38px; }
+.op-cv-track::before{ content:""; position:absolute; left:62px; right:62px; top:23px; height:2px; border-radius:2px; background:#dce6f7; }
+.op-cv-fill{ position:absolute; left:62px; top:23px; height:2px; width:0; max-width:calc(100% - 124px); border-radius:2px; background:linear-gradient(90deg,#60a5fa,#2563eb); box-shadow:0 0 12px rgba(37,99,235,.5); transition:width 1500ms cubic-bezier(.65,0,.35,1); }
+.op-cv-node{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:9px; width:88px; }
+.op-cv-node i{ display:grid; place-items:center; width:48px; height:48px; border-radius:50%; background:#fff; box-shadow:0 0 0 1px #dbe5f6 inset, 0 8px 18px -10px rgba(37,99,235,.3); color:#9aaccb; transition:all 400ms cubic-bezier(.22,1,.36,1); } .op-cv-node i svg{ width:20px; height:20px; }
+.op-cv-node em{ text-transform:capitalize; font-style:normal; font-size:12.5px; font-weight:560; color:#8094ba; transition:color 300ms; }
+.op-cv-node.is-on i{ background:linear-gradient(155deg,#5b95ff,#2563eb); color:#fff; box-shadow:0 0 0 7px rgba(37,99,235,.14), 0 16px 28px -10px rgba(37,99,235,.6); transform:scale(1.08); }
+.op-cv-node.is-on em{ color:#0f1f3d; }
+.op-cv-node.is-done i{ background:#2563eb; color:#fff; box-shadow:0 8px 18px -10px rgba(37,99,235,.5); }
+.op-cv-node.is-done em{ color:#2a4a8a; }
+.ag-boot.is-complete .ag-boot-mark{ transform:scale(1.12); transition:transform 500ms cubic-bezier(.22,1,.36,1); }
+.op-cv-mark::after{ opacity:.7; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18532,28 +18550,43 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
   let opCoverShown = false;
   async function opCoverThen(go) {
     const boot = $("#agBoot");
-    const text = $("#agBootText");
-    const line = $(".ag-boot-line");
-    const bar = $("#agBootBar");
-    if (opCoverShown || !boot || !text || matchMedia("(prefers-reduced-motion: reduce)").matches) { opCoverShown = true; go(); return; }
+    if (opCoverShown || !boot || matchMedia("(prefers-reduced-motion: reduce)").matches) { opCoverShown = true; go(); return; }
     opCoverShown = true;
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const copy = boot.querySelector(".ag-boot-copy");
+    const mark = boot.querySelector(".ag-boot-mark");
     boot.hidden = false;
     boot.classList.remove("is-docked", "is-out", "is-done", "is-docking");
     boot.style.zIndex = "120";
     try { startBootOrb(); } catch (e) { /* orb is optional */ }
-    for (let i = 0; i < AG_BOOT_LINES.length; i += 1) {
-      const copy = AG_BOOT_LINES[i];
-      text.textContent = "";
-      if (line) line.classList.remove("is-fading");
-      for (let c = 0; c < copy.length; c += 1) { text.textContent = copy.slice(0, c + 1); await wait(20); }
-      if (bar) bar.style.width = Math.round(((i + 1) / AG_BOOT_LINES.length) * 100) + "%";
-      await wait(700);
-      if (i < AG_BOOT_LINES.length - 1) { if (line) line.classList.add("is-fading"); await wait(300); }
+    const STEPS = [["Setting up your platform", "layers"], ["Fetching your organisation", "building"], ["Deploying your agents", "users"]];
+    copy.dataset.old = copy.innerHTML;
+    copy.innerHTML = `<div class="op-cv" aria-live="polite">
+      <div class="op-cv-status"><span class="op-cv-count"><b id="opCvN">1</b> / ${STEPS.length}</span><span class="op-cv-line" id="opCvLine">${STEPS[0][0]}</span></div>
+      <div class="op-cv-track"><i class="op-cv-fill" id="opCvFill"></i>${STEPS.map(([t, ic], i) => `<span class="op-cv-node" data-i="${i}"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}</div>
+    </div>`;
+    mark?.classList.add("op-cv-mark");
+    const line = copy.querySelector("#opCvLine"), n = copy.querySelector("#opCvN"), fill = copy.querySelector("#opCvFill");
+    const nodes = [...copy.querySelectorAll(".op-cv-node")];
+    await wait(350);
+    for (let i = 0; i < STEPS.length; i += 1) {
+      nodes.forEach((nd, k) => { nd.classList.toggle("is-on", k === i); nd.classList.toggle("is-done", k < i); });
+      line.classList.add("is-swap");
+      await wait(180);
+      line.textContent = STEPS[i][0]; n.textContent = String(i + 1);
+      line.classList.remove("is-swap");
+      fill.style.width = ((i + 0.5) / STEPS.length * 100) + "%";
+      await wait(1500);
+      fill.style.width = ((i + 1) / STEPS.length * 100) + "%";
+      await wait(450);
     }
+    nodes.forEach((nd) => { nd.classList.remove("is-on"); nd.classList.add("is-done"); });
+    line.textContent = "Your workspace is ready";
+    boot.classList.add("is-complete");
+    await wait(900);
     boot.classList.add("is-out");
     go();
-    setTimeout(() => { boot.hidden = true; boot.style.zIndex = ""; }, 700);
+    setTimeout(() => { boot.hidden = true; boot.style.zIndex = ""; boot.classList.remove("is-complete"); mark?.classList.remove("op-cv-mark"); if (copy.dataset.old) copy.innerHTML = copy.dataset.old; }, 700);
   }
   function agNextUpShow() {
     if (!opCoverShown) { opCoverThen(agNextUpShow); return; }
