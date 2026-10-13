@@ -13943,6 +13943,9 @@ body.ag-gate .ag-brief-title{ color:#2563eb !important; margin-bottom:8px !impor
 .op-dl-btn:hover{ background:#f3f7ff; border-color:#b9cdf1; }
 #agAcceptBtn .op-acc-on{ display:inline-flex; align-items:center; gap:7px; } #agAcceptBtn .op-acc-off{ display:none; }
 #agAcceptBtn:disabled .op-acc-on{ display:none; } #agAcceptBtn:disabled .op-acc-off{ display:inline; }
+/* ---- "Filling with AI" chip: bottom centre of the form, above the CTA ---- */
+body > .kyc-ai-chip, .kyc-ai-chip{ position:fixed !important; top:auto !important; right:auto !important; bottom:112px !important; left:calc(50% + 95px) !important; transform:translateX(-50%) !important; z-index:60 !important; }
+body > .kyc-ai-chip.is-out, .kyc-ai-chip.is-out{ transform:translateX(-50%) translateY(6px) !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18446,7 +18449,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const cap = ov.querySelector("#opKvCap");
     const bars = [...ov.querySelectorAll(".op-lcap-bar i")];
     const setCap = (t, n) => { cap.querySelector("b").textContent = t; cap.querySelector("em").textContent = n + " of 2"; bars.forEach((b, k) => { b.className = k < n - 1 ? "is-done" : k === n - 1 ? "is-active" : ""; }); };
-    const fit = () => { const w = Math.min(window.innerWidth - 48, 860); const sc = Math.min(1.25, w / 720); frame.style.transform = `scale(${sc})`; ov.querySelector(".op-kv-stage").style.height = Math.round(360 * sc) + "px"; ov.querySelector(".op-kv-stage").style.width = Math.round(720 * sc) + "px"; };
+    const fit = () => { const w = Math.min(window.innerWidth - 48, 860); const sc = Math.min(1.25, w / 720); frame.style.transform = `scale(${sc})`; ov.querySelector(".op-kv-stage").style.height = Math.round(360 * sc) + "px"; ov.querySelector(".op-kv-stage").style.width = Math.round(720 * sc) + "px"; frame.style.left = Math.round(73 * sc / 1.194) + "px"; };
     fit();
     let finished = false;
     const done = () => {
