@@ -13941,6 +13941,8 @@ body.ag-gate .ag-brief-title{ color:#2563eb !important; margin-bottom:8px !impor
 .ag-paper-head h3{ margin:0; } .ag-paper-head p{ margin:0 0 0 auto !important; }
 .op-dl-btn{ display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px; border-radius:8px; border:1px solid #d6e2f6; background:#fff; color:#1d4ed8; font:inherit; font-size:13px; font-weight:600; cursor:pointer; }
 .op-dl-btn:hover{ background:#f3f7ff; border-color:#b9cdf1; }
+#agAcceptBtn .op-acc-on{ display:inline-flex; align-items:center; gap:7px; } #agAcceptBtn .op-acc-off{ display:none; }
+#agAcceptBtn:disabled .op-acc-on{ display:none; } #agAcceptBtn:disabled .op-acc-off{ display:inline; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21747,7 +21749,7 @@ function agMigRow() {
     <div class="ag-actions is-approve">
       <p class="ag-approve-note" id="agApproveNote" data-ready="1">${state.docRead[next.id] ? "" : ""}You are approving <b>${agEsc(next.name)}</b> on behalf of <b>${agEsc(company)}</b>. Select <b>Accept ${agEsc(next.name)}</b> to record your acceptance of the terms above. Your approval is saved to the audit log.</p>
       <div class="ag-dock-btns">
-        <button type="button" class="ag-btn is-primary" id="agAcceptBtn" data-action="ag-accept" data-doc="${next.id}"${state.docRead[next.id] ? "" : ' disabled aria-disabled="true"'} title="${state.docRead[next.id] ? "" : "Scroll to the end of " + agEsc(next.name) + " to accept"}">${I("check", "sm")}Accept ${agEsc(next.name)}</button>
+        <button type="button" class="ag-btn is-primary" id="agAcceptBtn" data-action="ag-accept" data-doc="${next.id}"${state.docRead[next.id] ? "" : ' disabled aria-disabled="true"'} title="${state.docRead[next.id] ? "" : "Scroll to the end of " + agEsc(next.name) + " to accept"}"><span class="op-acc-on">${I("check", "sm")}Accept ${agEsc(next.name)}</span><span class="op-acc-off">Read to accept</span></button>
       </div>
     </div>`;
   }
