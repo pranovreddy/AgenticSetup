@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DigiConsent Agentic Telemetry Opus</title>
+  <title>DigiConsent Agentic Setup Critiqued</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13177,6 +13177,55 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 .op-tiles.is-e0 .op-tile-meta{ max-width:60%; }
 
 .op-lnarr{ height:auto !important; max-height:150px; }
+
+/* ---- Design critique fixes ---- */
+/* 1,18 next-up: scrollable, never clipped at short heights */
+.ag-nextup{ overflow-y:auto; place-items:start center; }
+.ag-nextup-card{ margin:auto; }
+body.op-strip-on .ag-nextup{ padding-top:64px; }
+@media (max-height:760px){
+  .ag-nextup-card{ padding:24px 28px 22px !important; }
+  .ag-nextup-sub{ margin-bottom:14px; }
+  .ag-nextup-list li{ padding:6px 12px; }
+}
+/* 2,4 pinned footers never hide content */
+.op-scroll{ padding-bottom:120px; }
+.op-sum.is-done .op-scroll{ padding-bottom:140px; }
+.op-foot.is-done{ background:linear-gradient(180deg,rgba(244,248,255,0),#f4f8ff 28%); }
+body.op-strip-on #agSumReopen{ top:64px; }
+@media (max-height:700px){
+  .op-foot{ padding:14px 24px 14px !important; }
+  .op-foot-note{ display:none !important; }
+  .op-scroll{ padding-bottom:96px; }
+  .ag-kick-orb, .ag-kickoff .ag-orb{ transform:scale(.8); }
+}
+/* 3 Versions button must not sit over page content */
+@media (max-height:700px), (max-width:1100px){
+  #opVpBtn{ left:auto !important; right:12px; bottom:12px; }
+}
+/* 7 contrast to WCAG AA */
+:root{ --op-mute:#5a6987; }
+.op-why, .op-sub, .op-role, .op-sources-h, .op-th, .op-tbl th{ color:#5a6987 !important; }
+.op-av{ color:#1d4ed8 !important; }
+.op-strip button:not(.is-on), .op-strip-seg button:not(.is-on){ color:#52617f; }
+/* 8 target sizes */
+.ag-tel-ico{ min-width:36px; min-height:36px; }
+.ag-person-edit, .ag-person-remove{ min-width:32px; min-height:32px; }
+.ag-person-email{ padding:4px 0; display:inline-block; }
+.op-foot input[type=checkbox], .ag-actions input[type=checkbox]{ width:18px; height:18px; accent-color:#2563eb; }
+/* 9 board toggle: visible state next to the switch */
+.op-sw[aria-checked="true"]::after{ content:"Included"; }
+.op-sw[aria-checked="false"]::after{ content:"Off"; }
+.op-sw::after{ position:absolute; right:calc(100% + 8px); top:50%; transform:translateY(-50%); font-size:12px; color:#5a6987; pointer-events:none; }
+.op-sw{ position:relative; margin-left:52px; }
+/* 12 type balance */
+.op-brief h1, .op-sum h1, .op-sum h2{ text-wrap:balance; }
+/* 16 reduced motion for the op layer */
+@media (prefers-reduced-motion:reduce){
+  .op-strip *, .op-sum *, .op-done-in, .op-journey *, .op-lspin, .op-stamp *, [class^="op-"]{ animation:none !important; transition:none !important; }
+}
+/* 17 keyboard focus ring everywhere */
+button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:focus-visible, input:focus-visible, summary:focus-visible{ outline:2px solid #2563eb !important; outline-offset:2px; }
 </style>
 </head>
 <body>
