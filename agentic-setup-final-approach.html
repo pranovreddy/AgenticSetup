@@ -20783,6 +20783,9 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
 
 
   function agMigNotOpenMarkup() {
+    return agMigUnlockedMarkup();
+  }
+  function agMigNotOpenMarkupOld() {
     return `<div class="ag-mig-page" role="status">
       <div class="ag-mig-page-head">
         <h2>Consent Migration</h2>
@@ -23635,6 +23638,7 @@ function agMigRow() {
       }
       if (act.dataset.action === "ag-tour-done") {
         state.appTour = false;
+        state.appNav = "migration";
         state.appTourStep = 0;
         welcomeSay("Explore the menu anytime — your consent ecosystem is ready.", { instant: true });
         render();
