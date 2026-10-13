@@ -23836,7 +23836,7 @@ function agMigRow() {
   function opActions(m, cls) {
     const e = agSumEsc;
     return `<div class="op-acts ${cls || ""}">
-      <button type="button" class="op-link" data-sum-details>View details${I("arrow", "sm")}</button>
+      <button type="button" class="op-link" data-sum-details>Review and edit${I("arrow", "sm")}</button>
       ${m.skip ? `<button type="button" class="op-btn is-ghost" data-sum-skip>${e(m.skip)}</button>` : ""}
       <button type="button" class="op-btn is-primary" data-sum-go>${I("check", "sm")}${e(m.cta)}</button>
     </div>`;
@@ -24415,7 +24415,7 @@ function agMigRow() {
           <p class="op-sub">${m.key === "e1" ? e(m.next) : "Switch off anything you don't want. Nothing goes live until you approve."}</p>
         </div>
         <div class="op-acts is-top">
-          <button type="button" class="op-link" data-sum-details>View details${I("arrow", "sm")}</button>
+          <button type="button" class="op-link" data-sum-details>Review and edit${I("arrow", "sm")}</button>
           ${m.skip ? `<button type="button" class="op-btn is-ghost" data-sum-skip>${e(m.skip)}</button>` : ""}
           <button type="button" class="op-btn is-primary" data-sum-go data-op-cta>${I("check", "sm")}<span>${e(cta)}</span></button>
         </div>
