@@ -13646,6 +13646,19 @@ body:has(.op-dl) .welcome-card.is-agentic{ display:none !important; }
 .op-dl-f{ grid-template-columns:minmax(0,1fr) 292px !important; }
 .welcome-card.is-agentic #welcomeAiLines, .welcome-card.is-agentic .welcome-ai-dots{ display:none !important; }
 .op-fl-ft .op-count{ display:none !important; }
+/* ---- G: more space between columns, soft edges; smaller CTA in F/G ---- */
+.op-gsplit{ grid-template-columns:minmax(300px,440px) minmax(0,1fr) !important; }
+.op-gl{ padding-right:72px !important; }
+.op-gr{ padding-left:40px !important; }
+.op-dl-g{ column-gap:80px !important; grid-template-columns:292px minmax(0,1fr) !important; }
+.op-dl-f{ column-gap:80px !important; }
+.op-dside, .op-gl{ border-radius:0 !important; }
+.op-dside{ -webkit-mask-image:linear-gradient(90deg,#000 55%,transparent 100%), linear-gradient(180deg,#000 70%,transparent 100%); -webkit-mask-composite:source-in; mask-image:linear-gradient(90deg,#000 55%,transparent 100%), linear-gradient(180deg,#000 70%,transparent 100%); mask-composite:intersect; }
+.op-dl-f .op-dside{ -webkit-mask-image:linear-gradient(270deg,#000 55%,transparent 100%), linear-gradient(180deg,#000 70%,transparent 100%); mask-image:linear-gradient(270deg,#000 55%,transparent 100%), linear-gradient(180deg,#000 70%,transparent 100%); }
+.op-fl-ft .op-btn.is-primary, .op-acts.is-row .op-btn{ height:32px !important; padding:0 14px !important; font-size:13px !important; flex:0 0 auto !important; min-width:0 !important; }
+.op-acts.is-row{ justify-content:flex-end; }
+.op-acts.is-row .op-link{ margin-right:auto; }
+body .shell .cl-detail-card .welcome-card.is-agentic, body .shell .cl-detail-card > .welcome-card.is-agentic.has-tele{ display:none !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23645,7 +23658,7 @@ function agMigRow() {
 
   /* ---- Agent at work: one live line, placed by version ---- */
   /* the content box of each scene once the pill under the agent is hidden */
-  const OP_BOX_NOCHIP = { kyc: [120, 3, 710, 300], team: [6, 0, 655, 270], brand: [14, 0, 700, 405], match: [8, -12, 613, 350], gtm: [14, 0, 712, 270] };
+  const OP_BOX_NOCHIP = { kyc: [120, 3, 710, 300], team: [6, 0, 601, 270], brand: [14, 0, 585, 405], match: [8, -12, 613, 350], gtm: [14, 0, 712, 270] };
   function opLoaderDoc(ld) {
     const hide = opGet("loader") !== "b";
     return AG_LOADER_DOC.replace("__AG_ID__", ld.id).replace("__AG_VI__", String(ld.vi))
