@@ -13242,6 +13242,32 @@ body.op-strip-on .op-chat{ padding-top:84px !important; }
 .op-card .op-facts.is-row div{ flex:1 1 0; min-width:0; }
 .op-card.is-pick::after{ top:-1px; left:28px; right:28px; height:3px; }
 .op-card .op-facts.is-row div:first-child{ padding-left:0; }
+
+/* ---- List view: content plus step art ---- */
+.op-split{ display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:56px; align-items:start; }
+.op-split-main{ min-width:0; }
+.op-art{ position:sticky; top:96px; height:380px; pointer-events:none; animation:op-rise 700ms var(--op-ease) 200ms both; -webkit-mask-image:linear-gradient(180deg,#000 82%,transparent); mask-image:linear-gradient(180deg,#000 82%,transparent); }
+.op-art::before{ content:""; position:absolute; inset:-30px -40px; background:radial-gradient(60% 55% at 50% 45%, rgba(214,229,255,.65), rgba(214,229,255,0) 72%); }
+.op-art svg{ position:relative; width:100%; height:100%; overflow:visible; }
+.op-art .a-halo{ fill:none; stroke:#bcd2fb; }
+.op-art .a-halo.h1{ stroke-opacity:.55; animation:a-pulse 4.2s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.op-art .a-halo.h2{ stroke-opacity:.28; animation:a-pulse 4.2s ease-in-out 1.2s infinite; transform-box:fill-box; transform-origin:center; }
+.op-art .a-ring{ fill:none; stroke:#cfe0fb; stroke-width:1.2; }
+.op-art .a-ring.r2{ stroke-opacity:.6; }
+.op-art .a-spin{ animation:a-spin 48s linear infinite; transform-box:view-box; transform-origin:160px 190px; }
+.op-art .a-rev{ animation:a-spin 48s linear infinite reverse; transform-box:fill-box; transform-origin:center; }
+.op-art .a-float{ animation:a-float 6s ease-in-out infinite; animation-delay:var(--d,0s); }
+.op-art .a-rise{ animation:op-rise 600ms var(--op-ease) calc(300ms + var(--n,0) * 110ms) both; }
+.op-art .a-grow{ transform-box:fill-box; transform-origin:left center; animation:a-grow 900ms var(--op-ease) calc(500ms + var(--d,0s)) both; }
+.op-art .a-arc{ animation:a-arc 1100ms var(--op-ease) 600ms both; }
+@keyframes a-spin{ to{ transform:rotate(360deg); } }
+@keyframes a-float{ 0%,100%{ transform:translate(var(--tx,0),0); } 50%{ transform:translate(var(--tx,0),-6px); } }
+@keyframes a-pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.06); } }
+@keyframes a-grow{ from{ transform:scaleX(0); } }
+@keyframes a-arc{ from{ stroke-dasharray:0 100; } }
+@media (max-width:1100px){ .op-split{ grid-template-columns:minmax(0,1fr); } .op-art{ display:none; } }
+@media (max-height:700px){ .op-art{ top:72px; height:320px; } }
+@media (prefers-reduced-motion:reduce){ .op-art *{ animation:none !important; } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23412,6 +23438,35 @@ function agMigRow() {
     else html = m.items.map((it, n) => card(it, n, `<div class="op-card-ring">${opRing(it.pct)}<span><b>High confidence</b>of templates mapped</span></div><dl class="op-facts is-row">${it.facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>`, "")).join("");
     return `<section class="op-grid is-${m.key}">${html}</section>`;
   }
+
+  /* ---- Step art for the List view: quiet scenes in the loader's visual language ---- */
+  const OP_ORB = (cx, cy, r) => `<g class="a-orb" transform="translate(${cx} ${cy})"><circle class="a-halo h2" r="${r * 2.2}"/><circle class="a-halo h1" r="${r * 1.55}"/><circle r="${r}" fill="url(#aoG)"/><circle r="${r}" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.2"/><path d="M0 ${-r * .46}C${r * .06} ${-r * .12} ${r * .12} ${-r * .06} ${r * .46} 0C${r * .12} ${r * .06} ${r * .06} ${r * .12} 0 ${r * .46}C${-r * .06} ${r * .12} ${-r * .12} ${r * .06} ${-r * .46} 0C${-r * .12} ${-r * .06} ${-r * .06} ${-r * .12} 0 ${-r * .46}Z" fill="#fff"/></g>`;
+  const OP_CHK = (x, y) => `<g transform="translate(${x} ${y})"><circle r="8" fill="#2563eb"/><path d="M-3.6 .2L-1 2.8L3.8 -2.4" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  const OP_SK = (x, y, w, o = 1) => `<rect x="${x}" y="${y}" width="${w}" height="6" rx="3" fill="#d9e5fb" opacity="${o}"/>`;
+  function opArt(key) {
+    let scene = "";
+    if (key === "2") {
+      const av = [["AK", -90], ["SP", 0], ["DN", 90], ["RM", 180]].map(([t, a], n) => { const x = 160 + 112 * Math.cos(a * Math.PI / 180), y = 190 + 112 * Math.sin(a * Math.PI / 180); return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><g class="a-rev" style="--d:${n * -2}s"><circle r="25" fill="#fff" stroke="#d3e2fb"/><circle r="21" fill="url(#aoS)"/><text y="4.5" text-anchor="middle" font-size="12" font-weight="650" fill="#1d4ed8" font-family="Inter,sans-serif">${t}</text><circle cx="18" cy="-18" r="6" fill="#2563eb" stroke="#fff" stroke-width="2"/></g></g>`; }).join("");
+      scene = `<circle class="a-ring" cx="160" cy="190" r="112"/><circle class="a-ring r2" cx="160" cy="190" r="78"/><g class="a-spin">${av}</g>${OP_ORB(160, 190, 30)}`;
+    } else if (key === "e0") {
+      const tile = (x, y, d, c) => `<g transform="translate(${x} ${y})"><g class="a-float" style="--d:${d}s"><rect width="200" height="70" rx="16" fill="#fff" stroke="#d3e2fb"/><rect x="14" y="14" width="42" height="42" rx="12" fill="url(#aoS)"/><text x="35" y="41" text-anchor="middle" font-size="15" font-weight="700" fill="#1d4ed8" font-family="Inter,sans-serif">${c}</text>${OP_SK(68, 20, 86)}${OP_SK(68, 36, 56, .7)}<rect x="68" y="48" width="34" height="10" rx="5" fill="#eaf1ff"/><rect x="108" y="48" width="42" height="10" rx="5" fill="#eaf1ff"/>${OP_CHK(184, 0)}</g></g>`;
+      scene = `${OP_ORB(160, 74, 28)}${tile(30, 150, 0, "H")}${tile(90, 232, -1.4, "L")}${tile(44, 314, -2.8, "E")}`;
+    } else if (key === "e1") {
+      const row = (y, w, on, n) => `<g transform="translate(0 ${y})"><g class="a-rise" style="--n:${n}"><circle cx="40" cy="0" r="14" fill="${on ? "url(#aoS)" : "#eef1f6"}" stroke="${on ? "#d3e2fb" : "#e3e8f1"}"/>${OP_SK(32, -3, 16, on ? 1 : .6)}<rect x="68" y="-6" width="200" height="12" rx="6" fill="#eaf1ff"/><rect class="a-grow" style="--d:${n * .15}s" x="68" y="-6" width="${w}" height="12" rx="6" fill="${on ? "url(#aoB)" : "#cdd7e8"}"/>${on ? OP_CHK(288, 0) : ""}</g></g>`;
+      scene = `${OP_ORB(160, 74, 28)}<rect x="22" y="150" width="276" height="212" rx="22" fill="#fff" fill-opacity=".7" stroke="#e1eaf8"/>${row(190, 176, true, 0)}${row(238, 156, true, 1)}${row(286, 104, false, 2)}${row(334, 118, false, 3)}`;
+    } else {
+      const sheet = (rot, dx, o) => `<g transform="translate(${160 + dx} 262) rotate(${rot})" opacity="${o}"><rect x="-80" y="-98" width="160" height="196" rx="16" fill="#fff" stroke="#d3e2fb"/></g>`;
+      scene = `${OP_ORB(160, 74, 28)}${sheet(-8, -14, .55)}${sheet(6, 14, .8)}
+        <g transform="translate(160 262)"><g class="a-float" style="--d:-1s"><rect x="-80" y="-98" width="160" height="196" rx="16" fill="#fff" stroke="#c6d8fb"/>
+          ${OP_SK(-60, -76, 70)}${OP_SK(-60, -60, 110, .8)}${OP_SK(-60, -44, 96, .6)}
+          <rect x="-60" y="-20" width="62" height="22" rx="11" fill="#eaf1ff" stroke="#c6d8fb"/>${OP_SK(-50, -12, 42, .9)}
+          <rect x="8" y="-20" width="52" height="22" rx="11" fill="#eaf1ff"/>${OP_SK(18, -12, 32, .7)}
+          ${OP_SK(-60, 22, 120, .6)}${OP_SK(-60, 38, 84, .5)}
+          <g transform="translate(46 66)"><circle r="17" fill="none" stroke="#e5edf9" stroke-width="4"/><circle class="a-arc" r="17" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="72 100" transform="rotate(-90)"/></g>
+        </g></g>`;
+    }
+    return `<svg viewBox="0 0 320 380" role="presentation" aria-hidden="true" focusable="false"><defs><linearGradient id="aoG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7aa9ff"/><stop offset="1" stop-color="#2563eb"/></linearGradient><linearGradient id="aoS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1f6ff"/><stop offset="1" stop-color="#d6e5ff"/></linearGradient><linearGradient id="aoB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7aa9ff"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>${scene}</svg>`;
+  }
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
@@ -23429,6 +23484,7 @@ function agMigRow() {
         <div class="op-main">${opList(m, true)}</div>
       </div></div></div>`;
     }
+    if (v === "a") return `<div class="op-scroll"><div class="op-wrap is-a">${opHeader(m)}<div class="op-split"><div class="op-split-main">${opList(m, true)}${opSources(m)}</div><aside class="op-art is-${m.key}" aria-hidden="true">${opArt(m.key)}</aside></div></div></div>${bar}`;
     return `<div class="op-scroll"><div class="op-wrap is-${v}">${opHeader(m)}${v === "b" ? opCards(m) : opList(m)}${opSources(m)}</div></div>${bar}`;
   }
 
