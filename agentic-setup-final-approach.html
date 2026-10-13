@@ -13933,6 +13933,14 @@ body.ag-app-tour .setup-layout .cl-overview .cl-overview-user-btn{ background:tr
 body.ag-app-tour .setup-layout .cl-overview .cl-overview-user-btn *{ color:inherit; }
 .ag-mig-empty-ico{ color:#2563eb; }
 body.ag-app-tour .ag-app-item{ font-size:13.5px !important; }
+/* ---- Agreements "In short": no box, an accent rule and open type ---- */
+body.ag-gate .ag-brief{ background:none !important; border-radius:0 !important; padding:4px 0 4px 22px !important; margin:20px 0 10px !important; box-shadow:inset 3px 0 0 #bcd2fb !important; position:relative; }
+body.ag-gate .ag-brief::before{ content:"" !important; display:block !important; position:absolute; left:0; top:0; width:3px; height:40px; background:linear-gradient(180deg,#60a5fa,#2563eb); border-radius:3px; }
+body.ag-gate .ag-brief-title{ color:#2563eb !important; margin-bottom:8px !important; }
+.ag-paper-head{ display:flex !important; align-items:center; flex-wrap:wrap; gap:6px 14px; }
+.ag-paper-head h3{ margin:0; } .ag-paper-head p{ margin:0 0 0 auto !important; }
+.op-dl-btn{ display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px; border-radius:8px; border:1px solid #d6e2f6; background:#fff; color:#1d4ed8; font:inherit; font-size:13px; font-weight:600; cursor:pointer; }
+.op-dl-btn:hover{ background:#f3f7ff; border-color:#b9cdf1; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21730,6 +21738,7 @@ function agMigRow() {
           <header class="ag-paper-head">
             <h3>${doc.name}</h3>
             <p>${doc.pages} pages · ${doc.version}</p>
+            <button type="button" class="op-dl-btn" data-op-dl="${doc.id}" aria-label="Download ${agEsc(doc.name)}"><svg viewBox="0 0 16 16" aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.8 7.6L8 10.8l3.2-3.2M3 13h10"/></svg>Download</button>
           </header>
           ${clauses}
         </article>
@@ -24514,6 +24523,21 @@ function agMigRow() {
       successAutoArm("1");
     });
   }
+
+  /* Download the agreement as a text file (the preview viewer may block downloads; a saved copy of the page allows it) */
+  document.addEventListener("click", (ev) => {
+    const b = ev.target.closest && ev.target.closest("[data-op-dl]");
+    if (!b) return;
+    const doc = AG_DOCS.find((d) => d.id === b.dataset.opDl);
+    if (!doc) return;
+    const art = b.closest(".ag-paper") || b.closest("article") || document;
+    const text = [doc.name, `${doc.pages} pages · ${doc.version}`, "", ...[...art.querySelectorAll(".ag-sec")].map((x) => x.innerText.replace(/\n+/g, "\n").trim())].join("\n\n");
+    const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = doc.name.replace(/\s+/g, "-").toLowerCase() + ".txt";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  });
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
