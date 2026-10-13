@@ -13784,7 +13784,7 @@ body .ag-step-body.op-dl-prof > .op-dside{ align-self:start !important; }
 .op-selcount span{ color:#5f7298; }
 /* ---- Route: stops glide to the rail when processing starts ---- */
 .ag-nextup.is-flying .op-route-copy, .ag-nextup.is-flying .op-route-cta{ opacity:0; transform:translateY(8px); transition:opacity 260ms ease, transform 260ms ease; }
-.ag-nextup.is-flying .op-route-map{ transform:translateX(var(--fly-x,-600px)) scale(.9); transform-origin:left top; transition:transform 650ms cubic-bezier(.65,0,.35,1); }
+.ag-nextup.is-flying .op-route-map{ transform:translate(var(--fly-x,-600px), var(--fly-y,0px)); transform-origin:left top; transition:transform 650ms cubic-bezier(.65,0,.35,1); }
 .ag-nextup.is-flying .op-route-t, .ag-nextup.is-flying .op-route-here{ opacity:0; transition:opacity 220ms ease; }
 .ag-nextup.is-flying .op-route-map::before{ background:linear-gradient(180deg,var(--op-blue),#cfdcf3 60%,#cfdcf3); }
 .ag-nextup.is-flying .op-route-map li{ animation:none; }
@@ -13860,6 +13860,13 @@ body.ag-gate .ag-actions.is-approve{ background:#fff !important; position:relati
 .op-metric.is-ring{ padding-right:18px !important; }
 .op-metric .op-ring{ width:64px !important; height:64px !important; } .op-metric{ padding:0 12px !important; } .op-metric:last-of-type{ padding-right:0 !important; }
 .op-metrics{ padding-right:26px !important; }
+/* ---- Route stops match the rail stepper (34px icons, 52px pitch) so the plan can land on the rail ---- */
+.op-route-map li{ height:52px; padding:0 !important; margin:0 !important; align-items:center !important; gap:16px !important; }
+.op-route-dot, .op-route-map li.is-here .op-orb{ width:34px !important; height:34px !important; } .op-route-dot svg{ width:16px; height:16px; }
+.op-route-map{ gap:0 !important; }
+.op-route-map::before{ left:16px !important; top:26px !important; bottom:26px !important; }
+.op-route-t b{ font-size:14.5px !important; } .op-route-t span{ font-size:12.5px !important; }
+.op-route-here{ margin-left:auto; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18571,11 +18578,14 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       const map = el.querySelector(".op-route-map");
       if (map && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
         /* the stops glide left onto the rail, so the plan and the rail read as one thing */
-        const rail = document.querySelector(".ag-tel-icons, .cl-overview");
-        const rr = rail ? rail.getBoundingClientRect() : { left: 28, width: 48 };
+        const ico = document.querySelector('.ag-tel-ico[data-tel-go="1"]');
         const first = map.querySelector(".op-route-dot");
-        const dx = (rr.left + rr.width / 2) - (first.getBoundingClientRect().left + first.getBoundingClientRect().width / 2);
+        const fr = first.getBoundingClientRect();
+        const tr = ico ? ico.getBoundingClientRect() : { left: 40, top: 264, width: 34, height: 34 };
+        const dx = (tr.left + tr.width / 2) - (fr.left + fr.width / 2);
+        const dy = (tr.top + tr.height / 2) - (fr.top + fr.height / 2);
         map.style.setProperty("--fly-x", dx + "px");
+        map.style.setProperty("--fly-y", dy + "px");
         el.classList.add("is-flying");
         setTimeout(() => { el.classList.add("is-leaving"); }, 650);
         setTimeout(() => { el.remove(); agGo("1"); }, 950);
@@ -24861,8 +24871,8 @@ function agMigRow() {
             <li><i>${I("check")}</i><span><b>Nothing goes live</b>Until you approve it.</span></li>
           </ul>
         </div>
-        <div class="op-route-side"><ol class="op-route-map">${AG_NEXTUP.map(([ic, t], n) => `<li style="--n:${n}" class="${n === 0 ? "is-here" : ""}"><span class="op-route-dot">${n === 0 ? opOrb() : I(ic)}</span><span class="op-route-t"><b>${t}</b><span>${OP_PLAN[n][0]}</span><em>${OP_PLAN[n][1]}</em></span>${n === 0 ? `<span class="op-route-here">I'm starting here</span>` : ""}</li>`).join("")}
-          <li class="is-end" style="--n:5"><span class="op-route-dot">${I("migration")}</span><span class="op-route-t"><b>Migration</b><span>Your consent records move to DigiConsent</span></span></li></ol>
+        <div class="op-route-side"><ol class="op-route-map">${AG_NEXTUP.map(([ic, t], n) => `<li style="--n:${n}" class="${n === 0 ? "is-here" : ""}"><span class="op-route-dot">${n === 0 ? opOrb() : I(ic)}</span><span class="op-route-t"><b>${t}</b><span>${OP_PLAN[n][0]}</span></span>${n === 0 ? `<span class="op-route-here">I'm starting here</span>` : ""}</li>`).join("")}
+          </ol>
         <div class="op-route-cta"><span class="op-route-time">Five stops, then migration</span><button type="button" class="op-btn is-primary" data-nextup-go>Start with your business profile${I("arrow", "sm")}</button></div></div>
       </div>`;
     }
