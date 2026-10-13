@@ -13621,6 +13621,28 @@ body .shell .cl-detail-card .welcome-card.is-agentic, body .shell .cl-detail-car
 .op-row:has(.op-info:hover), .op-row:has(.op-info:focus-within){ position:relative; z-index:20; }
 .op-fl-list:has(.op-info:hover), .op-fl-list:has(.op-info:focus-within){ -webkit-mask-image:none; mask-image:none; }
 .op-row .op-cell, .op-row .op-who, .op-nameline, .op-row{ overflow:visible !important; }
+/* ---- Step details with the agent on one side ---- */
+body:has(.op-dl) .welcome-card.is-agentic{ display:none !important; }
+.ag-step-body.op-dl{ display:grid !important; column-gap:48px; align-content:start; }
+.op-dl > .ag-step-title{ grid-column:1 / -1; }
+.op-dl > .ag-live{ min-width:0; }
+.op-dl-f{ grid-template-columns:minmax(0,1fr) 320px !important; }
+.op-dl-g{ grid-template-columns:320px minmax(0,1fr) !important; }
+.op-dl-f > .ag-live{ grid-column:1; grid-row:2; } .op-dl-f > .op-dside{ grid-column:2; grid-row:2; }
+.op-dl-g > .ag-live{ grid-column:2; grid-row:2; } .op-dl-g > .op-dside{ grid-column:1; grid-row:2; }
+.op-dside{ position:sticky; top:12px; align-self:start; height:calc(100vh - 120px); overflow:hidden; border-radius:24px; z-index:1; }
+.op-dside::before{ content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(120% 75% at 100% 100%, rgba(118,154,246,.5) 0%, rgba(160,186,250,.3) 35%, rgba(226,235,255,0) 80%); }
+.op-dl-g .op-dside::before{ background:radial-gradient(120% 75% at 0% 100%, rgba(118,154,246,.5) 0%, rgba(160,186,250,.3) 35%, rgba(226,235,255,0) 80%); }
+.op-dside .op-fr-art{ position:absolute; inset:0; width:100% !important; height:100% !important; right:auto !important; bottom:auto !important; opacity:.9; pointer-events:none; }
+.op-dl-g .op-dside .op-fr-art{ transform:scaleX(-1); }
+.op-dside-in{ position:relative; padding:8px 4px; }
+.op-dside-in .op-fr-in{ height:auto !important; padding:0 !important; display:flex; flex-direction:column; justify-content:flex-start !important; overflow:visible; }
+.op-dside-in .op-fr-in > *{ max-width:none; }
+@media (max-width:1100px){ .ag-step-body.op-dl{ display:block !important; } .op-dside{ display:none; } }
+.op-dl-f > .op-dside{ margin-right:28px; }
+.op-dl-g > .op-dside{ margin-left:28px; }
+.op-dl-g{ grid-template-columns:292px minmax(0,1fr) !important; }
+.op-dl-f{ grid-template-columns:minmax(0,1fr) 292px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -23585,10 +23607,11 @@ function agMigRow() {
     { id: "sum-e0", label: "Brands and LOBs summary", opts: OP_SUM_OPTS, preview: ["summary", "e0"] },
     { id: "sum-e1", label: "GTM partners summary", opts: OP_SUM_OPTS, preview: ["summary", "e1"] },
     { id: "sum-e2", label: "Templates summary", opts: OP_SUM_OPTS, preview: ["summary", "e2"] },
+    { id: "details", label: "Step details", hint: "After View details", opts: [["a", "Full width", "The details page as it is"], ["f", "Agent right", "Details on the left, what the agent did on the right"], ["g", "Agent left", "What the agent did on the left, details on the right"]], preview: ["details", "2"] },
     { id: "success", label: "After you approve", hint: "Every summary", opts: [["a", "Centred", "A short confirmation in the middle"], ["b", "In place", "Each item is ticked where it stands"], ["c", "Journey", "Shows where you are in the whole setup"], ["d", "Receipt", "A signed record: what, who and when"], ["e", "Reply", "Your reply in the thread, then the agent confirms"]], preview: ["success", "e0"] },
     { id: "nextup", label: "What happens next", hint: "After the agreements", opts: [["a", "Timeline", "Numbered list in a pop-up"], ["b", "Plan", "Five areas side by side"], ["d", "Route", "Full screen: five stops and where the agent starts"], ["e", "Chat", "The agent tells you the plan and asks to start"]], preview: ["nextup", ""] },
   ];
-  const OP_DEFAULT = { loader: "a", "sum-2": "a", "sum-e0": "b", "sum-e1": "b", "sum-e2": "c", success: "c", nextup: "b" };
+  const OP_DEFAULT = { loader: "a", "sum-2": "a", "sum-e0": "b", "sum-e1": "b", "sum-e2": "c", success: "c", nextup: "b", details: "a" };
   const OP_STORE = "agOpusVersions.v1";
   let opV = {};
   try { opV = JSON.parse(localStorage.getItem(OP_STORE) || "{}") || {}; } catch (e) { opV = {}; }
@@ -23975,6 +23998,26 @@ function agMigRow() {
       ${opPanelInfo(m)}
     </div></div></div>`;
   }
+
+  /* ---- Step details: agent notes on one side ---- */
+  function opDetailSync() {
+    const key = String(state.ag && state.ag.focus);
+    const body = document.querySelector(".ag-step.is-focused .ag-step-body");
+    const v = opGet("details");
+    const ok = body && ["2", "e0", "e1", "e2"].includes(key) && v !== "a" && !document.getElementById("agSummary") && body.querySelector(".ag-live.is-revealed");
+    document.querySelectorAll(".ag-step-body.op-dl").forEach((b) => { if (b !== body || !ok) { b.classList.remove("op-dl", "op-dl-f", "op-dl-g"); b.querySelector(":scope > .op-dside")?.remove(); } });
+    if (!ok) return;
+    let aside = body.querySelector(":scope > .op-dside");
+    if (aside && aside.dataset.key === key) { body.classList.toggle("op-dl-f", v === "f"); body.classList.toggle("op-dl-g", v === "g"); return; }
+    aside?.remove();
+    const info = opPanelInfo(opSumModel(key));
+    const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
+    body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${acc}</div></aside>`);
+    body.classList.add("op-dl");
+    body.classList.toggle("op-dl-f", v === "f");
+    body.classList.toggle("op-dl-g", v === "g");
+  }
+  setInterval(opDetailSync, 350);
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
@@ -24133,6 +24176,13 @@ function agMigRow() {
   }
   function opPreview(kind, key) {
     if (typeof agCoverPlaying !== "undefined" && agCoverPlaying) { endCoverBoot(false); setTimeout(() => opPreview(kind, key), 900); return; }
+    if (kind === "details") {
+      opPreview("summary", key);
+      let tries = 0;
+      const go = () => { const b = document.querySelector("#agSummary [data-sum-details]"); if (b) setTimeout(() => b.click(), 700); else if (++tries < 40) setTimeout(go, 150); };
+      go();
+      return;
+    }
     if (kind === "nextup") {
       opPrepare("1");
       state.kycVerified = false;
