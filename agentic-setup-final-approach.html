@@ -14117,6 +14117,13 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-gr-title, .op-prof-hd .op-gr-title{ font-size:23px !important; line-height:28px !important; font-weight:680 !important; letter-spacing:-.6px !important; color:#0f1f3d !important; }
 .op-gr-hd{ padding-top:46px !important; } .op-prof-hd{ padding-top:20px !important; }
 .op-gr-hd{ padding-top:52px !important; } .op-prof-hd{ padding-top:20px !important; }
+.op-cv-status{ display:flex !important; flex-direction:column !important; align-items:center !important; gap:14px !important; width:auto !important; height:auto !important; min-width:300px; padding:20px 30px 18px !important; border-radius:22px !important; background:#fff !important; box-shadow:0 0 0 1px #dfe6f6, 0 22px 40px -22px rgba(37,99,235,.35) !important; }
+.op-cv-row{ display:flex; align-items:center; gap:12px; }
+.op-cv-row .op-lspin{ width:18px; height:18px; border-width:2.5px; }
+.op-cv-row .op-lspin.is-ok{ animation:none; background:#16a068; border-color:#16a068; }
+.op-cv-row .op-roll{ flex:none; height:26px; min-width:200px; }
+.op-cv-row .op-roll > span{ font-size:19px; line-height:26px; font-weight:650; letter-spacing:-.2px; }
+.op-cv-status .op-segs{ width:100%; gap:8px; } .op-cv-status .op-seg{ height:5px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18799,8 +18806,8 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const STEPS = [["Setting up your platform", "layers"], ["Fetching your organisation", "building"], ["Deploying your agents", "users"]];
     copy.dataset.old = copy.innerHTML;
     copy.innerHTML = `<div class="op-cv" aria-live="polite">
-      <div class="op-cv-status"><svg class="op-pbar" aria-hidden="true"><rect class="op-pb-t" x="0.75" y="0.75" width="278.5" height="40.5" rx="20.25"/><rect class="op-pb-f" id="opCvArc" pathLength="100" x="0.75" y="0.75" width="278.5" height="40.5" rx="20.25"/></svg><span class="op-roll" id="opCvLine"><span class="is-now">${STEPS[0][0]}</span></span></div>
-      <div class="op-segs" aria-hidden="true">${STEPS.map(() => "<div class=\"op-seg\"><i></i></div>").join("")}</div>
+      <div class="op-cv-status"><div class="op-cv-row"><span class="op-lspin" aria-hidden="true"></span><span class="op-roll" id="opCvLine"><span class="is-now">${STEPS[0][0]}</span></span></div>
+      <div class="op-segs" aria-hidden="true">${STEPS.map(() => "<div class=\"op-seg\"><i></i></div>").join("")}</div></div>
     </div>`;
     mark?.classList.add("op-cv-mark");
     const line = copy.querySelector("#opCvLine");
@@ -18813,7 +18820,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     mark?.appendChild(orbit);
     const nodes = [...orbit.querySelectorAll(".op-cv-node")];
     const segs = [...copy.querySelectorAll(".op-seg")];
-    const arcEl = copy.querySelector("#opCvArc");
+    const arcEl = { style: {}, getBoundingClientRect() {} };
     const cone = orbit.querySelector(".op-co-cone");
     const arc = orbit.querySelector(".op-co-arc");
     const spokes = [];
@@ -18848,6 +18855,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     arc.style.strokeDashoffset = "0";
     { const prev = line.querySelector(".is-now"); const nx = document.createElement("span"); nx.className = "is-now is-enter is-ready"; nx.textContent = "Your workspace is ready"; line.appendChild(nx); prev?.classList.replace("is-now", "is-leave"); requestAnimationFrame(() => requestAnimationFrame(() => nx.classList.remove("is-enter"))); setTimeout(() => prev?.remove(), 600); }
     segs.forEach((sg) => { sg.classList.remove("is-run"); sg.classList.add("is-done"); });
+    copy.querySelector(".op-lspin")?.classList.add("is-ok");
     boot.classList.add("is-complete");
     await wait(900);
     boot.classList.add("is-out");
