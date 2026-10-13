@@ -14101,6 +14101,7 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-dl-prof .kyc-card .kyc-body, .op-dl-prof .ag-profile .kyc-body{ padding-top:8px; }
 .op-route-cta .op-btn.is-primary{ height:32px !important; padding:0 14px !important; font-size:13px !important; min-width:0 !important; border-radius:10px !important; gap:7px; }
 .op-route-cta .op-btn:focus, .op-route-cta .op-btn:focus-visible{ outline:none !important; }
+.op-tm{ background:none !important; box-shadow:none !important; padding:2px 2px 12px !important; margin:0 !important; gap:28px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24406,7 +24407,7 @@ function agMigRow() {
     const tp = m.key === "e2" && compact ? opTpl() : null;
     const metrics = tp ? `<div class="op-metrics"><div class="op-metric is-ring"><span class="op-ring" style="--p:${Math.round(tp.mapped / tp.scanned * 100)}" role="img" aria-label="${Math.round(tp.mapped / tp.scanned * 100)}%"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5" pathLength="100"/><circle class="is-on" cx="18" cy="18" r="15.5" pathLength="100"/></svg><b>${Math.round(tp.mapped / tp.scanned * 100)}%</b></span><span class="op-metric-t"><b>${tp.mapped} of ${tp.scanned}</b>templates suggested</span></div><div class="op-metric is-hi"><b>${tp.sure}</b><span><i></i>high confidence</span></div><div class="op-metric is-rv"><b>${tp.review}</b><span><i></i>need your review</span></div><div class="op-metric is-mn"><b>${tp.scanned - tp.mapped}</b><span><i></i>manual mapping</span></div><div class="op-mbar" aria-hidden="true"><i class="is-hi" style="flex:${tp.sure}"></i><i class="is-rv" style="flex:${tp.review}"></i><i class="is-mn" style="flex:${tp.scanned - tp.mapped}"></i></div></div>` : "";
     const roleList = [...new Set(m.items.map((x) => x.pill))];
-    const peopleBar = m.key === "2" && compact ? `<div class="op-tm"><div class="op-tm-n"><b>${m.items.length}</b><span>people suggested</span></div><div class="op-tm-n"><b>${roleList.length}</b><span>roles matched</span></div><div class="op-tm-split"><span class="op-tm-bar">${roleList.map((r, i) => `<i style="flex:${m.items.filter((x) => x.pill === r).length};--i:${i}"></i>`).join("")}</span></div></div>${opFilterBar(m)}` : "";
+    const peopleBar = m.key === "2" && compact ? `<div class="op-tm"><div class="op-tm-n"><b>${m.items.length}</b><span>people suggested</span></div><div class="op-tm-n"><b>${roleList.length}</b><span>roles matched</span></div></div>${opFilterBar(m)}` : "";
     const sel = m.key === "e1" && compact ? `<p class="op-selcount"><b>${m.items.filter((x) => x.on).length} of ${m.items.length}</b> partners selected <span>· the others did not clear the best-rate bar</span></p>` : "";
     return metrics + peopleBar + sel + `<section class="op-list${compact ? " is-compact" : ""}" style="--cols:${compact ? opCompactCols(m) : m.cols}">
       ${compact ? "" : `<div class="op-row is-head">${m.head.map((h) => `<span>${agSumEsc(h)}</span>`).join("")}</div>`}
