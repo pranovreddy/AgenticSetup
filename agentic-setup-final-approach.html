@@ -13836,6 +13836,10 @@ body.ag-gate .ag-sec-n{ box-shadow:0 0 0 4px rgba(37,99,235,.07); }
 body.ag-gate .ag-atabs{ background:#eef4ff !important; z-index:12 !important; box-shadow:0 10px 16px -12px rgba(37,99,235,.25) !important; }
 body.ag-gate .ag-atab.is-on{ background:#fff !important; }
 body.ag-gate .ag-actions.is-approve{ background:#fff !important; position:relative; z-index:12; box-shadow:0 -10px 16px -12px rgba(37,99,235,.2); }
+/* ---- Rail: the pill ends at the last step, the line stops there ---- */
+#agTelCard, .ag-telcard{ height:258px !important; }
+.ag-telcard .ag-tel-track{ height:256px !important; }
+.ag-telcard .ag-tel-track::before{ bottom:22px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
