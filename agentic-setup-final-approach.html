@@ -13745,6 +13745,19 @@ body .shell .cl-detail-card .welcome-card.is-agentic, body .shell .cl-detail-car
 .op-route-t em{ margin-top:4px !important; padding:2px 9px !important; font-size:11.5px !important; }
 .op-route-cta{ margin:0 -22px -14px !important; padding:12px 22px 14px !important; }
 .op-route-here{ padding:4px 10px; font-size:11.5px; }
+/* ---- Verify sequence overlay ---- */
+#opKvOverlay{ position:fixed; inset:0; z-index:140; display:grid; place-items:center; background:radial-gradient(60% 50% at 50% 40%, rgba(214,229,255,.6), transparent 70%), #f8fafd; animation:op-fade 300ms ease both; }
+#opKvOverlay.is-leaving{ opacity:0; transition:opacity 320ms ease; }
+.op-kv-card{ width:min(560px, calc(100vw - 48px)); padding:36px 36px 32px; border-radius:26px; background:#fff; box-shadow:0 0 0 1px rgba(196,214,245,.7), 0 40px 80px -40px rgba(37,99,235,.35); }
+.op-kv-card .kv{ position:static; width:100%; }
+/* ---- Chip on the summary column ---- */
+.op-sumchip{ display:inline-flex; align-items:center; gap:8px; align-self:flex-start; margin:0 0 6px !important; padding:5px 13px 5px 8px; border-radius:99px; background:#fff; box-shadow:0 0 0 1px rgba(37,99,235,.16) inset; color:var(--op-deep,#1d4ed8); font-size:12.5px; font-weight:640; }
+.op-sumchip .op-mark{ width:20px; height:20px; }
+/* ---- Business profile: CTA pinned to the bottom of the page ---- */
+.op-dl-prof > .ag-live{ height:calc(100vh - 16px) !important; min-height:0 !important; }
+.op-dl-prof .ag-profile{ height:100%; display:flex; flex-direction:column; }
+.op-dl-prof .kyc-card{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; overflow:auto; }
+.op-dl-prof .kyc-footer{ margin-top:auto; position:sticky; bottom:0; background:linear-gradient(180deg,rgba(248,250,253,0),#f8fafd 40%); padding-top:18px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18225,8 +18238,57 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     if (window.startKycvLoader) {
       window.startKycvLoader();
     } else {
-      finishKycVerify(false);
+      opOwnVerify(token);
     }
+  }
+
+  /* The verify loader assets are not bundled in this file, so the sequence is built here:
+     verifying the submitted details, risk checks, each operator approving, then the success state. */
+  async function opOwnVerify(token) {
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) { finishKycVerify(false); return; }
+    document.getElementById("opKvOverlay")?.remove();
+    const ov = document.createElement("div");
+    ov.id = "opKvOverlay";
+    ov.innerHTML = `<div class="op-kv-card">${kycvMarkup()}</div>`;
+    document.body.appendChild(ov);
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const alive = () => token === kycVerifyToken && document.body.contains(ov);
+    const kv = ov.querySelector("#kv");
+    const title = ov.querySelector("#kvTitle");
+    const steps = [...ov.querySelectorAll("[data-kv-step]")];
+    const setStep = (n) => steps.forEach((li, i) => { li.classList.toggle("is-done", i < n); li.classList.toggle("is-on", i === n); });
+    /* 1 verifying the submitted details */
+    setStep(0);
+    const doc = ov.querySelector("#kvDoc");
+    doc.classList.add("is-scanning");
+    const rows = [...ov.querySelectorAll("[data-kv-row]")];
+    for (const r of rows) { if (!alive()) return; r.classList.add("is-scan"); await wait(520); r.classList.remove("is-scan"); r.classList.add("is-ok"); const l = r.querySelector("[data-kv-line]"); if (l) l.textContent = r.dataset.hash + "c0de" + r.dataset.hash.slice(0, 4); }
+    const hashEl = ov.querySelector("#kvHash"); if (hashEl) hashEl.textContent = rows.map((r) => r.dataset.hash).join("").slice(0, 24) + "…";
+    doc.classList.remove("is-scanning"); doc.classList.add("is-ok");
+    /* 2 risk checks */
+    setStep(1);
+    if (title) title.textContent = "Running risk checks";
+    for (const c of ov.querySelectorAll("[data-kv-check]")) { if (!alive()) return; c.classList.add("is-scan"); await wait(420); c.classList.remove("is-scan"); c.classList.add("is-ok"); }
+    await wait(300);
+    /* 3 telecom operators approve */
+    if (!alive()) return;
+    setStep(2);
+    if (title) title.textContent = "Telecom operators are reviewing";
+    ov.querySelector('[data-kv-pane="doc"]')?.classList.remove("is-on");
+    ov.querySelector('[data-kv-pane="telco"]')?.classList.add("is-on");
+    const count = ov.querySelector("#kvTelcoCount");
+    let n = 0;
+    for (const t of ov.querySelectorAll("[data-kv-telco]")) { if (!alive()) return; await wait(650); t.classList.add("is-ok"); n += 1; if (count) count.textContent = n + " of " + KYCV_TELCOS.length; }
+    await wait(500);
+    steps.forEach((li) => { li.classList.remove("is-on"); li.classList.add("is-done"); });
+    if (kv) kv.classList.add("is-approved");
+    if (title) title.textContent = "Approved by all telecom operators";
+    await wait(1100);
+    ov.classList.add("is-leaving");
+    await wait(350);
+    ov.remove();
+    if (token === kycVerifyToken) finishKycVerify(false);
   }
 
   function kycAutoStop() {
@@ -24114,7 +24176,7 @@ function agMigRow() {
     return `<div class="op-scroll"><div class="op-wrap is-g"><div class="op-gsplit">
       <aside class="op-gl">
         ${OP_FR_ART.replace('class="op-fr-art"', 'class="op-fr-art op-g-art"')}
-        <p class="op-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span><span>Agent summary</span><i aria-hidden="true"></i><span class="op-kick-area">${e(m.area)}</span></p>
+        <p class="op-sumchip"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Summary</p>
         <h2 class="op-h">${e(m.did)}</h2>
         <p class="op-sub">${e(m.next)}</p>
         <div class="op-g-acc">${opCollapse(acc)}</div>
