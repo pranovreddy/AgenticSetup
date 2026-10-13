@@ -14029,6 +14029,16 @@ html body.op-capsule-on #agTelCard.ag-telcard, html body.op-capsule-on.ag-gate #
 .op-co-node.is-on i::before{ content:""; position:absolute; inset:-6px; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,.22), transparent 70%); animation:op-co-pulse 1.4s ease-in-out infinite; }
 @keyframes op-co-pulse{ 50%{ transform:scale(1.35); opacity:.4; } }
 .op-co-node i{ position:absolute; }
+.op-co-cone{ position:absolute; left:200px; top:200px; width:150px; height:72px; margin-top:-36px; transform-origin:0 50%; transform:rotate(var(--a,-90deg)); opacity:0; transition:transform 800ms cubic-bezier(.65,0,.35,1), opacity 400ms; clip-path:polygon(0 47%, 100% 0, 100% 100%, 0 53%); background:linear-gradient(90deg, rgba(37,99,235,.02) 0%, rgba(37,99,235,.18) 40%, rgba(96,150,255,.34) 100%); filter:blur(1.5px); }
+.op-co-cone.is-on{ opacity:1; animation:op-co-beam 1.8s ease-in-out infinite; }
+@keyframes op-co-beam{ 50%{ filter:blur(2.5px) brightness(1.15); } }
+.op-co-node.is-on i::after{ inset:-11px; border:0; border-radius:12px; animation:none; background:
+  linear-gradient(#2563eb,#2563eb) 0 0/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 0 0/2.5px 12px no-repeat,
+  linear-gradient(#2563eb,#2563eb) 100% 0/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 0/2.5px 12px no-repeat,
+  linear-gradient(#2563eb,#2563eb) 0 100%/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 0 100%/2.5px 12px no-repeat,
+  linear-gradient(#2563eb,#2563eb) 100% 100%/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 100%/2.5px 12px no-repeat; }
+.op-co-spoke{ display:none; }
+.op-co-node[data-i="0"] em{ top:-58px; } .op-co-cone{ height:84px; margin-top:-42px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18720,15 +18730,17 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const orbit = document.createElement("div");
     orbit.className = "op-co";
     orbit.setAttribute("aria-hidden", "true");
-    orbit.innerHTML = `<svg viewBox="0 0 400 400" class="op-co-svg"><circle class="op-co-ring" cx="200" cy="200" r="136"/>${PT.map(([x, y], i) => `<line class="op-co-spoke" data-i="${i}" x1="200" y1="200" x2="${x}" y2="${y}"/>`).join("")}</svg>${STEPS.map(([t, ic], i) => `<span class="op-cv-node op-co-node" data-i="${i}" style="left:${PT[i][0]}px;top:${PT[i][1]}px"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}`;
+    orbit.innerHTML = `<svg viewBox="0 0 400 400" class="op-co-svg"><circle class="op-co-ring" cx="200" cy="200" r="136"/></svg><i class="op-co-cone"></i>${STEPS.map(([t, ic], i) => `<span class="op-cv-node op-co-node" data-i="${i}" style="left:${PT[i][0]}px;top:${PT[i][1]}px"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}`;
     mark?.appendChild(orbit);
     const nodes = [...orbit.querySelectorAll(".op-cv-node")];
-    const spokes = [...orbit.querySelectorAll(".op-co-spoke")];
+    const cone = orbit.querySelector(".op-co-cone");
+    const spokes = [];
+    const ANG = PT.map(([x, y]) => Math.atan2(y - 200, x - 200) * 180 / Math.PI);
     requestAnimationFrame(() => orbit.classList.add("is-in"));
     await wait(350);
     for (let i = 0; i < STEPS.length; i += 1) {
       nodes.forEach((nd, k) => { nd.classList.toggle("is-on", k === i); nd.classList.toggle("is-done", k < i); });
-      spokes.forEach((sp, k) => { sp.classList.toggle("is-on", k === i); sp.classList.toggle("is-done", k < i); });
+      cone.style.setProperty("--a", ANG[i] + "deg"); cone.classList.add("is-on");
       line.classList.add("is-swap");
       await wait(180);
       line.textContent = STEPS[i][0]; n.textContent = String(i + 1);
@@ -18739,7 +18751,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       await wait(450);
     }
     nodes.forEach((nd) => { nd.classList.remove("is-on"); nd.classList.add("is-done"); });
-    spokes.forEach((sp) => { sp.classList.remove("is-on"); sp.classList.add("is-done"); });
+    cone.classList.remove("is-on");
     line.textContent = "Your workspace is ready";
     boot.classList.add("is-complete");
     await wait(900);
