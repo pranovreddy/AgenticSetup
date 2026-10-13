@@ -13824,6 +13824,15 @@ body.ag-gate .ag-brief{ padding:22px 24px !important; margin:18px 0 8px !importa
 body.ag-gate .ag-brief-title{ font-size:13px !important; letter-spacing:.08em; text-transform:uppercase; color:#5f7298 !important; margin-bottom:10px !important; }
 body.ag-gate .ag-brief-prose{ font-size:16.5px !important; }
 body.ag-gate .ag-sec-n{ box-shadow:0 0 0 4px rgba(37,99,235,.07); }
+/* ---- Migration countdown, detached from the rail ---- */
+.ag-tel-ico[data-tel-go="m"]{ display:none !important; }
+#opMig{ position:fixed; left:14px; bottom:18px; z-index:61; display:flex; align-items:center; gap:10px; height:56px; padding:0 12px; border-radius:99px; background:rgba(255,255,255,.88); box-shadow:0 0 0 1px rgba(196,214,245,.8) inset, 0 14px 30px -16px rgba(37,99,235,.4); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); overflow:hidden; padding-right:18px; }
+#opMig[hidden]{ display:none; }
+.op-mig-ico{ flex:none; display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:linear-gradient(155deg,#5b95ff,#2563eb); color:#fff; } .op-mig-ico svg{ width:16px; height:16px; }
+.op-mig-s, .op-mig-full{ white-space:nowrap; }
+.op-mig-s{ display:flex; flex-direction:column; gap:1px; } .op-mig-s em{ font-style:normal; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:#5f7298; } .op-mig-s b{ font-size:13px; font-weight:680; color:#12306b; font-variant-numeric:tabular-nums; }
+.op-mig-full{ display:none; font-size:12.5px; color:var(--op-ink,#0f1f3d); } .op-mig-full b{ font-variant-numeric:tabular-nums; color:#12306b; }
+#opMig:hover .op-mig-s{ display:none; } #opMig:hover .op-mig-full{ display:block; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24333,6 +24342,29 @@ function agMigRow() {
     el.hidden = !((document.body.classList.contains("ag-gate") && document.body.classList.contains("ag-booted")) || document.querySelector(".op-route"));
   }
   setInterval(opLogoSync, 300);
+
+  /* Migration is detached from the rail: a countdown sits at the bottom-left */
+  const OP_MIG_AT = Date.now() + 5 * 86400000 + 59000;
+  function opMigSync() {
+    const rail = document.querySelector(".cl-overview");
+    let el = document.getElementById("opMig");
+    const show = !!rail && !document.body.classList.contains("ag-gate") ;
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "opMig";
+      el.setAttribute("role", "timer");
+      el.innerHTML = `<span class="op-mig-ico" aria-hidden="true">${I("migration")}</span><span class="op-mig-s"><em>Opens in</em><b></b></span><span class="op-mig-full">Migration opens in <b></b></span>`;
+      document.body.appendChild(el);
+    }
+    el.hidden = !show;
+    const ms = Math.max(0, OP_MIG_AT - Date.now());
+    const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000), m = Math.floor(ms % 3600000 / 60000), sec = Math.floor(ms % 60000 / 1000);
+    const pad = (n) => String(n).padStart(2, "0");
+    el.querySelector(".op-mig-s b").textContent = `${d}d ${pad(h)}h ${pad(m)}m`;
+    el.querySelector(".op-mig-full b").textContent = `${d} days, ${h} hours, ${m} minutes, ${pad(sec)} seconds`;
+  }
+  setInterval(opMigSync, 1000);
+  opMigSync();
   function opSumMarkup(key, v) {
     const m = opSumModel(key);
     if (v === "d") return opBoard(m);
