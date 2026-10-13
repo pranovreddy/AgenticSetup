@@ -178,7 +178,7 @@ Be brief; say what changed and what was not checked; never claim something was t
 
 ## 8e. Session 4 (critique, Panel/Split layouts, final approach) — read this first
 
-**Branch:** `claude/optimistic-heisenberg-i0otau`. Two new files at the repo root, both copies of the Opus prototype with changes on top:
+**Branch:** work was done on `claude/optimistic-heisenberg-i0otau` and merged (fast-forward) into the repo default branch `claude/bold-mccarthy-bls1vj`; both hold the same content. There is no `main`. Two new files at the repo root, both copies of the Opus prototype with changes on top:
 
 - `agentic-setup-critiqued.html` — the working file for session 4. Published (owner's account): https://claude.ai/artifact/L2YzRZ8Yyi2qPoYpfjGnRY. Still has the **Versions** panel (versions A–G per screen) but the top version bar (`#opStrip`) is hidden by CSS.
 - `agentic-setup-final-approach.html` — locked copy for the chosen layouts. Published: https://claude.ai/artifact/2GuVpZVBMDvW5fu4dV3eai. `OP_DEFAULT` is fixed (`opGet` ignores localStorage), `opEnsurePanel()` is not called, and `#opVpBtn/#opVp/#opStrip` are `display:none`. The code for the unused versions is still in the file (not stripped). **Continue editing this file for further changes.**
