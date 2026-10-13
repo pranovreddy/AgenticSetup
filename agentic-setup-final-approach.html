@@ -14055,6 +14055,11 @@ html body.op-capsule-on #agTelCard.ag-telcard, html body.op-capsule-on.ag-gate #
 @keyframes op-co-pop{ 40%{ transform:scale(1.18); } }
 .op-co-node em{ transition:color 400ms ease, opacity 400ms ease; }
 .op-cv-mark .ag-boot-core{ transition:transform 600ms cubic-bezier(.22,1,.36,1); }
+.op-co-node.is-on i::after{ inset:-10px !important; border-radius:50% !important; background:conic-gradient(from 0deg, rgba(37,99,235,0) 0deg, rgba(37,99,235,.95) 150deg, rgba(37,99,235,0) 200deg, rgba(37,99,235,0) 360deg) !important;
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  animation:op-co-orbit 1.6s linear infinite !important; box-shadow:none; }
+.op-co-node.is-on i::before{ inset:-10px !important; box-shadow:0 0 0 1.5px rgba(37,99,235,.16) inset; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,.14), transparent 68%) !important; }
+@keyframes op-co-orbit{ to{ transform:rotate(360deg); } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
