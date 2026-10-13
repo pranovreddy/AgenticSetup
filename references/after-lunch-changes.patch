@@ -1,0 +1,177 @@
+diff --git a/agentic-setup-final-approach.html b/agentic-setup-final-approach.html
+index ea9ee03..34669ad 100644
+--- a/agentic-setup-final-approach.html
++++ b/agentic-setup-final-approach.html
+@@ -14011,6 +14011,74 @@ html body.op-capsule-on #agTelCard.ag-telcard, html body.op-capsule-on.ag-gate #
+ .ag-mig-wait h3{ font-size:18px; margin-bottom:18px; } .ag-mig-clock{ gap:12px; margin-bottom:20px; }
+ .ag-mig-clock b{ width:58px; height:68px; font-size:28px; border-radius:10px; } .ag-mig-clock i{ font-size:22px; line-height:68px; } .ag-mig-clock span{ font-size:11px; }
+ .ag-mig-wait p{ font-size:13.5px; max-width:470px; }
++.op-list .op-item.is-dim{ opacity:.62; filter:saturate(.5); } .op-list .op-item.is-dim .op-reason{ background:transparent !important; box-shadow:none !important; } .op-list .op-item.is-dim .op-pill{ background:#eef1f6 !important; color:#6b7890 !important; }
++.op-cv-mark{ margin-bottom:104px !important; }
++.op-co{ position:absolute; left:50%; top:50%; width:400px; height:400px; margin:-200px 0 0 -200px; pointer-events:none; opacity:0; transform:scale(.86); transition:opacity 600ms ease, transform 700ms cubic-bezier(.22,1,.36,1); }
++.op-co.is-in{ opacity:1; transform:none; }
++.op-co-svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
++.op-co-ring{ fill:none; stroke:#cfdcf3; stroke-width:1.5; stroke-dasharray:3 7; stroke-linecap:round; transform-origin:200px 200px; animation:op-co-spin 38s linear infinite; }
++.op-co-spoke{ stroke:#dbe6f8; stroke-width:1.5; stroke-dasharray:4 6; transition:stroke 400ms; }
++.op-co-spoke.is-done{ stroke:#9fbdf3; stroke-dasharray:none; }
++.op-co-spoke.is-on{ stroke:#2563eb; stroke-width:2; stroke-dasharray:6 8; animation:op-co-flow 700ms linear infinite; filter:drop-shadow(0 0 4px rgba(37,99,235,.6)); }
++@keyframes op-co-flow{ to{ stroke-dashoffset:-14; } } @keyframes op-co-spin{ to{ transform:rotate(360deg); } }
++.op-co-node{ position:absolute !important; width:0 !important; transform:translate(0,0); display:flex; flex-direction:column; align-items:center; }
++.op-co-node i{ position:absolute; left:-24px; top:-24px; }
++.op-co-node em{ position:absolute; top:32px; left:-50px; width:100px; text-align:center; }
++.op-co-node[data-i="0"] em{ top:-48px; }
++.op-co-node.is-on i::after{ content:""; position:absolute; inset:-12px; border-radius:50%; border:1.5px dashed rgba(37,99,235,.65); animation:op-co-spin 6s linear infinite; }
++.op-co-node.is-on i::before{ content:""; position:absolute; inset:-6px; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,.22), transparent 70%); animation:op-co-pulse 1.4s ease-in-out infinite; }
++@keyframes op-co-pulse{ 50%{ transform:scale(1.35); opacity:.4; } }
++.op-co-node i{ position:absolute; }
++.op-co-cone{ position:absolute; left:200px; top:200px; width:150px; height:72px; margin-top:-36px; transform-origin:0 50%; transform:rotate(var(--a,-90deg)); opacity:0; transition:transform 800ms cubic-bezier(.65,0,.35,1), opacity 400ms; clip-path:polygon(0 47%, 100% 0, 100% 100%, 0 53%); background:linear-gradient(90deg, rgba(37,99,235,.02) 0%, rgba(37,99,235,.18) 40%, rgba(96,150,255,.34) 100%); filter:blur(1.5px); }
++.op-co-cone.is-on{ opacity:1; animation:op-co-beam 1.8s ease-in-out infinite; }
++@keyframes op-co-beam{ 50%{ filter:blur(2.5px) brightness(1.15); } }
++.op-co-node.is-on i::after{ inset:-11px; border:0; border-radius:12px; animation:none; background:
++  linear-gradient(#2563eb,#2563eb) 0 0/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 0 0/2.5px 12px no-repeat,
++  linear-gradient(#2563eb,#2563eb) 100% 0/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 0/2.5px 12px no-repeat,
++  linear-gradient(#2563eb,#2563eb) 0 100%/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 0 100%/2.5px 12px no-repeat,
++  linear-gradient(#2563eb,#2563eb) 100% 100%/12px 2.5px no-repeat, linear-gradient(#2563eb,#2563eb) 100% 100%/2.5px 12px no-repeat; }
++.op-co-spoke{ display:none; }
++.op-co-node[data-i="0"] em{ top:-58px; } .op-co-cone{ height:84px; margin-top:-42px; }
++.op-cv-mark{ margin-bottom:76px !important; }
++.op-co-ring{ stroke:#dfe8f8 !important; stroke-dasharray:none !important; animation:none !important; stroke-width:1.5; }
++.op-co-arc{ fill:none; stroke:#2563eb; stroke-width:2.5; stroke-linecap:round; stroke-dasharray:100 100; stroke-dashoffset:100; transform:rotate(-90deg); transform-origin:200px 200px; transition:stroke-dashoffset 1500ms cubic-bezier(.65,0,.35,1); filter:drop-shadow(0 0 5px rgba(37,99,235,.55)); }
++.op-co-cone{ width:132px !important; height:78px !important; margin-top:-39px !important; clip-path:polygon(0 40%, 100% 4%, 100% 96%, 0 60%) !important; filter:none !important;
++  background:linear-gradient(90deg, rgba(37,99,235,0) 0%, rgba(80,135,250,.24) 45%, rgba(110,160,255,.38) 100%) !important;
++  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 32%, #000 66%, transparent 97%); mask-image:linear-gradient(90deg, transparent 0, #000 32%, #000 66%, transparent 97%);
++  transition:transform 1000ms cubic-bezier(.65,0,.35,1), opacity 500ms ease !important; }
++.op-co-cone.is-on{ animation:op-co-beam 2.4s ease-in-out infinite !important; }
++@keyframes op-co-beam{ 50%{ opacity:.72; } }
++.op-co-node i{ transition:transform 600ms cubic-bezier(.22,1,.36,1), background 500ms ease, color 500ms ease, box-shadow 500ms ease !important; }
++.op-co-node.is-on i::after{ animation:op-co-brk 600ms cubic-bezier(.22,1,.36,1) both !important; }
++@keyframes op-co-brk{ from{ opacity:0; transform:scale(1.5); } to{ opacity:1; transform:none; } }
++.op-co-node.is-done i{ animation:op-co-pop 520ms cubic-bezier(.22,1,.36,1); }
++@keyframes op-co-pop{ 40%{ transform:scale(1.18); } }
++.op-co-node em{ transition:color 400ms ease, opacity 400ms ease; }
++.op-cv-mark .ag-boot-core{ transition:transform 600ms cubic-bezier(.22,1,.36,1); }
++.op-co-node.is-on i::after{ inset:-10px !important; border-radius:50% !important; background:conic-gradient(from 0deg, rgba(37,99,235,0) 0deg, rgba(37,99,235,.95) 150deg, rgba(37,99,235,0) 200deg, rgba(37,99,235,0) 360deg) !important;
++  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); mask:radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
++  animation:op-co-orbit 1.6s linear infinite !important; box-shadow:none; }
++.op-co-node.is-on i::before{ inset:-10px !important; box-shadow:0 0 0 1.5px rgba(37,99,235,.16) inset; border-radius:50%; background:radial-gradient(circle, rgba(37,99,235,.14), transparent 68%) !important; }
++@keyframes op-co-orbit{ to{ transform:rotate(360deg); } }
++.op-dside-hd .op-sumchip{ margin:0 0 14px; }
++body.ag-gate .shell:has(.setup-layout) .cl-detail-card::before, body.ag-gate .cl-detail-card::before{ display:none !important; }
++body.ag-gate .ag-brief::before{ display:none !important; }
++.op-cv{ gap:16px !important; }
++.op-cv-status{ position:relative; width:280px; height:42px; padding:0 8px 0 18px; gap:10px; justify-content:space-between; background:rgba(255,255,255,.92) !important; box-shadow:0 0 0 0 transparent, 0 14px 30px -18px rgba(37,99,235,.4) !important; }
++.op-pbar{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
++.op-pbar rect{ fill:none; stroke-width:1.5; } .op-pb-t{ stroke:#dce6f7; }
++.op-pb-f{ stroke:#2563eb; stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:100; filter:drop-shadow(0 0 3px rgba(37,99,235,.45)); }
++.op-roll{ position:relative; display:grid; height:20px; flex:1; overflow:hidden; text-align:left; }
++.op-roll > span{ grid-area:1/1; white-space:nowrap; line-height:20px; font-size:13.5px; font-weight:560; letter-spacing:-.005em; transition:transform 480ms cubic-bezier(.22,1,.36,1), opacity 380ms ease, filter 380ms ease; }
++.op-roll > .is-now{ background:linear-gradient(90deg,#1b2b4a 0 38%,#2563eb 50%,#1b2b4a 62% 100%) 0 0/300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:op-shim 2.4s linear infinite; }
++.op-roll > .is-now.is-ready{ animation:none; background:none; color:#0f6b41; -webkit-text-fill-color:currentColor; }
++.op-roll > .is-enter{ transform:translateY(100%); opacity:0; filter:blur(3px); }
++.op-roll > .is-leave{ transform:translateY(-100%); opacity:0; filter:blur(3px); color:#6b7c9e; }
++@keyframes op-shim{ to{ background-position:-300% 0; } }
++.op-pcount{ display:inline-flex; align-items:center; height:26px; padding:0 10px; border-radius:99px; background:#eef2f8; font-size:12px; font-weight:600; color:#8094ba; font-variant-numeric:tabular-nums; } .op-pcount b{ color:#0f1f3d; margin-right:1px; }
++.op-segs{ display:flex; gap:6px; width:280px; } .op-seg{ flex:1; height:3px; border-radius:99px; background:#e0e8f6; overflow:hidden; }
++.op-seg i{ display:block; height:100%; width:0; border-radius:inherit; background:linear-gradient(90deg,#60a5fa,#2563eb); }
++.op-seg.is-run i{ width:100%; transition:width 1900ms cubic-bezier(.4,0,.2,1); } .op-seg.is-done i{ width:100%; }
+ /* ---- Design critique fixes ---- */
+ /* 1,18 next-up: scrollable, never clipped at short heights */
+ .ag-nextup{ overflow-y:auto; place-items:start center; }
+@@ -18693,31 +18761,61 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
+     const STEPS = [["Setting up your platform", "layers"], ["Fetching your organisation", "building"], ["Deploying your agents", "users"]];
+     copy.dataset.old = copy.innerHTML;
+     copy.innerHTML = `<div class="op-cv" aria-live="polite">
+-      <div class="op-cv-status"><span class="op-cv-count"><b id="opCvN">1</b> / ${STEPS.length}</span><span class="op-cv-line" id="opCvLine">${STEPS[0][0]}</span></div>
+-      <div class="op-cv-track"><i class="op-cv-fill" id="opCvFill"></i>${STEPS.map(([t, ic], i) => `<span class="op-cv-node" data-i="${i}"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}</div>
++      <div class="op-cv-status"><svg class="op-pbar" aria-hidden="true"><rect class="op-pb-t" x="0.75" y="0.75" width="278.5" height="40.5" rx="20.25"/><rect class="op-pb-f" id="opCvArc" pathLength="100" x="0.75" y="0.75" width="278.5" height="40.5" rx="20.25"/></svg><span class="op-roll" id="opCvLine"><span class="is-now">${STEPS[0][0]}</span></span><span class="op-pcount"><b id="opCvN">1</b>/${STEPS.length}</span></div>
++      <div class="op-segs" aria-hidden="true">${STEPS.map(() => "<div class=\"op-seg\"><i></i></div>").join("")}</div>
+     </div>`;
+     mark?.classList.add("op-cv-mark");
+-    const line = copy.querySelector("#opCvLine"), n = copy.querySelector("#opCvN"), fill = copy.querySelector("#opCvFill");
+-    const nodes = [...copy.querySelectorAll(".op-cv-node")];
++    const line = copy.querySelector("#opCvLine"), n = copy.querySelector("#opCvN");
++    const fill = { style: {} };
++    const PT = [[200, 62], [319, 268], [81, 268]];
++    const orbit = document.createElement("div");
++    orbit.className = "op-co";
++    orbit.setAttribute("aria-hidden", "true");
++    orbit.innerHTML = `<svg viewBox="0 0 400 400" class="op-co-svg"><circle class="op-co-ring" cx="200" cy="200" r="136"/><circle class="op-co-arc" cx="200" cy="200" r="136" pathLength="100"/></svg><i class="op-co-cone"></i>${STEPS.map(([t, ic], i) => `<span class="op-cv-node op-co-node" data-i="${i}" style="left:${PT[i][0]}px;top:${PT[i][1]}px"><i>${I(ic)}</i><em>${t.replace("Setting up your ", "").replace("Fetching your ", "").replace("Deploying your ", "")}</em></span>`).join("")}`;
++    mark?.appendChild(orbit);
++    const nodes = [...orbit.querySelectorAll(".op-cv-node")];
++    const segs = [...copy.querySelectorAll(".op-seg")];
++    const arcEl = copy.querySelector("#opCvArc");
++    const cone = orbit.querySelector(".op-co-cone");
++    const arc = orbit.querySelector(".op-co-arc");
++    const spokes = [];
++    const ANG = PT.map(([x, y]) => Math.atan2(y - 200, x - 200) * 180 / Math.PI);
++    requestAnimationFrame(() => orbit.classList.add("is-in"));
+     await wait(350);
+     for (let i = 0; i < STEPS.length; i += 1) {
+       nodes.forEach((nd, k) => { nd.classList.toggle("is-on", k === i); nd.classList.toggle("is-done", k < i); });
+-      line.classList.add("is-swap");
++      cone.style.setProperty("--a", ANG[i] + "deg"); cone.classList.add("is-on");
++      arc.style.strokeDashoffset = String(100 - i * (100 / 3));
++      if (i > 0) {
++        const prev = line.querySelector(".is-now");
++        const nx = document.createElement("span");
++        nx.className = "is-now is-enter"; nx.textContent = STEPS[i][0];
++        line.appendChild(nx);
++        prev?.classList.replace("is-now", "is-leave");
++        requestAnimationFrame(() => requestAnimationFrame(() => nx.classList.remove("is-enter")));
++        setTimeout(() => prev?.remove(), 600);
++        n.textContent = String(i + 1);
++      }
++      segs.forEach((sg, k) => { sg.classList.toggle("is-run", k === i); sg.classList.toggle("is-done", k < i); });
++      arcEl.style.transition = "none"; arcEl.style.strokeDashoffset = "100";
++      void arcEl.getBoundingClientRect();
++      arcEl.style.transition = "stroke-dashoffset 1900ms cubic-bezier(.4,0,.2,1)"; arcEl.style.strokeDashoffset = "0";
+       await wait(180);
+-      line.textContent = STEPS[i][0]; n.textContent = String(i + 1);
+-      line.classList.remove("is-swap");
+       fill.style.width = ((i + 0.5) / STEPS.length * 100) + "%";
+       await wait(1500);
+       fill.style.width = ((i + 1) / STEPS.length * 100) + "%";
+       await wait(450);
+     }
+     nodes.forEach((nd) => { nd.classList.remove("is-on"); nd.classList.add("is-done"); });
+-    line.textContent = "Your workspace is ready";
++    cone.classList.remove("is-on");
++    arc.style.strokeDashoffset = "0";
++    { const prev = line.querySelector(".is-now"); const nx = document.createElement("span"); nx.className = "is-now is-enter is-ready"; nx.textContent = "Your workspace is ready"; line.appendChild(nx); prev?.classList.replace("is-now", "is-leave"); requestAnimationFrame(() => requestAnimationFrame(() => nx.classList.remove("is-enter"))); setTimeout(() => prev?.remove(), 600); }
++    segs.forEach((sg) => { sg.classList.remove("is-run"); sg.classList.add("is-done"); });
+     boot.classList.add("is-complete");
+     await wait(900);
+     boot.classList.add("is-out");
+     go();
+-    setTimeout(() => { boot.hidden = true; boot.style.zIndex = ""; boot.classList.remove("is-complete"); mark?.classList.remove("op-cv-mark"); if (copy.dataset.old) copy.innerHTML = copy.dataset.old; }, 700);
++    setTimeout(() => { boot.hidden = true; boot.style.zIndex = ""; boot.classList.remove("is-complete"); mark?.classList.remove("op-cv-mark"); orbit.remove(); if (copy.dataset.old) copy.innerHTML = copy.dataset.old; }, 700);
+   }
+   function agNextUpShow() {
+     if (!opCoverShown) { opCoverThen(agNextUpShow); return; }
+@@ -24290,7 +24388,7 @@ function agMigRow() {
+     const sel = m.key === "e1" && compact ? `<p class="op-selcount"><b>${m.items.filter((x) => x.on).length} of ${m.items.length}</b> partners selected <span>· the others did not clear the best-rate bar</span></p>` : "";
+     return metrics + peopleBar + sel + `<section class="op-list${compact ? " is-compact" : ""}" style="--cols:${compact ? opCompactCols(m) : m.cols}">
+       ${compact ? "" : `<div class="op-row is-head">${m.head.map((h) => `<span>${agSumEsc(h)}</span>`).join("")}</div>`}
+-      ${(m.key === "e1" && compact ? m.items.filter((x) => x.on) : m.items).map((it, n) => `<div${m.key === "2" ? ` data-role="${it.pill}" data-q="${(it.name + " " + it.contact[0] + " " + (it.dept || "") + " " + (it.sub || "")).toLowerCase()}"` : ""} class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
++      ${(m.key === "e1" && compact ? [...m.items.filter((x) => x.on), ...m.items.filter((x) => !x.on)] : m.items).map((it, n) => `<div${m.key === "2" ? ` data-role="${it.pill}" data-q="${(it.name + " " + it.contact[0] + " " + (it.dept || "") + " " + (it.sub || "")).toLowerCase()}"` : ""} class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
+     </section>`;
+   }
+   const opRate = (ph) => `<span class="op-rate${ph.best ? " is-best" : ""}"><b>${ph.rate}</b>${ph.share ? `<em>takes ${ph.share}</em>` : ph.best ? "<em>lowest</em>" : ""}</span>`;
+@@ -24302,7 +24400,7 @@ function agMigRow() {
+     const bestChips = it.phases.filter((ph) => ph.best).length ? `<span class="op-reason-chips">${it.phases.filter((ph) => ph.best).map((ph) => `<span class="op-rc">Lowest ${ph.label.toLowerCase()} <b>${ph.rate}</b></span>`).join("")}</span>` : "";
+     const rows = it.phases.map((ph) => `<div><dt>${ph.label}</dt><dd><b>${ph.rate}</b><em>${ph.share ? `takes ${ph.share}` : "not allocated"}</em></dd></div>`).join("");
+     return `<span class="op-cell is-lead">${it.lead}<span class="op-who"><span class="op-nameline"><b class="op-gname">${it.name}</b><span class="op-info"><button type="button" class="op-info-b" aria-label="Rates and split for ${e(it.name)}">i</button><dl class="op-info-p" role="tooltip">${rows}</dl></span></span>
+-      <span class="op-reason${it.on ? "" : " is-muted"}"><span class="op-reason-k">Why I picked it</span><span class="op-reason-t">${it.why}</span>${bestChips}</span></span></span>`;
++      <span class="op-reason${it.on ? "" : " is-muted"}"><span class="op-reason-k">${it.on ? "Why I picked it" : "Why I did not pick it"}</span><span class="op-reason-t">${it.why}</span>${bestChips}</span></span></span>`;
+   }
+   function opCompactCells(m, it) {
+     const extra = m.key === "2" ? `<span class="op-meta"><span class="op-mseg">${it.contact[0]}</span><i></i><span class="op-mseg">${it.contact[1]}</span></span>`
+@@ -24516,7 +24614,7 @@ function agMigRow() {
+     aside?.remove();
+     const info = opPanelInfo(key === "1" ? opProfileModel() : opSumModel(key));
+     const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
+-    const head = key === "1" ? `<header class="op-dside-hd"><h2 class="op-h"></h2><p class="op-sub"></p></header>` : "";
++    const head = key === "1" ? `<header class="op-dside-hd"><p class="op-sumchip"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Summary</p><h2 class="op-h"></h2><p class="op-sub"></p></header>` : "";
+     body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${head}${v === "g" ? opCollapse(acc) : acc}</div></aside>`);
+     if (key === "1") {
+       const t = AG_TELE.kyc;
