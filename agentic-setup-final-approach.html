@@ -13700,6 +13700,40 @@ body .shell .cl-detail-card .welcome-card.is-agentic, body .shell .cl-detail-car
 .op-facc-h .op-mark i{ all:unset; }
 .op-gl .op-kick{ display:none !important; }
 .op-gl{ padding-top:72px; }
+/* ---- Route page: richer panel ---- */
+.op-route-prog{ display:flex; align-items:center; gap:6px; margin:0 0 26px; max-width:46ch; }
+.op-route-prog span{ flex:1; height:5px; border-radius:5px; background:#dbe6fa; position:relative; overflow:hidden; }
+.op-route-prog span.is-end{ flex:.6; background:repeating-linear-gradient(90deg,#cfdcf5 0 4px,transparent 4px 8px); }
+.op-route-prog span.is-on{ background:linear-gradient(90deg,#60a5fa,#2563eb); }
+.op-route-prog span.is-on::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); animation:op-prog 2.2s ease-in-out infinite; }
+@keyframes op-prog{ from{ transform:translateX(-100%); } to{ transform:translateX(100%); } }
+.op-route-prog em{ flex:none; margin-left:8px; font-style:normal; font-size:12.5px; color:#5f7298; white-space:nowrap; }
+.op-route-side{ padding:26px 30px 22px; background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(246,249,255,.78)); }
+.op-route-map{ gap:2px; }
+.op-route-map li{ padding:12px 14px; margin:0 -14px; border-radius:16px; transition:background 220ms; }
+.op-route-map li:hover{ background:rgba(238,244,255,.8); }
+.op-route-map li.is-here{ background:rgba(238,244,255,.9); box-shadow:0 0 0 1px rgba(37,99,235,.14) inset; }
+.op-route-map::before{ left:37px; top:36px; bottom:36px; }
+.op-route-t b{ font-size:15.5px; }
+.op-route-t em{ display:inline-flex; align-self:flex-start; margin-top:6px; padding:3px 10px; border-radius:99px; background:#eef4ff; color:#2a4a8a; font-size:12px; font-weight:560; }
+.op-route-t em::before{ content:"You"; margin-right:6px; padding-right:6px; border-right:1px solid rgba(37,99,235,.25); font-weight:700; letter-spacing:.04em; text-transform:uppercase; font-size:10.5px; color:var(--op-deep); }
+.op-route-t em{ text-transform:none; }
+.op-route-cta{ margin:0 -30px -22px; padding:16px 30px 18px; background:rgba(238,244,255,.55); border-radius:0 0 24px 24px; }
+.op-dside::before{ display:none !important; }
+.op-dside{ -webkit-mask-image:none !important; mask-image:none !important; }
+/* ---- Business profile in G: title and notes on the left like the summaries, form aligned on the right ---- */
+.op-dl-prof > .ag-step-title, .op-dl-prof > .op-substep{ display:none !important; }
+.op-dl-prof > .ag-live, .op-dl-prof > .op-dside{ grid-row:1 !important; }
+.op-dl-prof > .op-dside{ height:auto !important; max-height:none !important; overflow:visible; position:relative; top:auto; align-self:start; margin-top:0; }
+.op-dl-prof .op-dside-in{ padding:48px 0 0; }
+.op-dl-prof .op-dside-hd{ margin:0 0 22px; }
+.op-dl-prof .op-dside-hd .op-h{ margin:0 0 10px; font-size:23px; line-height:1.25; font-weight:700; letter-spacing:-.4px; color:var(--op-ink); }
+.op-dl-prof .op-dside-hd .op-sub{ margin:0; font-size:14px; line-height:1.55; color:var(--op-mute); }
+.op-dl-prof .ag-profile{ padding-top:44px; }
+.op-gsplit{ grid-template-columns:minmax(340px,520px) minmax(0,1fr) !important; }
+.op-dl-g{ grid-template-columns:340px minmax(0,1fr) !important; }
+.op-dl-g > .op-dside{ margin-left:28px; }
+.op-gl .op-h{ max-width:none; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18269,7 +18303,18 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
   function agDoneToastShow(k) {
     let msg = AG_DONE_TOAST[k];
     if (agSkipToast) { agSkipToast = false; msg = k === "2" ? ["Team invites skipped", "You can add people any time from Users and Roles."] : ["Template mapping skipped", "You can map templates any time later."]; }
-    if (!msg) return;
+    if (!msg) return false;
+    /* the toast is replaced by the same receipt used after every approval */
+    document.getElementById("opStandalone")?.remove();
+    const ov = document.createElement("div");
+    ov.id = "opStandalone";
+    ov.className = "op-sum";
+    ov.dataset.flow = "1";
+    document.body.appendChild(ov);
+    const NEXT = { "1": "Finding your team", "2": "Mapping your brands", e0: "Choosing GTM partners", e1: "Mapping your templates", e2: "Kicking off migration" };
+    opSuccessPaint2(ov, k, { title: msg[0], sub: msg[1], next: NEXT[k] || "The next step" }, false, "d", "Approve");
+    setTimeout(() => { ov.classList.add("is-leaving"); setTimeout(() => ov.remove(), 450); }, 2600);
+    return true;
     let el = document.getElementById("agDoneToast");
     if (!el) {
       el = document.createElement("div");
@@ -18386,8 +18431,8 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     if (AG_DONE_TOAST[k]) {
       const at = state.successAuto.at;
       const inFlow = agSumFlowUntil > Date.now();
-      if (!inFlow) agDoneToastShow(k);
-      const wait = inFlow ? Math.max(120, agSumFlowUntil - Date.now()) : 120;
+      const shown = !inFlow && agDoneToastShow(k);
+      const wait = inFlow ? Math.max(120, agSumFlowUntil - Date.now()) : shown ? 2800 : 120;
       setTimeout(() => { if (state.successAuto && state.successAuto.at === at) successAutoProceed(); }, wait);
     }
     state.successSettled.delete(k);
@@ -23799,7 +23844,7 @@ function agMigRow() {
   }
 
   /* ---- Agent summary: one model, three layouts ---- */
-  const OP_AREA = { "2": "Team", e0: "Brands and LOBs", e1: "GTM partners", e2: "Templates" };
+  const OP_AREA = { "1": "Business profile", "2": "Team", e0: "Brands and LOBs", e1: "GTM partners", e2: "Templates" };
   const OP_ROLE_CAN = { "Regulatory / Legal": "Approves consent policies", "Business Admin": "Runs brands and campaigns", "Super Admin": "Full access to the workspace", "Finance Admin": "Billing and rate cards" };
   /* per line of business, "suggested" already includes the ones that still need a review */
   const opTpl = () => {
@@ -24095,14 +24140,21 @@ function agMigRow() {
     const body = document.querySelector(".ag-step.is-focused .ag-step-body");
     const v = key === "1" ? "g" : opGet("details"); /* business profile always uses G */
     const ok = body && ["1", "2", "e0", "e1", "e2"].includes(key) && v !== "a" && !document.getElementById("agSummary") && !document.querySelector(".ag-step-ai--loader, .ag-loader-frame") && body.querySelector(".ag-live.is-revealed, .ag-profile");
-    document.querySelectorAll(".ag-step-body.op-dl").forEach((b) => { if (b !== body || !ok) { b.classList.remove("op-dl", "op-dl-f", "op-dl-g"); b.querySelector(":scope > .op-dside")?.remove(); } });
+    document.querySelectorAll(".ag-step-body.op-dl").forEach((b) => { if (b !== body || !ok) { b.classList.remove("op-dl", "op-dl-f", "op-dl-g", "op-dl-prof"); b.querySelector(":scope > .op-dside")?.remove(); } });
     if (!ok) return;
     let aside = body.querySelector(":scope > .op-dside");
     if (aside && aside.dataset.key === key) { body.classList.toggle("op-dl-f", v === "f"); body.classList.toggle("op-dl-g", v === "g"); return; }
     aside?.remove();
     const info = opPanelInfo(key === "1" ? opProfileModel() : opSumModel(key));
     const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
-    body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${v === "g" ? opCollapse(acc) : acc}</div></aside>`);
+    const head = key === "1" ? `<header class="op-dside-hd"><h2 class="op-h"></h2><p class="op-sub"></p></header>` : "";
+    body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${head}${v === "g" ? opCollapse(acc) : acc}</div></aside>`);
+    if (key === "1") {
+      const t = AG_TELE.kyc;
+      body.querySelector(".op-dside-hd .op-h").textContent = t.did();
+      body.querySelector(".op-dside-hd .op-sub").textContent = t.next();
+      body.classList.add("op-dl-prof");
+    }
     body.classList.add("op-dl");
     body.classList.toggle("op-dl-f", v === "f");
     body.classList.toggle("op-dl-g", v === "g");
@@ -24605,13 +24657,14 @@ function agMigRow() {
           <p class="op-route-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Your setup plan</p>
           <h2>Five stops, then you migrate.</h2>
           <p>I go first at every stop and do the work. You arrive to a summary, check it and approve.</p>
+          <div class="op-route-prog" aria-label="Setup progress"><span class="is-on"></span><span></span><span></span><span></span><span></span><span class="is-end"></span><em>Step 1 of 5, then migration</em></div>
           <ul class="op-route-pts">
             <li><i>${I("check")}</i><span><b>I do the work</b>Details, people, brands, partners and templates, prepared for you.</span></li>
             <li><i>${I("check")}</i><span><b>You review and edit</b>Every stop ends with a summary you can change.</span></li>
             <li><i>${I("check")}</i><span><b>Nothing goes live</b>Until you approve it.</span></li>
           </ul>
         </div>
-        <div class="op-route-side"><ol class="op-route-map">${AG_NEXTUP.map(([ic, t], n) => `<li style="--n:${n}" class="${n === 0 ? "is-here" : ""}"><span class="op-route-dot">${n === 0 ? opOrb() : I(ic)}</span><span class="op-route-t"><b>${t}</b><span>${OP_PLAN[n][0]}</span><em>You: ${OP_PLAN[n][1].toLowerCase()}</em></span>${n === 0 ? `<span class="op-route-here">I'm starting here</span>` : ""}</li>`).join("")}
+        <div class="op-route-side"><ol class="op-route-map">${AG_NEXTUP.map(([ic, t], n) => `<li style="--n:${n}" class="${n === 0 ? "is-here" : ""}"><span class="op-route-dot">${n === 0 ? opOrb() : I(ic)}</span><span class="op-route-t"><b>${t}</b><span>${OP_PLAN[n][0]}</span><em>${OP_PLAN[n][1]}</em></span>${n === 0 ? `<span class="op-route-here">I'm starting here</span>` : ""}</li>`).join("")}
           <li class="is-end" style="--n:5"><span class="op-route-dot">${I("migration")}</span><span class="op-route-t"><b>Migration</b><span>Your consent records move to DigiConsent</span></span></li></ol>
         <div class="op-route-cta"><span class="op-route-time">Five stops, then migration</span><button type="button" class="op-btn is-primary" data-nextup-go>Start with your business profile${I("arrow", "sm")}</button></div></div>
       </div>`;
