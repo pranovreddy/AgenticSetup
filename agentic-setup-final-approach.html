@@ -13773,6 +13773,21 @@ body .ag-step-body.op-dl-prof > .op-dside{ align-self:start !important; }
 .op-route-cta{ background:none !important; border-radius:0 !important; margin:0 !important; padding:16px 0 0 !important; border-top:1px solid var(--op-line); justify-content:flex-end !important; }
 .op-route-time{ display:none; }
 .op-route-t em::before{ margin-right:5px !important; }
+/* ---- Partners: why I picked it ---- */
+.op-reason{ flex-direction:column; align-items:flex-start; gap:6px; padding:12px 14px !important; }
+.op-reason i{ display:none; }
+.op-reason-k{ font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--op-deep); }
+.op-reason-t{ font-size:13.5px; line-height:1.5; color:var(--op-ink2); }
+.op-reason-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:2px; }
+.op-reason-chips .op-rc{ display:inline-flex !important; width:auto; height:auto; align-items:center; gap:5px; padding:3px 10px; border-radius:99px; background:#fff; box-shadow:0 0 0 1px rgba(37,99,235,.18) inset; font-style:normal; font-size:12px; font-weight:560; color:#2a4a8a; }
+.op-reason-chips b{ color:var(--op-deep); font-variant-numeric:tabular-nums; }
+.op-selcount span{ color:#5f7298; }
+/* ---- Route: stops glide to the rail when processing starts ---- */
+.ag-nextup.is-flying .op-route-copy, .ag-nextup.is-flying .op-route-cta{ opacity:0; transform:translateY(8px); transition:opacity 260ms ease, transform 260ms ease; }
+.ag-nextup.is-flying .op-route-map{ transform:translateX(var(--fly-x,-600px)) scale(.9); transform-origin:left top; transition:transform 650ms cubic-bezier(.65,0,.35,1); }
+.ag-nextup.is-flying .op-route-t, .ag-nextup.is-flying .op-route-here{ opacity:0; transition:opacity 220ms ease; }
+.ag-nextup.is-flying .op-route-map::before{ background:linear-gradient(180deg,var(--op-blue),#cfdcf3 60%,#cfdcf3); }
+.ag-nextup.is-flying .op-route-map li{ animation:none; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18497,6 +18512,19 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     </div>`;
     el.addEventListener("click", (ev) => {
       if (!ev.target.closest("[data-nextup-go]")) return;
+      const map = el.querySelector(".op-route-map");
+      if (map && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        /* the stops glide left onto the rail, so the plan and the rail read as one thing */
+        const rail = document.querySelector(".ag-tel-icons, .cl-overview");
+        const rr = rail ? rail.getBoundingClientRect() : { left: 28, width: 48 };
+        const first = map.querySelector(".op-route-dot");
+        const dx = (rr.left + rr.width / 2) - (first.getBoundingClientRect().left + first.getBoundingClientRect().width / 2);
+        map.style.setProperty("--fly-x", dx + "px");
+        el.classList.add("is-flying");
+        setTimeout(() => { el.classList.add("is-leaving"); }, 650);
+        setTimeout(() => { el.remove(); agGo("1"); }, 950);
+        return;
+      }
       el.classList.add("is-leaving");
       setTimeout(() => {
         el.remove();
@@ -24007,10 +24035,10 @@ function agMigRow() {
     return [who, `<span class="op-cell is-num">${it.facts[0][1]}</span>`, `<span class="op-meter"><span class="op-bar-in"><i style="width:${it.pct}%"></i></span><em>${it.pct}%</em></span>`, `<span class="op-pill">${it.pill}</span>`];
   }
   function opList(m, compact) {
-    const sel = m.key === "e1" && compact ? `<p class="op-selcount"><b>${m.items.filter((x) => x.on).length} of ${m.items.length}</b> partners selected</p>` : "";
+    const sel = m.key === "e1" && compact ? `<p class="op-selcount"><b>${m.items.filter((x) => x.on).length} of ${m.items.length}</b> partners selected <span>· the others did not clear the best-rate bar</span></p>` : "";
     return sel + `<section class="op-list${compact ? " is-compact" : ""}" style="--cols:${compact ? opCompactCols(m) : m.cols}">
       ${compact ? "" : `<div class="op-row is-head">${m.head.map((h) => `<span>${agSumEsc(h)}</span>`).join("")}</div>`}
-      ${m.items.map((it, n) => `<div class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
+      ${(m.key === "e1" && compact ? m.items.filter((x) => x.on) : m.items).map((it, n) => `<div class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
     </section>`;
   }
   const opRate = (ph) => `<span class="op-rate${ph.best ? " is-best" : ""}"><b>${ph.rate}</b>${ph.share ? `<em>takes ${ph.share}</em>` : ph.best ? "<em>lowest</em>" : ""}</span>`;
@@ -24019,9 +24047,10 @@ function agMigRow() {
   /* ---- Partners: logo and name, the reason up front, rates and split behind an info icon ---- */
   function opGtmWho(m, it) {
     const e = agSumEsc;
+    const bestChips = it.phases.filter((ph) => ph.best).length ? `<span class="op-reason-chips">${it.phases.filter((ph) => ph.best).map((ph) => `<span class="op-rc">Lowest ${ph.label.toLowerCase()} <b>${ph.rate}</b></span>`).join("")}</span>` : "";
     const rows = it.phases.map((ph) => `<div><dt>${ph.label}</dt><dd><b>${ph.rate}</b><em>${ph.share ? `takes ${ph.share}` : "not allocated"}</em></dd></div>`).join("");
     return `<span class="op-cell is-lead">${it.lead}<span class="op-who"><span class="op-nameline"><b class="op-gname">${it.name}</b><span class="op-info"><button type="button" class="op-info-b" aria-label="Rates and split for ${e(it.name)}">i</button><dl class="op-info-p" role="tooltip">${rows}</dl></span></span>
-      <span class="op-reason${it.on ? "" : " is-muted"}"><i aria-hidden="true">${I("check")}</i>${it.why}</span></span></span>`;
+      <span class="op-reason${it.on ? "" : " is-muted"}"><span class="op-reason-k">Why I picked it</span><span class="op-reason-t">${it.why}</span>${bestChips}</span></span></span>`;
   }
   function opCompactCells(m, it) {
     const extra = m.key === "2" ? `<span class="op-meta"><span class="op-mseg">${it.contact[0]}</span><i></i><span class="op-mseg">${it.contact[1]}</span></span>`
