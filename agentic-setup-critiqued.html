@@ -13385,6 +13385,12 @@ body.ag-gate .ag-brief-read{ top:48px !important; }
 body:has(.ag-nextup) .cl-overview{ opacity:0 !important; visibility:hidden !important; pointer-events:none; }
 .ag-nextup{ align-content:safe center; }
 
+/* ---- Next-up (A): icon with title and text beside it ---- */
+.ag-nextup-head{ display:grid !important; grid-template-columns:auto 1fr; column-gap:16px; align-items:center; text-align:left !important; }
+.ag-nextup-head .ag-nextup-mark{ grid-row:1 / span 2; margin:0 !important; width:52px; height:52px; }
+.ag-nextup-head .ag-nextup-title{ margin:0 0 4px !important; text-align:left; align-self:end; }
+.ag-nextup-head .ag-nextup-sub{ margin:0 !important; text-align:left; align-self:start; max-width:none; }
+
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -18002,7 +18008,6 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     el.classList.toggle("is-e", nv === "e");
     el.innerHTML = nv === "d" || nv === "e" ? opNextUpMarkup(nv) : plan ? `<div class="op-plan-in">
       <header class="op-plan-hd">
-        <p class="op-plan-k"><i>${I("check")}</i>Agreements accepted</p>
         <h2>Next, I set up your workspace</h2>
         <p>Five areas, one after another. I do the work, you review and accept each one.</p>
       </header>
@@ -18011,7 +18016,6 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     </div>` : `<div class="ag-nextup-card">
       <header class="ag-nextup-head">
         <span class="ag-nextup-mark ai-mark-wrap">${bootAiMark()}</span>
-        <p class="ag-nextup-kicker"><i>${I("check")}</i>Agreements accepted</p>
         <h2 class="ag-nextup-title">Next, your agent sets everything up</h2>
         <p class="ag-nextup-sub">I'll work through each area and prepare your DigiConsent workspace. You only review and accept.</p>
       </header>
@@ -24072,7 +24076,6 @@ function agMigRow() {
     if (v === "d") {
       return `<div class="op-route">
         <div class="op-route-copy">
-          <p class="op-plan-k"><i>${I("check")}</i>Agreements accepted</p>
           <h2>Five stops, then you migrate.</h2>
           <p>I go first at every stop and do the work. You arrive to a summary, check it and approve. Nothing goes live until you do.</p>
           <button type="button" class="op-btn is-primary" data-nextup-go>Start with your business profile${I("arrow", "sm")}</button>
