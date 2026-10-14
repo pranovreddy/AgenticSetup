@@ -21260,12 +21260,17 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const d = new Date(OP_MIG_AT + addDays * 86400000);
     return d.toLocaleDateString("en-GB", short ? { day: "2-digit", month: "short", year: "numeric" } : { day: "numeric", month: "long", year: "numeric" });
   }
+  /* dates after kick-off count from the day the 30-day window closes */
+  function opMigDay(addDays, short) {
+    const d = new Date(OP_MIG_CLOSE + addDays * 86400000);
+    return d.toLocaleDateString("en-GB", short ? { day: "2-digit", month: "short", year: "numeric" } : { day: "numeric", month: "long", year: "numeric" });
+  }
   function agMigUnlockedMarkup() {
     const chev = `<span class="ag-mig-stage-sep" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>`;
     const stages = [
-      { n: 1, title: "Upload & Submit", sub: state.migWindow === "open" ? "closes " + opMigDate(17) : "opens on " + opMigDate(0), on: true },
-      { n: 2, title: "Consent Notification", sub: opMigDate(18, true), on: false },
-      { n: 3, title: "Consent Based Scrubbing", sub: opMigDate(28, true), on: false },
+      { n: 1, title: "Upload & Submit", sub: "closes " + opMigDay(0), on: true },
+      { n: 2, title: "Consent Notification", sub: opMigDay(1, true), on: false },
+      { n: 3, title: "Consent Based Scrubbing", sub: opMigDay(11, true), on: false },
     ];
     const stageHtml = stages.map((s, i) =>
       `${i ? chev : ""}<div class="ag-mig-stage${s.on ? " is-on" : ""}">
@@ -21282,7 +21287,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         <p>Migrate your legacy consent records into WiselyConsent - validated, verified and notified to user in one guided flow.</p>
       </header>
       <div class="ag-mig-stages" aria-label="Migration stages">${stageHtml}</div>
-      ${state.migWindow === "open" ? `      <div class="ag-mig-empty" role="status">
+      ${true ? `      <div class="ag-mig-empty" role="status">
         <span class="ag-mig-empty-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M4.5 15v3a1.5 1.5 0 001.5 1.5h12a1.5 1.5 0 001.5-1.5v-3"/></svg></span>
         <h3>No Consents Uploaded Yet</h3>
         <p>Upload a CSV with consent records to migrate them into WiselyConsent. AI will help validate and resolve errors automatically.</p>
