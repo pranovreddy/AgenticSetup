@@ -14470,6 +14470,15 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .op-facc-h{ display:flex !important; align-items:center; justify-content:flex-start; width:100%; gap:8px; text-align:left; }
 .op-facc-h i{ margin-left:auto !important; flex:none; }
 .op-facc{ border-top:1px solid rgba(37,99,235,.08) !important; } .op-facc:first-child{ border-top:0 !important; } .op-facc:last-child{ border-bottom:1px solid rgba(37,99,235,.08); }
+/* Not-selected partners: logo, name and status in a row that expands */
+.op-gk-off{ display:flex; flex-direction:column; gap:8px; }
+.op-gk-ex{ border:1px dashed #c4cfe3; border-radius:16px; background:rgba(238,241,247,.55); }
+.op-gk-ex > summary{ display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer; list-style:none; } .op-gk-ex > summary::-webkit-details-marker{ display:none; }
+.op-gk-ex > summary .op-gc-logo{ flex:none; width:36px; height:36px; } .op-gk-ex > summary > b{ flex:1; min-width:0; font-size:15px; font-weight:650; color:#3c4762; }
+.op-gk-chev{ width:16px; height:16px; flex:none; position:relative; } .op-gk-chev::before{ content:""; position:absolute; left:3px; top:3px; width:7px; height:7px; border-right:1.8px solid #53627f; border-bottom:1.8px solid #53627f; transform:rotate(45deg); transition:transform 160ms; }
+.op-gk-ex[open] .op-gk-chev::before{ transform:rotate(-135deg); top:6px; }
+.op-gk-ex > summary:hover{ background:rgba(255,255,255,.5); border-radius:16px; } .op-gk-ex > summary:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; border-radius:16px; }
+.op-gk-ex-b{ padding:0 16px 14px; } .op-gk-ex-b .op-gk-c{ background:transparent; } .op-gk-ex-b .op-gk-c b, .op-gk-ex-b .op-gk-sc span b{ color:#53627f; font-weight:600; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -25055,20 +25064,20 @@ function agMigRow() {
     };
     return `<section class="op-list op-cardgrid is-${key}">${m.items.map(card).join("")}</section>`;
   }
-  /* One compact card per GTM partner: selected first, then the others set apart */
+  /* One compact card per selected GTM partner; the others are one-line rows that expand */
   function opGtmCards(m) {
     const sel = m.items.filter((x) => x.on), off = m.items.filter((x) => !x.on);
     const money = (v) => `₹${Number(v).toFixed(2)}`;
-    const card = (it) => {
+    const inner = (it) => {
       const pool = AG_GTM_POOL.find((p) => p.name === agSumUnesc(it.name)) || {};
       const r = pool.rates || {};
-      const cells = it.phases.map((p) => `<span class="op-gk-c${p.best && it.on ? " is-best" : ""}"><i>${p.label}</i><b>${p.best && it.on ? `<span class="op-gk-low" title="Lowest rate">${I("check", "sm")}</span>` : ""}${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : ""}</span>`).join("");
+      const cells = it.phases.map((p) => `<div class="op-gk-c${p.best && it.on ? " is-best" : ""}"><i>${p.label}</i><b>${p.best && it.on ? `<span class="op-gk-low" title="Lowest rate">${I("check", "sm")}</span>` : ""}${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : `<em class="is-n">&nbsp;</em>`}</div>`).join("");
       const scrub = [["SMS", r.sms], ["Call", r.voice], ["RCS", r.rcs]].map(([l, v]) => `<span><i>${l}</i><b>${v == null ? "" : money(v)}</b></span>`).join("");
-      return `<article class="op-gk${it.on ? "" : " is-off"}"><header class="op-gk-top"><span class="op-gc-logo">${it.lead}</span><b>${it.name}</b><span class="op-gt-s${it.on ? " is-on" : ""}"><i></i>${it.on ? "Selected" : "Not selected"}</span></header>
-        <p class="op-gk-why"><i>${it.on ? "Why it was chosen" : "Why it was not chosen"}</i>${it.why}</p>
-        <div class="op-gk-ph">${cells}</div><div class="op-gk-sc"><em>Scrubbing</em>${scrub}</div></article>`;
+      return `<p class="op-gk-why"><i>${it.on ? "Why it was chosen" : "Why it was not chosen"}</i>${it.why}</p><div class="op-gk-ph">${cells}</div><div class="op-gk-sc"><em>Scrubbing</em>${scrub}</div>`;
     };
-    return `<p class="op-selcount"><b>${sel.length} of ${m.items.length}</b> partners selected</p><div class="op-gk-grid">${sel.map(card).join("")}</div>${off.length ? `<p class="op-gk-div"><span>Not selected</span></p><div class="op-gk-grid">${off.map(card).join("")}</div>` : ""}`;
+    const card = (it) => `<article class="op-gk"><header class="op-gk-top"><span class="op-gc-logo">${it.lead}</span><b>${it.name}</b><span class="op-gt-s is-on"><i></i>Selected</span></header>${inner(it)}</article>`;
+    const offRow = (it) => `<details class="op-gk-ex"><summary><span class="op-gc-logo">${it.lead}</span><b>${it.name}</b><span class="op-gt-s"><i></i>Not selected</span><span class="op-gk-chev" aria-hidden="true"></span></summary><div class="op-gk-ex-b">${inner(it)}</div></details>`;
+    return `<p class="op-selcount"><b>${sel.length} of ${m.items.length}</b> partners selected</p><div class="op-gk-grid">${sel.map(card).join("")}</div>${off.length ? `<p class="op-gk-div"><span>Not selected</span></p><div class="op-gk-off">${off.map(offRow).join("")}</div>` : ""}`;
   }
   function agSumUnesc(t) { const d = document.createElement("textarea"); d.innerHTML = t; return d.value; }
   function opGMarkup(m) {
