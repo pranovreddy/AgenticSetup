@@ -14442,6 +14442,12 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .op-cg-ev:hover ~ .op-cg-pop, .op-cg-ev:focus ~ .op-cg-pop, .op-cg-chips span.op-cg-pop:hover{ opacity:1 !important; visibility:visible !important; transform:none !important; pointer-events:auto !important; transition-delay:0s !important; }
 .op-cg:has(.op-cg-lob:hover):not(:has(.op-cg-ev:hover)):not(:has(.op-cg-ev:focus)){ z-index:auto; }
 .op-cg:has(.op-cg-ev:hover), .op-cg:has(.op-cg-ev:focus){ overflow:visible; z-index:5; }
+/* ---- Empty states ---- */
+.ag-empty-ico{ position:relative; display:grid; place-items:center; width:84px; height:84px; margin:0 auto 18px; border-radius:50%; color:#4f6fb3; background:radial-gradient(circle at 34% 28%, #fff, #eaf1ff 70%); border:1.5px dashed #b9cbef; box-shadow:0 10px 26px -12px rgba(37,99,235,.35); }
+.ag-empty-ico svg{ width:32px; height:32px; stroke-width:1.6; }
+.ag-outcome.is-empty{ text-align:center; } .ag-outcome.is-empty .ag-outcome-actions{ justify-content:center; }
+.ag-empty-note{ margin:14px 0 0; text-align:center; font-size:13px; color:#53627f; }
+.ag-outcome.is-empty .ag-outcome-head{ text-align:center; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21289,16 +21295,16 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     "brands-review": "e0", "brands-paused": "e0", "mm-waiting": "e0",
     "brands-partial": "e0", "brands-rejected": "e0",
     "gtm-norates": "e1",
-    "tpl-attention": "e2",
+    "tpl-attention": "e2", "brands-empty": "e0", "tpl-none": "e2",
   };
 
   function agOutcomeStatus(label, tone) {
     return label ? `<span class="ag-outcome-status is-${tone || "wait"}">${agEsc(label)}</span>` : "";
   }
 
-  function agOutcomeShell({ eyebrow, tone = "wait", status, statusTone, title, lead, body = "", actions = "" }) {
+  function agOutcomeShell({ eyebrow, tone = "wait", status, statusTone, title, lead, body = "", actions = "", icon = "", note = "" }) {
     const split = false;
-    const head = `<div class="ag-outcome-head">
+    const head = `${icon ? `<span class="ag-empty-ico" aria-hidden="true">${icon}</span>` : ""}<div class="ag-outcome-head">
         <div class="ag-outcome-eyebrow-row">
           ${eyebrow ? `<span class="ag-outcome-eyebrow">${agEsc(eyebrow)}</span>` : ""}
           ${agOutcomeStatus(status, statusTone || tone)}
@@ -21306,8 +21312,8 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         <h3 class="ag-outcome-title">${title}</h3>
         ${lead ? `<p class="ag-outcome-lead">${lead}</p>` : ""}
       </div>`;
-    const rest = `${body}${actions ? `<div class="ag-outcome-actions">${actions}</div>` : ""}`;
-    return `<div class="ag-outcome is-${tone}${split ? " is-split" : ""}" role="status">
+    const rest = `${body}${actions ? `<div class="ag-outcome-actions">${actions}</div>` : ""}${note ? `<p class="ag-empty-note">${note}</p>` : ""}`;
+    return `<div class="ag-outcome is-${tone}${split ? " is-split" : ""}${icon ? " is-empty" : ""}" role="status">
       ${head}
       ${split ? `<div class="ag-outcome-right"><h2 class="op-gr-title">Team</h2>${rest}</div>` : rest}
     </div>`;
@@ -21379,7 +21385,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         tone: "neutral",
         title: "No people found",
         lead: "Add people yourself, or do it later.",
-        body: `<div class="ag-outcome-empty-card"><span aria-hidden="true">${I("users")}</span><b>0 people suggested</b><p>Nobody on your DLT registration matched a role. Add a person, or invite your team later from the Team step.</p></div>`,
+        icon: I("users"),
         actions: `<button type="button" class="ag-btn" data-action="ag-team-later">Do it later</button>
           <button type="button" class="ag-btn is-primary" data-action="ag-add-person">Add user</button>`,
       });
@@ -21474,8 +21480,33 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         status: "Preparing", statusTone: "wait",
         title: "No rate cards yet",
         lead: "No GTM partners have sent rate cards yet. They will show here when they do.",
+        icon: I("phone"),
         body: "",
         actions: `<button type="button" class="ag-btn is-primary" data-action="ag-outcome-recheck">View summary</button>`,
+      });
+    }
+
+    /* ---- Empty states: nothing found ------------------------------------ */
+    if (o === "brands-empty") {
+      return agOutcomeShell({
+        eyebrow: "Brands and LOBs",
+        tone: "neutral",
+        icon: I("layers"),
+        title: "No brands or lines of business found",
+        lead: "None were found in your DLT registrations. Add them yourself. Any change or addition goes in for review.",
+        actions: `<button type="button" class="ag-btn is-primary" data-action="ag-empty-act" data-msg="Add a brand and its lines of business. Any change or addition goes in for review." data-focus="e0">Add</button>`,
+      });
+    }
+    if (o === "tpl-none") {
+      return agOutcomeShell({
+        eyebrow: "Templates",
+        tone: "neutral",
+        icon: I("list"),
+        title: "No templates mapped",
+        lead: "Map them yourself, or skip for now. Any change or addition goes in for review.",
+        actions: `<button type="button" class="ag-btn" data-action="ag-empty-act" data-msg="Templates left for later." data-focus="e2" data-skip="1">Skip for now</button>
+          <button type="button" class="ag-btn is-primary" data-action="ag-empty-act" data-msg="Map each template to a line of business. Any change or addition goes in for review." data-focus="e2">Map</button>`,
+        note: "Skip for now leaves this for later.",
       });
     }
 
@@ -23947,6 +23978,7 @@ function agMigRow() {
       if (act.dataset.action === "ag-contact-support") { toast("Contact support opens in the full product."); return; }
       if (act.dataset.action === "ag-mig-learn") { toast("Learn more about the migration window."); return; }
       /* ---- Outcome-view CTAs ---- */
+      if (act.dataset.action === "ag-empty-act") { state.outcome = null; state.ag.focus = act.dataset.focus || state.ag.focus; render(); toast(act.dataset.msg || "Opening."); return; }
       if (act.dataset.action === "ag-outcome-notify") { toast("We'll notify you as soon as there's an update."); return; }
       if (act.dataset.action === "ag-outcome-recheck") { agBusy(act, "Checking…", 900).then(() => { toast("No change yet — we'll keep watching."); render(); }); return; }
       if (act.dataset.action === "ag-profile-fix") { state.outcome = null; state.estateAmend.profile = true; state.ag.focus = "1"; render(); toast("Opening your business profile to review."); return; }
@@ -24293,6 +24325,8 @@ function agMigRow() {
     { id: "profile-none", label: "Business profile — none approved" },
     { id: "profile-waiting", label: "Business profile — with telecom operators" },
     { id: "team-empty", label: "Team — nobody found" },
+    { id: "brands-empty", label: "Brands — nothing found" },
+    { id: "tpl-none", label: "Templates — none mapped" },
     { id: "team-later", label: "Team — Do it later" },
     { id: "brands-review", label: "Brands — in review / Waiting" },
     { id: "brands-paused", label: "Paused — brands with Registrar" },
@@ -24395,6 +24429,14 @@ function agMigRow() {
       state.outcome = id;
       state.mmAttention = true;
       go("e0");
+    } else if (id === "brands-empty") {
+      state.done.estate = [false, false, false];
+      state.outcome = id;
+      go("e0");
+    } else if (id === "tpl-none") {
+      state.done.estate = [true, true, false];
+      state.outcome = id;
+      go("e2");
     } else if (id === "gtm-norates") {
       state.done.estate = [true, false, false];
       state.outcome = id;
