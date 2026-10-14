@@ -106,6 +106,7 @@ const F=[
  pri:'Gestalt similarity and Refactoring UI (repetition without new information); peak-end rule (the end of the step should be quick to read).',
  dir:'Option: keep the sub line and the Record row only, or drop the sub line and keep the table.'},
 ];
+const DEC={"I-01": "Yes, intended. The bar stays hidden.", "I-02": "Left to the reviewer. Blue filled disc with a white check, no ring stamp, on every success screen. Applied in the fixes file.", "I-03": "Summaries and approvals: action at the bottom of the screen. Approved and end states: action next to the content, as on the business profile approved screen. Applied to success screens.", "I-04": "Open. Designer will choose after seeing show/I-04_status_forms.png. Interim: on status screens the coloured text goes below the chip (applied).", "I-05": "Yes, Team uses the centred end-state layout. Applied.", "I-06": "The dark screen should not exist. Removed: the user lands in the product.", "I-07": "Yes, the GTM details page follows the cards. Applied.", "I-08": "Open. Designer will answer after seeing show/I-08_card_tags.png."};
 const I=[
 ['I-01','Agent bar','The copy document defines a bar line for every step. In every captured state the bar container is display:none (width 0, height 0).','Nielsen heuristic 1 (visibility of status); consistency with the requirements.','Is the bar intentionally removed, or should it show on summaries and success screens?'],
 ['I-02','Success glyph','Three treatments: a pale green outlined check (brands success), a blue filled disc with a ring stamp (team, GTM, templates success), and a larger blue disc (kick-off).','Gestalt similarity; Nielsen heuristic 4.','Should one success mark be used for all steps, with the stamp reserved for signed documents?'],
@@ -153,7 +154,7 @@ for(const f of F){
   P('Decision:   ☐ Adopt     ☐ Adapt     ☐ Decline     ☐ Defer',{bold:true,after:200}));
 }
 const incons=[H1('Inconsistencies'),P('Where the prototype disagrees with itself, the requirements or the copy document. These are questions for the designer, not rulings.',{italics:true,color:'475569'}),
- table([700,1200,3300,2000,2400],['ID','Topic','What differs','Principle at stake','Question for the designer'],I,{size:18})];
+ table([600,900,2500,1500,1800,2300],['ID','Topic','What differs','Principle at stake','Question for the designer','Decision, 14 October 2026'],I.map(i=>[...i,DEC[i[0]]||'']),{size:17})];
 const typeTbl=table([2200,1500],['Font size','Elements'],sizeRows,{size:19});
 const wTbl=table([2200,1500],['Font weight','Elements'],wRows,{size:19});
 const visual=[H1('Visual system reference (one option)'),
@@ -166,7 +167,7 @@ const visual=[H1('Visual system reference (one option)'),
  H2('Spacing scale (one option)'),
  P('4, 8, 12, 16, 24, 32, 48 px. Card padding 16 or 24. Gap between cards 16. Gap between sections 32.')];
 const log=[H1('Decision log'),P('Record each decision with the date. If a suggestion is adapted, note what is wanted or write "details to be added".'),
- table([900,3200,1700,1200,2500],['ID','Suggestion','Decision','Date','Notes'],[...F.map(f=>[f.id,f.t,'','','']),...I.map(i=>[i[0],i[1],'','',''])],{size:18})];
+ table([900,3200,1700,1200,2500],['ID','Suggestion','Decision','Date','Notes'],[...F.map(f=>[f.id,f.t,'','','']),...I.map(i=>[i[0],i[1],(DEC[i[0]]||'').split('.')[0]+'.','14 Oct 2026',DEC[i[0]]||''])],{size:18})];
 const lim=[H1('Method and limits'),
  H2('How it was captured'),
  bullet('Chrome driven by Playwright at 1440 by 900. Motion left on. The script is capture.js in this folder.'),

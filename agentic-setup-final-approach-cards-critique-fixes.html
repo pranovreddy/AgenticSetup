@@ -14421,6 +14421,16 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .ag-btn.is-tour-hl{ position:relative; z-index:52; box-shadow:0 0 0 2px rgba(37,99,235,.55), 0 0 0 7px rgba(37,99,235,.16), 0 16px 36px rgba(37,99,235,.2) !important; }
 @media (prefers-reduced-motion:reduce){ .ag-app-tour-card, .ag-app-tour, body.ag-app-tour .ag-app-sec{ transition:none !important; animation:none !important; } }
 .ag-tour-spot{ z-index:60; box-shadow:0 0 0 2px rgba(37,99,235,.55), 0 0 0 7px rgba(37,99,235,.16), 0 16px 36px rgba(37,99,235,.2) !important; }
+/* ---- Decisions: one success mark, actions near the content, GTM details as cards ---- */
+.ag-success-badge{ width:72px !important; height:72px !important; border-radius:50% !important; color:#fff !important; background:radial-gradient(circle at 34% 28%, #b9d4ff, #5b95ff 38%, #1d4ed8 100%) !important; box-shadow:0 18px 40px rgba(37,99,235,.34), 0 0 0 8px rgba(37,99,235,.07), inset 0 2px 4px rgba(255,255,255,.5) !important; border:0 !important; }
+.ag-success-badge svg{ width:32px !important; height:32px !important; stroke:#fff !important; stroke-width:2.6; }
+.op-stamp{ display:none !important; }
+.ag-live:has(.ag-success) { justify-content:center; }
+.ag-live:has(.ag-success) .ag-success{ height:auto !important; min-height:0 !important; flex:none !important; }
+.ag-live:has(.ag-success) .ag-actions{ position:static !important; background:none !important; box-shadow:none !important; justify-content:center; padding-top:12px; }
+.ag-rates--canvas .ag-more{ margin-top:12px; } .ag-rates--canvas .ag-rate-accept{ margin-top:10px; }
+/* status text sits below the chip */
+.ag-outcome-eyebrow-row{ flex-direction:column !important; align-items:center !important; gap:8px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -20296,32 +20306,23 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const PH = { acq: "acquisition", mig: "migration", ref: "refresh" };
     const chev = `<svg class="ag-more-chev" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>`;
     const others = AG_GTM_POOL.filter((p) => !list.includes(p));
-    const cards = list.map((p) => {
-      const a = alloc[p.id] || { acq: "0", mig: "0", ref: "0" };
-      const lowest = Object.keys(PH).filter((k) => p.rates[k] === best[k]);
+    const tile = (label, k, p, a, on) => {
+      const low = on && p.rates[k] === best[k];
+      return `<span class="op-gk-c${low ? " is-best" : ""}"><i>${label}</i><b>${low ? `<span class="op-gk-low" title="Lowest rate">${I("check", "sm")}</span>` : ""}${agGtmMoney(p.rates[k])}</b>${on && a[k] && a[k] !== "0" ? `<em>${String(a[k]).replace(/%?$/, "%")}</em>` : ""}</span>`;
+    };
+    const card = (p, on) => {
+      const a = on ? (alloc[p.id] || { acq: "0", mig: "0", ref: "0" }) : {};
       const rows = [
-        { phase: "Acquisition", rate: agGtmMoney(p.rates.acq), alloc: a.acq, hot: a.acq !== "0" },
         { phase: "Migration", rate: agGtmMoney(p.rates.mig), alloc: a.mig, hot: a.mig !== "0" },
+        { phase: "Acquisition", rate: agGtmMoney(p.rates.acq), alloc: a.acq, hot: a.acq !== "0" },
         { phase: "Refresh", rate: agGtmMoney(p.rates.ref), alloc: a.ref, hot: a.ref !== "0" },
         { phase: "Scrubbing", head: true },
         { phase: "SMS Scrubbing", icon: "sms", rate: agGtmMoney(p.rates.sms), alloc: "0", sub: true },
         { phase: "Voice Scrubbing", icon: "voice", rate: agGtmMoney(p.rates.voice), alloc: "0", sub: true },
         { phase: "RCS Scrubbing", icon: "rcs", rate: agGtmMoney(p.rates.rcs), alloc: "0", sub: true },
       ];
-      const facts = [
-        ...lowest.map((k) => `<span class="ag-fact is-best"><i></i>Lowest ${PH[k]} rate <b>${agGtmMoney(p.rates[k])}</b></span>`),
-        ...Object.keys(PH).filter((k) => a[k] && a[k] !== "0").map((k) => `<span class="ag-fact">Takes <b>${a[k]}</b> of ${PH[k]}</span>`),
-      ].join("");
-      return `<article class="ag-rate">
-      <header class="ag-rate-head">
-        <span class="ag-rate-mark is-${p.tone}">${p.mark}</span>
-        <div class="ag-rate-head-copy">
-          <b>${agEsc(p.name)}<em class="ag-rate-sel">Selected</em></b>
-          <p class="ag-rate-why">${agEsc(p.why)}</p>
-        </div>
-      </header>
-      <div class="ag-rate-facts">${facts}</div>
-      <details class="ag-more">
+      const scrub = [["SMS", p.rates.sms], ["Call", p.rates.voice], ["RCS", p.rates.rcs]].map(([l, v]) => `<span><i>${l}</i><b>${agGtmMoney(v)}</b></span>`).join("");
+      const more = on ? `<details class="ag-more">
         <summary>View full rate card${chev}</summary>
         <div class="ag-rate-table" role="table" aria-label="${agEsc(p.name)} rate card">
           <div class="ag-rate-row is-head" role="row"><span>Phase</span><span>Your rate</span><span>Allocation</span></div>
@@ -20331,20 +20332,16 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       <label class="ag-rate-accept">
         <input type="checkbox" name="rate-${p.id}">
         <span>I have read and accept <button type="button" data-action="ag-rate-terms" data-partner="${agEsc(p.name)}">${agEsc(p.name)}'s Rate Card Terms</button>, including the fees in the rate card</span>
-      </label>
-    </article>`;
-    }).join("");
-    const rest = others.length ? `<details class="ag-more ag-rates-others">
-      <summary>Other partners we checked (${others.length})${chev}</summary>
-      <ul>${others.map((p) => `<li><span class="ag-rate-mark is-${p.tone}">${p.mark}</span><div><b>${agEsc(p.name)}</b><p>${agEsc(p.why)}</p></div></li>`).join("")}</ul>
-    </details>` : "";
+      </label>` : "";
+      return `<article class="op-gk${on ? "" : " is-off"}"><header class="op-gk-top"><span class="ag-rate-mark is-${p.tone}">${p.mark}</span><b>${agEsc(p.name)}</b><span class="op-gt-s${on ? " is-on" : ""}"><i></i>${on ? "Selected" : "Not selected"}</span></header>
+        <p class="op-gk-why"><i>${on ? "Why it was chosen" : "Why it was not chosen"}</i>${agEsc(p.why)}</p>
+        <div class="op-gk-ph">${tile("Migration", "mig", p, a, on)}${tile("Acquisition", "acq", p, a, on)}${tile("Refresh", "ref", p, a, on)}</div>
+        <div class="op-gk-sc"><em>Scrubbing</em>${scrub}</div>${more}</article>`;
+    };
     return `<div class="ag-rates ag-rates--canvas">
-      <header class="ag-rates-lead">
-        <p class="ag-rates-eyebrow">${list.length} of ${AG_GTM_CHECKED} partners selected</p>
-        <h3>Best Rates in Every Phase, Split Across Two Partners so No Single Vendor Holds Your Estate.</h3>
-      </header>
-      ${cards}
-      ${rest}
+      <p class="op-selcount"><b>${list.length} of ${AG_GTM_CHECKED}</b> partners selected</p>
+      <div class="op-gk-grid">${list.map((p) => card(p, true)).join("")}</div>
+      ${others.length ? `<p class="op-gk-div"><span>Not selected</span></p><div class="op-gk-grid">${others.map((p) => card(p, false)).join("")}</div>` : ""}
     </div>`;
   }
   function agGtmWalkSteps(phase) {
@@ -21289,7 +21286,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
   }
 
   function agOutcomeShell({ eyebrow, tone = "wait", status, statusTone, title, lead, body = "", actions = "" }) {
-    const split = eyebrow === "Team";
+    const split = false;
     const head = `<div class="ag-outcome-head">
         <div class="ag-outcome-eyebrow-row">
           ${eyebrow ? `<span class="ag-outcome-eyebrow">${agEsc(eyebrow)}</span>` : ""}
@@ -24301,7 +24298,7 @@ function agMigRow() {
     { id: "return-open", label: "Return opening + welcome back" },
     { id: "return-unchanged", label: "Welcome back — nothing changed" },
     { id: "logout-unsaved", label: "Log out — unsaved input" },
-    { id: "org-finished", label: "Organisation finished setting up" },
+    { id: "org-finished", label: "Organisation finished setting up (lands in the product)" },
     { id: "review-return", label: "Review comes back — partly approved" },
     { id: "mm-waiting", label: "In review" },
   ];
@@ -24426,7 +24423,12 @@ function agMigRow() {
       state.unsavedInput = true;
       setTimeout(() => document.querySelector('[data-action="ag-logout"]')?.click(), 200);
     } else if (id === "org-finished") {
-      agShowOrgFinished();
+      /* No interstitial: someone else finished onboarding, so the user lands in the product. */
+      state.done.estate = [true, true, true];
+      state.done.migration = true;
+      state.migWindow = "not_open";
+      state.outcome = "mig-notopen";
+      go("m");
     } else if (id === "review-return") {
       state.done.estate = [false, false, false];
       state.mmStatus = "Waiting";
