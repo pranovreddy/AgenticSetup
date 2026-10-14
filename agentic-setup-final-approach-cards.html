@@ -14192,6 +14192,17 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-gc:hover, .op-cg:hover{ background:linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.36)) !important; }
 .op-gc-ph, .op-cg-fact, .op-cg-chips span:not(.op-cg-pop), .op-cg-lob{ background:rgba(255,255,255,.4) !important; border-color:rgba(196,214,245,.7) !important; }
 .op-gc-ph.is-best{ background:rgba(37,99,235,.07) !important; }
+/* Review and Accept on the page itself, not in a pop-up */
+body.ag-gate::before{ display:none !important; }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card{ left:0 !important; top:0 !important; transform:none !important; width:100vw !important; height:100vh !important; border-radius:0 !important; border:0 !important; box-shadow:none !important; animation:none !important; background:linear-gradient(180deg,#e9f0ff 0,#f3f7ff 160px,#f8fafd 420px) !important; align-items:center; }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card > .cl-detail-list{ width:min(1040px, calc(100vw - 48px)) !important; max-width:none; flex:1 1 auto; min-height:0; margin:0 auto; }
+body.ag-gate .shell:has(.setup-layout) .cl-detail-card .ag-agree{ background:none; }
+body.ag-gate .cl-detail-card .ag-gate-hero, body.ag-gate .cl-detail-card .ag-atabs{ background:transparent !important; box-shadow:none !important; border:0 !important; }
+body.ag-gate .cl-detail-card .ag-gate-hero{ padding-top:34px !important; }
+body.ag-gate .cl-detail-card .ag-atabs{ border-bottom:1px solid #dbe5f6 !important; border-radius:0 !important; }
+body.ag-gate .cl-detail-card .ag-actions.is-approve{ background:linear-gradient(180deg, rgba(248,250,253,0), #f8fafd 38%) !important; border:0 !important; box-shadow:none !important; }
+body.ag-gate .cl-detail-card .ag-atabs{ position:sticky; top:0; z-index:5; background:#f1f5fd !important; }
+body.ag-gate .cl-detail-card .ag-atabs{ background:rgba(238,243,253,.85) !important; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
