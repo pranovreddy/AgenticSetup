@@ -1,0 +1,2212 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Migration v3</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
+<style>
+:root{
+  --ink:#10213b; --ink-2:#3d4a63; --ink-3:#5c6781; --ink-4:#8590a8; --muted:#64728c;
+  --bg:#f5f6fb; --bg-2:#eef1f7; --card:#fff;
+  --line:#e2e8f2; --line-2:#eef1f6;
+  --blue:#2560f6; --blue-d:#154ace; --blue-soft:#edf3ff; --blue-border:#cddcff;
+  --green:#118252; --green-soft:#eaf7f0;
+  --amber:#935e13; --amber-soft:#fff6e6;
+  --red:#b73c4a;
+  --sidebar:220px; --upload:320px;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+  --ease-out:cubic-bezier(0.22,1,0.36,1);
+  --font:'Geist',Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'Geist Mono',ui-monospace,monospace;
+  --sh:0 4px 22px #14294408;
+  --sh-2:0 8px 28px rgba(20,41,68,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font:14px/1.5 var(--font);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit}button{cursor:pointer;border:0;background:none;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--card);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.sidebar-header{padding:16px 14px;border-bottom:1px solid var(--line)}
+.sidebar-logo{height:28px;width:140px;object-fit:contain}
+.sidebar-nav{flex:1;padding:12px 8px}
+.nav-lbl{padding:8px 10px 4px;font-size:11px;font-weight:650;color:var(--ink-4);text-transform:uppercase;letter-spacing:.08em}
+.nav-item{display:block;padding:10px 12px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink-2);text-decoration:none}
+.nav-item.active{background:var(--blue-soft);color:var(--blue-d);font-weight:650}
+.nav-item.is-muted{opacity:.4;pointer-events:none}
+.sidebar-user{padding:14px;border-top:1px solid var(--line);font-size:13px}
+.sidebar-user b{display:block}.sidebar-user span{color:var(--ink-4);font-size:11.5px}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.workspace{flex:1;display:grid;grid-template-columns:var(--upload) minmax(0,1fr);min-height:0}
+.upload-rail{border-right:1px solid var(--line);background:var(--card);padding:22px 18px;display:flex;flex-direction:column;gap:14px;position:sticky;top:0;height:100vh;overflow:auto}
+.upload-rail h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.upload-rail .lead{font-size:12.5px;color:var(--muted);line-height:1.5}
+.secure{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:9px;background:var(--blue-soft);border:1px solid var(--blue-border);font-size:11px;font-weight:600;color:var(--blue-d)}
+.secure svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.field label{display:block;font-size:11px;font-weight:650;color:var(--ink-3);margin-bottom:5px}
+.field select{width:100%;height:40px;border:1px solid var(--line);border-radius:9px;padding:0 11px;background:#fcfdff}
+.upload-rail{background:linear-gradient(180deg,#fff 0%,#fff 55%,#f6fbfa 100%)}
+.upload-rail::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#0f766e,#2bb39f)}
+.drop{position:relative;--t:15 118 110;--fill:0%;border:1.5px dashed #a9d6cc;border-radius:14px;background:radial-gradient(120% 90% at 50% 0%,#f8fcfb 0%,#eaf5f2 100%);padding:14px 14px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:border-color .18s var(--ease),box-shadow .18s}
+.drop:hover{border-color:#7cc2b4}
+.drop.is-drag{--fill:55%;border-color:#0f766e;border-style:solid;box-shadow:0 0 0 4px rgba(15,118,110,.08)}
+.drop.is-picked{--fill:100%;border-style:solid;border-color:#9fd2c6}
+.enc-badge{position:absolute;top:10px;right:10px;z-index:2;display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 4px 0 8px;border-radius:999px;background:#fff;border:1px solid #b5dfd6;color:#0f766e;font-size:10.5px;font-weight:650;box-shadow:0 1px 2px rgba(15,118,110,.08)}
+.enc-badge>svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.enc-info{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#4f9d91;cursor:help}
+.enc-info:hover,.enc-info:focus-visible{color:#0f766e;background:#ecf7f4}
+.enc-info svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.drop-art{height:150px;width:100%;display:grid;place-items:center}
+.drop .paper{scale:.82;margin:-11px 0}
+.drop:hover .paper,.drop.is-drag .paper{transform:translateY(-3px)}
+.drop:hover .paper .back:not(.b2),.drop.is-drag .paper .back:not(.b2){transform:translate(12px,4px) rotate(6.5deg)}
+.paper .back.b2{transform:translate(-9px,7px) rotate(-4deg);opacity:0;transition:opacity .3s,transform .35s var(--ease)}
+.drop.multi .paper .back.b2{opacity:1}
+.drop.is-drag .scan{opacity:1;animation:breathe 2.4s ease-in-out infinite}
+.drop-plus{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:#fff;border:1px solid #b5dfd6;box-shadow:0 6px 14px rgba(15,118,110,.14);display:grid;place-items:center;color:#0f766e;transition:opacity .25s,transform .25s var(--ease)}
+.drop-plus svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.drop.is-picked .drop-plus{opacity:0;transform:scale(.7)}
+.drop.is-drag .drop-plus{transform:translateY(-4px)}
+.drop-count{position:absolute;top:-10px;left:-18px;height:26px;padding:0 10px;border-radius:999px;background:#0f766e;color:#fff;font-size:13px;font-weight:650;display:grid;place-items:center;box-shadow:0 4px 10px rgba(15,118,110,.25);opacity:0;transform:scale(.7);transition:opacity .25s,transform .25s var(--ease)}
+.drop.multi .drop-count{opacity:1;transform:none}
+.drop b{font-size:13px;font-weight:650;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drop-btns{display:flex;gap:4px;margin-top:4px}
+.drop-lock{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:50%;background:linear-gradient(180deg,#14988b,#0f766e);display:grid;place-items:center;box-shadow:0 8px 18px rgba(15,118,110,.3);opacity:0;transform:scale(.6);transition:opacity .3s,transform .35s cubic-bezier(.34,1.56,.64,1)}
+.drop-lock svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.drop.sealed .drop-lock{opacity:1;transform:none}
+.drop.sealing .scan{opacity:1;animation:sweep 1.1s ease-in-out infinite alternate}
+@keyframes sweep{from{top:6%}to{top:94%}}
+/* sealed pages read as ciphertext: lines break into dots */
+.drop.sealed .read .doc i{background:repeating-linear-gradient(90deg,rgb(var(--t)/.32) 0 3px,transparent 3px 6px)}
+.drop.sealed .read .doc-img{background:repeating-linear-gradient(45deg,rgb(var(--t)/.14) 0 3px,transparent 3px 6px)}
+.drop.sealed .read .doc-sig{opacity:.35}
+#uploadBtn svg{width:14px;height:14px}
+.af-row{display:flex;align-items:center;gap:6px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.af-lbl{font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer}
+.info{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;color:var(--ink-4);cursor:help}
+.info svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.info:hover,.info:focus-visible{color:var(--blue)}
+.switch{position:relative;width:34px;height:20px;flex-shrink:0;margin-left:auto}
+.switch input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer;z-index:1}
+.switch .track{position:absolute;inset:0;border-radius:999px;background:#d5dbe6;transition:background .2s}
+.switch .track::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(16,33,59,.25);transition:transform .2s var(--ease)}
+.switch input:checked+.track{background:var(--blue)}
+.switch input:checked+.track::after{transform:translateX(14px)}
+.switch input:focus-visible+.track{outline:2px solid var(--blue);outline-offset:2px}
+.picked-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.picked-list li{display:flex;align-items:center;gap:9px;padding:6px 6px 6px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:12px;animation:enter .3s var(--ease)}
+.picked-list .pi{position:relative;width:15px;height:19px;border-radius:3px;border:1px solid #dbe2ec;background:#fff;flex-shrink:0;box-shadow:0 1px 2px rgba(16,33,59,.06)}
+.picked-list .pi::before{content:'';position:absolute;left:2px;right:2px;top:3px;bottom:3px;background:repeating-linear-gradient(180deg,#d5dce8 0 1px,transparent 1px 3.5px),repeating-linear-gradient(90deg,#d5dce8 0 1px,transparent 1px 4px)}
+.picked-list .pl{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.picked-list b{min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.picked-list .st{font-size:10.5px;color:#0f766e;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.picked-list li.sealed .st{color:#0f766e}
+.picked-list .pbar{height:2px;border-radius:2px;background:var(--bg-2);overflow:hidden}
+.picked-list .pbar i{display:block;height:100%;width:40%;border-radius:inherit;background:#14988b;animation:slide 1s ease-in-out infinite}
+@keyframes slide{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+.picked-list li.sealed .pbar{display:none}
+.picked-list .sz{color:var(--ink-4);font-size:11px;font-family:var(--mono);flex-shrink:0}
+.picked-list .lk{position:absolute;right:-6px;bottom:-5px;width:13px;height:13px;border-radius:50%;background:#0f766e;display:grid;place-items:center;box-shadow:0 0 0 2px #fff;opacity:0;transform:scale(.5);transition:opacity .25s,transform .3s cubic-bezier(.34,1.56,.64,1)}
+.picked-list .lk svg{width:8px;height:8px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.picked-list li.sealed .lk{opacity:1;transform:none}
+.picked-list button{width:24px;height:24px;border-radius:6px;color:var(--ink-4);display:grid;place-items:center;flex-shrink:0}
+.picked-list button:hover{background:var(--bg-2);color:var(--ink)}
+.picked-list button svg{width:12px;height:12px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
+.drop b{font-size:13px;font-weight:650}
+.drop p,.caption{font-size:11.5px;color:var(--ink-4);line-height:1.4}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 14px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:#fff;transition:transform .12s,background .15s,border-color .15s,box-shadow .15s}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.btn:hover{border-color:#baccef;background:#f9fbff}
+.btn:active{transform:scale(.97)}
+.btn-pri{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 3px #2560f620}
+.btn-pri:hover{background:var(--blue-d)}
+.btn-pri:disabled{background:#c6d3ea;border-color:#c6d3ea;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-sm{height:32px;padding:0 11px;font-size:12px}
+.btn-full{width:100%}
+.btn-ghost{border-color:transparent;background:transparent;color:var(--blue)}
+.btn-ghost:hover{background:var(--blue-soft)}
+.declare,.toggle{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--ink-2);line-height:1.4}
+.declare input,.toggle input{margin-top:2px;accent-color:var(--blue)}
+.more{border-top:1px solid var(--line);padding-top:10px}
+.more summary{font-size:11.5px;font-weight:600;color:var(--muted);cursor:pointer;list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.error{padding:9px 11px;border-radius:9px;background:#fff0f2;color:var(--red);font-size:12px;font-weight:550}
+
+/* Right stage */
+.stage{padding:20px 22px 36px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.stage-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.filters{display:inline-flex;padding:3px;background:var(--bg-2);border-radius:10px;gap:2px}
+.chip-btn{height:30px;padding:0 11px;border-radius:8px;font-size:12px;font-weight:600;color:var(--ink-3)}
+.chip-btn.is-on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.06)}
+.chip-btn .n{margin-left:3px;color:var(--ink-4);font-variant-numeric:tabular-nums}
+.chip-btn.is-on .n{color:var(--blue)}
+/* Tint per state — every fill, line and glow reads from --t at low alpha */
+.file-tile,.folder-card,.mini-tile{--t:100 116 139}
+.file-tile.run,.folder-card.run,.mini-tile.run{--t:37 96 246}
+.file-tile.attn,.folder-card.needs,.mini-tile.attn{--t:100 116 139}
+.file-tile.ok,.folder-card.ok,.mini-tile.ok{--t:22 150 96}
+
+/* Page grid — document tiles */
+.page-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.file-tile{position:relative;border-radius:16px;border:1px solid var(--line);background:#fff;overflow:hidden;box-shadow:var(--sh);cursor:pointer;display:flex;flex-direction:column;transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s}
+.file-tile:hover{transform:translateY(-3px);box-shadow:var(--sh-2);border-color:#d6e1f7}
+.file-tile:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.file-tile.needs{border-color:#d9e3f5}
+.file-tile.done{opacity:.94}
+.tile-art,.folder-art{position:relative;height:212px;display:grid;place-items:center;background:radial-gradient(120% 90% at 50% 0%,#fcfdfe 0%,#f2f4f8 100%);border-bottom:1px solid var(--line-2);container-type:inline-size}
+
+/* the page: a back sheet fanned out, a front sheet with real document structure */
+.paper{position:relative;width:132px;height:172px;transition:transform .35s var(--ease)}
+.paper .back{position:absolute;inset:0;border-radius:7px;background:#f6f7f9;border:1px solid #e7eaf0;transform:translate(9px,5px) rotate(4.5deg);box-shadow:0 8px 18px -8px rgba(16,33,59,.10);transition:transform .35s var(--ease)}
+.paper .sheet{position:absolute;inset:0;border-radius:7px;background:linear-gradient(180deg,#fff,#fdfdfe);border:1px solid #e8ecf2;box-shadow:0 1px 2px rgba(16,33,59,.04),0 8px 18px -6px rgba(16,33,59,.09),0 22px 38px -18px rgba(16,33,59,.14)}
+.file-tile:hover .paper{transform:translateY(-3px)}
+.file-tile:hover .paper .back{transform:translate(12px,4px) rotate(6.5deg)}
+.sheet-clip{position:absolute;inset:0;border-radius:inherit;overflow:hidden}
+.doc{position:absolute;inset:0;padding:14px 13px 12px;display:flex;flex-direction:column;gap:11px}
+.doc i{display:block;height:4px;border-radius:2px;background:#e9edf3}
+.doc-head{display:flex;gap:8px;align-items:center}
+.doc-img{width:24px;height:24px;border-radius:5px;background:#eff2f6;flex-shrink:0}
+.doc-hl{flex:1;display:flex;flex-direction:column;gap:5px}
+.doc-hl i:first-child{height:5px;background:#e1e6ed}
+.doc-p{display:flex;flex-direction:column;gap:6px}
+.csv{gap:9px;padding:12px 11px}
+.csv i{height:3px}
+.csv-top{display:flex;align-items:center;gap:6px}
+.csv-top i{height:4px;background:#e1e6ed}
+.csv-tag{flex-shrink:0;font:700 7.5px/1 var(--mono);letter-spacing:.05em;padding:3px 4px;border-radius:3px;background:#e7f4ec;color:#1f8f5c}
+.csv-grid{border:1px solid #e6eaf0;border-radius:4px;overflow:hidden}
+.csv-row{display:grid;grid-template-columns:.6fr 1.2fr 1fr .9fr;border-top:1px solid #eef1f5}
+.csv-row:first-child{border-top:0}
+.csv-row span{height:13px;padding:0 4px;border-left:1px solid #eef1f5;display:flex;align-items:center}
+.csv-row span:first-child{border-left:0}
+.csv-row.hd{background:#f4f6f9}
+.csv-row.hd i{background:#d5dbe4}
+.read .csv-grid{border-color:rgb(var(--t)/.22)}
+.read .csv-row,.read .csv-row span{border-color:rgb(var(--t)/.14)}
+.read .csv-row.hd{background:rgb(var(--t)/.08)}
+.read .csv-row.hd i{background:rgb(var(--t)/.32)}
+.read .csv-top i{background:rgb(var(--t)/.26)}
+.file-tile.ok .read .csv-grid,.file-tile.attn .read .csv-grid{border-color:#e1e6ed}
+.file-tile.ok .read .csv-row,.file-tile.ok .read .csv-row span,.file-tile.attn .read .csv-row,.file-tile.attn .read .csv-row span{border-color:#eceff4}
+.file-tile.ok .read .csv-row.hd,.file-tile.attn .read .csv-row.hd{background:#f2f4f8}
+.file-tile.ok .read .csv-row.hd i,.file-tile.attn .read .csv-row.hd i,.file-tile.ok .read .csv-top i,.file-tile.attn .read .csv-top i{background:#cfd6e0}
+.drop.sealed .read .csv-row.hd i,.drop.sealed .read .csv-top i{background:repeating-linear-gradient(90deg,rgb(var(--t)/.4) 0 3px,transparent 3px 6px)}
+.doc-sig{position:absolute;right:12px;bottom:10px;width:38px;height:22px;fill:none;stroke:#cdd3dd;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* the read layer: a clipped copy of the page, tinted, that grows down with --fill */
+.read{position:absolute;inset:0;clip-path:inset(0 0 calc(100% - var(--fill,0%)) 0);transition:clip-path .9s var(--ease-out);background:linear-gradient(180deg,rgb(var(--t)/.015),rgb(var(--t)/.04))}
+.read .doc i{background:rgb(var(--t)/.18)}
+.read .doc-hl i:first-child{background:rgb(var(--t)/.26)}
+.read .doc-img{background:rgb(var(--t)/.09)}
+.read .doc-sig{stroke:rgb(var(--t)/.5)}
+.trail{position:absolute;left:0;right:0;height:56px;top:calc(var(--fill,0%) - 56px);background:linear-gradient(180deg,rgb(var(--t)/0),rgb(var(--t)/.09));transition:top .9s var(--ease-out)}
+.scan{position:absolute;left:-7px;right:-7px;top:var(--fill,0%);height:2px;margin-top:-1px;border-radius:2px;background:linear-gradient(90deg,rgb(var(--t)/0),rgb(var(--t)/.5) 18%,rgb(var(--t)/.62) 50%,rgb(var(--t)/.5) 82%,rgb(var(--t)/0));box-shadow:0 0 8px rgb(var(--t)/.22),0 0 18px rgb(var(--t)/.12);opacity:0;transition:top .9s var(--ease-out),opacity .3s}
+.file-tile.run .scan,.file-tile.attn:not(.full) .scan{opacity:1}
+.file-tile.run .scan{animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.55}}
+/* finished pages read as signed ink, not a coloured block */
+.file-tile.ok .read .doc i,.file-tile.attn .read .doc i{background:#dfe4eb}
+.file-tile.ok .read .doc-hl i:first-child,.file-tile.attn .read .doc-hl i:first-child{background:#d3d9e2}
+.file-tile.ok .read .doc-img,.file-tile.attn .read .doc-img{background:#eceff4}
+.file-tile.ok .read .doc-sig{stroke:#3d4a63}
+.file-tile.ok .trail,.file-tile.attn .trail{opacity:0}
+.file-tile.attn .read{background:none}
+.doc-stamp{position:absolute;top:9px;right:9px;width:16px;height:16px;border-radius:50%;background:rgb(var(--t)/.12);display:grid;place-items:center;opacity:0;transform:scale(.6);transition:opacity .3s,transform .3s var(--ease)}
+.doc-stamp svg{width:10px;height:10px;fill:none;stroke:rgb(var(--t));stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.file-tile.ok .doc-stamp{opacity:1;transform:none}
+.file-tile.attn .doc-stamp{opacity:1;transform:none;width:18px;height:18px;background:var(--amber-soft);box-shadow:0 0 0 1px #f0d9a8}
+.file-tile.attn .doc-stamp svg{stroke:var(--amber)}
+
+.tile-art{height:236px;padding-top:24px}
+.tile-top{position:absolute;left:10px;right:10px;top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;z-index:2}
+.tile-top .tile-lob{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--ink-3);font-size:10.5px;font-weight:600}
+.tile-art>.tile-pct{position:absolute;right:12px;bottom:10px;font-size:17px;letter-spacing:-.6px;z-index:2}
+.tile-tip{font-size:11.5px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tile-foot .tile-row{min-height:32px}
+.tile-foot .tile-row:first-child{min-height:0}
+.tile-act{flex-shrink:0}
+.tile-foot,.folder-foot{padding:11px 13px 12px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.tile-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.tile-name{font-size:12.5px;font-weight:650;letter-spacing:-.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tile-pct{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:-.3px;color:var(--ink-3);font-variant-numeric:tabular-nums;flex-shrink:0}
+.run .tile-pct{color:var(--blue-d)}.attn .tile-pct,.needs .tile-pct{color:var(--ink-2)}.ok .tile-pct{color:var(--green)}
+.tile-lob{font-size:11.5px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tile-stage{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:999px;font-size:10.5px;font-weight:650;background:var(--bg-2);border:1px solid var(--line);color:var(--ink-3);white-space:nowrap;flex-shrink:0}
+.tile-stage.run{background:var(--blue-soft);border-color:var(--blue-border);color:var(--blue-d)}
+.tile-stage .pulse{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.7s var(--ease) infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.85)}}
+.tile-stage.attn{color:var(--amber);border-color:#f0d9a8;background:var(--amber-soft)}
+.tile-stage.ok{color:var(--green);border-color:#b7e4c7;background:var(--green-soft)}
+@keyframes sheen{0%{background-position:120% 0}100%{background-position:-80% 0}}
+
+/* Folder view — grey folder, sheet peeking out, frosted front pocket */
+.folder-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.folder-card{position:relative;border-radius:16px;border:1px solid var(--line);background:#fff;overflow:hidden;box-shadow:var(--sh);cursor:pointer;display:flex;flex-direction:column;transition:transform .22s var(--ease),box-shadow .22s,border-color .22s}
+.folder-card:hover{transform:translateY(-3px);box-shadow:var(--sh-2);border-color:#d6e1f7}
+.folder-card:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.folder-card.needs{border-color:#d9e3f5}
+.folder{position:relative;width:200px;height:150px;filter:drop-shadow(0 14px 16px rgba(16,33,59,.10)) drop-shadow(0 2px 3px rgba(16,33,59,.06));transition:transform .35s var(--ease)}
+.folder>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.f-sheet{position:absolute;left:22px;right:22px;top:22px;height:100px;border-radius:6px;background:#fff;padding:8px 12px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 2px rgba(16,33,59,.08);transition:transform .45s var(--ease)}
+.f-sheet b{align-self:flex-start;font:700 7px/1 var(--mono);letter-spacing:.05em;padding:3px 4px;border-radius:3px;background:#e7f4ec;color:#1f8f5c}
+.f-grid{flex:1;border:1px solid #e6eaf0;border-radius:3px;background:linear-gradient(#f2f4f8,#f2f4f8) 0 0/100% 10px no-repeat,repeating-linear-gradient(180deg,transparent 0 9px,#eceff3 9px 10px),repeating-linear-gradient(90deg,transparent 0 27px,#eceff3 27px 28px)}
+.f-sheet.s2{left:30px;right:14px;top:28px;background:#f6f7f9;transform:rotate(3deg)}
+.folder-card:hover .f-sheet{transform:translateY(-7px)}
+.folder-card:hover .f-sheet.s2{transform:translateY(-4px) rotate(4deg)}
+.f-front{position:absolute;inset:0;clip-path:path('M8,56 Q8,46 18,46 H70 C77,46 79,58 88,58 H182 Q192,58 192,68 V130 Q192,142 180,142 H20 Q8,142 8,130 Z');background:linear-gradient(180deg,rgba(190,192,198,.78),rgba(168,170,177,.9));-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+.f-fill{position:absolute;left:0;right:0;bottom:0;height:var(--fill,0%);background:linear-gradient(0deg,rgb(var(--t)/.13),rgb(var(--t)/.04) 75%,rgb(var(--t)/0));transition:height .9s var(--ease-out)}
+.folder-card.run .f-front::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.2) 50%,transparent 60%);background-size:250% 100%;animation:sheen 3s var(--ease) infinite}
+.f-edge path{fill:none;stroke:rgba(255,255,255,.55);stroke-width:1}
+.f-label{position:absolute;left:20px;right:16px;bottom:17px;display:flex;align-items:center;gap:10px;color:#fff;min-width:0}
+.f-hex{width:30px;height:32px;flex-shrink:0}
+.f-logo{width:30px;height:30px;flex-shrink:0;border-radius:8px;background:#fff;display:grid;place-items:center;box-shadow:0 1px 3px rgba(60,62,70,.2)}
+.f-logo img{max-width:22px;max-height:22px;display:block}
+.f-hex path{fill:rgba(110,112,120,.32);stroke:rgba(110,112,120,.32);stroke-width:3;stroke-linejoin:round}
+.f-hex text{font:700 10.5px var(--font);fill:#fff;letter-spacing:-.2px}
+.f-label>span{min-width:0;display:flex;flex-direction:column}
+.f-label b{font-size:14px;font-weight:600;letter-spacing:-.2px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(60,62,70,.18)}
+.f-label small{font-size:12px;opacity:.82;line-height:1.3}
+.folder-foot{flex-direction:row;align-items:center;justify-content:space-between}
+@container (max-width:230px){.paper{scale:.86}.folder{scale:.8}}
+
+.drill{display:flex;flex-direction:column;gap:12px;animation:enter .35s var(--ease)}
+@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.drill-head{display:flex;align-items:center;gap:10px}
+.drill-head h2{font-size:16px;font-weight:700;letter-spacing:-.3px}
+.file-list{display:flex;flex-direction:column;gap:8px}
+.file-row{display:grid;grid-template-columns:56px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--sh);cursor:pointer;transition:border-color .15s,transform .15s}
+.file-row:hover{border-color:#cddcff;transform:translateX(2px)}
+.mini-tile{position:relative;width:56px;height:56px;border-radius:10px;border:1px solid var(--line);background:#f4f6f9;display:grid;place-items:center}
+.mini-sheet{position:relative;width:32px;height:42px;border-radius:3px;background:#fff;border:1px solid #e3e7ee;box-shadow:0 2px 6px rgba(16,33,59,.08);overflow:hidden}
+.ml{position:absolute;inset:0;padding:6px 5px;display:flex;flex-direction:column;gap:4px}
+.ml i{display:block;height:2.5px;border-radius:2px;background:#e6eaf0}
+.read .ml i{background:rgb(var(--t)/.24)}
+.file-row b{display:block;font-size:13px;font-weight:650}
+.file-row span{font-size:11.5px;color:var(--ink-4)}
+.pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:650;background:var(--bg-2);color:var(--ink-3);border:1px solid var(--line)}
+.pill.run{background:var(--blue-soft);color:var(--blue-d);border-color:var(--blue-border)}
+.pill.attn{background:var(--amber-soft);color:var(--amber);border-color:#f0d9a8}
+.pill.ok{background:var(--green-soft);color:var(--green);border-color:#b7e4c7}
+
+.empty{padding:44px 20px 48px;text-align:center;border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,.6)}
+.empty-art{position:relative;width:92px;height:116px;margin:0 auto 22px}
+.e-back{position:absolute;inset:0;border-radius:7px;background:#f3f5f9;border:1px solid #e6eaf0;transform:translate(9px,5px) rotate(5deg)}
+.e-sheet{position:absolute;inset:0;border-radius:7px;background:#fff;border:1.5px dashed #cdd5e2;padding:16px 12px;display:flex;flex-direction:column;gap:9px;animation:efloat 4s ease-in-out infinite}
+.e-sheet{padding:12px 10px;gap:8px}
+.e-sheet b{align-self:flex-start;font:700 7.5px/1 var(--mono);letter-spacing:.05em;padding:3px 4px;border-radius:3px;background:#f0f2f6;color:var(--ink-4)}
+.e-grid{flex:1;border:1px dashed #d8dee8;border-radius:4px;background:linear-gradient(#f4f6f9,#f4f6f9) 0 0/100% 12px no-repeat,repeating-linear-gradient(180deg,transparent 0 11px,#eef1f5 11px 12px),repeating-linear-gradient(90deg,transparent 0 17px,#eef1f5 17px 18px)}
+.e-badge{position:absolute;right:-14px;bottom:-10px;width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:var(--sh-2);display:grid;place-items:center;color:var(--ink-4)}
+.e-badge svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+@keyframes efloat{50%{transform:translateY(-4px)}}
+.empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
+.empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
+
+/* Drawer */
+.drawer-bg{position:fixed;inset:0;background:rgba(16,33,59,.3);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer-bg.is-on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:#fff;z-index:50;box-shadow:var(--sh-2);transform:translateX(100%);transition:transform .28s var(--ease);display:flex;flex-direction:column}
+.drawer.is-on{transform:none}
+.drawer-head{padding:18px 20px;border-bottom:1px solid var(--line)}
+.drawer-head h3{font-size:16px;font-weight:700}
+.drawer-head p{font-size:12px;color:var(--ink-4);margin-top:4px}
+.drawer-body{flex:1;overflow:auto;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg)}
+.stat small{display:block;font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-4);margin-bottom:3px}
+.stat b{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.step-focus{padding:14px;border-radius:12px;background:radial-gradient(120% 80% at 50% -20%,rgba(59,130,246,.1),transparent 60%),#fff;border:1px solid var(--blue-border)}
+.step-focus .lbl{font-size:10px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.step-focus b{font-size:15px;font-weight:700}
+.step-focus p{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.step-dots{display:flex;gap:5px;margin-top:12px}
+.step-dots i{width:7px;height:7px;border-radius:50%;background:#dce3ef}
+.step-dots i.on{background:var(--blue);box-shadow:0 0 0 3px rgba(37,96,246,.15)}
+.step-dots i.done{background:#93c5fd}
+.drawer-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;padding:10px 14px;border-radius:999px;font-size:12.5px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60}
+.toast.is-on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:1100px){.page-grid,.folder-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:860px){
+  .workspace{grid-template-columns:1fr}
+  .upload-rail{position:relative;top:0;height:auto;border-right:none;border-bottom:1px solid var(--line)}
+  .page-grid,.folder-grid{grid-template-columns:1fr}
+  .sidebar{display:none}
+}
+
+/* Live progress is painted every frame, so the fill layers must not ease behind it */
+.file-tile.run .read,.file-tile.run .trail,.folder-card.run .f-fill{transition:none}
+.file-tile.run .scan{transition:opacity .3s}
+
+/* Focus mode — the opened file or folder takes the rail, its action takes the stage */
+.rail-pane{display:flex;flex-direction:column;gap:14px}
+#focusPane{animation:enter .35s var(--ease)}
+.is-focus .stage-bar{display:none}
+.rail-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-6px 0 -2px}
+.back-btn{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 10px 0 4px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink-2);transition:background .15s}
+.back-btn:hover{background:var(--bg-2)}
+.back-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.link-btn{font-size:12px;font-weight:600;color:var(--blue);padding:4px 6px;border-radius:6px}
+.link-btn:hover{background:var(--blue-soft)}
+.focus-art{height:224px;border-radius:14px;border:1px solid var(--line-2);background:radial-gradient(120% 90% at 50% 0%,#fcfdfe 0%,#f2f4f8 100%);display:grid;place-items:center;flex-shrink:0}
+.file-tile.focus-tile,.folder-card.focus-tile{border:0!important;background:none!important;box-shadow:none!important;overflow:visible;cursor:default;display:block;transform:none!important;border-radius:0;opacity:1}
+.focus-id{display:flex;flex-direction:column;gap:8px}
+.focus-id h2{font-size:17px;font-weight:700;letter-spacing:-.35px;line-height:1.25;overflow-wrap:anywhere}
+.chip-lob{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink-3);font-size:10.5px;font-weight:600;white-space:nowrap}
+.sub-meta{font-size:12.5px;color:var(--muted)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.facts div{padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line-2);min-width:0}
+.facts dt{font-size:10px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4)}
+.facts dd{font-size:14px;font-weight:650;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail-lbl{font-size:11px;font-weight:650;color:var(--ink-4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:-4px}
+.rail-note{font-size:12px;color:var(--amber);background:var(--amber-soft);border:1px solid #f0d9a8;border-radius:10px;padding:9px 11px;line-height:1.4}
+.tl{list-style:none;display:flex;flex-direction:column}
+.tl li{position:relative;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:11px;padding-bottom:16px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:'';position:absolute;left:10px;top:25px;bottom:3px;width:2px;border-radius:2px;background:var(--line-2)}
+.tl li:last-child::before{display:none}
+.tl li.done::before{background:#bfe6cf}
+.tl .dot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center}
+.tl .dot svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.tl .dot i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.tl li.done .dot{background:var(--green-soft);border-color:#b7e4c7;color:var(--green)}
+.tl li.now .dot{border-color:var(--blue-border);background:var(--blue-soft)}
+.tl li.now .dot i{background:var(--blue);animation:pulse 1.7s var(--ease) infinite}
+.tl li.wait .dot{border-color:#f0d9a8;background:var(--amber-soft)}
+.tl li.wait .dot i{background:#d9a54a;animation:pulse 1.7s var(--ease) infinite}
+.tl b{display:block;font-size:13px;font-weight:650;line-height:22px}
+.tl li.todo b{color:var(--ink-4);font-weight:550}
+.tl p{font-size:11.5px;color:var(--ink-4);line-height:1.4}
+.tl li.now p{color:var(--blue-d)}.tl li.wait p{color:var(--amber)}
+.tl time{font-family:var(--mono);font-size:11px;color:var(--ink-4);line-height:22px}
+.mix{list-style:none;display:flex;flex-direction:column;border:1px solid var(--line-2);border-radius:12px;padding:2px 12px}
+.mix li{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:8px 0;border-top:1px dashed var(--line)}
+.mix li:first-child{border-top:0}
+.mix i{width:8px;height:8px;border-radius:50%}
+.mix b{margin-left:auto;font-variant-numeric:tabular-nums}
+
+/* Action panel */
+.act{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:26px 28px;display:flex;flex-direction:column;gap:20px;max-width:780px;animation:enter .4s var(--ease)}
+.act-eyebrow{align-self:flex-start}
+.act h2{font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1.2}
+.act .lead{font-size:13.5px;color:var(--muted);line-height:1.6;max-width:600px;margin-top:8px}
+.act .lead b{color:var(--ink);font-weight:650}
+.act-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.act-stat{padding:14px;border-radius:12px;border:1px solid var(--line-2);background:var(--bg);display:flex;flex-direction:column;gap:2px;min-width:0}
+.act-stat small{font-size:10px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4)}
+.act-stat b{font-size:21px;font-weight:700;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.act-stat span{font-size:11.5px;color:var(--ink-4)}
+.act-sec h3{font-size:12px;font-weight:650;color:var(--ink-3);margin-bottom:9px}
+.fix-table,.sum{border:1px solid var(--line-2);border-radius:12px}
+.fix-row{display:grid;grid-template-columns:110px minmax(0,1fr) 18px minmax(0,1fr);gap:10px;align-items:center;padding:11px 14px;border-top:1px solid var(--line-2)}
+.fix-row:first-child{border-top:0}
+.fix-row .k{font-size:11.5px;font-weight:600;color:var(--ink-4)}
+.fix-row s{font-family:var(--mono);font-size:12px;color:var(--red);opacity:.7;white-space:pre;overflow:hidden;text-overflow:ellipsis}
+.fix-row .arr{color:var(--ink-4);font-size:12px}
+.fix-row ins{justify-self:start;font-family:var(--mono);font-size:12px;color:var(--green);text-decoration:none;background:var(--green-soft);padding:2px 7px;border-radius:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sum{padding:2px 14px}
+.sum div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:13px;border-top:1px dashed var(--line)}
+.sum div:first-child{border-top:0}
+.sum div span:first-child{color:var(--ink-3)}
+.sum div span:last-child{font-variant-numeric:tabular-nums;font-weight:600}
+.sum .tot span{font-weight:700;color:var(--ink)!important}
+.act-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center;padding-top:18px;border-top:1px solid var(--line-2)}
+.act-foot .note{margin-right:auto;font-size:12px;color:var(--ink-4)}
+.act-prog .tile-row{font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.act-prog b{font-family:var(--mono);color:var(--blue-d);font-size:13px}
+.bar{height:6px;border-radius:999px;background:var(--bg-2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#a9c3fb,var(--blue))}
+.sub{list-style:none;display:flex;flex-direction:column;gap:11px}
+.sub li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-4);animation:ink 0s var(--s) forwards}
+@keyframes ink{to{color:var(--ink-2)}}
+.sub .ic{position:relative;width:18px;height:18px;flex-shrink:0}
+.sub .ic::before{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--line-2)}
+.sub .spin{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--blue);opacity:0;animation:spin .8s linear infinite,on 0s var(--s) forwards,off .2s var(--e) forwards}
+.sub .ok{position:absolute;inset:-1px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;opacity:0;animation:pop .3s var(--e) forwards}
+.sub .ok svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes on{to{opacity:1}}
+@keyframes off{to{opacity:0}}
+@keyframes pop{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:none}}
+.next{font-size:13px;color:var(--ink-2)}
+/* View transitions — rail and stage slide, the opened page morphs between them */
+.upload-rail{view-transition-name:rail}
+.stage{view-transition-name:stage}
+::view-transition-old(root),::view-transition-new(root){animation:none}
+::view-transition-group(*){animation-duration:.6s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+::view-transition-group(hero){animation-duration:.7s;animation-timing-function:cubic-bezier(.16,1,.3,1);z-index:10}
+::view-transition-old(hero){animation:vt-fade-out .25s ease both}
+::view-transition-new(hero){animation:vt-fade-in .25s ease both}
+::view-transition-image-pair(hero){filter:drop-shadow(0 18px 30px rgba(16,33,59,.18))}
+html[data-vt="in"]::view-transition-old(stage){animation:vt-out-left .16s cubic-bezier(.4,0,1,1) both}
+html[data-vt="in"]::view-transition-new(stage){animation:vt-in-right .55s cubic-bezier(.22,1,.36,1) .16s both}
+html[data-vt="in"]::view-transition-old(rail){animation:vt-out-left .16s cubic-bezier(.4,0,1,1) both}
+html[data-vt="in"]::view-transition-new(rail){animation:vt-in-up .5s cubic-bezier(.22,1,.36,1) .18s both}
+html[data-vt="back"]::view-transition-old(stage){animation:vt-out-right .16s cubic-bezier(.4,0,1,1) both}
+html[data-vt="back"]::view-transition-new(stage){animation:vt-in-left .55s cubic-bezier(.22,1,.36,1) .16s both}
+html[data-vt="back"]::view-transition-old(rail){animation:vt-out-down .16s cubic-bezier(.4,0,1,1) both}
+html[data-vt="back"]::view-transition-new(rail){animation:vt-in-up .5s cubic-bezier(.22,1,.36,1) .18s both}
+html[data-vt="fade"]::view-transition-old(stage){animation:vt-fade-out .15s ease both}
+html[data-vt="fade"]::view-transition-new(stage){animation:vt-in-up .45s cubic-bezier(.22,1,.36,1) .1s both}
+html[data-vt] .act,html[data-vt] #focusPane{animation:none}
+@keyframes vt-fade-in{from{opacity:0}}
+@keyframes vt-fade-out{to{opacity:0}}
+@keyframes vt-in-right{from{opacity:0;transform:translateX(28px)}}
+@keyframes vt-in-left{from{opacity:0;transform:translateX(-28px)}}
+@keyframes vt-out-left{to{opacity:0;transform:translateX(-16px)}}
+@keyframes vt-out-right{to{opacity:0;transform:translateX(16px)}}
+@keyframes vt-in-up{from{opacity:0;transform:translateY(10px)}}
+@keyframes vt-out-down{to{opacity:0;transform:translateY(8px)}}
+
+/* Migration metrics — a compact strip that expands into charts */
+.metrics{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:14px 16px}
+.is-focus .metrics{display:none}
+.m-compact{display:flex;flex-direction:column;gap:10px;cursor:pointer}
+.metrics.open .m-compact{cursor:default}
+.m-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.m-lbl{font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+.m-total{margin-left:auto;font-size:12.5px;color:var(--ink-3)}
+.m-total b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums;margin-left:4px}
+.m-toggle{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 6px 0 10px;border-radius:8px;font-size:12px;font-weight:600;color:var(--blue)}
+.m-toggle:hover{background:var(--blue-soft)}
+.m-toggle svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
+.metrics.open .m-toggle svg{transform:rotate(180deg)}
+.m-bar{display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;background:var(--bg-2)}
+.m-bar i{flex:0 1 0;min-width:0;transition:flex-grow .8s var(--ease-out)}
+.m-legend{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 18px;font-size:12px;color:var(--ink-3)}
+.m-legend span{display:inline-flex;align-items:center;gap:6px}
+.m-legend i{width:8px;height:8px;border-radius:2px}
+.m-legend b{color:var(--ink);font-weight:650;font-variant-numeric:tabular-nums}
+.m-legend em{font-style:normal;color:var(--ink-4);font-size:11px;font-variant-numeric:tabular-nums}
+.m-more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.22,1,.36,1)}
+.metrics.open .m-more{grid-template-rows:1fr}
+.m-more-in{overflow:hidden;min-height:0}
+.m-charts{opacity:0;transform:translateY(-8px);transition:opacity .3s ease,transform .45s var(--ease)}
+.metrics.open .m-charts{opacity:1;transform:none;transition-delay:.08s}
+.metrics.grow .m-lob rect,.metrics.grow .m-lob path{transform-box:fill-box;transform-origin:50% 100%;animation:mgrow .8s cubic-bezier(.22,1,.36,1) both}
+.metrics.grow .m-lob .tot{animation:vt-fade-in .4s ease .5s both}
+@keyframes mgrow{from{transform:scaleY(0)}}
+.m-charts{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;padding-top:14px;margin-top:14px;border-top:1px solid var(--line-2)}
+.m-card{border:1px solid var(--line-2);border-radius:12px;padding:14px 16px}
+.m-donut-wrap{position:relative;max-width:250px;margin:10px auto 0}
+.m-donut{width:100%;display:block}
+.m-donut .arc{fill:none;stroke-width:22;transition:stroke-dasharray .8s var(--ease-out),stroke-dashoffset .8s var(--ease-out)}
+.m-center{position:absolute;left:0;right:0;bottom:0;text-align:center}
+.m-center b{display:block;font-size:22px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.m-center small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);font-weight:650}
+.m-list{list-style:none;margin-top:12px}
+.m-list li{display:grid;grid-template-columns:10px minmax(0,1fr) auto 46px;gap:10px;align-items:center;font-size:12.5px;padding:5px 0;color:var(--ink-2)}
+.m-list i{width:10px;height:10px;border-radius:3px}
+.m-list b{font-variant-numeric:tabular-nums;font-weight:650;color:var(--ink)}
+.m-list em{font-style:normal;text-align:right;color:var(--ink-4);font-size:11.5px;font-variant-numeric:tabular-nums}
+.m-lob{width:100%;display:block;margin-top:8px}
+.m-lob text{font-family:var(--font);font-size:10px;fill:var(--ink-4)}
+.m-lob .grid{stroke:var(--line-2);stroke-width:1}
+.m-lob .tot{fill:var(--ink-3);font-weight:650}
+.m-tip{position:fixed;z-index:80;pointer-events:none;background:var(--ink);color:#fff;font-size:11.5px;padding:6px 9px;border-radius:7px;opacity:0;transition:opacity .12s;white-space:nowrap}
+@media(max-width:1100px){.m-charts{grid-template-columns:1fr}}
+
+/* Version switcher */
+.ver{padding:12px 14px;border-top:1px solid var(--line)}
+.ver .nav-lbl{padding:0 0 6px}
+.ver-seg{display:grid;grid-template-columns:repeat(2,1fr);padding:3px;background:var(--bg-2);border-radius:10px;gap:2px}
+.ver-seg button{height:30px;border-radius:8px;font-size:10.5px;white-space:nowrap;font-weight:600;color:var(--ink-3);transition:background .2s,color .2s,box-shadow .2s}
+.ver-seg button.is-on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(11,26,51,.08)}
+
+/* V2 — upload lives in a tray, files are rows */
+.bar-r{display:flex;align-items:center;gap:10px}
+.up-btn{display:none;height:36px}
+.v2 #uploadPane #seedDemo{display:none}
+.v2 .up-btn{display:inline-flex}
+.v2 .workspace{grid-template-columns:minmax(0,1fr)}
+.v2 .upload-rail{display:none}
+.v2.is-focus .workspace{grid-template-columns:var(--upload) minmax(0,1fr)}
+.v2.is-focus .upload-rail{display:flex}
+.tray-bg{position:fixed;inset:0;background:rgba(16,33,59,.26);backdrop-filter:blur(2px);z-index:45;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.tray-bg.open{opacity:1;pointer-events:auto}
+.tray{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:linear-gradient(180deg,#fff 0%,#fff 55%,#f6fbfa 100%);z-index:50;box-shadow:-24px 0 60px rgba(16,33,59,.16);transform:translateX(104%);transition:transform .5s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column}
+.tray::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#0f766e,#2bb39f)}
+.tray.open{transform:none}
+.tray-x{position:absolute;top:16px;right:16px;z-index:2;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--ink-3)}
+.tray-x:hover{background:var(--bg-2);color:var(--ink)}
+.tray-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.tray-body{flex:1;overflow:auto;padding:22px 20px 24px}
+.tray #uploadPane>div:first-child{padding-right:36px}
+.tray.open #uploadPane>*{animation:vt-in-up .5s cubic-bezier(.22,1,.36,1) both}
+.tray.open #uploadPane>*:nth-child(2){animation-delay:.04s}.tray.open #uploadPane>*:nth-child(3){animation-delay:.08s}.tray.open #uploadPane>*:nth-child(4){animation-delay:.12s}.tray.open #uploadPane>*:nth-child(n+5){animation-delay:.16s}
+
+.row-list{display:flex;flex-direction:column;gap:8px}
+.file-row2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.6fr) 150px;gap:26px;align-items:center}
+.file-row2{padding:14px 18px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);cursor:pointer;transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s}
+.file-row2:hover{transform:translateY(-2px);box-shadow:var(--sh-2);border-color:#d6e1f7}
+.file-row2:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.file-row2.needs{border-color:#d9e3f5}
+.r-file{display:flex;align-items:center;gap:12px;min-width:0}
+.r-ico{position:relative;width:32px;height:40px;flex-shrink:0;border-radius:5px;background:#fff;border:1px solid #e3e7ee;box-shadow:0 2px 6px rgba(16,33,59,.08);overflow:hidden}
+.r-ico .rg,.r-ico .read{position:absolute;inset:0}
+.r-ico .rg{top:9px;left:4px;right:4px;bottom:5px;border:1px solid #e6eaf0;border-radius:2px;background:linear-gradient(#eef1f5,#eef1f5) 0 0/100% 5px no-repeat,repeating-linear-gradient(180deg,transparent 0 4px,#eef1f5 4px 5px),repeating-linear-gradient(90deg,transparent 0 7px,#eef1f5 7px 8px)}
+.r-ico::before{content:'CSV';position:absolute;top:3px;left:4px;font:700 4.5px/1 var(--mono);color:#1f8f5c;letter-spacing:.04em}
+.r-ico .read{background:rgb(var(--t)/.16)}
+.file-row2.ok .r-ico .read,.file-row2.attn .r-ico .read{background:none}
+.r-ico .st{position:absolute;right:2px;bottom:2px;width:11px;height:11px;border-radius:50%;display:grid;place-items:center;opacity:0}
+.r-ico .st svg{width:7px;height:7px;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.file-row2.ok .r-ico .st{opacity:1;background:var(--green-soft)}.file-row2.ok .r-ico .st svg{stroke:var(--green)}
+.file-row2.attn .r-ico .st{opacity:1;background:var(--amber-soft)}.file-row2.attn .r-ico .st svg{stroke:var(--amber)}
+.r-file b{display:block;font-size:13px;font-weight:650;letter-spacing:-.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-meta{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:11px;color:var(--ink-4);font-family:var(--mono);white-space:nowrap}
+.r-meta .chip-lob{font-family:var(--font)}
+.r-act{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:8px}
+/* AI activity: one live line, a five-part progress, and the current sub-step */
+.r-ai{display:block}
+.ai-body{min-width:0}
+.ai-blob{position:relative;width:24px;height:24px;flex-shrink:0}
+.ai-blob canvas{position:absolute;left:-15%;top:-15%;width:130%;height:130%;pointer-events:none}
+.ai-top{display:flex;align-items:center;gap:9px;min-width:0}
+.ai-now{font-size:13px;font-weight:650;color:var(--ink);white-space:nowrap}
+.file-row2.run .ai-now{background:linear-gradient(90deg,var(--ink) 0%,var(--ink) 40%,#7aa5ff 50%,var(--ink) 60%,var(--ink) 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 2.2s linear infinite}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:-150% 0}}
+.ai-step{margin-left:auto;font-size:11px;color:var(--ink-4);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ai-seg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:2px 0 0;padding:6px 0;cursor:help}
+.ai-seg i{height:4px;border-radius:2px;background:var(--bg-2);overflow:hidden;transition:transform .2s var(--ease),box-shadow .2s}
+.ai-seg i.hov{transform:scaleY(1.75);box-shadow:0 0 0 2px rgba(37,96,246,.12)}
+.seg-pop{position:fixed;z-index:85;width:250px;padding:12px 14px 10px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 34px rgba(16,33,59,.16);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .15s ease,transform .2s var(--ease)}
+.seg-pop.on{opacity:1;transform:none}
+.sp-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.sp-h b{font-size:13px;font-weight:700}
+.sp-st{font-size:10.5px;font-weight:650;padding:2px 8px;border-radius:999px;background:var(--bg-2);color:var(--ink-3)}
+.sp-st.done{background:var(--green-soft);color:var(--green)}.sp-st.now{background:var(--blue-soft);color:var(--blue-d)}.sp-st.wait{background:var(--amber-soft);color:var(--amber)}
+.seg-pop .mix{padding:0 10px}
+.seg-pop .mix li{font-size:12px;padding:7px 0}
+.sp-empty{font-size:12px;color:var(--ink-3);line-height:1.45}
+.ai-seg b{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#a9c3fb,var(--blue))}
+.file-row2.attn .ai-seg i.paused b{background:linear-gradient(90deg,#f1d9a6,#d9a54a)}
+.file-row2.ok .ai-seg b{background:linear-gradient(90deg,#9fd8b8,var(--green))}
+.ai-sub{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-sub b{color:var(--ink);font-weight:650;font-variant-numeric:tabular-nums}
+.ai-sub.live{animation:subin .4s var(--ease)}
+@keyframes subin{from{opacity:0;transform:translateY(3px)}}
+.r-act .tile-row{gap:8px}
+.r-act .btn{white-space:nowrap}
+@media(max-width:1180px){
+  .file-row2{grid-template-columns:minmax(0,1fr) auto;row-gap:14px}
+  .r-ai{grid-column:1/-1;grid-row:2}
+  .r-act{grid-column:2;grid-row:1}
+}
+/* with the rail open the stage is narrower: stack each row */
+.v2.is-focus .file-row2{grid-template-columns:minmax(0,1fr) auto;row-gap:14px}
+.v2.is-focus .r-ai{grid-column:1/-1;grid-row:2}
+.v2.is-focus .r-act{grid-column:2;grid-row:1}
+
+/* V3 — rows expand in place */
+.v3 .file-row2{row-gap:0}
+.v3 .file-row2.open{transform:none;border-color:#c9d8f6;box-shadow:0 12px 32px rgba(20,41,68,.10)}
+.v3 .file-row2.open:hover{transform:none}
+.x-caret{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:var(--ink-4);transition:background .2s}
+.x-caret svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s var(--ease)}
+.file-row2:hover .x-caret{background:var(--bg-2)}
+.file-row2.open .x-caret svg{transform:rotate(180deg)}
+.v3 .file-row2.open .r-act [data-act]{display:none}
+.r-more{grid-column:1/-1;display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.22,1,.36,1);cursor:default}
+.file-row2.open .r-more{grid-template-rows:1fr}
+.r-more>div{overflow:hidden;min-height:0}
+.x{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(-6px);transition:opacity .25s ease,transform .4s var(--ease)}
+.file-row2.open .x{opacity:1;transform:none;transition-delay:.1s}
+.x-cols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+.x-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.x-side{display:flex;flex-direction:column;gap:2px;padding:14px 16px;border-radius:12px;background:#f5f7fb;min-width:0}
+.x-side .auth-lbl{margin-bottom:4px}
+.x-side .auth-row{padding:5px 0;font-size:12.5px}
+.x-side .auth-row.tot{margin-top:4px;padding-top:9px;font-size:14px}
+.x-side .auth-row.tot b{font-size:14px}
+/* Real Agent Loaders iframe — no enclosing box */
+.x-side.xa-panel{gap:0;padding:0;background:transparent;border:none;border-radius:0;box-shadow:none}
+.xa-embed{width:100%;aspect-ratio:720/400;min-height:220px;overflow:hidden}
+.xa-embed iframe{width:100%;height:100%;border:0;display:block;background:transparent}
+.x-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.x-stats div{padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line-2);min-width:0}
+.x-stats small{display:block;font-size:10px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4)}
+.x-stats b{display:block;font-size:17px;font-weight:700;letter-spacing:-.4px;font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
+.x-stats span{font-size:10.5px;color:var(--ink-4)}
+.x-ok{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:9px;background:#eaf6ef;font-size:12.5px;color:var(--ink-2)}
+.x-ok svg{width:15px;height:15px;flex-shrink:0;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.x-chips{display:flex;flex-wrap:wrap;gap:6px}
+.x-chips span{display:inline-flex;gap:5px;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:var(--bg-2);font-size:11.5px;color:var(--ink-3)}
+.x-chips b{color:var(--ink);font-weight:650;font-variant-numeric:tabular-nums}
+.x-appeal{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid #f0d9a8;background:linear-gradient(180deg,#fffbf2,#fff6e4)}
+.xa-ic{width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid #f0d9a8;display:grid;place-items:center;color:var(--amber)}
+.xa-ic svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.xa-body{min-width:0}
+.xa-body>b{font-size:13px;font-weight:650;color:var(--ink)}
+.xa-body p{font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.45}
+.xa-btn{align-self:center;background:#fff;border-color:#e8c98e;color:var(--amber)}
+.xa-btn:hover{background:#fff9ec;border-color:#d9a54a}
+.x-appeal.done{grid-template-columns:26px minmax(0,1fr);border-color:#b7e4c7;background:var(--green-soft)}
+.x-appeal.done .xa-ic{border-color:#b7e4c7;color:var(--green)}
+.x-appeal.done .xa-ic svg{stroke-width:2.8;width:13px;height:13px}
+.x-right{display:flex;flex-direction:column;gap:10px;min-width:0}
+.xsl{border:1px solid var(--line-2);border-radius:12px;background:#fff;overflow:hidden}
+.xsl-i+.xsl-i{border-top:1px solid var(--line-2)}
+.xsl-i summary{display:grid;grid-template-columns:18px auto minmax(0,1fr) auto 16px;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;list-style:none}
+.xsl-i summary::-webkit-details-marker{display:none}
+.xsl-i summary:hover{background:#f8fafd}
+.xsl-d{width:18px;height:18px;border-radius:50%;border:1.5px solid #d5dce8;background:#fff;display:grid;place-items:center}
+.xsl-d svg{width:10px;height:10px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.xsl-d i{width:6px;height:6px;border-radius:50%}
+.xsl-i.done .xsl-d{background:var(--green);border-color:var(--green)}
+.xsl-i.now .xsl-d{border-color:var(--blue)}.xsl-i.now .xsl-d i{background:var(--blue);animation:pulse 1.6s var(--ease) infinite}
+.xsl-i.wait .xsl-d{border-color:#d9a54a}.xsl-i.wait .xsl-d i{background:#d9a54a}
+.xsl-i summary b{font-size:12.5px;font-weight:650;color:var(--ink);white-space:nowrap}
+.xsl-i.todo summary b{color:var(--ink-4);font-weight:550}
+.xsl-t{font-size:11.5px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.xsl-i[open] .xsl-t{visibility:hidden}
+.xsl-s{font-size:10.5px;font-weight:650;padding:2px 8px;border-radius:999px;background:var(--bg-2);color:var(--ink-4);white-space:nowrap}
+.xsl-i.done .xsl-s{background:var(--green-soft);color:var(--green)}
+.xsl-i.now .xsl-s{background:var(--blue-soft);color:var(--blue-d)}
+.xsl-i.wait .xsl-s{background:var(--amber-soft);color:var(--amber)}
+.xsl-i[open] .xs-chev{transform:rotate(180deg)}
+.xsl-b{padding:0 14px 12px 42px;animation:vt-in-up .3s var(--ease)}
+.xsl-b .mix{padding:0 12px}
+.xsl-b .mix li{font-size:12px;padding:7px 0}
+.xsl-b .sub li{font-size:12.5px}
+.xsl-b .x-fine{margin-top:6px}
+.xs-chev{width:16px;height:16px;flex-shrink:0;fill:none;stroke:var(--ink-4);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
+.x-cols.wide{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr)}
+.vsum{display:grid;grid-template-columns:96px repeat(4,minmax(0,1fr));align-items:start;gap:0;padding:14px 16px;border:1px solid var(--line-2);border-radius:14px;background:#fff}
+.vs-ring{position:relative;width:88px;height:88px;align-self:center}
+.vs-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.vs-ring circle{fill:none;stroke-width:10}
+.vs-ring span{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.vs-ring b{font-size:16px;font-weight:700;letter-spacing:-.4px}
+.vs-ring small{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.vs-col{display:flex;flex-direction:column;gap:4px;padding:2px 14px;border-left:1px solid var(--line-2);min-width:0}
+.vs-col:nth-child(2){border-left:0}
+.vs-col small{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-4);white-space:nowrap}
+.vs-col small i{width:7px;height:7px;border-radius:50%}
+.vs-col>b{display:flex;align-items:center;gap:6px;font-size:21px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vs-col>span{font-size:11.5px;color:var(--ink-3);line-height:1.35;overflow:hidden;text-overflow:ellipsis}
+.vs-dl{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:var(--ink-3)}
+.vs-dl:hover{background:var(--bg-2);color:var(--blue)}
+.vs-dl svg,.x-dl svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.x-dl{align-self:flex-start;margin:10px 0 12px;gap:6px}
+.x-gap{margin-top:14px}
+.ap{display:flex;flex-direction:column;gap:12px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 10px 28px rgba(16,33,59,.08);animation:vt-in-up .35s var(--ease)}
+.ap-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ap-h b{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.ap-close{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--ink-4)}
+.ap-close:hover{background:var(--bg-2);color:var(--ink)}
+.ap-close svg,.ap-x svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.ap-lead{font-size:12px;color:var(--ink-3);line-height:1.5;margin-top:-6px}
+.ap-f{display:flex;flex-direction:column;gap:4px}
+.ap-f>b{font-size:12.5px;font-weight:650}
+.ap-f>p{font-size:11.5px;color:var(--ink-3);line-height:1.4}
+.ap-drop{margin-top:4px;padding:14px 12px;border:1.5px dashed #c9d6ec;border-radius:12px;background:#fafcff;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.ap-drop:hover,.ap-drop.drag{border-color:var(--blue);background:var(--blue-soft)}
+.ap-drop.has{cursor:default;border-style:solid;border-color:#b7e4c7;background:var(--green-soft);padding:10px 12px}
+.ap-up{width:28px;height:28px;border-radius:8px;background:var(--blue-soft);display:grid;place-items:center;color:var(--blue)}
+.ap-up svg,.ap-tpl svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ap-drop p{font-size:12.5px;color:var(--ink-2)}
+.ap-drop small{font-size:11px;color:var(--ink-4)}
+.ap-link{color:var(--blue);font-weight:600}
+.ap-tpl{display:inline-flex;align-items:center;gap:5px;font-size:12px;margin-top:2px}
+.ap-more{align-self:flex-end;font-size:11.5px;font-weight:500;color:var(--ink-3);margin-top:4px}
+.ap-more:hover{color:var(--blue)}
+.ap-file-chip{display:flex;align-items:center;gap:10px;width:100%;text-align:left}
+.ap-fi{width:30px;height:34px;border-radius:5px;background:#fff;border:1px solid #cfe6d8;display:grid;place-items:center;font:700 8px var(--mono);color:var(--green)}
+.ap-file-chip>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}
+.ap-file-chip b{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-x{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:var(--ink-4)}
+.ap-x:hover{background:#fff;color:var(--ink)}
+.ap-desc{width:100%;margin-top:4px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:12.5px;resize:vertical;min-height:64px}
+.ap-desc:focus{outline:2px solid var(--blue);outline-offset:0;border-color:transparent}
+.ap-warn{padding:10px 12px;border-radius:10px;background:#fffbea;border:1px solid #f3dd8f;font-size:12px;color:#8a5a00;text-align:center;line-height:1.45}
+.ap-warn b{text-transform:uppercase}
+.ap-ok{font-size:12px}
+.ap-submit{width:100%;height:38px}
+.ap{gap:10px;padding:14px 16px}
+.ap-lead{font-size:11.5px;margin-top:-4px}
+.ap-files{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ap-f{gap:2px;min-width:0}
+.ap-f>b{font-size:12px}
+.ap-f>p{font-size:11px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-drop{flex-direction:row;align-items:center;gap:9px;padding:9px 10px;text-align:left;margin-top:4px;border-radius:10px}
+.ap-drop.has{padding:7px 8px}
+.ap-up{width:26px;height:26px;flex-shrink:0}
+.ap-tx{display:flex;flex-direction:column;min-width:0}
+.ap-drop p{font-size:12px}
+.ap-drop small{font-size:10.5px}
+.ap-tpl{font-size:11px;margin-top:4px;align-self:flex-start}
+.ap-more{align-self:flex-start;color:var(--ink-3);font-weight:600}
+.ap-fi{width:26px;height:30px}
+.ap-file-chip b{font-size:12px}
+.ap-desc{margin-top:0;min-height:46px;font-size:12px;padding:8px 10px}
+.ap-warn{display:flex;align-items:center;gap:7px;padding:7px 10px;text-align:left;font-size:11.5px}
+.ap-warn svg{width:14px;height:14px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.ap-ok{font-size:11.5px}
+.x-cols.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.x-cols.ap-full{grid-template-columns:1fr}
+.x-cols.ap-full .ap{min-height:340px;padding:18px 20px;gap:12px;box-shadow:none;border-color:var(--line-2)}
+.x-cols.ap-full .ap-h b{font-size:16px}
+.x-cols.ap-full .ap-lead{font-size:12.5px;max-width:52em}
+.x-cols.ap-full .ap-desc{min-height:72px}
+.x-cols.ap-full .ap-submit{width:auto;min-width:200px;align-self:flex-start;padding:0 18px}
+.vb{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.vb-h{display:flex;align-items:center;justify-content:space-between}
+.vb-h .auth-lbl{margin:0}
+.vb-dl{display:inline-flex;align-items:center;gap:5px;font-size:12px}
+.vb-dl svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.vb-big{font-size:13px;color:var(--ink-3)}
+.vb-big b{font-size:19px;font-weight:700;letter-spacing:-.6px;color:var(--ink);margin-right:2px}
+.vb-big span{color:var(--ink-4);margin-left:4px}
+.vb-bar{display:flex;gap:2px;height:7px;border-radius:4px;overflow:hidden}
+.vb-bar i{flex:0 1 0;min-width:3px}
+.vb-rows{background:#fff;border-radius:10px}
+.vb-rows li{display:grid;grid-template-columns:8px minmax(0,1fr) auto 46px;gap:10px;align-items:center}
+.vb-rows li{padding:6px 0!important}
+.vb-rows li span{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vb-rows li small{font-size:11px;color:var(--ink-4)}
+.vb-rows em{font-style:normal;text-align:right;font-size:11.5px;color:var(--ink-4);font-variant-numeric:tabular-nums}
+.x-right>.auth-lbl{margin-bottom:-2px}
+.vsc{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid var(--line-2)}
+.vs-ring.sm{width:64px;height:64px}
+.vs-ring.sm circle{stroke-width:12}
+.vs-ring.sm b{font-size:12.5px;letter-spacing:-.3px}
+.vs-ring.sm small{font-size:7.5px}
+.vsc-g{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}
+.vsc-g div{display:flex;flex-direction:column;min-width:0}
+.vsc-g small{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4)}
+.vsc-g small i{width:6px;height:6px;border-radius:50%}
+.vsc-g b{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.vsc-g span{font-size:10.5px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:1180px){.vsum{grid-template-columns:88px repeat(2,minmax(0,1fr));row-gap:12px}.vs-col:nth-child(4){border-left:0}}
+.x-note,.x-lead{font-size:12.5px;color:var(--ink-3);line-height:1.5}
+.x-lead b{color:var(--ink);font-weight:650}
+.x-note .link-btn{padding:2px 4px}
+.x-check{font-size:12px;margin:10px 0 8px}
+.x-check b{font-weight:650;color:var(--ink)}
+.x-submit{width:100%;height:40px}
+.x-rcpt{margin-top:12px}
+.x-fine{font-size:11px;color:var(--ink-4);margin-top:8px;line-height:1.45}
+.x-btns{display:flex;gap:8px;justify-content:flex-end}
+@media(max-width:1000px){.x-cols{grid-template-columns:1fr}}
+
+/* Ready for your go-ahead */
+.rd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--line-2)}
+.rd-file{font-size:13px;color:var(--ink-3);margin-top:8px}
+.chip-ok{flex-shrink:0;background:var(--green-soft);color:var(--green);font-size:11.5px;font-weight:650;padding:5px 10px;border-radius:7px}
+.rd-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.rd-stats small{display:block;font-size:12px;color:var(--ink-3)}
+.rd-stats b{display:block;font-size:30px;font-weight:700;letter-spacing:-.8px;line-height:1.2;margin-top:4px;font-variant-numeric:tabular-nums}
+.rd-stats span{font-size:12px;color:var(--ink-3)}
+.ok-note{display:flex;gap:10px;align-items:center;padding:13px 16px;border-radius:10px;background:#eaf6ef;color:var(--ink-2);font-size:13px;line-height:1.45}
+.ok-note svg{width:17px;height:17px;flex-shrink:0;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.disc summary{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:650;color:var(--blue);cursor:pointer;list-style:none}
+.disc summary::-webkit-details-marker{display:none}
+.disc summary::before{content:'';border:4.5px solid transparent;border-left:6px solid currentColor;border-right:0;transition:transform .2s var(--ease)}
+.disc[open] summary::before{transform:rotate(90deg)}
+.disc-body{margin-top:10px;border:1px solid var(--line-2);border-radius:10px;padding:2px 14px}
+.disc-body div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:12.5px;color:var(--ink-3);border-top:1px dashed var(--line)}
+.disc-body div:first-child{border-top:0}
+.disc-body div span:last-child{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink-2);white-space:nowrap}
+.appeal{padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:#f8f9fc}
+.appeal h4{font-size:14px;font-weight:650}
+.appeal p{font-size:13px;color:var(--muted);margin:5px 0 12px}
+.auth{padding:18px 18px 16px;border-radius:12px;background:#f4f6fb}
+.auth-lbl{font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.auth-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.auth-row b{font-weight:700;color:var(--ink)}
+.auth-row.tot{margin-top:6px;padding-top:14px;border-top:1px solid var(--line);font-size:16px;font-weight:650;color:var(--ink)}
+.auth-row.tot b{font-size:16px}
+.auth-note{font-size:12px;color:var(--ink-3);margin-top:8px}
+.auth-check{font-size:13px;line-height:1.55}
+.auth-check b{font-weight:650;color:var(--ink)}
+.submit-full{width:100%;height:46px;font-size:13.5px}
+.submit-full svg{width:15px;height:15px}
+.concept{font-size:12px;color:var(--ink-4);margin-top:-8px}
+@media(max-width:1100px){.act-stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <b style="font-size:16px;letter-spacing:-.3px">WiselyConsent</b>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-lbl">Operate</div>
+      <a class="nav-item active" href="#" aria-current="page">Migration</a>
+      <a class="nav-item is-muted" href="#">Integrations</a>
+      <a class="nav-item is-muted" href="#">Consent Acquisition</a>
+    </nav>
+    <div class="ver">
+      <div class="nav-lbl">Version</div>
+      <div class="ver-seg" role="group" aria-label="Layout version">
+        <button type="button" data-ver="1">V1 · Grid</button>
+        <button type="button" class="is-on" data-ver="3">V3 · Inline</button>
+      </div>
+    </div>
+    <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="workspace">
+      <!-- Fixed upload -->
+      <aside class="upload-rail" aria-label="Upload consents">
+       <div class="rail-pane" id="uploadPane">
+        <div>
+          <h1>Upload</h1>
+          <p class="lead">Add one or more CSVs per LoB. The agent prepares each file — you only act when asked.</p>
+        </div>
+<div class="field">
+          <label for="lob">Line of business</label>
+          <select id="lob">
+            <option value="">Select LoB…</option>
+            <option>Credit Cards</option>
+            <option>Personal Loans</option>
+            <option>Savings Accounts</option>
+            <option>Home Loans</option>
+            <option>Insurance</option>
+          </select>
+        </div>
+        <div class="drop" id="drop" role="button" tabindex="0" aria-label="Add CSV files, encrypted in your browser">
+          <span class="enc-badge"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted<button type="button" class="enc-info" title="About encryption" aria-label="About encryption"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></span>
+          <div class="drop-art">
+            <div class="paper" aria-hidden="true">
+              <span class="back b2"></span>
+              <span class="back"></span>
+              <div class="sheet">
+                <div class="sheet-clip" id="dropSheet"></div>
+                <span class="scan"></span>
+                <span class="drop-plus"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span>
+                <span class="drop-lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span>
+              </div>
+              <span class="drop-count" id="dropCount"></span>
+            </div>
+          </div>
+          <b id="fileLabel">Drop CSVs here</b>
+          <p>Up to 500 MB each · as many files per LoB as you need</p>
+          <div class="drop-btns">
+            <button type="button" class="btn btn-sm" id="browse">Choose files</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="sample">Try sample</button>
+          </div>
+          <input type="file" id="file" accept=".csv" multiple hidden>
+        </div>
+        <ul class="picked-list" id="pickedList" hidden></ul>
+        <div class="af-row">
+          <label for="autofix" class="af-lbl">Autofix errors</label>
+          <span class="info" tabindex="0" role="img" aria-label="About autofix" title="About autofix"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span>
+          <span class="switch"><input type="checkbox" id="autofix" checked aria-label="Autofix errors"><span class="track"></span></span>
+        </div>
+        <div id="uploadError" class="error" hidden></div>
+        <label class="declare">
+          <input type="checkbox" id="declare">
+          <span>I confirm these consents comply with TRAI regulations and have been verified.</span>
+        </label>
+        <button type="button" class="btn btn-pri btn-full" id="uploadBtn" disabled>Upload securely</button>
+        <button type="button" class="btn btn-sm" id="seedDemo" style="align-self:flex-start">Load sample queue</button>
+       </div>
+       <div class="rail-pane" id="focusPane" hidden></div>
+      </aside>
+
+      <!-- Right representation -->
+      <section class="stage" aria-label="Migration files">
+        <div class="metrics" id="metrics" hidden></div>
+        <div class="stage-bar">
+          <div class="filters" role="tablist" aria-label="Filter">
+            <button type="button" class="chip-btn is-on" data-filter="all">All <span class="n" id="cAll">0</span></button>
+            <button type="button" class="chip-btn" data-filter="needs">Needs you <span class="n" id="cNeeds">0</span></button>
+            <button type="button" class="chip-btn" data-filter="run">In progress <span class="n" id="cRun">0</span></button>
+            <button type="button" class="chip-btn" data-filter="done">Done <span class="n" id="cDone">0</span></button>
+          </div>
+          <div class="bar-r">
+          <button type="button" class="btn up-btn" id="seedDemo2">Load sample queue</button>
+          <button type="button" class="btn btn-pri up-btn" id="openTray" aria-controls="tray" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg>Upload</button>
+          </div>
+        </div>
+        <div id="canvas"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="tray-bg" id="trayBg"></div>
+<aside class="tray" id="tray" aria-label="Upload files" aria-hidden="true">
+  <button type="button" class="tray-x" id="trayClose" aria-label="Close upload"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <div class="tray-body" id="trayBody"></div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="fBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4d5d9"/><stop offset="1" stop-color="#bdbec3"/></linearGradient>
+</defs></svg>
+
+<script src="agent-loaders-embed.js"></script>
+<script>
+(() => {
+  const STAGES = [
+    { id:'upload', label:'Uploading', tip:'Sealing and sending your file' },
+    { id:'validate', label:'Validating', tip:'Checking columns and formats' },
+    { id:'fix', label:'Autofix', tip:'Applying safe format fixes' },
+    { id:'verify', label:'Verifying', tip:'Authenticity checks running' },
+    { id:'ready', label:'Ready', tip:'Waiting for your go-ahead' }
+  ];
+
+  let jobs = [];
+  let nextId = 1;
+  let picked = [];
+  let filter = 'all';
+
+  const $ = (s, el=document) => el.querySelector(s);
+  const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const num = n => Number(n||0).toLocaleString('en-IN');
+  const toast = msg => {
+    const t=$('#toast'); t.textContent=msg; t.classList.add('is-on');
+    clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('is-on'),2200);
+  };
+
+  const needsYou = j => j.phase==='fix_review' || j.phase==='ready';
+  const isRunning = j => ['upload','received','validate','fix','verify'].includes(j.phase);
+  const isDone = j => j.phase==='submitted' || j.phase==='cancelled';
+
+  /* Running files advance continuously: 0 → 100% in one minute of agent time */
+  const RATE = 100 / 60000;
+  const PHASE_AT = { upload:5, received:15, validate:30, fix:50, fix_review:42, verify:80, ready:100, submitted:100, cancelled:0 };
+  const progressF = j => (isRunning(j) || j.phase==='fix_review') && j.p != null ? j.p : (PHASE_AT[j.phase] ?? 0);
+  const progress = j => Math.round(progressF(j));
+
+  function stageInfo(j) {
+    if (j.phase==='fix_review') return { key:'fix', label:'Review errors', tip:'Errors found · autofix or skip', cls:'attn' };
+    if (j.phase==='ready') return { key:'ready', label:'Ready to submit', tip:'Authorize when you’re ready', cls:'attn' };
+    if (j.phase==='submitted') return { key:'ready', label:'Submitted', tip:'Migration received', cls:'ok' };
+    if (j.phase==='cancelled') return { key:'upload', label:'Cancelled', tip:'', cls:'' };
+    const i = { upload:0, received:0, validate:1, fix:2, verify:3 }[j.phase] ?? 0;
+    const s = STAGES[i];
+    return { key:s.id, label:s.label, tip:s.tip, cls: isRunning(j) ? 'run' : '' };
+  }
+
+  function tileClass(j) {
+    if (needsYou(j)) return 'attn needs';
+    if (j.phase==='submitted') return 'ok done';
+    if (isRunning(j)) return 'run';
+    return '';
+  }
+
+  const LOCK = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
+  function updateUpload() {
+    const n = picked.length, sealing = picked.filter(f => !f.sealed).length;
+    const b = $('#uploadBtn');
+    b.disabled = !(n && !sealing && $('#declare').checked && $('#lob').value);
+    b.innerHTML = LOCK + (sealing ? `Encrypting ${sealing} file${sealing>1?'s':''}…` : n > 1 ? `Upload ${n} sealed files` : n ? 'Upload sealed file' : 'Upload securely');
+    const d = $('#drop');
+    d.classList.toggle('sealing', sealing > 0);
+    d.classList.toggle('sealed', n > 0 && !sealing);
+    $('#fileLabel').textContent = n === 0 ? 'Drop CSVs here' : sealing ? 'Encrypting in your browser…' : n === 1 ? `${picked[0].name} · sealed` : `${n} files sealed`;
+  }
+  const hex = n => Array.from({ length: n }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+  function pickedRow(f, i) {
+    return `<li class="${f.sealed ? 'sealed' : 'sealing'}" data-name="${esc(f.name)}"><span class="pi"><span class="lk">${LOCK}</span></span>
+      <span class="pl"><b title="${esc(f.name)}">${esc(f.name)}</b><span class="st">${f.sealed ? `Sealed · SHA-256 ${f.hash}` : 'Encrypting in browser'}</span><span class="pbar"><i></i></span></span>
+      <span class="sz">${fmtSize(f.size)}</span><button type="button" data-rm="${i}" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`;
+  }
+
+  const fmtSize = b => b >= 1048576 ? `${(b/1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(b/1024))} KB`;
+  function renderPicked() {
+    const n = picked.length, d = $('#drop');
+    d.classList.toggle('is-picked', n > 0);
+    d.classList.toggle('multi', n > 1);
+    $('#dropCount').textContent = n > 1 ? `${n} files` : '';
+    $('#browse').textContent = n ? 'Add more' : 'Choose files';
+    const ul = $('#pickedList');
+    ul.hidden = !n;
+    ul.innerHTML = picked.map(pickedRow).join('');
+    updateUpload();
+  }
+
+  function addFiles(list) {
+    const err = $('#uploadError'), bad = [];
+    err.hidden = true;
+    for (const f of list) {
+      if (!f.name.toLowerCase().endsWith('.csv')) { bad.push(`${f.name} isn’t a CSV`); continue; }
+      if (f.size > 500*1024*1024) { bad.push(`${f.name} is over 500 MB`); continue; }
+      if (picked.some(p => p.name === f.name)) continue;
+      const item = { name: f.name, size: f.size, sealed: false };
+      picked.push(item);
+      /* seal each file in the browser before it can be uploaded */
+      setTimeout(() => {
+        item.sealed = true; item.hash = `${hex(4)}…${hex(4)}`;
+        const li = $$('#pickedList li').find(l => l.dataset.name === item.name);
+        if (li) { li.className = 'sealed'; $('.st', li).textContent = `Sealed · SHA-256 ${item.hash}`; }
+        updateUpload();
+      }, 1100 + picked.length * 350);
+    }
+    if (bad.length) { err.textContent = bad.join(' · '); err.hidden = false; }
+    renderPicked();
+  }
+
+  function filtered() {
+    return jobs.filter(j => {
+      if (filter==='needs') return needsYou(j);
+      if (filter==='run') return isRunning(j);
+      if (filter==='done') return isDone(j);
+      return true;
+    });
+  }
+
+  /* deterministic per-file layout so every page looks a little different */
+  const SIG = 'M3 16c2-5 5-11 7-10s-3 12-1 13 5-9 7-9-1 7 1 7 3-5 5-4 1 4 3 3l9-4';
+  function seeded(n) {
+    let x = (n * 2654435761) >>> 0 || 1;
+    return () => { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; };
+  }
+  /* the page is a CSV: a file tag, then a header row and data rows in a ruled grid */
+  function docHTML(id) {
+    const r = seeded(id + 7), w = (a, b) => Math.round(a + r() * (b - a));
+    const row = (cls, ws) => `<div class="csv-row${cls}">${ws.map(x => `<span><i style="width:${x}%"></i></span>`).join('')}</div>`;
+    const rows = Array.from({ length: 8 }, () => row('', [w(40, 70), w(55, 95), w(45, 90), w(35, 80)])).join('');
+    return `<div class="doc csv">
+      <div class="csv-top"><span class="csv-tag">CSV</span><i style="width:${w(38, 54)}%"></i></div>
+      <div class="csv-grid">${row(' hd', [60, w(60, 85), w(55, 80), w(50, 75)])}${rows}</div>
+    </div>`;
+  }
+
+
+  /* stamp on the page: a tick once submitted, a pen when it needs sign-off, ! when errors need review */
+  const STAMP = { submitted: 'M6 12.5l4 4 8-9', ready: 'M4 20l4-1 10-10-3-3L5 16l-1 4zM13 8l3 3', fix_review: 'M12 7v6M12 17h.01' };
+  function paperHTML(j) {
+    const doc = docHTML(j.id);
+    return `<div class="paper" aria-hidden="true">
+      <span class="back"></span>
+      <div class="sheet">
+        <div class="sheet-clip">${doc}<div class="read">${doc}<span class="trail"></span></div></div>
+        <span class="scan"></span>
+        <span class="doc-stamp"><svg viewBox="0 0 24 24"><path d="${STAMP[j.phase] || STAMP.submitted}"/></svg></span>
+      </div>
+    </div>`;
+  }
+
+  function fileTile(j) {
+    const pct = progress(j);
+    const st = stageInfo(j);
+    const act = j.phase==='ready'
+      ? `<button class="btn btn-pri btn-sm tile-act" data-act="review" data-id="${j.id}">Submit</button>`
+      : j.phase==='fix_review'
+        ? `<button class="btn btn-pri btn-sm tile-act" data-act="fix" data-id="${j.id}">Review errors</button>`
+        : j.phase==='submitted'
+          ? `<button class="btn btn-sm tile-act" data-act="receipt" data-id="${j.id}">Receipt</button>`
+          : '';
+    return `<article class="file-tile ${tileClass(j)}${pct>=100?' full':''}" style="--fill:${pct}%" data-key="t${j.id}" data-sig="${j.phase}" data-fk="t${j.id}" data-to="${pct}" data-id="${j.id}" tabindex="0" role="button" title="${esc(st.tip)}" aria-label="${esc(j.name)}, ${pct}% ${st.label}">
+      <div class="tile-art">
+        ${paperHTML(j)}
+        <div class="tile-top"><span class="tile-lob">${esc(j.lob)}</span><span class="tile-stage ${st.cls}">${st.cls==='run'||st.cls==='attn'?'<i class="pulse"></i>':''}${esc(st.label)}</span></div>
+        <span class="tile-pct">${pct}%</span>
+      </div>
+      <div class="tile-foot">
+        <div class="tile-row"><span class="tile-name" title="${esc(j.name)}">${esc(j.name)}</span></div>
+        <div class="tile-row"><span class="tile-tip">${esc(st.tip || st.label)}</span>${act}</div>
+      </div>
+    </article>`;
+  }
+
+  /* ---------- AI blob: a rotating sphere of particles around the agent mark
+     (ported from Agent Loaders). Colour and spin follow the row: working,
+     waiting on you, or done. One frame loop draws every blob on screen. ---------- */
+  const AI_BLOB = (() => {
+    const PAL = { run: [24, 58, 214, 102, 156, 255], wait: [168, 98, 6, 246, 192, 92], done: [5, 118, 80, 92, 214, 160] };
+    const SPEED = { run: 2.1, wait: .45, done: .35 };
+    const state = new WeakMap();
+    let raf = 0;
+    function setup(cv) {
+      const host = cv.parentElement, s = host.offsetWidth || 52, C = Math.round(s * 1.3), dpr = Math.min(3, devicePixelRatio || 1);
+      cv.width = C * dpr; cv.height = C * dpr;
+      const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = s < 40 ? 72 : 170, k = s < 40 ? 1.05 : 1, pts = [];
+      for (let i = 0; i < count; i++) {
+        const y = 1 - (i / (count - 1)) * 2, r = Math.sqrt(Math.max(0, 1 - y * y)), th = i * 2.399963;
+        pts.push({ x: Math.cos(th) * r, y, z: Math.sin(th) * r, s: (.82 + (i % 7) * .06) * k });
+      }
+      const b = { g, C, R: s * .44, pts, rotY: Math.random() * 6, rotX: .55 };
+      state.set(cv, b);
+      return b;
+    }
+    function kind(cv) {
+      const row = cv.closest('.file-row2');
+      return row && row.classList.contains('ok') ? 'done' : row && row.classList.contains('attn') ? 'wait' : 'run';
+    }
+    function draw(cv, step) {
+      const b = state.get(cv) || setup(cv), k = kind(cv), [r0, g0, b0, r1, g1, b1] = PAL[k];
+      const { g, C, pts } = b, cx = C / 2, cy = C / 2, R = b.R;
+      b.rotY += .016 * SPEED[k] * step; b.rotX += .0044 * SPEED[k] * step;
+      const cY = Math.cos(b.rotY), sY = Math.sin(b.rotY), cX = Math.cos(b.rotX), sX = Math.sin(b.rotX);
+      g.clearRect(0, 0, C, C);
+      const glow = g.createRadialGradient(cx, cy, 0, cx, cy, R * 1.35);
+      glow.addColorStop(0, `rgba(${r1},${g1},${b1},.26)`);
+      glow.addColorStop(.55, `rgba(${(r0 + r1) >> 1},${(g0 + g1) >> 1},${(b0 + b1) >> 1},.1)`);
+      glow.addColorStop(1, `rgba(${r0},${g0},${b0},0)`);
+      g.fillStyle = glow; g.beginPath(); g.arc(cx, cy, R * 1.35, 0, 6.283); g.fill();
+      const P = pts.map(p => { const x1 = p.x * cY - p.z * sY, z1 = p.x * sY + p.z * cY; return { x: x1, y: p.y * cX - z1 * sX, z: p.y * sX + z1 * cX, s: p.s }; });
+      P.sort((a, c) => a.z - c.z);
+      for (const p of P) {
+        const depth = (p.z + 1) / 2, r = (.3 + depth * .86) * p.s, f = .24 + depth * depth * .76, a = .3 + f * .7;
+        g.beginPath(); g.arc(cx + p.x * R, cy + p.y * R, r, 0, 6.283);
+        g.fillStyle = `rgba(${r0 + f * (r1 - r0) | 0},${g0 + f * (g1 - g0) | 0},${b0 + f * (b1 - b0) | 0},${a})`;
+        g.fill();
+      }
+    }
+    let last = 0;
+    function loop(now) {
+      const step = Math.min(3, (now - last) / 16.7 || 1); last = now;
+      const cvs = $$('#canvas .ai-blob canvas');
+      cvs.forEach(cv => draw(cv, step));
+      raf = cvs.length ? requestAnimationFrame(loop) : 0;
+    }
+    return {
+      wake() {
+        if (RM) { $$('#canvas .ai-blob canvas').forEach(cv => draw(cv, 0)); return; }
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+      },
+    };
+  })();
+
+  /* ---------- V2: one file per row ---------- */
+  let V2 = false;
+  const AI_STEPS = ['Analyze', 'Validate', 'Autofix', 'Verify consent', 'Prepare review'];
+  const AI_NOW = ['Analyzing', 'Validating', 'Autofixing', 'Verifying consent', 'Preparing review'];
+  const AI_AT = [0, 12, 42, 60, 88, 100];
+  const AI_SUB = [
+    ['Reading file structure', 'Detecting columns and encoding', 'Profiling every row'],
+    ['Checking required columns', 'Validating phone and date formats', 'Flagging duplicate rows'],
+    ['Normalising phone numbers', 'Standardising consent dates', 'Trimming stray whitespace'],
+    ['Matching consent signals', 'Checking consent validity', 'Scoring each record'],
+    ['Compiling eligible records', 'Calculating the estimate', 'Writing the review summary'],
+  ];
+  const SPARK = '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>';
+  function aiState(j) {
+    if (j.phase === 'submitted') return { i: 5, now: 'Submitted', sub: `${num(j.verified)} consents migrated` };
+    if (j.phase === 'ready') return { i: 5, now: 'Prepared for review', sub: `${num(j.verified)} eligible · waiting for your go-ahead` };
+    if (j.phase === 'fix_review') return { i: 2, wait: true, now: 'Waiting for you', sub: `${num(j.fixed)} errors to autofix or skip` };
+    const p = progressF(j);
+    let i = AI_AT.findIndex((a, k) => p >= a && p < AI_AT[k + 1]);
+    if (i < 0) i = 4;
+    const items = AI_SUB[i], f = (p - AI_AT[i]) / (AI_AT[i + 1] - AI_AT[i]);
+    return { i, now: AI_NOW[i], sub: items[Math.min(items.length - 1, Math.floor(f * items.length))] };
+  }
+  /* the summary shown where the agent stops: records only appear once they are counted */
+  function aiResult(j) {
+    if (j.phase === 'fix_review') return `<b>${num(j.fixed)}</b> of ${num(j.total)} records have fixable errors · autofix or skip`;
+    if (j.phase === 'ready') return `<b>${num(j.verified)}</b> of ${num(j.total)} records eligible · ${num(j.total - j.verified)} excluded`;
+    if (j.phase === 'submitted') return `<b>${num(j.verified)}</b> of ${num(j.total)} records migrated`;
+    return null;
+  }
+  function segFill(j, k) {
+    if (j.phase === 'ready' || j.phase === 'submitted') return 100;
+    const p = progressF(j);
+    return Math.max(0, Math.min(100, (p - AI_AT[k]) / (AI_AT[k + 1] - AI_AT[k]) * 100));
+  }
+  function fileRow(j) {
+    const pct = progress(j), st = stageInfo(j), a = aiState(j), res = aiResult(j);
+    const act = j.phase==='ready' ? `<button class="btn btn-pri btn-sm" data-act="review">Submit</button>`
+      : j.phase==='fix_review' ? `<button class="btn btn-pri btn-sm" data-act="fix">Review errors</button>`
+      : j.phase==='submitted' ? `<button class="btn btn-sm" data-act="receipt">Receipt</button>` : '';
+    const stamp = j.phase==='submitted' ? CHECK : `<svg viewBox="0 0 24 24"><path d="${STAMP[j.phase] || ''}"/></svg>`;
+    const now = j.phase === 'fix_review' ? 'Paused at autofix' : a.now;
+    const stepNo = a.i >= 5 ? 'All 5 steps done' : `Step ${a.i + 1} of 5`;
+    const isOpen = V3 && openRow === j.id;
+    return `<article class="file-row2 ${tileClass(j)}${isOpen ? ' open' : ''}" style="--fill:${pct}%" data-key="t${j.id}" data-sig="${j.phase}${V3 ? '|x' : ''}" data-fk="t${j.id}" data-to="${pct}" data-id="${j.id}" data-step="${a.i}" tabindex="0" role="button" aria-label="${esc(j.name)}, ${pct}% ${st.label}">
+      <div class="r-file"><span class="r-ico" aria-hidden="true"><span class="rg"></span><span class="read"></span><span class="st">${stamp}</span></span>
+        <div style="min-width:0"><b title="${esc(j.name)}">${esc(j.name)}</b><div class="r-meta"><span class="chip-lob">${esc(j.lob)}</span>${fmtSize(sizeOf(j))} · ${num(j.total)} records</div></div></div>
+      <div class="r-ai">
+        <div class="ai-body">
+        <div class="ai-top"><span class="ai-blob" aria-hidden="true"><canvas></canvas></span><span class="ai-now" data-live-now="${j.id}">${now}</span><span class="ai-step" data-live-stepno="${j.id}">${stepNo}</span></div>
+        <div class="ai-seg" aria-hidden="true">${AI_STEPS.map((t, k) => `<i class="${j.phase === 'fix_review' && k === 2 ? 'paused' : ''}"><b style="width:${j.phase === 'fix_review' && k === 2 ? 30 : segFill(j, k)}%"></b></i>`).join('')}</div>
+        <p class="ai-sub" data-live-sub="${j.id}">${res || esc(a.sub)}</p>
+        </div>
+      </div>
+      <div class="r-act"><div class="tile-row">${isRunning(j) ? `<span class="tile-pct" data-live-pct="${j.id}">${pct}%</span>` : ''}${act}${V3 ? '<span class="x-caret" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>' : ''}</div></div>
+      ${V3 ? xDetails(j) : ''}
+    </article>`;
+  }
+  const fileList = (list, view) => V2
+    ? `<div class="row-list" data-view="rows${V3 ? 'x' : ''}-${view}">${list.map(fileRow).join('')}</div>`
+    : `<div class="page-grid" data-view="${view}">${list.map(fileTile).join('')}</div>`;
+  function paintRow(j) {
+    const row = $(`#canvas .file-row2[data-id="${j.id}"]`);
+    if (!row) return;
+    $$('.ai-seg b', row).forEach((b, k) => { b.style.width = `${segFill(j, k)}%`; });
+    const a = aiState(j);
+    if (row.dataset.step !== String(a.i)) {
+      row.dataset.step = a.i;
+      $('[data-live-now]', row).textContent = a.now;
+      $('[data-live-stepno]', row).textContent = a.i >= 5 ? 'All 5 steps done' : `Step ${a.i + 1} of 5`;
+      if (V3) {
+        const m = $('.r-more', row);
+        if (m) { m.outerHTML = xDetails(j); mountXaLoaders(row); }
+      }
+    }
+    const sub = $('[data-live-sub]', row);
+    if (sub && sub.textContent !== a.sub) { const n = sub.cloneNode(); n.textContent = a.sub; n.classList.add('live'); sub.replaceWith(n); }
+  }
+
+  /* ---------- V3: the row expands in place to review it ---------- */
+  let V3 = false, openRow = null;
+
+  /* Real Agent Loaders via srcdoc (file:// blocks sibling iframes) */
+  const XA_MAP = [['migval', 1], ['migval', 2], ['migval', 4], ['consent', 3], ['consent', 1]];
+  function xaPanel(j) {
+    const a = aiState(j);
+    const [id, vi] = XA_MAP[Math.min(Math.max(a.i, 0), XA_MAP.length - 1)];
+    return `<div class="x-side xa-panel"><div class="xa-embed" data-xa-id="${id}" data-xa-vi="${vi}" data-xa-title="${esc(a.now)}"></div></div>`;
+  }
+  function mountXaLoaders(root = document) {
+    const tpl = window.XA_SRCDOC_TEMPLATE;
+    $$('.xa-embed[data-xa-id]', root).forEach(host => {
+      if (host.dataset.mounted === '1') return;
+      const row = host.closest('.file-row2');
+      if (row && !row.classList.contains('open')) return;
+      if (!tpl) {
+        host.innerHTML = '<p class="x-fine">Agent loader pack missing — keep agent-loaders-embed.js next to this file.</p>';
+        return;
+      }
+      const id = host.dataset.xaId, vi = host.dataset.xaVi;
+      const doc = tpl.split('__EMBED_ID__').join(id).split('__EMBED_VI__').join(String(vi));
+      const iframe = document.createElement('iframe');
+      iframe.title = host.dataset.xaTitle || 'Agent loader';
+      iframe.setAttribute('aria-label', iframe.title);
+      iframe.srcdoc = doc;
+      host.replaceChildren(iframe);
+      host.dataset.mounted = '1';
+    });
+  }
+  function unmountXaLoaders(row) {
+    $$('.xa-embed[data-mounted]', row).forEach(host => {
+      host.replaceChildren();
+      delete host.dataset.mounted;
+    });
+  }
+
+  /* appeal with the registrar: takes over the full expanded row until sent or closed */
+  const UPL = '<svg viewBox="0 0 24 24"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></svg>';
+  const DLI = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>';
+  function apDrop(kind, f, title, hint, accept, extra) {
+    const file = f[kind];
+    const body = file
+      ? `<div class="ap-file-chip"><span class="ap-fi">${kind === 'zip' ? 'ZIP' : 'CSV'}</span><span><b>${esc(file.name)}</b><small>${fmtSize(file.size)}</small></span><button type="button" class="ap-x" data-do="appeal-rm" data-k="${kind}" aria-label="Remove file"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`
+      : `<span class="ap-up">${UPL}</span><span class="ap-tx"><p>Drop ${kind === 'zip' ? 'ZIP' : 'file'} or <span class="ap-link">browse</span></p><small>${hint}</small></span>`;
+    return `<div class="ap-drop${file ? ' has' : ''}" data-do="${file ? '' : 'appeal-pick'}" data-k="${kind}" tabindex="0">${body}<input type="file" class="ap-file" data-k="${kind}" accept="${accept}" hidden></div>`;
+  }
+  function appealForm(j) {
+    const f = j.appealForm || (j.appealForm = { map: null, zip: null, desc: '', ok: false });
+    const ready = f.map && f.zip && f.ok;
+    return `<div class="ap">
+      <div class="ap-h"><b>Submit an appeal with Registrar</b><button type="button" class="ap-close" data-do="appeal-close" aria-label="Close appeal"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <p class="ap-lead">Appeal up to ${num(j.failed)} failed records, in part or in full. The registrar typically responds within 24 hours.</p>
+      <div class="ap-files">
+        <div class="ap-f"><b>Mapping data *</b><p>Mobile numbers → evidence filenames</p>
+          ${apDrop('map', f, '', 'CSV, XLSX · max 25 MB', '.csv,.xlsx')}
+          <button type="button" class="ap-link ap-tpl" data-do="appeal-template">${DLI}Template (CSV)</button></div>
+        <div class="ap-f"><b>Supporting evidence *</b><p>ZIP with proof of consent</p>
+          ${apDrop('zip', f, '', 'ZIP · max 500 MB', '.zip')}
+          <button type="button" class="ap-link ap-tpl ap-more" data-do="appeal-large">Over 500 MB?</button></div>
+      </div>
+      <textarea class="ap-desc" rows="2" placeholder="Description (optional): relationship details, consent source, or why the flag is incorrect.">${esc(f.desc)}</textarea>
+      <div class="ap-warn"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5h.01"/><circle cx="12" cy="12" r="9"/></svg><span>You can appeal <b>only once</b>. Check your mapping and evidence before submitting.</span></div>
+      <label class="declare ap-ok"><input type="checkbox" class="ap-okbox"${f.ok ? ' checked' : ''}><span>I confirm these details are accurate and understand inaccurate evidence will be rejected.</span></label>
+      <button type="button" class="btn btn-pri ap-submit" data-do="appeal-submit"${ready ? '' : ' disabled'}>Submit appeal</button>
+    </div>`;
+  }
+  const rerenderRow = (rowEl, j) => { const m = rowEl && $('.r-more', rowEl); if (m) { m.outerHTML = xDetails(j); mountXaLoaders(rowEl); } };
+
+  /* failed records can only be appealed before submission, so this gets its own callout */
+  function xAppeal(j) {
+    const f = j.failed;
+    if (j.appealed) return `<div class="x-appeal done"><span class="xa-ic">${CHECK}</span><div class="xa-body"><b>Appeal raised for ${num(f)} records</b><p>They'll be reviewed separately and you'll be notified. The ${num(j.verified)} verified consents can go ahead now.</p></div></div>`;
+    return `<div class="x-appeal"><span class="xa-ic"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
+      <div class="xa-body"><b>${num(f)} records failed authenticity checks</b>
+        <p>Appeal them now: this is only possible before you submit. The ${num(j.verified)} verified consents aren't held up.</p>
+      </div>
+      <button type="button" class="btn btn-sm xa-btn" data-do="appeal"${j.appealOpen ? ' disabled' : ''}>${j.appealOpen ? 'Appeal open →' : `Appeal ${num(f)} records`}</button></div>`;
+  }
+  /* one row per AI step with the counts that step produced */
+  /* every AI stage as its own collapsible row: status at a glance, the counts once it's done */
+  function xStageList(j) {
+    const keep = [['Records found', 'Columns detected'], ['Passed', 'Fixable errors', 'Need manual edits', 'Duplicates'], ['Auto-fixed', 'Skipped', 'Fixable errors', 'Waiting for you'], ['Consent valid', 'Failed authenticity'], ['Eligible', 'Excluded']];
+    const a = aiState(j), all = j.phase === 'ready' || j.phase === 'submitted', p = progressF(j);
+    const ms = thr => `${Math.max(0, Math.round((thr - p) / RATE))}ms`;
+    return `<div class="xsl">${AI_STEPS.map((t, k) => {
+      const st = all || k < a.i ? 'done' : k === a.i ? (a.wait ? 'wait' : 'now') : 'todo';
+      const facts = st === 'done' || st === 'wait' ? stepFacts(j, k).filter(f => keep[k].includes(f[1])) : [];
+      const label = { done: 'Done', now: 'In progress', wait: 'Waiting for you', todo: 'Pending' }[st];
+      const tease = facts.slice(0, 2).map(([, l, v]) => `${l} ${v}`).join(' · ');
+      let body;
+      if (facts.length) body = `<ul class="mix">${facts.map(([c, l, v]) => `<li><i style="background:${c}"></i>${l}<b>${v}</b></li>`).join('')}</ul>`;
+      else if (st === 'now') { const A = AI_AT[k], B = AI_AT[k + 1], items = AI_SUB[k]; body = `<ul class="sub">${items.map((x, i) => `<li style="--s:${ms(A + (B - A) * i / items.length)};--e:${ms(A + (B - A) * (i + 1) / items.length)}"><span class="ic"><span class="spin"></span><span class="ok">${CHECK}</span></span>${x}</li>`).join('')}</ul><p class="x-fine">Counts appear once this stage finishes.</p>`; }
+      else body = `<p class="x-fine">Starts after ${AI_STEPS[k - 1]}.</p>`;
+      const open = st === 'now' || st === 'wait' ? ' open' : '';
+      return `<details class="xsl-i ${st}" name="stg-${j.id}"${open}><summary><span class="xsl-d">${st === 'done' ? CHECK : '<i></i>'}</span><b>${t}</b><span class="xsl-t">${tease}</span><span class="xsl-s">${label}</span><svg class="xs-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="xsl-b">${body}</div></details>`;
+    }).join('')}</div>`;
+  }
+  /* validation summary strip: % valid ring, then total / valid / errors / duplicates */
+  function vSummary(j) {
+    const errs = j.fixed + j.manual, t = j.total || 1;
+    const segs = [[j.valid, '#93bdfa'], [errs, '#2563eb'], [j.dup, '#1e3a8a']];
+    let off = 0;
+    const arcs = segs.map(([v, c]) => { const len = v / t * 100, a = `<circle cx="50" cy="50" r="40" pathLength="100" stroke="${c}" stroke-dasharray="${Math.max(0, len - .8)} 100" stroke-dashoffset="${-off}"/>`; off += len; return a; }).join('');
+    return `<div class="vsum">
+      <div class="vs-ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="var(--bg-2)"/>${arcs}</svg><span><b>${(j.valid / t * 100).toFixed(1)}%</b><small>Valid</small></span></div>
+      <div class="vs-col"><small>Total records</small><b>${num(j.total)}</b><span>${esc(j.name)}</span></div>
+      <div class="vs-col"><small><i style="background:#93bdfa"></i>Valid</small><b>${num(j.valid)}</b><span>ready as-is</span></div>
+      <div class="vs-col"><small><i style="background:#2563eb"></i>Errors</small><b>${num(errs)}<button type="button" class="vs-dl" data-do="download-errors" title="Download error report" aria-label="Download error report"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button></b><span>${num(j.fixed)} auto-fixable · ${num(j.manual)} manual</span></div>
+      <div class="vs-col"><small><i style="background:#1e3a8a"></i>Duplicates</small><b>${num(j.dup)}</b><span>removed automatically</span></div>
+    </div>`;
+  }
+  function vRing(j, cls = '') {
+    const errs = j.fixed + j.manual, t = j.total || 1;
+    let off = 0;
+    const arcs = [[j.valid, '#93bdfa'], [errs, '#2563eb'], [j.dup, '#1e3a8a']].map(([v, c]) => { const len = v / t * 100, a = `<circle cx="50" cy="50" r="40" pathLength="100" stroke="${c}" stroke-dasharray="${Math.max(0, len - .8)} 100" stroke-dashoffset="${-off}"/>`; off += len; return a; }).join('');
+    return `<div class="vs-ring ${cls}"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" stroke="#e3e8f0"/>${arcs}</svg><span><b>${(j.valid / t * 100).toFixed(1)}%</b><small>Valid</small></span></div>`;
+  }
+  /* validation breakdown: headline % valid, one stacked bar, then each bucket as a row */
+  function vBreakdown(j) {
+    const t = j.total || 1, pc = v => `${(v / t * 100).toFixed(1)}%`;
+    const rows = [['Valid', 'ready as-is', j.valid, '#93bdfa'], ['Fixable errors', 'autofix can repair', j.fixed, '#2563eb'], ['Manual edits', 'left out of this run', j.manual, '#d9a54a'], ['Duplicates', 'removed automatically', j.dup, '#1e3a8a']];
+    return `<div class="vb">
+      <div class="vb-h"><span class="auth-lbl">Validation summary</span><button type="button" class="link-btn vb-dl" data-do="download-errors"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Error report</button></div>
+      <div class="vb-big"><b>${pc(j.valid)}</b> valid <span>of ${num(j.total)} records</span></div>
+      <div class="vb-bar">${rows.map(([l, , v, c]) => `<i style="flex-grow:${v};background:${c}" title="${l} ${num(v)}"></i>`).join('')}</div>
+      <ul class="mix vb-rows">${rows.map(([l, sub, v, c]) => `<li><i style="background:${c}"></i><span>${l} <small>· ${sub}</small></span><b>${num(v)}</b><em>${pc(v)}</em></li>`).join('')}</ul>
+    </div>`;
+  }
+  function vSummaryCompact(j) {
+    return `<div class="vsc">${vRing(j, 'sm')}<div class="vsc-g">
+      <div><small>Total</small><b>${num(j.total)}</b></div>
+      <div><small><i style="background:#93bdfa"></i>Valid</small><b>${num(j.valid)}</b></div>
+      <div><small><i style="background:#2563eb"></i>Errors</small><b>${num(j.fixed + j.manual)}</b><span>${num(j.fixed)} fixable · ${num(j.manual)} manual</span></div>
+      <div><small><i style="background:#1e3a8a"></i>Duplicates</small><b>${num(j.dup)}</b><span>removed automatically</span></div>
+    </div></div>`;
+  }
+  function xDetails(j) {
+    let body;
+    if (j.phase === 'ready') {
+      const base = j.verified * .05, tax = base * .18, total = base + tax;
+      const skipped = (j.fixed || 0) - (j.fixedApplied || 0), excluded = j.total - j.verified;
+      if (j.appealOpen) {
+        body = `<div class="x-cols ap-full">${appealForm(j)}</div>`;
+      } else {
+      body = `<div class="x-cols">
+        <div class="x-main">
+          <div class="auth-lbl">Stages</div>
+          ${xStageList(j)}
+          ${j.failed ? xAppeal(j) : ''}
+        </div>
+        <div class="x-right">
+          <div class="auth-lbl">Submission summary</div>
+          <div class="x-stats"><div><small>Eligible</small><b>${num(j.verified)}</b></div><div><small>Estimate</small><b>${inr2(total)}</b><span>incl. sample tax</span></div><div><small>Excluded</small><b>${num(excluded)}</b></div></div>
+        <div class="x-side">
+          <div class="auth-lbl">Migration authorization</div>
+          <div class="auth-row"><span>${num(j.verified)} × ₹0.05</span><span>${inr2(base)}</span></div>
+          <div class="auth-row"><span>Sample tax · 18%*</span><span>${inr2(tax)}</span></div>
+          <div class="auth-row tot"><span>Total</span><b>${inr2(total)}</b></div>
+          <label class="declare x-check"><input type="checkbox" class="authz"><span>I authorize <b>${num(j.verified)} consents</b> for <b>${inr2(total)}</b>. Excluded records are not part of this submission.</span></label>
+          <button type="button" class="btn btn-pri x-submit" data-do="submit" disabled>Submit ${num(j.verified)} consents</button>
+          <p class="x-fine">*Illustrative rate and tax. Other roles send this summary for approval.</p>
+        </div>
+        </div>
+      </div>`;
+      }
+    } else if (j.phase === 'fix_review') {
+      const errs = j.fixed + j.manual;
+      body = `<div class="x-cols even">
+        <div class="x-main"><div class="auth-lbl">Stages</div>${xStageList(j)}</div>
+        <div class="x-side">${vBreakdown(j)}
+          <p class="x-lead">Autofix the <b>${num(j.fixed)}</b> fixable rows to include them, or skip and continue with clean rows only. Manual-edit rows stay out either way, and originals are always kept.</p>
+          <div class="x-btns"><button type="button" class="btn" data-do="skip">Skip</button><button type="button" class="btn btn-pri" data-do="apply">Autofix ${num(j.fixed)} errors</button></div>
+        </div>
+      </div>`;
+    } else if (j.phase === 'submitted') {
+      const amt = (j.verified || 0) * .05 * 1.18;
+      body = `<div class="x-cols">
+        <div class="x-main"><div class="auth-lbl">Stages</div>${xStageList(j)}</div>
+        <div class="x-right">
+          <div class="auth-lbl">Receipt</div>
+          <div class="x-side">
+            <div class="auth-row"><span>Reference</span><b>MIG-2026-${String(j.id).padStart(4, '0')}</b></div>
+            <div class="auth-row"><span>Consents submitted</span><span>${num(j.verified)}</span></div>
+            <div class="auth-row"><span>Failed checks (not submitted)</span><span>${num(j.failed)}</span></div>
+            <div class="auth-row"><span>Submitted at</span><span>${j.at && j.at.submitted ? fmtTime(j.at.submitted) : '—'}</span></div>
+            <div class="auth-row tot"><span>Amount</span><b>${inr2(amt)}</b></div>
+            <button type="button" class="btn x-submit x-rcpt" data-do="receipt">Download receipt</button>
+          </div>
+        </div>
+      </div>`;
+    } else {
+      body = `<div class="x-cols">
+        <div class="x-main"><div class="auth-lbl">Stages</div>${xStageList(j)}</div>
+        ${xaPanel(j)}
+      </div>`;
+    }
+    return `<div class="r-more"><div><div class="x">${body}</div></div></div>`;
+  }
+  document.addEventListener('toggle', e => {
+    const d = e.target;
+    if (!(d instanceof HTMLDetailsElement) || !d.classList.contains('xsl-i') || !d.open) return;
+    d.parentElement.querySelectorAll('.xsl-i[open]').forEach(o => { if (o !== d) o.open = false; });
+  }, true);
+  function toggleRow(row, force) {
+    const id = +row.dataset.id, open = force ?? !row.classList.contains('open');
+    $$('#canvas .file-row2.open').forEach(r => {
+      if (r === row) return;
+      r.classList.remove('open');
+      unmountXaLoaders(r);
+    });
+    row.classList.toggle('open', open);
+    openRow = open ? id : null;
+    if (open) {
+      mountXaLoaders(row);
+      setTimeout(() => {
+        row.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' });
+        const frame = $('iframe', row);
+        if (frame && frame.contentWindow) try { frame.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {}
+      }, 320);
+    } else unmountXaLoaders(row);
+  }
+
+  function miniTile(j) {
+    const pct = progress(j);
+    const ml = '<div class="ml"><i style="width:60%"></i><i></i><i style="width:85%"></i><i></i><i style="width:50%"></i></div>';
+    return `<div class="mini-tile ${tileClass(j)}" style="--fill:${pct}%" data-fk="m${j.id}" data-to="${pct}">
+      <div class="mini-sheet">${ml}<div class="read">${ml}</div></div>
+    </div>`;
+  }
+
+  function foldersFrom(list) {
+    const map = {};
+    list.forEach(j => {
+      if (!map[j.lob]) map[j.lob] = [];
+      map[j.lob].push(j);
+    });
+    return Object.entries(map);
+  }
+
+  /* Keep unchanged tiles in place so their loops don't restart, and animate
+     every fill from the value it last showed, so pages visibly fill up. */
+  const lastFill = new Map();
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function patch(canvas, html) {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = html.trim();
+    const next = tpl.content.firstElementChild, cur = canvas.firstElementChild;
+    const keys = el => [...el.children].map(c => c.dataset.key).join('|');
+    if (cur && next && next.dataset.view && cur.dataset.view === next.dataset.view && keys(cur) === keys(next)) {
+      const curKids = [...cur.children];
+      [...next.children].forEach((n, i) => {
+        if (curKids[i].dataset.sig === n.dataset.sig) return;
+        curKids[i].replaceWith(n);
+        if (!RM) n.animate([{ opacity: .55, transform: 'scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.22,1,.36,1)' });
+      });
+    } else {
+      canvas.replaceChildren(tpl.content);
+    }
+    animateFills(canvas);
+    if (V2) AI_BLOB.wake();
+    mountXaLoaders(canvas);
+  }
+  function animateFills(root) {
+    const moving = [];
+    $$('[data-fk]', root).forEach(el => {
+      const to = +el.dataset.to, from = lastFill.has(el.dataset.fk) ? lastFill.get(el.dataset.fk) : 0;
+      lastFill.set(el.dataset.fk, to);
+      if (from === to || RM) return;
+      el.style.setProperty('--fill', from + '%');
+      moving.push([el, from, to]);
+    });
+    if (!moving.length) return;
+    root.getBoundingClientRect();
+    moving.forEach(([el, from, to]) => {
+      el.style.setProperty('--fill', to + '%');
+      const pct = $(':scope > .tile-art > .tile-pct, :scope > .folder-foot .tile-pct', el);
+      if (!pct) return;
+      const t0 = performance.now();
+      const step = now => {
+        const k = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - k, 3);
+        pct.textContent = Math.round(from + (to - from) * e) + '%';
+        if (k < 1 && pct.isConnected) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* empty state: a blank, dashed page with a magnifier, so "nothing here" reads at a glance */
+  function empty(msg, sub) {
+    return `<div class="empty"><div class="empty-art" aria-hidden="true"><span class="e-back"></span><span class="e-sheet"><b>CSV</b><span class="e-grid"></span></span><span class="e-badge"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5"/></svg></span></div><h3>${msg}</h3><p>${sub}</p></div>`;
+  }
+  const EMPTY_FOR = {
+    needs: ['Nothing needs you right now', 'Files that need a review or your go-ahead will show up here.'],
+    run: ['No files in progress', 'Upload a file and the agent starts on it right away.'],
+    done: ['Nothing submitted yet', 'Files you submit for migration will show up here.'],
+    all: ['Nothing in this filter', 'Try All, or upload a new file.'],
+  };
+  const emptyFor = () => empty(...(EMPTY_FOR[filter] || EMPTY_FOR.all));
+
+
+  /* ---------- focus: an opened file takes the rail, its action takes the stage ---------- */
+  let focus = null;
+  const STEP_KEYS = ['upload','validate','fix','verify','ready','submitted'];
+  const stepKey = ph => ({ upload:'upload', received:'upload', validate:'validate', fix:'fix', fix_review:'fix', verify:'verify', ready:'ready', submitted:'submitted' })[ph];
+  const fmtTime = t => new Date(t).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  const sizeOf = j => j.size || j.total * 96;
+  const inr = n => '₹' + Math.round(n).toLocaleString('en-IN');
+  const inr2 = n => '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const stat = (l, v, sub) => `<div class="act-stat"><small>${l}</small><b>${v}</b><span>${sub}</span></div>`;
+  const ICON_BACK = '<svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>';
+  const CHECK = '<svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg>';
+  const pulseFor = cls => cls==='run' || cls==='attn' ? '<i class="pulse"></i>' : '';
+
+  function stampPhases() {
+    const now = Date.now();
+    jobs.forEach(j => { const k = stepKey(j.phase); if (!k) return; j.at = j.at || {}; if (!j.at[k]) j.at[k] = now; });
+  }
+
+  const TL = [
+    { k:'upload', t:'Upload', done: j => `${fmtSize(sizeOf(j))} · sealed in your browser` },
+    { k:'validate', t:'Validation', done: j => `${num(j.total)} rows checked · ${num(j.manual)} need manual edits` },
+    { k:'fix', t:'Autofix', done: j => j.fixedApplied ? `${num(j.fixedApplied)} safe fixes applied` : 'Skipped · originals kept' },
+    { k:'verify', t:'Verification', done: j => `${num(j.verified)} authentic · ${num(j.failed)} failed` },
+    { k:'ready', t:'Your go-ahead', done: () => 'Authorized by you' },
+    { k:'submitted', t:'Submission', done: () => 'Received for migration' },
+  ];
+  function timelineHTML(j) {
+    const cur = j.phase==='submitted' ? TL.length : STEP_KEYS.indexOf(stepKey(j.phase));
+    const st = stageInfo(j);
+    return `<ol class="tl">${TL.map((s, i) => {
+      const state = i < cur ? 'done' : i === cur ? (needsYou(j) ? 'wait' : 'now') : 'todo';
+      const desc = state==='done' ? s.done(j)
+        : state==='todo' ? (i === cur + 1 ? 'Up next' : '')
+        : j.phase==='fix_review' ? `${num(j.fixed)} errors found · autofix or skip`
+        : j.phase==='ready' ? `${num(j.verified)} records waiting for your go-ahead`
+        : st.tip;
+      const t = j.at && j.at[s.k] && state !== 'todo' ? `<time>${fmtTime(j.at[s.k])}</time>` : '<span></span>';
+      return `<li class="${state}"><span class="dot">${state==='done' ? CHECK : '<i></i>'}</span><div><b>${s.t}</b>${desc ? `<p>${esc(desc)}</p>` : ''}</div>${t}</li>`;
+    }).join('')}</ol>`;
+  }
+
+  function fileRail(j) {
+    const pct = progress(j), st = stageInfo(j);
+    return `<div class="rail-nav">
+        <button type="button" class="back-btn" data-nav="back">${ICON_BACK}All files</button>
+      </div>
+      <div class="focus-art"><div class="file-tile focus-tile ${tileClass(j)}${pct>=100?' full':''}" style="--fill:${pct}%" data-fk="r${j.id}" data-to="${pct}">${paperHTML(j)}</div></div>
+      <div class="focus-id">
+        <h2>${esc(j.name)}</h2>
+        <div class="tile-row"><span class="chip-lob">${esc(j.lob)}</span><span class="tile-stage ${st.cls}">${pulseFor(st.cls)}${esc(st.label)}</span></div>
+      </div>
+      <dl class="facts">
+        <div><dt>Records</dt><dd>${num(j.total)}</dd></div>
+        <div><dt>Progress</dt><dd data-live-pct="${j.id}">${pct}%</dd></div>
+        <div><dt>File size</dt><dd>${fmtSize(sizeOf(j))}</dd></div>
+        <div><dt>Autofix</dt><dd>${j.autofix ? 'Automatic' : 'Ask me first'}</dd></div>
+      </dl>
+      <div class="rail-lbl">Timeline</div>
+      ${timelineHTML(j)}`;
+  }
+
+  const SUB = {
+    upload: ['Encrypting in your browser', 'Sending the sealed file', 'Confirming receipt'],
+    validate: ['Reading headers', 'Checking required columns', 'Validating phone and date formats', 'Flagging duplicate rows'],
+    fix: ['Normalising phone numbers', 'Standardising consent dates', 'Trimming stray whitespace'],
+    verify: ['Matching consent signals', 'Checking authenticity', 'Scoring each record'],
+  };
+  const SEG_OF = { upload:[0,20], validate:[20,42], fix:[42,60], verify:[60,100] };
+  const NEXT = { upload:'Validation', validate:'Autofix', fix:'Verification', verify:'Your go-ahead to submit' };
+
+  function actionPanel(j) {
+    const pct = progress(j), k = stepKey(j.phase), st = stageInfo(j);
+    let body;
+    if (j.phase === 'fix_review') {
+      body = `
+      <span class="tile-stage attn act-eyebrow"><i class="pulse"></i>Action needed</span>
+      <div><h2>Review errors</h2><p class="lead">Validation found <b>${num(j.fixed)}</b> rows in <b>${esc(j.name)}</b> with format errors the agent can fix safely. Autofix them to include those rows, or skip and continue with the clean rows only. Originals are always kept.</p></div>
+      ${vSummary(j)}
+      <button type="button" class="btn btn-sm x-dl" data-do="download-errors"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download error report (CSV)</button>
+      <div class="act-foot"><span class="note">Skipping leaves these rows out of the submission.</span><button type="button" class="btn" data-do="skip">Skip</button><button type="button" class="btn btn-pri" data-do="apply">Autofix ${num(j.fixed)} errors</button></div>`;
+    } else if (j.phase === 'ready') {
+      const base = j.verified * .05, tax = base * .18, total = base + tax;
+      const skipped = (j.fixed || 0) - (j.fixedApplied || 0), excluded = j.total - j.verified;
+      const why = [[`Didn’t pass authenticity checks`, j.failed], ['Need manual edits', j.manual], ['Duplicate rows', j.dup], ['Errors you chose not to fix', skipped]].filter(r => r[1] > 0);
+      const hist = TL.slice(0, 4).filter(s => j.at && j.at[s.k]).map(s => `<div><span>${s.t} · ${esc(s.done(j))}</span><span>${fmtTime(j.at[s.k])}</span></div>`).join('');
+      body = `
+      <div class="rd-head"><div><h2>Ready for your go-ahead</h2><p class="rd-file">${esc(j.name)}</p></div><span class="chip-ok">${esc(j.lob)}</span></div>
+      <div class="rd-stats">
+        <div><small>Eligible for this submission</small><b>${num(j.verified)}</b></div>
+        <div><small>Migration estimate</small><b>${inr2(total)}</b><span>including sample tax</span></div>
+      </div>
+      <div class="ok-note"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Validation and authenticity checks are complete.${j.fixedApplied ? ` ${num(j.fixedApplied)} records were safely corrected and revalidated.` : ' No corrections were applied.'}</div>
+      <details class="disc"><summary>${num(excluded)} records excluded from this submission</summary>
+        <div class="disc-body">${why.map(([t, n]) => `<div><span>${t}</span><span>${num(n)}</span></div>`).join('')}</div>
+      </details>
+      ${j.failed ? `<div class="appeal"><h4>${num(j.failed)} records did not pass authenticity checks</h4><p>You can appeal these separately. The ${num(j.verified)} verified consents can proceed now.</p><button type="button" class="btn" data-do="appeal">Review reasons &amp; appeal</button></div>` : ''}
+      <details class="disc"><summary>View preparation history</summary><div class="disc-body">${hist}</div></details>
+      <div class="auth">
+        <div class="auth-lbl">Migration authorization</div>
+        <div class="auth-row"><span>${num(j.verified)} consents × ₹0.05</span><b>${inr2(base)}</b></div>
+        <div class="auth-row"><span>Sample tax · 18%*</span><span>${inr2(tax)}</span></div>
+        <div class="auth-row tot"><span>Total to authorize</span><b>${inr2(total)}</b></div>
+        <p class="auth-note">*Illustrative rate and tax only. Replace with the actual contracted rate and applicable tax in production.</p>
+      </div>
+      <label class="declare auth-check"><input type="checkbox" id="authz"><span>I authorize migration of <b>${num(j.verified)} consents</b> for <b>${inr2(total)}, including the sample tax shown</b>. I understand that excluded records are not part of this submission.</span></label>
+      <button type="button" class="btn btn-pri submit-full" id="submitBtn" data-do="submit" disabled>Submit ${num(j.verified)} consents for migration <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <p class="concept">Concept: direct authorization by an eligible billing approver. Other roles send this same summary for approval.</p>`;
+    } else if (j.phase === 'submitted') {
+      const amt = (j.verified || 0) * .05 * 1.18;
+      body = `
+      <span class="tile-stage ok act-eyebrow">Submitted</span>
+      <div><h2>Migration received</h2><p class="lead"><b>${num(j.verified)}</b> records from <b>${esc(j.name)}</b> were submitted${j.at && j.at.submitted ? ` at ${fmtTime(j.at.submitted)}` : ''}. Nothing else is needed from you.</p></div>
+      <div class="act-sec"><h3>Receipt</h3><div class="sum">
+        <div><span>Reference</span><span>MIG-2026-${String(j.id).padStart(4, '0')}</span></div>
+        <div><span>Line of business</span><span>${esc(j.lob)}</span></div>
+        <div><span>Records submitted</span><span>${num(j.verified)}</span></div>
+        <div><span>Failed checks (not submitted)</span><span>${num(j.failed)}</span></div>
+        <div class="tot"><span>Amount</span><span>${inr(amt)}</span></div>
+      </div></div>
+      <div class="act-foot"><button type="button" class="btn" data-nav="back">Back</button><button type="button" class="btn btn-pri" data-do="receipt">Download receipt</button></div>`;
+    } else {
+      const [a, b] = SEG_OF[k], items = SUB[k], p = progressF(j);
+      const ms = thr => `${Math.max(0, Math.round((thr - p) / RATE))}ms`;
+      body = `
+      <span class="tile-stage run act-eyebrow"><i class="pulse"></i>Agent working</span>
+      <div><h2>${esc(st.label)}</h2><p class="lead">${esc(st.tip)}. Nothing is needed from you right now. If this file needs you, it will show up here.</p></div>
+      <div class="act-prog"><div class="tile-row"><span>Overall progress</span><b data-live-pct="${j.id}">${pct}%</b></div><div class="bar"><i data-live-bar="${j.id}" style="width:${p.toFixed(2)}%"></i></div></div>
+      <div class="act-sec"><h3>Right now</h3><ul class="sub">${items.map((t, i) => `<li style="--s:${ms(a + (b - a) * i / items.length)};--e:${ms(a + (b - a) * (i + 1) / items.length)}"><span class="ic"><span class="spin"></span><span class="ok">${CHECK}</span></span>${t}</li>`).join('')}</ul></div>
+      <div class="act-sec"><h3>Up next</h3><p class="next">${k === 'validate' && !j.autofix ? 'Review errors (autofix is off)' : NEXT[k]}</p></div>
+      <div class="act-foot"><span class="note">You can leave this view, the agent keeps going.</span><button type="button" class="btn" data-nav="back">Back to files</button></div>`;
+    }
+    return `<div class="act" data-view="act-${j.id}-${j.phase}">${body}</div>`;
+  }
+
+  /* ---------- migration metrics ---------- */
+  const MSTAT = [
+    { k:'approved', l:'Approved for migration', s:'Approved', c:'#1b2f78' },
+    { k:'action', l:'Action needed', s:'Action needed', c:'#93b8f8' },
+    { k:'progress', l:'In progress', s:'In progress', c:'#3f78f0' },
+    { k:'rejected', l:'Rejected for migration', s:'Rejected', c:'#c8dbfc' },
+    { k:'excluded', l:'Excluded at validation', s:'Excluded', c:'#2a55c9' },
+  ];
+  function bucketsOf(j) {
+    const o = { approved:0, action:0, progress:0, rejected:0, excluded:0 };
+    if (isRunning(j)) o.progress = j.total;
+    else if (j.phase === 'fix_review') o.action = j.total;
+    else if (j.phase === 'ready' || j.phase === 'submitted') {
+      o[j.phase === 'ready' ? 'action' : 'approved'] = j.verified;
+      o.rejected = j.failed;
+      o.excluded = j.total - j.verified - j.failed;
+    }
+    return o;
+  }
+  const sumBuckets = list => list.reduce((acc, j) => { const b = bucketsOf(j); MSTAT.forEach(m => { acc[m.k] += b[m.k]; }); return acc; }, { approved:0, action:0, progress:0, rejected:0, excluded:0 });
+  const pctOf = (v, t) => t ? `${(v / t * 100).toFixed(1)}%` : '0%';
+  const fmtK = v => v >= 1000 ? `${+(v / 1000).toFixed(1)}k` : `${v}`;
+  const ARC = 'M22,100 A78,78 0 0 1 178,100';
+  let metricsOpen = false;
+
+  function metricsShell() {
+    return `<div class="m-compact">
+        <div class="m-head"><span class="m-lbl">Migration status</span><span class="m-total">Total uploaded<b id="mTotal">0</b></span>
+          <button type="button" class="m-toggle" id="mToggle" aria-expanded="false" aria-controls="mMore"><span>View charts</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+        <div class="m-bar">${MSTAT.map(m => `<i data-k="${m.k}" style="background:${m.c}"></i>`).join('')}</div>
+        <div class="m-legend">${MSTAT.map(m => `<span data-k="${m.k}"><i style="background:${m.c}"></i>${m.s}<b>0</b></span>`).join('')}</div>
+      </div>
+      <div class="m-more" id="mMore"><div class="m-more-in"><div class="m-charts">
+        <div class="m-card"><div class="m-lbl">Status breakdown</div>
+          <div class="m-donut-wrap"><svg class="m-donut" viewBox="0 0 200 104"><path class="arc" d="${ARC}" pathLength="100" stroke="var(--bg-2)"/>${MSTAT.map(m => `<path class="arc" data-k="${m.k}" d="${ARC}" pathLength="100" stroke="${m.c}" style="stroke-dasharray:0 200"/>`).join('')}</svg>
+          <div class="m-center"><b id="mApproved">0</b><small>Approved</small></div></div>
+          <ul class="m-list">${MSTAT.map(m => `<li data-k="${m.k}"><i style="background:${m.c}"></i><span>${m.l}</span><b>0</b><em>0%</em></li>`).join('')}</ul>
+        </div>
+        <div class="m-card"><div class="m-lbl">LOB-wise comparison</div><svg class="m-lob" id="mLob" viewBox="0 0 420 236" role="img" aria-label="Records per LOB by status"></svg></div>
+      </div></div></div>`;
+  }
+
+  function lobSVG() {
+    const groups = foldersFrom(jobs).map(([lob, files]) => ({ lob, b: sumBuckets(files), t: files.reduce((s, j) => s + j.total, 0) }));
+    const W = 420, H = 236, L = 38, R = 8, T = 18, B = 30, pw = W - L - R, ph = H - T - B;
+    const max = Math.max(1, ...groups.map(g => g.t));
+    const raw = max / 4, pow = 10 ** Math.floor(Math.log10(raw)), n = raw / pow;
+    const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * pow, top = Math.ceil(max / step) * step;
+    const y = v => T + ph - v / top * ph;
+    let out = '';
+    for (let v = 0; v <= top; v += step) out += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 8}" y="${y(v) + 3.5}" text-anchor="end">${fmtK(v)}</text>`;
+    const band = pw / groups.length, bw = Math.min(24, band * .5);
+    groups.forEach((g, i) => {
+      const x = L + band * i + (band - bw) / 2;
+      let base = 0;
+      const segs = MSTAT.filter(m => g.b[m.k] > 0);
+      segs.forEach((m, si) => {
+        const v = g.b[m.k], y0 = y(base), y1 = y(base + v), last = si === segs.length - 1;
+        const h = Math.max(0, y0 - y1 - (si > 0 ? 2 : 0)), yy = y0 - (si > 0 ? 2 : 0) - h, r = Math.min(4, h, bw / 2);
+        const tip = `${esc(g.lob)} · ${m.s}: ${num(v)} (${pctOf(v, g.t)})`;
+        out += last
+          ? `<path data-tip="${tip}" fill="${m.c}" d="M${x},${yy + h} V${yy + r} Q${x},${yy} ${x + r},${yy} H${x + bw - r} Q${x + bw},${yy} ${x + bw},${yy + r} V${yy + h} Z"/>`
+          : `<rect data-tip="${tip}" fill="${m.c}" x="${x}" y="${yy}" width="${bw}" height="${h}"/>`;
+        base += v;
+      });
+      out += `<text class="tot" x="${x + bw / 2}" y="${y(g.t) - 6}" text-anchor="middle">${fmtK(g.t)}</text>`;
+      out += `<text x="${x + bw / 2}" y="${H - 10}" text-anchor="middle">${esc(g.lob)}</text>`;
+    });
+    return out;
+  }
+
+  function renderMetrics() {
+    const el = $('#metrics');
+    el.hidden = !jobs.length;
+    if (!jobs.length) return;
+    if (!el.dataset.built) {
+      el.innerHTML = metricsShell(); el.dataset.built = '1';
+      el.addEventListener('click', e => {
+        if (!e.target.closest('#mToggle') && (metricsOpen || !e.target.closest('.m-compact'))) return;
+        metricsOpen = !metricsOpen;
+        el.classList.toggle('open', metricsOpen);
+        if (metricsOpen && !RM) {
+          /* replay the charts: arcs sweep in, columns grow from the baseline */
+          $$('.arc[data-k]', el).forEach(a => { a.style.transition = 'none'; a.style.strokeDasharray = '0 200'; a.style.strokeDashoffset = '0'; });
+          el.getBoundingClientRect();
+          $$('.arc[data-k]', el).forEach(a => { a.style.transition = ''; });
+          el.classList.add('grow');
+          requestAnimationFrame(() => renderMetrics());
+          setTimeout(() => el.classList.remove('grow'), 1200);
+        }
+        $('#mToggle').setAttribute('aria-expanded', metricsOpen);
+        $('#mToggle span').textContent = metricsOpen ? 'Hide charts' : 'View charts';
+      });
+    }
+    const b = sumBuckets(jobs), total = MSTAT.reduce((s, m) => s + b[m.k], 0);
+    $('#mTotal').textContent = num(total);
+    $('#mApproved').textContent = num(b.approved);
+    let start = 0;
+    MSTAT.forEach(m => {
+      const v = b[m.k], pc = pctOf(v, total), len = total ? v / total * 100 : 0;
+      const seg = $(`.m-bar i[data-k="${m.k}"]`, el);
+      seg.style.flexGrow = v; seg.hidden = !v; seg.dataset.tip = `${m.l}: ${num(v)} (${pc})`;
+      const lg = $(`.m-legend [data-k="${m.k}"]`, el); $('b', lg).textContent = num(v); lg.title = pc;
+      const li = $(`.m-list [data-k="${m.k}"]`, el); $('b', li).textContent = num(v); $('em', li).textContent = pc;
+      const arc = $(`.arc[data-k="${m.k}"]`, el);
+      arc.style.strokeDasharray = `${Math.max(0, len - (len > 1 ? .8 : 0))} 200`;
+      arc.style.strokeDashoffset = `${-start}`;
+      arc.dataset.tip = `${m.l}: ${num(v)} (${pc})`;
+      start += len;
+    });
+    $('#mLob').innerHTML = lobSVG();
+  }
+
+  const mTip = document.createElement('div');
+  mTip.className = 'm-tip'; document.body.appendChild(mTip);
+  document.addEventListener('mousemove', e => {
+    const t = e.target.closest && e.target.closest('#metrics [data-tip]');
+    if (!t) { mTip.style.opacity = 0; return; }
+    mTip.textContent = t.dataset.tip; mTip.style.opacity = 1;
+    mTip.style.left = `${Math.min(innerWidth - mTip.offsetWidth - 8, e.clientX + 12)}px`; mTip.style.top = `${e.clientY + 14}px`;
+  });
+
+  function render() {
+    stampPhases();
+    renderMetrics();
+    const list = filtered();
+    $('#cAll').textContent = jobs.length;
+    $('#cNeeds').textContent = jobs.filter(needsYou).length;
+    $('#cRun').textContent = jobs.filter(isRunning).length;
+    $('#cDone').textContent = jobs.filter(isDone).length;
+
+    const canvas = $('#canvas'), up = $('#uploadPane'), fp = $('#focusPane');
+    if (focus && focus.type === 'file' && !jobs.some(j => j.id === focus.id)) focus = null;
+    document.body.classList.toggle('is-focus', !!focus);
+    up.hidden = !!focus; fp.hidden = !focus;
+    if (focus) { renderFocus(canvas, fp); return; }
+    fp.dataset.sig = '';
+
+    if (!jobs.length) {
+      patch(canvas, empty('No files yet', 'Your first upload will show up here.'));
+      return;
+    }
+
+    patch(canvas, list.length ? fileList(list, 'page') : emptyFor());
+  }
+
+  function renderFocus(canvas, fp) {
+    const j = jobs.find(x => x.id === focus.id);
+    const sig = `f|${j.id}|${j.phase}`;
+    if (fp.dataset.sig !== sig) { fp.innerHTML = fileRail(j); fp.dataset.sig = sig; animateFills(fp); }
+    patch(canvas, actionPanel(j));
+  }
+
+  /* ---------- moving a page between the grid and the rail ---------- */
+  const tplNode = html => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+  function snapshot(host, sel) {
+    const node = host && host.querySelector(sel);
+    if (!node) return null;
+    return { rect: node.getBoundingClientRect(), node: node.cloneNode(true), cls: host.className, fill: host.style.getPropertyValue('--fill') };
+  }
+  function fly(snap, dst, ms = 680) {
+    if (!snap || !dst || RM) { if (dst) dst.style.visibility = ''; return; }
+    const s = snap.rect, d = dst.getBoundingClientRect(), W = dst.offsetWidth, H = dst.offsetHeight;
+    const g = document.createElement('div');
+    g.className = `${snap.cls} focus-tile`;
+    g.style.cssText = `position:fixed;left:${s.left}px;top:${s.top}px;width:${W}px;height:${H}px;z-index:70;pointer-events:none;transform-origin:0 0;margin:0;padding:0`;
+    if (snap.fill) g.style.setProperty('--fill', snap.fill);
+    snap.node.style.cssText += ';position:absolute;inset:0;scale:1;transform:none;margin:0;visibility:visible';
+    g.appendChild(snap.node);
+    document.body.appendChild(g);
+    dst.style.visibility = 'hidden';
+    const a = g.animate([
+      { transform: `scale(${s.width / W})` },
+      { transform: `translate(${d.left - s.left}px,${d.top - s.top}px) scale(${d.width / W})` },
+    ], { duration: ms, easing: 'cubic-bezier(.22,1,.36,1)' });
+    const done = () => { g.remove(); dst.style.visibility = ''; };
+    a.onfinish = done; a.oncancel = done;
+  }
+
+  /* View transitions: the opened page morphs between grid and rail while
+     the rail and stage slide; browsers without them fall back to the flying ghost. */
+  const HAS_VT = !!document.startViewTransition;
+  function morph(mode, update, from, toSel) {
+    if (!HAS_VT || RM) return false;
+    document.documentElement.dataset.vt = mode;
+    if (from) from.style.viewTransitionName = 'hero';
+    const vt = document.startViewTransition(() => {
+      if (from) from.style.viewTransitionName = '';
+      update();
+      const to = toSel && toSel();
+      if (to) to.style.viewTransitionName = 'hero';
+    });
+    vt.finished.finally(() => {
+      delete document.documentElement.dataset.vt;
+      $$('[style*="view-transition-name"]').forEach(el => { el.style.viewTransitionName = ''; });
+    });
+    return true;
+  }
+
+  function openFile(id, host) {
+    const j = jobs.find(x => x.id === id);
+    if (!j) return;
+    lastFill.set(`r${id}`, progress(j));
+    const next = { type: 'file', id };
+    const src = host.querySelector('.paper, .r-ico');
+    if (morph('in', () => { focus = next; render(); scrollTo({ top: 0 }); }, src, () => $('#focusPane .paper'))) return;
+    const snap = host.querySelector('.paper') ? snapshot(host, '.paper') : null;
+    focus = next; render(); scrollTo({ top: 0 });
+    fly(snap, $('#focusPane .paper'));
+  }
+  function navigate() {
+    if (!focus) return;
+    const prev = focus;
+    const findDst = () => $(`#canvas [data-key="t${prev.id}"] .paper, #canvas [data-key="t${prev.id}"] .r-ico`);
+    const src = $('#focusPane .focus-tile .paper');
+    const go = () => { focus = null; render(); const d = findDst(); if (d) d.closest('article').scrollIntoView({ block: 'nearest' }); };
+    if (V2) { if (!morph('back', go, src, findDst)) go(); return; }
+    if (morph('back', go, src, findDst)) return;
+    const snap = snapshot($('#focusPane .focus-tile'), '.paper');
+    go();
+    fly(snap, findDst());
+  }
+  document.addEventListener('click', e => { const n = e.target.closest('[data-nav]'); if (n) navigate(n.dataset.nav); });
+
+  function doAction(a, rowEl, extra) {
+    const j = rowEl ? jobs.find(x => x.id === +rowEl.dataset.id) : focus && focus.type === 'file' && jobs.find(x => x.id === focus.id);
+    if (!j) return;
+    if (a === 'apply' || a === 'skip') {
+      j.fixedApplied = a === 'apply' ? j.fixed : 0;
+      j.phase = a === 'apply' ? 'fix' : 'verify'; j.fixDone = true;
+      render(); startTicker();
+      toast(a === 'apply' ? `Autofixing ${num(j.fixed)} errors` : 'Continuing without fixes');
+    }
+    const authz = rowEl ? $('.authz', rowEl) : $('#authz');
+    if (a === 'submit' && authz && authz.checked) {
+      j.phase = 'submitted';
+      render(); toast(`${j.name} submitted`);
+    }
+    if (a === 'receipt') toast('Receipt downloaded');
+    if (a === 'download-errors') toast(`Error report for ${j.name} downloaded`);
+    if (a === 'appeal') {
+      if (rowEl) { j.appealOpen = true; rerenderRow(rowEl, j); }
+      else toast('Appeal review opens separately');
+    }
+    if (a === 'appeal-close') { j.appealOpen = false; rerenderRow(rowEl, j); }
+    if (a === 'appeal-pick') { const inp = rowEl && $(`.ap-file[data-k="${extra}"]`, rowEl); if (inp) inp.click(); }
+    if (a === 'appeal-rm') { j.appealForm[extra] = null; rerenderRow(rowEl, j); }
+    if (a === 'appeal-template') toast('Mapping template downloaded');
+    if (a === 'appeal-large') toast('Large uploads go through secure transfer · contact support');
+    if (a === 'appeal-submit' && j.appealForm && j.appealForm.map && j.appealForm.zip && j.appealForm.ok) {
+      j.appealed = true; j.appealOpen = false; rerenderRow(rowEl, j);
+      toast(`Appeal submitted to the registrar for ${num(j.failed)} records`);
+    }
+  }
+
+  /* ---------- the agent: one frame loop advances every running file ---------- */
+  let raf = 0, lastT = 0;
+  function startTicker() { if (!raf && jobs.some(isRunning)) { lastT = performance.now(); raf = requestAnimationFrame(tick); } }
+  function tick(now) {
+    const dt = Math.min(100, now - lastT); lastT = now;
+    let changed = false;
+    for (const j of jobs) {
+      if (!isRunning(j)) continue;
+      const prev = j.phase;
+      j.p = Math.min(100, (j.p || 0) + dt * RATE);
+      if (j.p >= 100) {
+        j.failed = Math.round(j.total * .04);
+        j.verified = j.valid + (j.fixedApplied || 0) - j.failed;
+        j.phase = 'ready';
+        toast(`${j.name} is ready to submit`);
+      } else if (j.p >= 42 && !j.fixDone && !j.autofix) {
+        /* autofix is off: stop after validation and ask the user */
+        j.fixDone = true; j.p = 42; j.phase = 'fix_review';
+        toast(`${j.name}: review errors`);
+      } else if (j.p >= 60 && !j.fixDone) {
+        j.fixDone = true; j.fixedApplied = j.fixed; j.phase = 'verify';
+      } else {
+        const skipped = j.fixDone && !j.fixedApplied;
+        const ph = j.p >= 60 ? 'verify' : j.p >= 42 ? (skipped ? 'verify' : 'fix') : j.p >= 20 ? 'validate' : j.p >= 10 ? 'received' : 'upload';
+        if (ph !== j.phase) j.phase = ph;
+      }
+      if (j.phase !== prev) changed = true;
+    }
+    if (changed) render();
+    paintLive();
+    raf = jobs.some(isRunning) ? requestAnimationFrame(tick) : 0;
+  }
+  function setFill(el, p) {
+    el.style.setProperty('--fill', `${p.toFixed(2)}%`);
+    el.dataset.to = Math.round(p);
+    lastFill.set(el.dataset.fk, Math.round(p));
+  }
+  function paintLive() {
+    for (const j of jobs) {
+      if (!isRunning(j)) continue;
+      const pr = `${Math.round(j.p)}%`;
+      $$(`[data-fk="t${j.id}"],[data-fk="r${j.id}"]`).forEach(el => {
+        setFill(el, j.p);
+        const t = $(':scope > .tile-art > .tile-pct', el); if (t) t.textContent = pr;
+      });
+      $$(`[data-live-pct="${j.id}"]`).forEach(el => { el.textContent = pr; });
+      $$(`[data-live-bar="${j.id}"]`).forEach(el => { el.style.width = `${j.p.toFixed(2)}%`; });
+      if (V2) paintRow(j);
+    }
+  }
+
+  function startJob({lob,name,size,autofix}) {
+    const total = 80000 + Math.floor(Math.random() * 180000);
+    const valid = Math.round(total * .9), fixed = Math.round(total * .06), manual = Math.round(total * .03);
+    const job = {
+      id:nextId++, lob, name, size, autofix, phase:'upload', p:0, fixDone:false,
+      total, valid, fixed, manual, dup: total - valid - fixed - manual, verified:0, failed:0, fixedApplied:0
+    };
+    jobs=[job,...jobs];
+    return job;
+  }
+
+  // Upload events
+  $('#browse').onclick=e=>{e.stopPropagation();$('#file').click();};
+  $('#sample').onclick=e=>{
+    e.stopPropagation();
+    if(!$('#lob').value)$('#lob').value='Credit Cards';
+    const slug=$('#lob').value.toLowerCase().replace(/\s+/g,'_'), k=picked.length;
+    addFiles([{name:`${slug}_part${k+1}.csv`,size:12.4*1048576},{name:`${slug}_part${k+2}.csv`,size:8.7*1048576}]);
+  };
+  $('#file').onchange=()=>{addFiles([...$('#file').files]);$('#file').value='';};
+  $('#drop').onclick=e=>{if(!e.target.closest('button'))$('#file').click();};
+  $('#drop').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target===$('#drop')){e.preventDefault();$('#file').click();}};
+  $('#pickedList').onclick=e=>{const b=e.target.closest('[data-rm]');if(b){picked.splice(+b.dataset.rm,1);renderPicked();}};
+  ['dragenter','dragover'].forEach(ev=>$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.add('is-drag');}));
+  ['dragleave','drop'].forEach(ev=>$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.remove('is-drag');}));
+  $('#drop').addEventListener('drop',e=>addFiles([...e.dataTransfer.files]));
+  $('#declare').onchange=updateUpload;
+  $('#lob').onchange=updateUpload;
+  $('#uploadBtn').onclick=()=>{
+    if(!picked.length||!$('#lob').value||!$('#declare').checked)return;
+    const lob=$('#lob').value, autofix=$('#autofix').checked, n=picked.length, first=picked[0].name;
+    /* each picked file's icon grows into its page on the grid, then processing begins */
+    const srcs=$$('#pickedList .pi').map(el=>el.getBoundingClientRect());
+    const created=[];
+    [...picked].reverse().forEach(f=>created.unshift(startJob({lob,name:f.name,size:f.size,autofix})));
+    picked=[]; $('#declare').checked=false;
+    filter='all';
+    $$('.filters .chip-btn').forEach(b=>b.classList.toggle('is-on',b.dataset.filter==='all'));
+    renderPicked(); render();
+    created.forEach((j,i)=>{
+      const host=$(`#canvas [data-key="t${j.id}"]`); if(!host) return;
+      const dst=host.querySelector('.paper, .r-ico');
+      if(!RM){
+        host.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:450,delay:i*140,fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'});
+        if(srcs[i]){ dst.style.visibility='hidden'; setTimeout(()=>fly({rect:srcs[i],node:tplNode(paperHTML(j)),cls:host.className,fill:'0%'},dst,820),i*140); }
+      }
+    });
+    if(V2) closeTray();
+    startTicker();
+    toast(n>1?`Received ${n} files for ${lob}`:`Received ${first}`);
+  };
+
+  $$('.filters .chip-btn').forEach(btn=>btn.onclick=()=>{
+    filter=btn.dataset.filter;
+    $$('.filters .chip-btn').forEach(b=>b.classList.toggle('is-on',b===btn));
+    if(!morph('fade',render)) render();
+  });
+  $('#canvas').addEventListener('click', e => {
+    const d=e.target.closest('[data-do]');
+    if(d){ if(d.dataset.do) doAction(d.dataset.do, V3 ? d.closest('.file-row2') : null, d.dataset.k); return; }
+    if(V3){
+      const row=e.target.closest('.file-row2');
+      if(row){
+        if(e.target.closest('.r-more')) return;
+        toggleRow(row, e.target.closest('[data-act]') ? true : undefined);
+        return;
+      }
+    }
+    const tile=e.target.closest('.file-tile,.file-row2');
+    if(tile&&tile.dataset.id){ openFile(+tile.dataset.id, tile); return; }
+  });
+  $('#canvas').addEventListener('keydown', e => {
+    if((e.key==='Enter'||e.key===' ')&&e.target.matches('.file-tile,.file-row2')){
+      if(V3&&e.target.matches('.file-row2')){ e.preventDefault(); toggleRow(e.target); return; } e.preventDefault(); e.target.click(); }
+  });
+  $('#canvas').addEventListener('input', e => {
+    if(e.target.matches('.ap-desc')){ const j=jobs.find(x=>x.id===+e.target.closest('.file-row2').dataset.id); j.appealForm.desc=e.target.value; }
+  });
+  ['dragover','dragleave','drop'].forEach(ev => $('#canvas').addEventListener(ev, e => {
+    const z=e.target.closest&&e.target.closest('.ap-drop:not(.has)'); if(!z) return;
+    e.preventDefault(); z.classList.toggle('drag', ev==='dragover');
+    if(ev==='drop'){ const f=e.dataTransfer.files[0], row=z.closest('.file-row2'), j=jobs.find(x=>x.id===+row.dataset.id); if(f){ j.appealForm[z.dataset.k]={name:f.name,size:f.size}; rerenderRow(row,j); } }
+  }));
+  $('#canvas').addEventListener('change', e => {
+    if(e.target.id==='authz') $('#submitBtn').disabled=!e.target.checked;
+    if(e.target.matches('.ap-file')||e.target.matches('.ap-okbox')){
+      const row=e.target.closest('.file-row2'), j=jobs.find(x=>x.id===+row.dataset.id);
+      if(e.target.matches('.ap-file')){ const f=e.target.files[0]; if(f){ j.appealForm[e.target.dataset.k]={name:f.name,size:f.size}; rerenderRow(row,j); } }
+      else { j.appealForm.ok=e.target.checked; const b=$('.ap-submit',row); if(b) b.disabled=!(j.appealForm.map&&j.appealForm.zip&&j.appealForm.ok); }
+      return;
+    }
+    if(e.target.matches('.authz')){ const b=e.target.closest('.file-row2').querySelector('.x-submit'); if(b) b.disabled=!e.target.checked; }
+  });
+
+  $('#seedDemo').onclick=()=>{
+    jobs=[
+      {id:nextId++,lob:'Credit Cards',name:'credit_cards_sept.csv',autofix:true,phase:'ready',total:100000,valid:90000,fixed:6000,manual:3000,dup:1000,verified:92000,failed:4000,fixedApplied:6000},
+      {id:nextId++,lob:'Credit Cards',name:'credit_cards_aug.csv',autofix:true,phase:'verify',total:80000,valid:72000,fixed:4800,manual:2400,dup:800,verified:0,failed:0,fixedApplied:4800},
+      {id:nextId++,lob:'Personal Loans',name:'personal_loans_sept.csv',autofix:false,phase:'fix_review',total:250000,valid:225000,fixed:15000,manual:7500,dup:2500,verified:0,failed:0,fixedApplied:0},
+      {id:nextId++,lob:'Personal Loans',name:'personal_loans_july.csv',autofix:true,phase:'validate',total:120000,valid:108000,fixed:7200,manual:3600,dup:1200,verified:0,failed:0,fixedApplied:0},
+      {id:nextId++,lob:'Savings Accounts',name:'savings_oct.csv',autofix:true,phase:'ready',total:180000,valid:162000,fixed:10800,manual:5400,dup:1800,verified:165600,failed:7200,fixedApplied:10800},
+      {id:nextId++,lob:'Home Loans',name:'home_loans_aug.csv',autofix:true,phase:'submitted',total:72000,valid:65000,fixed:4000,manual:2000,dup:1000,verified:66000,failed:3000,fixedApplied:4000},
+      {id:nextId++,lob:'Insurance',name:'insurance_q3.csv',autofix:true,phase:'upload',total:45000,valid:40500,fixed:2700,manual:1350,dup:450,verified:0,failed:0,fixedApplied:0},
+      {id:nextId++,lob:'Insurance',name:'insurance_q2.csv',autofix:true,phase:'submitted',total:51000,valid:48000,fixed:2000,manual:800,dup:200,verified:49000,failed:1000,fixedApplied:2000},
+      {id:nextId++,lob:'Savings Accounts',name:'savings_sep.csv',autofix:false,phase:'submitted',total:95000,valid:85500,fixed:5700,manual:2850,dup:950,verified:87400,failed:3800,fixedApplied:5700}
+    ];
+    const now=Date.now();
+    jobs.forEach(j=>{
+      j.p={upload:4,received:14,validate:31,fix:50,fix_review:42,verify:78}[j.phase] ?? 100;
+      j.fixDone=!['upload','received','validate','fix'].includes(j.phase);
+      const idx=j.phase==='submitted'?5:STEP_KEYS.indexOf(stepKey(j.phase));
+      j.at={};
+      for(let i=0;i<=idx;i++) j.at[STEP_KEYS[i]]=now-(idx-i)*(3+j.id%4)*60000;
+    });
+    filter='all'; focus=null;
+    $$('.filters .chip-btn').forEach(b=>b.classList.toggle('is-on',b.dataset.filter==='all'));
+    render();
+    startTicker();
+    toast('Sample queue loaded');
+  };
+
+  /* ---------- hover a segment: what that AI step found, in the "What's inside" table style ---------- */
+  function stepFacts(j, k) {
+    const failed = j.failed || Math.round(j.total * .04), fixedApplied = j.fixedApplied || 0;
+    const verified = j.verified || (j.valid + fixedApplied - failed);
+    const C = { ok: 'var(--green)', bad: 'var(--red)', fix: 'var(--blue)', warn: '#d9a54a', mute: '#a3adbd' };
+    if (k === 0) return [[C.mute, 'Records found', num(j.total)], [C.mute, 'Columns detected', '8'], [C.mute, 'File size', fmtSize(sizeOf(j))]];
+    if (k === 1) return [[C.mute, 'Rows checked', num(j.total)], [C.ok, 'Passed', num(j.valid)], [C.fix, 'Fixable errors', num(j.fixed)], [C.warn, 'Need manual edits', num(j.manual)], [C.bad, 'Duplicates', num(j.dup)]];
+    if (k === 2) {
+      if (j.phase === 'fix_review') return [[C.fix, 'Fixable errors', num(j.fixed)], [C.warn, 'Waiting for you', 'Autofix or skip']];
+      return [[C.fix, 'Errors found', num(j.fixed)], [C.ok, 'Auto-fixed', num(fixedApplied)], [C.mute, 'Skipped', num(j.fixed - fixedApplied)], [C.mute, 'Mode', j.autofix ? 'Automatic' : 'Reviewed by you']];
+    }
+    if (k === 3) return [[C.mute, 'Records verified', num(j.valid + fixedApplied)], [C.ok, 'Consent valid', num(verified)], [C.bad, 'Failed authenticity', num(failed)]];
+    const base = verified * .05;
+    return [[C.ok, 'Eligible', num(verified)], [C.mute, 'Excluded', num(j.total - verified)], [C.mute, 'Estimate', inr2(base * 1.18)]];
+  }
+  const segPop = document.createElement('div');
+  segPop.className = 'seg-pop'; segPop.setAttribute('role', 'tooltip'); document.body.appendChild(segPop);
+  let segKey = '';
+  function showSegPop(seg, k) {
+    const row = seg.closest('.file-row2'), j = row && jobs.find(x => x.id === +row.dataset.id);
+    if (!j) return;
+    const a = aiState(j), reached = a.i > k || j.phase === 'ready' || j.phase === 'submitted';
+    const st = reached ? ['done', 'Done'] : a.i === k ? (a.wait ? ['wait', 'Waiting for you'] : ['now', 'In progress']) : ['todo', 'Not started'];
+    const key = `${j.id}|${k}|${st[0]}`;
+    $$('i', seg).forEach((el, n) => el.classList.toggle('hov', n === k));
+    if (key !== segKey) {
+      segKey = key;
+      const body = st[0] === 'done' || (st[0] === 'wait' && k === 2)
+        ? `<ul class="mix">${stepFacts(j, k).map(([c, l, v]) => `<li><i style="background:${c}"></i>${l}<b>${v}</b></li>`).join('')}</ul>`
+        : `<p class="sp-empty">${st[0] === 'now' ? `${AI_NOW[k]}… counts appear once this step finishes.` : 'This step hasn’t started yet.'}</p>`;
+      segPop.innerHTML = `<div class="sp-h"><b>${AI_STEPS[k]}</b><span class="sp-st ${st[0]}">${st[1]}</span></div>${body}`;
+    }
+    const r = seg.children[k].getBoundingClientRect();
+    segPop.classList.add('on');
+    const w = segPop.offsetWidth, h = segPop.offsetHeight;
+    segPop.style.left = `${Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2))}px`;
+    segPop.style.top = `${r.top - h - 12 < 8 ? r.bottom + 12 : r.top - h - 12}px`;
+  }
+  function hideSegPop() { segPop.classList.remove('on'); segKey = ''; $$('.ai-seg i.hov').forEach(el => el.classList.remove('hov')); }
+  $('#canvas').addEventListener('mousemove', e => {
+    const seg = e.target.closest && e.target.closest('.ai-seg');
+    if (!seg) { if (segPop.classList.contains('on')) hideSegPop(); return; }
+    const r = seg.getBoundingClientRect(), k = Math.max(0, Math.min(4, Math.floor((e.clientX - r.left) / r.width * 5)));
+    showSegPop(seg, k);
+  });
+  $('#canvas').addEventListener('mouseleave', hideSegPop);
+  addEventListener('scroll', hideSegPop, { passive: true });
+
+  /* ---------- tray (V2) and version switcher ---------- */
+  function openTray() {
+    $('#tray').classList.add('open'); $('#trayBg').classList.add('open');
+    $('#tray').setAttribute('aria-hidden', 'false'); $('#openTray').setAttribute('aria-expanded', 'true');
+    setTimeout(() => $('#drop').focus({ preventScroll: true }), 350);
+  }
+  function closeTray() {
+    $('#tray').classList.remove('open'); $('#trayBg').classList.remove('open');
+    $('#tray').setAttribute('aria-hidden', 'true'); $('#openTray').setAttribute('aria-expanded', 'false');
+  }
+  $('#openTray').onclick = openTray;
+  $('#seedDemo2').onclick = () => $('#seedDemo').click();
+  $('#trayClose').onclick = closeTray;
+  $('#trayBg').onclick = closeTray;
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#tray').classList.contains('open')) closeTray(); });
+  function setVersion(v, animate) {
+    const apply = () => {
+      V2 = v >= 2; V3 = v === 3; openRow = null;
+      document.body.classList.toggle('v2', V2);
+      document.body.classList.toggle('v3', V3);
+      $$('.ver-seg button').forEach(b => b.classList.toggle('is-on', +b.dataset.ver === v));
+      const pane = $('#uploadPane');
+      if (V2) $('#trayBody').appendChild(pane); else { closeTray(); $('.upload-rail').prepend(pane); }
+      focus = null;
+      render();
+    };
+    VER = v;
+    if (!(animate && morph('fade', apply))) apply();
+    try { localStorage.setItem('am-version', String(v)); } catch (e) {}
+  }
+  let VER = 3;
+  $$('.ver-seg button').forEach(b => { b.onclick = () => { if (+b.dataset.ver !== VER) setVersion(+b.dataset.ver, true); }; });
+
+  const dropDoc = docHTML(3);
+  $('#dropSheet').innerHTML = `${dropDoc}<div class="read">${dropDoc}<span class="trail"></span></div>`;
+  try {
+    const v = +localStorage.getItem('am-version');
+    setVersion(v === 1 ? 1 : 3, false);
+  } catch (e) {
+    setVersion(3, false);
+  }
+  renderPicked();
+})();
+</script>
+</body>
+</html>
+
+</body></html>
