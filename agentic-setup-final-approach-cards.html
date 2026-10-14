@@ -14176,6 +14176,17 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-gc-why, .op-cg-note{ border-top:1px solid #e3eaf6; padding-top:12px; } .op-gc-why{ margin-top:14px !important; }
 .op-gc-sel i, .op-cg-tag i{ box-shadow:none !important; }
 .op-gc:hover, .op-cg:hover{ border-color:#c3d2ee; }
+.op-cg-lob{ position:relative; display:inline-flex; align-items:center; gap:7px; padding:5px 10px; border-radius:99px; border:1px solid #dde5f3; font-size:12px; font-weight:560; color:#3b4d6e; cursor:default; outline:none; }
+.op-cg-chips span.op-cg-lob{ padding:5px 8px 5px 10px; }
+.op-cg-ev{ display:grid; place-items:center; width:16px; height:16px; color:#8aa0c8; transition:color 160ms; } .op-cg-ev svg{ width:14px; height:14px; }
+.op-cg-lob:hover .op-cg-ev, .op-cg-lob:focus .op-cg-ev{ color:#2563eb; } .op-cg-lob:hover, .op-cg-lob:focus{ border-color:#b7cdf5; }
+.op-cg-chips span.op-cg-pop{ position:absolute; left:0; top:calc(100% + 8px); z-index:30; width:300px; padding:12px 14px 13px; border:1px solid #dde5f3; border-radius:14px; background:#fff; box-shadow:0 14px 30px -14px rgba(15,31,61,.28); font-size:12.5px; font-weight:450; line-height:1.55; color:#4a5b7a; white-space:normal; opacity:0; visibility:hidden; transform:translateY(-3px); transition:opacity 160ms ease, transform 160ms ease, visibility 160ms; pointer-events:none; }
+.op-cg-lob:hover .op-cg-pop, .op-cg-lob:focus .op-cg-pop{ opacity:1; visibility:visible; transform:none; pointer-events:auto; }
+.op-cg-pop em{ display:flex; align-items:center; gap:7px; margin-bottom:4px; font-style:normal; font-size:12.5px; font-weight:650; color:#2563eb; } .op-cg-pop em svg{ width:14px; height:14px; }
+.op-cg-pop a{ display:flex; align-items:center; gap:6px; margin-top:8px; font-size:12px; font-weight:560; color:#2563eb; text-decoration:none; word-break:break-all; } .op-cg-pop a:hover{ text-decoration:underline; } .op-cg-pop a svg{ width:11px; height:11px; flex:none; }
+.op-cg:has(.op-cg-lob:hover), .op-cg:has(.op-cg-lob:focus){ overflow:visible; z-index:5; }
+.op-cg{ overflow:visible !important; }
+.op-cg-chips span.op-cg-pop{ background:#fff !important; padding:12px 14px 13px !important; border-radius:14px !important; border:1px solid #dde5f3 !important; box-shadow:0 14px 30px -14px rgba(15,31,61,.28) !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24431,7 +24442,7 @@ function agMigRow() {
     } else if (key === "e0") {
       Object.assign(m, { cta: "Confirm and continue", count: `${AG_BRANDS.length} brands and ${agLobTotal()} lines of business, drafted from your DLT registrations.`,
         cols: "minmax(0,1fr) minmax(0,2.2fr) 96px", head: ["Brand", "Lines of Business", ""],
-        items: AG_BRANDS.map((b, n) => ({ lead: opLogo(b.logo, n), name: e(b.name), sub: `${b.lobs.length} lines of business`, chips: b.lobs.map((l) => e(l.name)), pill: `${b.lobs.length} LOBs` })) });
+        items: AG_BRANDS.map((b, n) => ({ lead: opLogo(b.logo, n), name: e(b.name), sub: `${b.lobs.length} lines of business`, chips: b.lobs.map((l) => e(l.name)), lobs: b.lobs, brandName: b.name, pill: `${b.lobs.length} LOBs` })) });
     } else if (key === "e1") {
       /* the same partners, rates and split the details page shows */
       const picked = agGtmSelected().length ? agGtmSelected() : AG_GTM_POOL.filter((p) => p.picked);
@@ -24683,7 +24694,12 @@ function agMigRow() {
         body = `<div class="op-cg-lines"><span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="2"/><path d="M2.5 5l5.5 4 5.5-4"/></svg>${it.contact[0]}</span><span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 2.5h2.6l1.2 3-1.6 1a7.5 7.5 0 003.3 3.3l1-1.6 3 1.2v2.6a1.5 1.5 0 01-1.6 1.5A10.5 10.5 0 012 4.1 1.5 1.5 0 013.5 2.5z"/></svg>${it.contact[1]}</span></div><p class="op-cg-note"><span>${I("spark")}Suggested role</span>${it.why}</p>`;
       } else if (key === "e0") {
         tag = `<span class="op-cg-tag is-soft"><i></i>${it.pill}</span>`;
-        body = `<div class="op-cg-chips">${it.chips.map((c) => `<span>${c}</span>`).join("")}</div>`;
+        const evIc = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h8M2 8h5M2 12h5"/><circle cx="11" cy="10.5" r="2.5"/><path d="M13 12.5l1.8 1.8"/></svg>`;
+        body = `<div class="op-cg-chips">${it.lobs.map((l) => {
+          const note = l.note || `Found under ${it.brandName} in your DLT registration.`;
+          const link = l.note && it.brandName === "HDFC Bank" ? `<a href="https://www.hdfc.com/en/home.html" target="_blank" rel="noopener">https://www.hdfc.com/en/home.html<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2L3 9"/></svg></a>` : "";
+          return `<span class="op-cg-lob" tabindex="0">${e(l.name)}<i class="op-cg-ev" aria-hidden="true">${evIc}</i><span class="op-cg-pop" role="tooltip"><em>${evIc}Evidence:</em>${e(note)}${link}</span></span>`;
+        }).join("")}</div>`;
       } else {
         const f = it.facts.map(([k, v]) => `<div class="op-cg-fact"><span>${k.replace("High confidence", "Confident")}</span><b>${v}</b></div>`).join("");
         const nums = it.facts.map(([, v]) => parseInt(v, 10) || 0);
