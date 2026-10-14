@@ -1,0 +1,64 @@
+{
+ "texts": 34,
+ "sizes": {
+  "12": 7,
+  "13": 4,
+  "16": 2,
+  "17": 1,
+  "18": 1,
+  "12.5": 2,
+  "14.5": 4,
+  "13.5": 13
+ },
+ "weights": {
+  "400": 15,
+  "600": 7,
+  "650": 5,
+  "700": 7
+ },
+ "small": [],
+ "low": [
+  {
+   "t": "1",
+   "fs": 12,
+   "fw": "700",
+   "cr": 1.05,
+   "approx": true
+  },
+  {
+   "t": "In brief",
+   "fs": 12,
+   "fw": "650",
+   "cr": 4.44,
+   "approx": true
+  }
+ ],
+ "lowCount": 2,
+ "smallTargets": [
+  {
+   "t": "We process your identity, KYC,",
+   "w": 415,
+   "h": 19
+  },
+  {
+   "t": "We share it with telecom provi",
+   "w": 636,
+   "h": 19
+  },
+  {
+   "t": "You can access, correct or del",
+   "w": 286,
+   "h": 19
+  }
+ ],
+ "hues": [
+  210
+ ],
+ "fontFamilies": [
+  "Geist"
+ ],
+ "errors": [],
+ "times": [
+  3
+ ]
+}

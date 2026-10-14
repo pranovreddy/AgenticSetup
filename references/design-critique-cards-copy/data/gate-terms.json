@@ -1,0 +1,49 @@
+{
+ "texts": 30,
+ "sizes": {
+  "12": 10,
+  "13": 4,
+  "16": 2,
+  "17": 1,
+  "18": 1,
+  "12.5": 2,
+  "14.5": 4,
+  "13.5": 6
+ },
+ "weights": {
+  "400": 12,
+  "600": 7,
+  "650": 8,
+  "700": 3
+ },
+ "small": [],
+ "low": [],
+ "lowCount": 0,
+ "smallTargets": [
+  {
+   "t": "You warrant that the consent d",
+   "w": 641,
+   "h": 19
+  },
+  {
+   "t": "AI checks can block, reject or",
+   "w": 490,
+   "h": 19
+  },
+  {
+   "t": "You indemnify the Company, and",
+   "w": 508,
+   "h": 19
+  }
+ ],
+ "hues": [
+  210
+ ],
+ "fontFamilies": [
+  "Geist"
+ ],
+ "errors": [],
+ "times": [
+  3
+ ]
+}
