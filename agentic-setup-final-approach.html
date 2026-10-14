@@ -18652,6 +18652,9 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const done = () => {
       if (finished) return; finished = true;
       window.removeEventListener("message", onMsg);
+      /* the scene loops back to its first (scanning) phase after the approvals; hide it so it never shows */
+      const stg = ov.querySelector(".op-kv-stage"); if (stg) { stg.style.transition = "opacity 220ms ease"; stg.style.opacity = "0"; }
+      setTimeout(() => { try { frame.srcdoc = ""; } catch (e) { /* gone */ } }, 260);
       setCap("Approved by all telecom operators", 2); bars.forEach((b) => { b.className = "is-done"; }); cap.querySelector(".op-lspin")?.replaceWith(Object.assign(document.createElement("span"), { className: "op-ltick", innerHTML: I("check", "sm") }));
       setTimeout(() => { ov.classList.add("is-leaving"); setTimeout(() => { ov.remove(); if (token === kycVerifyToken) opKycApproved(token); }, 360); }, 1100);
     };
