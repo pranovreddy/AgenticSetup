@@ -14129,6 +14129,28 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-cv-status{ min-width:260px !important; padding:16px 26px 14px !important; gap:12px !important; border-radius:18px !important; } .op-cv-status .op-seg{ height:3px !important; }
 #opSkipIntro{ position:fixed; left:16px; bottom:16px; z-index:9998; display:grid; place-items:center; width:34px; height:34px; padding:0; border-radius:50%; border:0; cursor:pointer; background:rgba(255,255,255,.92); color:#6b7c9e; box-shadow:0 0 0 1px #dfe6f6, 0 8px 18px -10px rgba(15,31,61,.35); transition:color 160ms, transform 160ms; } #opSkipIntro:hover{ color:#2563eb; transform:translateY(-1px); } #opSkipIntro[hidden]{ display:none !important; }
 .ag-boot-inner:has(.op-cv-mark){ transform:translateY(58px); }
+/* ---- Scenario / outcome screens: same language as the summaries ---- */
+.ag-step .ag-live > .ag-outcome{ max-width:900px; padding:68px 0 120px !important; gap:18px; }
+.ag-outcome-eyebrow-row{ gap:10px !important; }
+.ag-outcome-eyebrow{ display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 14px 0 10px; border-radius:99px; background:rgba(255,255,255,.88); box-shadow:0 0 0 1px #dfe8f8; font-size:12.5px !important; letter-spacing:0 !important; text-transform:none !important; font-weight:650 !important; color:#1d4ed8 !important; }
+.ag-outcome-eyebrow::before{ content:""; width:14px; height:14px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #93b6ff, #2563eb); }
+.ag-outcome-status{ background:none !important; border:0 !important; padding:0 !important; gap:7px !important; font-size:12.5px !important; font-weight:620 !important; }
+.ag-outcome-head{ gap:10px !important; }
+.ag-outcome-title{ font-size:23px !important; line-height:1.25 !important; font-weight:680 !important; letter-spacing:-.6px !important; color:#0f1f3d !important; }
+.ag-outcome-lead{ font-size:14px !important; line-height:1.6 !important; color:#5f7396 !important; max-width:60ch !important; }
+.ag-outcome-cards{ gap:12px !important; margin-top:6px; }
+.ag-outcome-card, .ag-outcome-row{ padding:16px 18px !important; border:1px solid rgba(255,255,255,.85) !important; border-radius:18px !important; background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important; box-shadow:0 0 0 1px rgba(196,214,245,.5), inset 0 1px 0 rgba(255,255,255,.9) !important; -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); }
+.ag-outcome-card:last-child, .ag-outcome-row:last-child{ border-bottom:1px solid rgba(255,255,255,.85) !important; }
+.ag-outcome-note{ border-radius:16px !important; }
+.ag-outcome-actions{ display:flex; gap:10px; margin-top:6px; }
+.ag-outcome-actions .ag-btn, .ag-btn.is-primary[data-action="ag-estate-add-more"], .ag-finale-actions .ag-btn{ height:32px !important; min-height:0 !important; padding:0 14px !important; font-size:13px !important; border-radius:10px !important; box-shadow:none !important; }
+.ag-outcome-actions .ag-btn.is-primary, .ag-finale-actions .ag-btn.is-primary{ box-shadow:0 8px 18px -10px rgba(37,99,235,.6) !important; }
+.ag-step-body:has(.ag-outcome) > :not(.ag-live){ display:none !important; }
+.ag-step:has(.ag-outcome) .ag-step-title, .ag-step:has(.ag-outcome) .ag-step-sub{ display:none !important; }
+.ag-outcome .ag-outcome-actions{ position:static !important; margin-top:10px !important; padding-top:14px; border-top:1px solid rgba(196,214,245,.5); justify-content:flex-start !important; }
+.ag-outcome > .ag-outcome-note{ margin-top:2px; }
+#opKycGo{ left:auto !important; right:calc(var(--kyc-r,0px) + 28px) !important; width:auto !important; margin:0 !important; bottom:28px !important; padding:0 !important; gap:0 !important; background:none !important; box-shadow:none !important; border-radius:0 !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+#opKycGo .ag-btn{ height:32px !important; min-height:0 !important; padding:0 14px !important; font-size:13px !important; border-radius:10px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -16958,6 +16980,15 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     });
     document.body.appendChild(b);
   }
+  /* a scenario outcome (waiting, paused, attention, rejected, nobody found...) owns its step: no summary on top of it */
+  function opOutcomeOwns(key) {
+    const o = state.outcome;
+    if (!o) return false;
+    if (AG_OUTCOME_ESTATE[o] === key) return true;
+    if (key === "2" && (o === "team-empty" || o === "team-later")) return true;
+    if (key === "1" && AG_OUTCOME_PROFILE.includes(o)) return true;
+    return false;
+  }
   function agSummarySync() {
     const key = String(state.ag.focus);
     const have = document.getElementById("agSummary");
@@ -16966,7 +16997,8 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       && !agStepIsComplete(key)
       && !document.body.classList.contains("ag-gate")
       && !document.querySelector(".ag-step.is-focused .ag-step-ai, .ag-step.is-focused .ag-step-intro, .ag-step.is-focused .ag-gtm-intro")
-      && !document.getElementById("agNextUp");
+      && !document.getElementById("agNextUp")
+      && !opOutcomeOwns(key);
     const want = ready && !agSumDone.has(key);
     agSummaryReopenSync(ready && agSumDone.has(key) && agSumHold !== key && !(have && have.dataset.leaving === "1"), key);
     if (!want) { if (have && have.dataset.leaving !== "1" && have.dataset.flow !== "1") have.remove(); return; }
@@ -20839,6 +20871,8 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     let body;
     if (done && amending) {
       body = `${d.review()}${agActions(amendDone, note)}`;
+    } else if (state.outcome && AG_OUTCOME_ESTATE[state.outcome] === `e${i}` && String(state.ag.focus) === `e${i}` && !amending) {
+      body = agOutcomeView();
     } else if (done) {
       /* Templates handoff already includes its own dock (Add more + Continue). */
       body = i === 2
@@ -24141,6 +24175,11 @@ function agMigRow() {
       state.done.estate = [false, false, false];
       go("e0");
     }
+    if (opOutcomeOwns(String(state.ag.focus))) {
+      const k = String(state.ag.focus);
+      stepAiDone.add(k); stepIntroPlayed.add(k); stepAiPending.delete(k); agSumDone.add(k);
+      if (k === "e1") { state.gtmWalk = "ready"; state.gtmWalkPlayed = true; }
+    }
     render();
     toast(`Scenario: ${AG_SCENARIOS.find((s) => s.id === id)?.label || id}`);
   }
@@ -24771,7 +24810,7 @@ function agMigRow() {
     document.getElementById("opKycGo")?.remove();
     const bar = document.createElement("div");
     bar.id = "opKycGo";
-    bar.innerHTML = `<p><b>Approved by all 4 telecom operators.</b> Confirm to continue to your team.</p><button type="button" class="ag-btn is-primary">Continue${I("arrow", "sm")}</button>`;
+    bar.innerHTML = `<button type="button" class="ag-btn is-primary">Continue${I("arrow", "sm")}</button>`;
     document.body.appendChild(bar);
     document.body.classList.add("op-kyc-confirm");
     /* centre the bar on the content column (right of the setup rail), not on the whole window */
