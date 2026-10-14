@@ -14397,6 +14397,9 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .op-cg-fact{ display:grid !important; grid-template-columns:auto 1fr; align-items:center; column-gap:8px; row-gap:4px; } .op-cg-fact > span{ grid-column:1 / -1; text-transform:none !important; letter-spacing:0 !important; font-size:12px !important; line-height:1.25; white-space:normal !important; } .op-cg-fact > b{ line-height:1; } .op-cg-fact{ padding:10px 8px !important; align-content:start; }
 .op-cg-ico{ display:inline-grid; place-items:center; flex:none; width:20px; height:20px; border-radius:50%; background:rgba(37,99,235,.1); color:#2563eb; } .op-cg-ico svg{ width:12px; height:12px; }
 .op-cg-fact.is-rv .op-cg-ico{ background:rgba(217,119,6,.14); color:#b45309; } .op-cg-fact.is-hi .op-cg-ico{ background:rgba(21,129,76,.12); color:#15814c; }
+/* ---- Walkthrough per requirements: highlight on New Upload, still card for reduced motion ---- */
+.ag-btn.is-tour-hl{ position:relative; z-index:52; box-shadow:0 0 0 2px rgba(37,99,235,.55), 0 0 0 7px rgba(37,99,235,.16), 0 16px 36px rgba(37,99,235,.2) !important; }
+@media (prefers-reduced-motion:reduce){ .ag-app-tour-card, .ag-app-tour, body.ag-app-tour .ag-app-sec{ transition:none !important; animation:none !important; } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -15858,14 +15861,14 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const sections = AG_APP_NAV.map((sec, si) => {
       const items = sec.items.map((item) => {
         const active = item.id === on;
-        const tourItem = tourOn && (si === state.appTourStep || (state.appTourStep === 2 && si >= 2));
+        const tourItem = tourOn && agTourSecs().includes(si);
         return `<button type="button" class="ag-app-item${active ? " is-on" : ""}${tourItem ? " is-tour" : ""}" data-action="ag-app-nav" data-nav="${item.id}"${active ? ' aria-current="page"' : ""}>
           <span class="ag-app-ico">${I(item.icon, "sm")}</span>
           <span class="ag-app-label">${agEsc(item.label)}</span>
           ${item.chevron ? `<span class="ag-app-chev" aria-hidden="true">${I("chevron", "sm")}</span>` : ""}
         </button>`;
       }).join("");
-      const tourHit = tourOn && (si === state.appTourStep || (state.appTourStep === 2 && si >= 2));
+      const tourHit = tourOn && agTourSecs().includes(si);
       return `<div class="ag-app-sec${tourHit ? " is-tour-sec" : ""}" data-tour-sec="${si}">
         <p class="ag-app-sec-label">${agEsc(sec.section)}</p>
         <div class="ag-app-items">${items}</div>
@@ -15874,34 +15877,20 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     return `<nav class="ag-app-nav" aria-label="DigiConsent">${sections}</nav>`;
   }
 
+  /* Walkthrough: four cards. Menu groups lit per card: Workspace, Admin, Operate. Card 4 lights New Upload only when the window is open. */
+  const AG_TOUR_SECS = [[0], [3], [1], []];
+  const agTourSecs = () => (state.appTour ? AG_TOUR_SECS[Math.min(state.appTourStep, 3)] || [] : []);
   function agAppTourBeats() {
-    const chip = (secIndexes) => secIndexes.flatMap((si) => (AG_APP_NAV[si]?.items || []).slice(0, 4))
-      .map((item) => `<span>${I(item.icon, "sm")}${agEsc(item.label)}</span>`).join("");
+    const open = state.migWindow === "open";
+    const closed = state.migWindow === "closed";
     return [
-      {
-        title: "Workspace",
-        icon: "home",
-        body: "Everything you curated in setup lives here — home, brands & LOBs, assets, and promo template mapping.",
-        tip: "<strong>Look left.</strong> Open any Workspace page to manage the estate you just prepared.",
-        secs: [0],
-        chips: chip([0]),
-      },
-      {
-        title: "Operate",
-        icon: "migration",
-        body: "Day-to-day consent work runs from Operate — migration, approvals, integrations, acquisition, and GTM partners.",
-        tip: "<strong>Start with Migration.</strong> Upload a CSV whenever you're ready; the rest of Operate stays one click away.",
-        secs: [1],
-        chips: chip([1]),
-      },
-      {
-        title: "Analyse & Admin",
-        icon: "chart",
-        body: "Reports and insights show how consent is performing. Admin covers users, finance, and audit for governance.",
-        tip: "<strong>Next.</strong> Continue into Migration when you're ready.",
-        secs: [2, 3],
-        chips: chip([2, 3]),
-      },
+      { title: "Workspace", icon: "home", body: "This is where you manage consent setup. You can see an overview of the workspace, manage brands and lines of business, and map templates to them." },
+      { title: "Admin", icon: "users", body: "This is where you manage the portal. Add people and give them roles, run payments, budgets and approvals in Finance, and keep a record of every action on the platform in the audit trail." },
+      { title: "Operate", icon: "migration", body: "This is where you work with consents. Migrate the records you already have, collect new ones, and send them through your GTM partners. Review what is waiting for approval, and connect the systems that exchange those consents." },
+      { title: "New Upload", icon: "upload", upload: open,
+        body: open ? "You can start uploading consents. A CSV file starts an assisted migration."
+          : closed ? "The migration window has closed."
+          : `You can upload consents here once the migration window opens on ${opMigDate(0)}.` },
     ];
   }
 
@@ -15912,28 +15901,23 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const beat = beats[step];
     const last = step >= beats.length - 1;
     const pct = Math.round(((step + 1) / beats.length) * 100);
+    const fwd = !last ? `<button type="button" class="ag-btn is-primary" data-action="ag-tour-next">Next</button>`
+      : beat.upload ? `<button type="button" class="ag-btn is-primary" data-action="ag-tour-upload">New Upload</button>` : "";
     return `<div class="ag-app-tour" role="dialog" aria-modal="true" aria-labelledby="agAppTourTitle">
       <div class="ag-app-tour-card" data-step="${step}">
         <div class="ag-app-tour-top">
           <span class="ag-app-tour-badge" aria-hidden="true">${I(beat.icon, "sm")}</span>
-          ${last ? "" : `<button type="button" class="ag-app-tour-skip" data-action="ag-tour-done">Skip</button>`}
         </div>
-        <p class="ag-app-tour-kicker">App Walkthrough · ${step + 1} of ${beats.length}</p>
         <h3 id="agAppTourTitle">${agEsc(beat.title)}</h3>
         <p class="ag-app-tour-body">${agEsc(beat.body)}</p>
-        <div class="ag-app-tour-chips" aria-hidden="true">${beat.chips}</div>
-        <p class="ag-app-tour-lead">${beat.tip}</p>
         <div class="ag-app-tour-progress" aria-hidden="true">
           <span class="ag-app-tour-progress-track"><i style="width:${pct}%"></i></span>
-          <span class="ag-app-tour-progress-label">${step + 1}/${beats.length}</span>
         </div>
         <div class="ag-app-tour-actions">
-          <div class="ag-app-tour-dots" role="tablist" aria-label="Walkthrough steps">
-            ${beats.map((_, i) => `<button type="button" role="tab" aria-selected="${i === step ? "true" : "false"}" class="${i === step ? "is-on" : ""}" data-action="ag-tour-goto" data-step="${i}" aria-label="Step ${i + 1}"></button>`).join("")}
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            ${step > 0 ? `<button type="button" class="ag-btn" data-action="ag-tour-back">Back</button>` : ""}
-            <button type="button" class="ag-btn is-primary" data-action="${last ? "ag-tour-done" : "ag-tour-next"}">${last ? (state.migWindow === "open" ? "New Upload" : "New Upload") : "Next"}</button>
+          <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
+            ${step > 0 ? `<button type="button" class="ag-btn" data-action="ag-tour-back">Previous</button>` : ""}
+            <button type="button" class="ag-btn" data-action="ag-tour-done">Skip</button>
+            ${fwd}
           </div>
         </div>
       </div>
@@ -15942,9 +15926,11 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
 
   function agAppTourFocusNav() {
     if (!state.appTour) return;
-    const step = Math.min(state.appTourStep, 2);
-    const hit = document.querySelector(`.ag-app-sec.is-tour-sec`) || document.querySelector(`[data-tour-sec="${step}"]`);
-    const rail = document.querySelector(".stages.is-app-nav");
+    const step = Math.min(state.appTourStep, 3);
+    const upBtn = step === 3 && state.migWindow === "open" ? document.querySelector('[data-action="ag-mig-new-upload"]') : null;
+    if (upBtn) upBtn.classList.add("is-tour-hl");
+    const hit = step === 3 ? upBtn : (document.querySelector(`.ag-app-sec.is-tour-sec`) || document.querySelector(`[data-tour-sec="${AG_TOUR_SECS[step][0]}"]`));
+    const rail = step === 3 ? null : document.querySelector(".stages.is-app-nav");
     const card = document.querySelector(".ag-app-tour-card");
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (hit && rail) {
@@ -24043,6 +24029,7 @@ function agMigRow() {
         return;
       }
       if (act.dataset.action === "ag-app-nav") {
+        if (state.appTour) return;
         const id = act.dataset.nav;
         state.appNav = id;
         if (id === "migration") {
@@ -24056,27 +24043,23 @@ function agMigRow() {
         return;
       }
       if (act.dataset.action === "ag-tour-next") {
-        const step = Math.min(2, state.appTourStep + 1);
-        state.appTourStep = step;
-        const sec = AG_APP_NAV[(agAppTourBeats()[step]?.secs || [0])[0]];
-        if (sec?.items?.[0]) state.appNav = sec.items[0].id;
+        state.appTourStep = Math.min(3, state.appTourStep + 1);
+        state.appNav = "migration";
         render();
         return;
       }
       if (act.dataset.action === "ag-tour-back") {
-        const step = Math.max(0, state.appTourStep - 1);
-        state.appTourStep = step;
-        const sec = AG_APP_NAV[(agAppTourBeats()[step]?.secs || [0])[0]];
-        if (sec?.items?.[0]) state.appNav = sec.items[0].id;
+        state.appTourStep = Math.max(0, state.appTourStep - 1);
+        state.appNav = "migration";
         render();
         return;
       }
-      if (act.dataset.action === "ag-tour-goto") {
-        const step = Math.max(0, Math.min(2, Number(act.dataset.step) || 0));
-        state.appTourStep = step;
-        const sec = AG_APP_NAV[(agAppTourBeats()[step]?.secs || [0])[0]];
-        if (sec?.items?.[0]) state.appNav = sec.items[0].id;
+      if (act.dataset.action === "ag-tour-upload") {
+        state.appTour = false;
+        state.appNav = "migration";
+        state.appTourStep = 0;
         render();
+        onAction("ag-mig-new-upload");
         return;
       }
       if (act.dataset.action === "ag-tour-done") {
