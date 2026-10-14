@@ -14433,6 +14433,15 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .ag-outcome-eyebrow-row{ flex-direction:column !important; align-items:center !important; gap:8px !important; }
 /* selected rail step: white icon on the blue disc */
 .ag-tel-ico.is-focus, .ag-tel-ico.is-focus svg{ color:#fff !important; stroke:#fff !important; }
+/* evidence pop-over opens from the icon only, not the whole row */
+.op-cg-lob:hover .op-cg-ev, .op-cg-lob:focus .op-cg-ev{ color:#8aa0c8; }
+.op-cg-lob:hover, .op-cg-lob:focus{ border-color:inherit; }
+.op-cg-ev{ cursor:help; } .op-cg-ev:hover, .op-cg-ev:focus-visible{ color:#2563eb !important; }
+.op-cg-chips span.op-cg-pop{ opacity:0; visibility:hidden; pointer-events:none; transition:opacity 160ms ease, transform 160ms ease, visibility 0s linear 260ms !important; }
+.op-cg-lob:hover .op-cg-pop, .op-cg-lob:focus .op-cg-pop{ opacity:0; visibility:hidden; pointer-events:none; }
+.op-cg-ev:hover ~ .op-cg-pop, .op-cg-ev:focus ~ .op-cg-pop, .op-cg-chips span.op-cg-pop:hover{ opacity:1 !important; visibility:visible !important; transform:none !important; pointer-events:auto !important; transition-delay:0s !important; }
+.op-cg:has(.op-cg-lob:hover):not(:has(.op-cg-ev:hover)):not(:has(.op-cg-ev:focus)){ z-index:auto; }
+.op-cg:has(.op-cg-ev:hover), .op-cg:has(.op-cg-ev:focus){ overflow:visible; z-index:5; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24957,7 +24966,7 @@ function agMigRow() {
         body = `<div class="op-cg-chips op-cg-lobs">${it.lobs.map((l) => {
           const note = l.note || `Found under ${it.brandName} in your DLT registration.`;
           const link = l.note && it.brandName === "HDFC Bank" ? `<a href="https://www.hdfc.com/en/home.html" target="_blank" rel="noopener">https://www.hdfc.com/en/home.html<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2L3 9"/></svg></a>` : "";
-          return `<span class="op-cg-lob" tabindex="0"><span class="op-cg-lobt"><b>${e(l.name)}</b><small>${e((l.promos && l.promos.length ? l.promos.join(" · ") : ""))}</small></span><i class="op-cg-ev" aria-hidden="true">${evIc}</i><span class="op-cg-pop" role="tooltip"><em>${evIc}Evidence:</em>${e(note)}${link}</span></span>`;
+          return `<span class="op-cg-lob"><span class="op-cg-lobt"><b>${e(l.name)}</b><small>${e((l.promos && l.promos.length ? l.promos.join(" · ") : ""))}</small></span><i class="op-cg-ev" tabindex="0" role="button" aria-label="Show evidence">${evIc}</i><span class="op-cg-pop" role="tooltip"><em>${evIc}Evidence:</em>${e(note)}${link}</span></span>`;
         }).join("")}</div>`;
       } else {
         const FI = { "Suggested": "spark", "High confidence": "check", "Need review": "pen" };
