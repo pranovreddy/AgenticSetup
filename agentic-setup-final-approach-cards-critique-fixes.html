@@ -14529,6 +14529,29 @@ body.ag-gate .ag-gate-hero .ag-sum-gem{ box-shadow:none !important; filter:none 
 .ag-tm-filters .ag-tm-check-all{ flex:none; margin-right:6px; }
 .ag-tm-grip{ flex:none; width:10px; height:16px; margin:0 2px 0 -2px; opacity:.55; background:radial-gradient(circle,#8a97b3 1.3px,transparent 1.6px) 0 0/5px 5px; cursor:grab; }
 .ag-telcard .ag-tel-track::after{ max-height:calc(100% - 46px) !important; }
+.ag-app-tour-card[data-side="below"]::before, .ag-app-tour-card[data-side="above"]::before{ display:none; }
+/* GTM compare + allocate: content-height card, actions sit right under the content, aligned edges */
+.setup-layout .cl-detail .ag-live > .ag-gtm-manual{ flex:0 0 auto !important; overflow:visible !important; padding-bottom:110px !important; }
+.ag-gtm-manual-card{ flex:0 0 auto !important; margin-top:16px !important; }
+.ag-gtm-manual-scroll{ flex:0 0 auto !important; }
+.ag-gtm-manual-steps{ margin:14px 0 18px !important; }
+.ag-gtm-manual-tabs{ margin-top:0 !important; }
+.ag-gtm-manual-tab:first-child{ padding-left:0 !important; }
+.ag-gtm-compare td{ vertical-align:middle !important; }
+.ag-gtm-compare td:first-child .ag-gtm-req-partner{ position:relative; top:10px; }
+.ag-gtm-manual-bar{ padding:16px 24px !important; gap:16px; }
+.ag-gtm-manual-bar > span{ font-size:13.5px; color:#0f1f3d; }
+.ag-gtm-manual-bar-actions{ margin-left:auto; gap:10px !important; }
+.ag-gtm-alloc-foot{ margin-top:0 !important; padding:16px 24px !important; }
+.ag-gtm-alloc-head{ padding:20px 24px !important; }
+.ag-gtm-alloc-list{ padding:8px 24px !important; }
+.ag-gtm-alloc-sum{ margin:0 24px !important; }
+.ag-gtm-manual-tools{ padding:16px 24px !important; }
+.ag-gtm-manual-card.ag-gtm-alloc-card{ display:flex !important; flex-direction:column; align-items:stretch !important; gap:0 !important; padding:0 !important; background:#fff !important; border:1px solid #e4e8f0 !important; border-radius:12px !important; }
+.ag-gtm-alloc-card .ag-gtm-alloc-head b{ font-size:16px; }
+.ag-gtm-alloc-row{ padding:16px 0 !important; }
+.ag-gtm-alloc-sum{ margin:12px 24px 20px !important; }
+.ag-gtm-alloc-foot{ border-top:1px solid #e4e8f0 !important; background:#fff !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -16016,7 +16039,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       { title: "Workspace", icon: "home", body: "This is where you manage consent setup. You can see an overview of the workspace, manage brands and lines of business, and map templates to them." },
       { title: "Admin", icon: "users", body: "This is where you manage the portal. Add people and give them roles, run payments, budgets and approvals in Finance, and keep a record of every action on the platform in the audit trail." },
       { title: "Operate", icon: "migration", body: "This is where you work with consents. Migrate the records you already have, collect new ones, and send them through your GTM partners. Review what is waiting for approval, and connect the systems that exchange those consents." },
-      { title: "New Upload", icon: "upload", upload: open,
+      { title: "New Upload", icon: "upload", upload: true,
         body: open ? "You can start uploading consents. A CSV file starts an assisted migration."
           : closed ? "The migration window has closed."
           : `You can upload consents here once the migration window opens on ${opMigDate(0)}.` },
@@ -16031,7 +16054,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const last = step >= beats.length - 1;
     const pct = Math.round(((step + 1) / beats.length) * 100);
     const fwd = !last ? `<button type="button" class="ag-btn is-primary" data-action="ag-tour-next">Next</button>`
-      : beat.upload ? `<button type="button" class="ag-btn is-primary" data-action="ag-tour-upload">New Upload</button>` : "";
+      : beat.upload ? `<button type="button" class="ag-btn is-primary" data-action="ag-tour-upload">Upload consents</button>` : "";
     return `<div class="ag-app-tour" role="dialog" aria-modal="true" aria-labelledby="agAppTourTitle">
       <div class="ag-app-tour-card" data-step="${step}">
         <div class="ag-app-tour-top">
@@ -16076,17 +16099,27 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     if (!state.appTour) return;
     const step = Math.min(state.appTourStep, 3);
     const upBtn = step === 3 ? document.querySelector('[data-action="ag-mig-new-upload"]') : null;
-    if (upBtn) setTimeout(() => {
-      const ov = document.querySelector(".ag-app-tour");
-      if (ov && upBtn.isConnected && !ov.querySelector(".ag-tour-spot")) {
+    document.querySelectorAll(".ag-tour-spot").forEach((el) => el.classList.remove("ag-tour-spot"));
+    /* Light the page's own New Upload button. The lit copy tracks the real one every frame and the real one is hidden, so only one button is ever seen. */
+    const tourOv = document.querySelector(".ag-app-tour");
+    if (tourOv) tourOv.style.clipPath = "";
+    document.querySelectorAll(".ag-tour-spot").forEach((el) => el.remove());
+    document.querySelectorAll("[data-tour-hidden]").forEach((el) => { el.style.visibility = ""; el.removeAttribute("data-tour-hidden"); });
+    if (upBtn && tourOv) {
+      const c = upBtn.cloneNode(true);
+      c.removeAttribute("data-action"); c.setAttribute("aria-hidden", "true"); c.tabIndex = -1;
+      c.classList.add("ag-tour-spot");
+      c.style.cssText = "position:fixed;margin:0;pointer-events:none;";
+      tourOv.appendChild(c);
+      upBtn.style.visibility = "hidden"; upBtn.setAttribute("data-tour-hidden", "1");
+      const track = () => {
+        if (!c.isConnected || !upBtn.isConnected || !state.appTour) { if (upBtn.isConnected) { upBtn.style.visibility = ""; upBtn.removeAttribute("data-tour-hidden"); } return; }
         const r = upBtn.getBoundingClientRect();
-        const c = upBtn.cloneNode(true);
-        c.removeAttribute("data-action"); c.setAttribute("aria-hidden", "true"); c.tabIndex = -1;
-        c.classList.add("ag-tour-spot");
-        c.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;pointer-events:none;`;
-        ov.appendChild(c);
-      }
-    }, 800);
+        c.style.left = r.left + "px"; c.style.top = r.top + "px"; c.style.width = r.width + "px"; c.style.height = r.height + "px";
+        requestAnimationFrame(track);
+      };
+      track();
+    }
     const hit = step === 3 ? upBtn : (document.querySelector(`.ag-app-sec.is-tour-sec`) || document.querySelector(`[data-tour-sec="${AG_TOUR_SECS[step][0]}"]`));
     const rail = step === 3 ? null : document.querySelector(".stages.is-app-nav");
     const card = document.querySelector(".ag-app-tour-card");
@@ -16103,18 +16136,26 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       return;
     }
     if (!hit || !card) return;
-    const place = () => {
+    const place = (again) => {
       const r = hit.getBoundingClientRect();
       const cw = card.offsetWidth || 420;
       const ch = card.offsetHeight || 280;
       const gap = 18;
+      const navEdge = step === 3 ? 250 : 16;
       let left = r.right + gap;
       let side = "right";
-      if (left + cw > window.innerWidth - 16) {
-        left = Math.max(16, r.left - cw - gap);
-        side = "left";
-      }
       let top = r.top + r.height / 2 - ch / 2;
+      if (left + cw > window.innerWidth - 16) {
+        left = r.left - cw - gap;
+        side = "left";
+        if (left < navEdge) {
+          /* No room beside it: sit under the control, or over it when the page ends there */
+          side = "below";
+          left = Math.max(navEdge, Math.min(r.left + r.width / 2 - cw / 2, window.innerWidth - cw - 16));
+          top = r.bottom + gap;
+          if (top + ch > window.innerHeight - 16) { top = r.top - ch - gap; side = "above"; }
+        }
+      }
       top = Math.max(16, Math.min(top, window.innerHeight - ch - 16));
       card.style.position = "fixed";
       card.style.left = `${Math.round(left)}px`;
@@ -16125,9 +16166,10 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       card.style.transform = "none";
       card.classList.add("is-anchored");
       card.dataset.side = side;
-      agTourSettle(card);
+      if (again !== true) agTourSettle(card);
     };
-    requestAnimationFrame(() => requestAnimationFrame(place));
+    requestAnimationFrame(() => requestAnimationFrame(() => place()));
+    if (step === 3) setTimeout(() => { if (card.isConnected) place(true); }, 900);
   }
 
   function agSetupProgress() {
@@ -20645,7 +20687,6 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         <div class="ag-gtm-manual-bar">
           <span>Selected <em>${pickedN}</em></span>
           <div class="ag-gtm-manual-bar-actions">
-            <button type="button" class="ag-btn" data-action="ag-gtm-edit-cancel">Cancel</button>
             <button type="button" class="ag-btn" data-action="ag-gtm-clear"${pickedN ? "" : " disabled"}>Clear</button>
             <button type="button" class="ag-btn is-primary" data-action="ag-gtm-accept"${pickedN ? "" : " disabled"}>Continue to allocation</button>
           </div>
@@ -20704,7 +20745,17 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       </div>
     </div>`;
   }
+  /* Review opens the compare-and-allocate screen straight away. No separate card summary in between. */
+  function agGtmEnsureManual() {
+    if (state.done.estate[1] || state.gtmManual || state.gtmWalk !== "ready") return;
+    if (!agGtmSelected().length) AG_GTM_POOL.forEach((p, i) => { p.picked = i < 2; });
+    agGtmInitAlloc();
+    state.gtmManual = true;
+    state.gtmManualStep = "requests";
+    state.gtmManualQuery = "";
+  }
   function agGtmBoard() {
+    agGtmEnsureManual();
     if (state.done.estate[1]) return agRateCards();
     if (state.gtmManual) return agGtmManualBoard();
     if (state.gtmWalk === "ready") return agRateCards();
@@ -21214,12 +21265,11 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const d = AG_ESTATE[i];
     const done = state.done.estate[i];
     const focused = String(state.ag.focus) === `e${i}`;
+    if (i === 1) agGtmEnsureManual();
     const walking = i === 1 && !done && state.gtmWalk !== "ready" && !state.gtmManual;
     const manual = i === 1 && !done && state.gtmManual;
     const confirm = `<button type="button" class="ag-btn is-primary" data-action="ag-estate-confirm" data-estate="${i}">${I("check", "sm")}${d.cta}</button>`;
-    const extras = i === 1
-      ? `<button type="button" class="ag-btn" data-action="ag-partner-review">${I("pen", "sm")}Edit partners</button>`
-      : "";
+    const extras = "";
     const note = i === 1
       ? agGtmDockSummary()
       : i === 0
@@ -24003,13 +24053,18 @@ function agMigRow() {
           toast("Included partners must total 100%.");
           return;
         }
-        state.gtmManual = false;
-        state.gtmManualStep = "requests";
-        state.gtmWalk = "ready";
-        state.gtmWalkPlayed = true;
-        const names = agGtmSelected().map((p) => p.name).join(" and ");
-        welcomeSay(`${names} saved. Accept to use them.`, { instant: true });
-        render();
+        agBusy(act, "Saving…", 800).then(() => {
+          state.gtmManual = false;
+          state.gtmManualStep = "requests";
+          state.gtmWalk = "ready";
+          state.gtmWalkPlayed = true;
+          state.done.estate[1] = true;
+          state.doneAt.e1 = agStamp();
+          successAutoArm("e1");
+          agFileIntoFolder("e1");
+          render();
+          if (agEstateAll()) welcomeSay(WELCOME_SAY.estateReady);
+        });
         return;
       }
       if (act.dataset.action === "ag-rate-terms") {
@@ -24229,6 +24284,7 @@ function agMigRow() {
         return;
       }
       if (act.dataset.action === "ag-tour-upload") {
+        document.querySelectorAll("[data-tour-hidden]").forEach((el) => { el.style.visibility = ""; el.removeAttribute("data-tour-hidden"); });
         state.appTour = false;
         state.appNav = "migration";
         state.appTourStep = 0;
@@ -24237,6 +24293,7 @@ function agMigRow() {
         return;
       }
       if (act.dataset.action === "ag-tour-done") {
+        document.querySelectorAll("[data-tour-hidden]").forEach((el) => { el.style.visibility = ""; el.removeAttribute("data-tour-hidden"); });
         state.appTour = false;
         state.appNav = "migration";
         state.appTourStep = 0;
