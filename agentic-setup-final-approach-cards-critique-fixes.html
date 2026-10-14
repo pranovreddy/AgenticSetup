@@ -14448,6 +14448,12 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .ag-outcome.is-empty{ text-align:center; } .ag-outcome.is-empty .ag-outcome-actions{ justify-content:center; }
 .ag-empty-note{ margin:14px 0 0; text-align:center; font-size:13px; color:#53627f; }
 .ag-outcome.is-empty .ag-outcome-head{ text-align:center; }
+/* ---- Search: no results ---- */
+.ag-search-empty{ display:flex; flex-direction:column; align-items:center; gap:6px; margin:18px auto 8px; padding:28px 20px; text-align:center; max-width:460px; }
+.ag-search-empty[hidden]{ display:none; }
+.ag-search-ico{ display:grid; place-items:center; width:64px; height:64px; border-radius:50%; margin-bottom:6px; color:#4f6fb3; background:radial-gradient(circle at 34% 28%, #fff, #eaf1ff 70%); border:1.5px dashed #b9cbef; } .ag-search-ico svg{ width:26px; height:26px; }
+.ag-search-empty b{ font-size:16px; font-weight:650; color:#0f1f3d; } .ag-search-empty p{ margin:0 0 10px; font-size:14px; line-height:1.5; color:#53627f; }
+.ag-gtm-empty .ag-search-empty{ margin:6px auto; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -20507,7 +20513,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         <span class="ag-rate-mark is-${p.tone}">${p.mark}</span><span class="ag-gtm-req-name">${agEsc(p.name)}</span>
       </span></td>
       ${cell(p, "mig")}${cell(p, "acq")}${cell(p, "ref")}${cell(p, "sms")}${cell(p, "voice")}${cell(p, "rcs")}
-    </tr>`).join("") || `<tr><td colspan="7" class="ag-gtm-empty">No partners match “${agEsc(state.gtmManualQuery)}”.</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="7" class="ag-gtm-empty"><div class="ag-search-empty">${agSearchEmpty("No partners found", `Nothing matches “${agEsc(state.gtmManualQuery)}”. Try another partner name.`, `<button type="button" class="ag-btn" data-action="ag-gtm-search-clear">Clear search</button>`)}</div></td></tr>`;
     return `<div class="ag-gtm-manual">
       ${agGtmManualSteps("requests")}
       <div class="ag-gtm-manual-tabs" role="tablist">
@@ -22359,13 +22365,10 @@ function agMigRow() {
     if (empty) {
       empty.hidden = shown > 0;
       const roleLabel = INVITE_ROLES.find((r) => r.id === agTeamRoleFilter)?.pill || agTeamRoleFilter;
-      if (agTeamRoleFilter && agTeamQuery.trim()) {
-        empty.textContent = `No one matches “${agTeamQuery.trim()}” in ${roleLabel}.`;
-      } else if (agTeamRoleFilter) {
-        empty.textContent = `No one is recommended for ${roleLabel}.`;
-      } else {
-        empty.textContent = `No one matches “${agTeamQuery.trim()}”. Use Add user to include them.`;
-      }
+      const tq = agTeamQuery.trim();
+      empty.innerHTML = agSearchEmpty("No people found",
+        agTeamRoleFilter && tq ? `Nothing matches “${agEsc(tq)}” in ${agEsc(roleLabel)}.` : agTeamRoleFilter ? `No one is recommended for ${agEsc(roleLabel)}.` : `Nothing matches “${agEsc(tq)}”. Use Add user to include them.`,
+        tq ? `<button type="button" class="ag-btn" data-action="ag-team-search-clear">Clear search</button>` : "");
     }
     const clear = document.querySelector(".ag-team-search-clear");
     if (clear) clear.hidden = !agTeamQuery.trim();
@@ -22529,7 +22532,7 @@ function agMigRow() {
           <input type="search" class="ag-team-search-input" data-team-search value="${agEsc(agTeamQuery)}" placeholder="Search by name, role or email" aria-label="Search suggested teammates" autocomplete="off">
           <button type="button" class="ag-team-search-clear" data-action="ag-team-search-clear" aria-label="Clear search"${agTeamQuery.trim() ? "" : " hidden"}>${I("close", "sm")}</button>
         </div>
-        <p class="ag-team-empty" aria-live="polite"${shown ? " hidden" : ""}>${emptyMsg}</p>`
+        <div class="ag-team-empty ag-search-empty" aria-live="polite"${shown ? " hidden" : ""}>${agSearchEmpty("No people found", emptyMsg, agTeamQuery.trim() ? `<button type="button" class="ag-btn" data-action="ag-team-search-clear">Clear search</button>` : "")}</div>`
       : "";
     const invited = Array.isArray(state.invited) ? state.invited : [];
     const suggestedTable = people.length
@@ -23967,6 +23970,7 @@ function agMigRow() {
         agDocDownload(act.dataset.doc);
         return;
       }
+      if (act.dataset.action === "ag-gtm-search-clear") { state.gtmManualQuery = ""; render(); return; }
       if (act.dataset.action === "ag-team-search-clear") {
         agTeamQuery = "";
         const input = document.querySelector("[data-team-search]");
@@ -24910,6 +24914,10 @@ function agMigRow() {
     return `<div class="op-ftools"><div class="op-fchips" role="group" aria-label="Filter by role">${chip("All", "", m.items.length, true)}${roles.map((r) => chip(r, r, m.items.filter((it) => it.pill === r).length, false)).join("")}</div>
       <label class="op-fsearch"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input type="search" placeholder="Search people" aria-label="Search people" autocomplete="off"></label></div>`;
   }
+  /* Shared "no search results" state: icon, title, what was searched, and a way out */
+  function agSearchEmpty(title, sub, btn) {
+    return `<span class="ag-search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span><b>${agEsc(title)}</b><p>${sub}</p>${btn || ""}`;
+  }
   function opFilterApply(root) {
     const on = root.querySelector(".op-fchip.is-on");
     const role = on ? on.dataset.opFrole : "";
@@ -24922,7 +24930,9 @@ function agMigRow() {
     });
     let empty = root.querySelector(".op-fempty");
     if (!shown) {
-      if (!empty) { empty = document.createElement("p"); empty.className = "op-fempty"; empty.textContent = "No one matches. Try another role or search."; (root.querySelector(".op-grid.is-2") || root.querySelector(".op-list")).after(empty); }
+      if (!empty) { empty = document.createElement("div"); empty.className = "op-fempty ag-search-empty"; empty.setAttribute("aria-live", "polite"); (root.querySelector(".op-grid.is-2") || root.querySelector(".op-list")).after(empty); }
+      const roleName = role || "";
+      empty.innerHTML = agSearchEmpty("No people found", q ? `Nothing matches “${agEsc(q)}”${roleName ? ` in ${agEsc(roleName)}` : ""}. Try another name, email or role.` : `No one is suggested for ${agEsc(roleName)}.`, `<button type="button" class="ag-btn" data-op-clear>Clear ${q && roleName ? "filters" : q ? "search" : "filter"}</button>`);
     } else empty?.remove();
   }
   document.addEventListener("click", (ev) => {
@@ -24931,6 +24941,14 @@ function agMigRow() {
     const root = ch.closest(".op-wrap");
     root.querySelectorAll(".op-fchip").forEach((x) => { const on = x === ch; x.classList.toggle("is-on", on); x.setAttribute("aria-pressed", String(on)); });
     opFilterApply(root);
+  });
+  document.addEventListener("click", (ev) => {
+    const b = ev.target.closest && ev.target.closest("[data-op-clear]");
+    if (!b) return;
+    const root = b.closest(".op-wrap");
+    const inp = root.querySelector(".op-fsearch input"); if (inp) inp.value = "";
+    root.querySelectorAll(".op-fchip").forEach((x, i) => { x.classList.toggle("is-on", i === 0); x.setAttribute("aria-pressed", String(i === 0)); });
+    opFilterApply(root); inp?.focus();
   });
   document.addEventListener("input", (ev) => {
     const inp = ev.target.closest && ev.target.closest(".op-fsearch input");
