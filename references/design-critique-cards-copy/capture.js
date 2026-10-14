@@ -1,8 +1,8 @@
 // Capture + measure driver. Usage: node capture.js <stateId>...   (writes shots/ and data/)
 const {chromium}=require('/opt/node22/lib/node_modules/playwright');
 const fs=require('fs');
-const FILE='file:///home/user/AgenticSetup/agentic-setup-final-approach-cards-copy.html';
-const OUT=__dirname;
+const FILE=process.env.FILE||'file:///home/user/AgenticSetup/agentic-setup-final-approach-cards-copy.html';
+const OUT=process.env.OUT||__dirname;
 const measure=()=>{
   const lum=c=>{const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(c[0])+.7152*f(c[1])+.0722*f(c[2])};
   const parse=s=>{const m=s.match(/rgba?\(([^)]+)\)/);if(!m)return null;const p=m[1].split(',').map(x=>parseFloat(x));return [p[0],p[1],p[2],p.length>3?p[3]:1]};
