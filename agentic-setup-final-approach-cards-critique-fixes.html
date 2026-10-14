@@ -14453,6 +14453,18 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .ag-search-ico{ display:grid; place-items:center; width:64px; height:64px; border-radius:50%; margin-bottom:6px; color:#4f6fb3; background:radial-gradient(circle at 34% 28%, #fff, #eaf1ff 70%); border:1.5px dashed #b9cbef; } .ag-search-ico svg{ width:26px; height:26px; }
 .ag-search-empty b{ font-size:16px; font-weight:650; color:#0f1f3d; } .ag-search-empty p{ margin:0 0 10px; font-size:14px; line-height:1.5; color:#53627f; }
 .ag-gtm-empty .ag-search-empty{ margin:6px auto; }
+/* ---- GTM edit flow: step bar fits, light action bar ---- */
+.ag-gtm-manual-steps{ justify-content:flex-start !important; flex-wrap:wrap; } .ag-gtm-manual-step-gap{ flex:0 0 36px !important; width:36px; height:1px; background:#cfdcf3; }
+.ag-gtm-manual-step{ font-size:13px; }
+.ag-gtm-manual-bar{ background:rgba(255,255,255,.85) !important; color:#0f1f3d !important; border-top:1px solid rgba(196,214,245,.7); } .ag-gtm-manual-bar em{ color:#2563eb !important; }
+.ag-gtm-manual-bar .ag-btn:not(.is-primary), .ag-gtm-alloc-foot .ag-btn:not(.is-primary){ background:#fff !important; border:1px solid #d6e2f6 !important; color:#0f1f3d !important; }
+.ag-gtm-manual, .ag-gtm-manual-card{ max-width:min(1180px, calc(100vw - 150px)) !important; box-sizing:border-box; } .ag-gtm-manual-scroll{ overflow-x:auto; }
+/* Templates details: the scan block lives on the summary, not here */
+.ag-tm-stats{ display:none !important; }
+/* Kick-off: the countdown replaces the recap rows */
+.ag-finale-window{ margin:0 0 14px; font-size:15px; font-weight:600; color:#3c4762; text-align:center; }
+.ag-mig-wait.ag-finale-wait{ display:flex; flex-direction:column; align-items:center; background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; margin:6px 0 14px; }
+.ag-finale-wait .ag-mig-clock{ margin-bottom:6px; gap:12px; } .ag-finale-wait .ag-mig-clock b{ width:68px; height:80px; font-size:34px; } .ag-finale-wait .ag-mig-clock i{ line-height:80px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -20344,17 +20356,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         { phase: "RCS Scrubbing", icon: "rcs", rate: agGtmMoney(p.rates.rcs), alloc: "0", sub: true },
       ];
       const scrub = [["SMS", p.rates.sms], ["Call", p.rates.voice], ["RCS", p.rates.rcs]].map(([l, v]) => `<span><i>${l}</i><b>${agGtmMoney(v)}</b></span>`).join("");
-      const more = on ? `<details class="ag-more">
-        <summary>View full rate card${chev}</summary>
-        <div class="ag-rate-table" role="table" aria-label="${agEsc(p.name)} rate card">
-          <div class="ag-rate-row is-head" role="row"><span>Phase</span><span>Your rate</span><span>Allocation</span></div>
-          ${rows.map(row).join("")}
-        </div>
-      </details>
-      <label class="ag-rate-accept">
-        <input type="checkbox" name="rate-${p.id}">
-        <span>I have read and accept <button type="button" data-action="ag-rate-terms" data-partner="${agEsc(p.name)}">${agEsc(p.name)}'s Rate Card Terms</button>, including the fees in the rate card</span>
-      </label>` : "";
+      const more = "";
       return `<article class="op-gk${on ? "" : " is-off"}"><header class="op-gk-top"><span class="ag-rate-mark is-${p.tone}">${p.mark}</span><b>${agEsc(p.name)}</b><span class="op-gt-s${on ? " is-on" : ""}"><i></i>${on ? "Selected" : "Not selected"}</span></header>
         <p class="op-gk-why"><i>${on ? "Why it was chosen" : "Why it was not chosen"}</i>${agEsc(p.why)}</p>
         <div class="op-gk-ph">${tile("Migration", "mig", p, a, on)}${tile("Acquisition", "acq", p, a, on)}${tile("Refresh", "ref", p, a, on)}</div>
@@ -20552,8 +20554,9 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         <div class="ag-gtm-manual-bar">
           <span>Selected <em>${pickedN}</em></span>
           <div class="ag-gtm-manual-bar-actions">
+            <button type="button" class="ag-btn" data-action="ag-gtm-edit-cancel">Cancel</button>
             <button type="button" class="ag-btn" data-action="ag-gtm-clear"${pickedN ? "" : " disabled"}>Clear</button>
-            <button type="button" class="ag-btn is-primary" data-action="ag-gtm-accept"${pickedN ? "" : " disabled"}>Accept &amp; Set Allocation</button>
+            <button type="button" class="ag-btn is-primary" data-action="ag-gtm-accept"${pickedN ? "" : " disabled"}>Continue to allocation</button>
           </div>
         </div>
       </div>
@@ -20604,7 +20607,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
           <span>${selected.length} partner${selected.length === 1 ? "" : "s"} for all phases</span>
           <div class="ag-gtm-manual-bar-actions">
             <button type="button" class="ag-btn" data-action="ag-gtm-alloc-back">Back</button>
-            <button type="button" class="ag-btn is-primary" data-action="ag-gtm-alloc-review"${ok ? "" : " disabled"}>Review &amp; confirm</button>
+            <button type="button" class="ag-btn is-primary" data-action="ag-gtm-alloc-review"${ok ? "" : " disabled"}>Save changes</button>
           </div>
         </div>
       </div>
@@ -21126,7 +21129,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const manual = i === 1 && !done && state.gtmManual;
     const confirm = `<button type="button" class="ag-btn is-primary" data-action="ag-estate-confirm" data-estate="${i}">${I("check", "sm")}${d.cta}</button>`;
     const extras = i === 1
-      ? `<button type="button" class="ag-btn" data-action="ag-partner-review">${I("pen", "sm")}Edit partners allocation</button>`
+      ? `<button type="button" class="ag-btn" data-action="ag-partner-review">${I("pen", "sm")}Edit partners</button>`
       : "";
     const note = i === 1
       ? agGtmDockSummary()
@@ -21551,11 +21554,9 @@ function agMigRow() {
         <p class="ag-finale-sub">Here is what was set up for HDFC Bank Limited.</p>
       </div>
       
-      <div class="ag-recap" aria-label="Setup recap">
-        <div class="ag-recap-row"><strong>Setup</strong><span>3 of 3 done</span></div>
-        <div class="ag-recap-row"><strong>Estate</strong><span>3 of 3 done</span></div>
-        <div class="ag-recap-row"><strong>Migration window</strong><span>${state.migWindow === "open" ? "The migration window is open until " + opMigDate(17) : "The migration window opens on " + opMigDate(0)}</span></div>
-      </div>
+      ${state.migWindow === "open"
+        ? `<p class="ag-finale-window">The migration window is open until ${opMigDate(17)}</p>`
+        : `<div class="ag-mig-wait ag-finale-wait" role="timer" aria-label="Migration window countdown"><p class="ag-finale-window">The migration window opens in</p><div class="ag-mig-clock"><div><b data-mig-d>00</b><span>Days</span></div><i>:</i><div><b data-mig-h>00</b><span>Hrs</span></div><i>:</i><div><b data-mig-m>00</b><span>Mins</span></div></div></div>`}
       <div class="ag-finale-actions">
         <button type="button" class="ag-btn is-primary" data-action="ag-open-migration">Go to migration${I("arrow", "sm")}</button>
       </div>
@@ -23847,10 +23848,15 @@ function agMigRow() {
         }
         agGtmInitAlloc();
         state.gtmManual = true;
-        state.gtmManualStep = "alloc";
+        state.gtmManualStep = "requests";
         state.gtmWalk = "manual";
         state.gtmManualQuery = "";
-        welcomeSay("Edit how volume splits across your partners, then review and confirm.", { instant: true });
+        welcomeSay("Choose the partners, then set how volume is shared.", { instant: true });
+        render();
+        return;
+      }
+      if (act.dataset.action === "ag-gtm-edit-cancel") {
+        state.gtmManual = false; state.gtmManualStep = "requests"; state.gtmWalk = "ready"; state.gtmManualQuery = "";
         render();
         return;
       }
@@ -23910,7 +23916,7 @@ function agMigRow() {
         state.gtmWalk = "ready";
         state.gtmWalkPlayed = true;
         const names = agGtmSelected().map((p) => p.name).join(" and ");
-        welcomeSay(`${names} allocated. Accept each partner's terms to confirm.`, { instant: true });
+        welcomeSay(`${names} saved. Accept to use them.`, { instant: true });
         render();
         return;
       }

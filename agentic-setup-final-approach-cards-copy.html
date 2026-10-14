@@ -14424,6 +14424,12 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .ag-search-ico{ display:grid; place-items:center; width:64px; height:64px; border-radius:50%; margin-bottom:6px; color:#4f6fb3; background:radial-gradient(circle at 34% 28%, #fff, #eaf1ff 70%); border:1.5px dashed #b9cbef; } .ag-search-ico svg{ width:26px; height:26px; }
 .ag-search-empty b{ font-size:16px; font-weight:650; color:#0f1f3d; } .ag-search-empty p{ margin:0 0 10px; font-size:14px; line-height:1.5; color:#53627f; }
 .ag-gtm-empty .ag-search-empty{ margin:6px auto; }
+/* Templates details: the scan block lives on the summary, not here */
+.ag-tm-stats{ display:none !important; }
+/* Kick-off: the countdown replaces the recap rows */
+.ag-finale-window{ margin:0 0 14px; font-size:15px; font-weight:600; color:#3c4762; text-align:center; }
+.ag-mig-wait.ag-finale-wait{ display:flex; flex-direction:column; align-items:center; background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; margin:6px 0 14px; }
+.ag-finale-wait .ag-mig-clock{ margin-bottom:6px; gap:12px; } .ag-finale-wait .ag-mig-clock b{ width:68px; height:80px; font-size:34px; } .ag-finale-wait .ag-mig-clock i{ line-height:80px; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21535,11 +21541,9 @@ function agMigRow() {
         <p class="ag-finale-sub">Here is what was set up for HDFC Bank Limited.</p>
       </div>
       
-      <div class="ag-recap" aria-label="Setup recap">
-        <div class="ag-recap-row"><strong>Setup</strong><span>3 of 3 done</span></div>
-        <div class="ag-recap-row"><strong>Estate</strong><span>3 of 3 done</span></div>
-        <div class="ag-recap-row"><strong>Migration window</strong><span>${state.migWindow === "open" ? "The migration window is open until " + opMigDate(17) : "The migration window opens on " + opMigDate(0)}</span></div>
-      </div>
+      ${state.migWindow === "open"
+        ? `<p class="ag-finale-window">The migration window is open until ${opMigDate(17)}</p>`
+        : `<div class="ag-mig-wait ag-finale-wait" role="timer" aria-label="Migration window countdown"><p class="ag-finale-window">The migration window opens in</p><div class="ag-mig-clock"><div><b data-mig-d>00</b><span>Days</span></div><i>:</i><div><b data-mig-h>00</b><span>Hrs</span></div><i>:</i><div><b data-mig-m>00</b><span>Mins</span></div></div></div>`}
       <div class="ag-finale-actions">
         <button type="button" class="ag-btn is-primary" data-action="ag-open-migration">Go to migration${I("arrow", "sm")}</button>
       </div>
