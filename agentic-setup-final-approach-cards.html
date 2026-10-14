@@ -14232,6 +14232,17 @@ body.ag-gate .ag-actions.is-approve{ position:relative; }
 body.ag-gate .ag-actions.is-approve > .ag-brief-read{ position:absolute !important; top:-3px !important; left:0 !important; right:0 !important; width:auto !important; transform:none !important; margin:0 !important; height:3px !important; z-index:9 !important; border-radius:0; background:rgba(37,99,235,.12) !important; }
 body.ag-gate .ag-brief-read .ag-brief-bar, body.ag-gate .ag-brief-read .ag-brief-bar i{ height:3px !important; border-radius:99px; }
 @media (max-width:700px){ body.ag-gate .shell:has(.setup-layout) .cl-detail-card > .cl-detail-list, body.ag-gate .ag-brief-read{ width:calc(100vw - 32px) !important; } }
+/* Brands: fuller cards, one line-of-business row each */
+.op-cardgrid.is-e0{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.op-cardgrid.is-e0 .op-cg{ min-height:250px; padding:22px 22px 20px; gap:16px; }
+.op-cardgrid.is-e0 .op-cg-id b{ font-size:17px; } .op-cardgrid.is-e0 .op-cg-logo{ width:52px; height:52px; }
+.op-cg-chips.op-cg-lobs{ display:flex !important; flex-direction:column; gap:0 !important; margin-top:2px; }
+.op-cg-chips.op-cg-lobs span.op-cg-lob{ display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; padding:12px 2px !important; border:0 !important; border-top:1px solid rgba(196,214,245,.5) !important; border-radius:0 !important; background:transparent !important; }
+.op-cg-lobs .op-cg-lob:first-child{ border-top:0 !important; }
+.op-cg-lobt{ display:flex; flex-direction:column; gap:2px; min-width:0; } .op-cg-lobt b{ font-size:14px; font-weight:620; color:#0f1f3d; } .op-cg-lobt small{ font-size:12px; color:#7b8cab; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.op-cg-lobs .op-cg-ev{ width:22px; height:22px; border-radius:50%; } .op-cg-lobs .op-cg-ev svg{ width:15px; height:15px; }
+.op-cg-lobs .op-cg-pop{ left:auto !important; right:0; }
+.op-cg-chips.op-cg-lobs span.op-cg-lob, .op-cg-chips.op-cg-lobs span.op-cg-lob:hover{ background:transparent !important; } .op-cardgrid.is-e0 .op-cg-chips .op-cg-lobt{ background:none !important; padding:0 !important; border:0 !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24740,10 +24751,10 @@ function agMigRow() {
       } else if (key === "e0") {
         tag = `<span class="op-cg-tag is-soft"><i></i>${it.pill}</span>`;
         const evIc = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h8M2 8h5M2 12h5"/><circle cx="11" cy="10.5" r="2.5"/><path d="M13 12.5l1.8 1.8"/></svg>`;
-        body = `<div class="op-cg-chips">${it.lobs.map((l) => {
+        body = `<div class="op-cg-chips op-cg-lobs">${it.lobs.map((l) => {
           const note = l.note || `Found under ${it.brandName} in your DLT registration.`;
           const link = l.note && it.brandName === "HDFC Bank" ? `<a href="https://www.hdfc.com/en/home.html" target="_blank" rel="noopener">https://www.hdfc.com/en/home.html<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2h6v6M10 2L3 9"/></svg></a>` : "";
-          return `<span class="op-cg-lob" tabindex="0">${e(l.name)}<i class="op-cg-ev" aria-hidden="true">${evIc}</i><span class="op-cg-pop" role="tooltip"><em>${evIc}Evidence:</em>${e(note)}${link}</span></span>`;
+          return `<span class="op-cg-lob" tabindex="0"><span class="op-cg-lobt"><b>${e(l.name)}</b><small>${e((l.promos && l.promos.length ? l.promos.join(" · ") : "Found in your DLT registration"))}</small></span><i class="op-cg-ev" aria-hidden="true">${evIc}</i><span class="op-cg-pop" role="tooltip"><em>${evIc}Evidence:</em>${e(note)}${link}</span></span>`;
         }).join("")}</div>`;
       } else {
         const f = it.facts.map(([k, v]) => `<div class="op-cg-fact"><span>${k.replace("High confidence", "Confident")}</span><b>${v}</b></div>`).join("");
