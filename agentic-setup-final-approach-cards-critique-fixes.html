@@ -14420,6 +14420,7 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 /* ---- Walkthrough per requirements: highlight on New Upload, still card for reduced motion ---- */
 .ag-btn.is-tour-hl{ position:relative; z-index:52; box-shadow:0 0 0 2px rgba(37,99,235,.55), 0 0 0 7px rgba(37,99,235,.16), 0 16px 36px rgba(37,99,235,.2) !important; }
 @media (prefers-reduced-motion:reduce){ .ag-app-tour-card, .ag-app-tour, body.ag-app-tour .ag-app-sec{ transition:none !important; animation:none !important; } }
+.ag-tour-spot{ z-index:60; box-shadow:0 0 0 2px rgba(37,99,235,.55), 0 0 0 7px rgba(37,99,235,.16), 0 16px 36px rgba(37,99,235,.2) !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -15948,7 +15949,17 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     if (!state.appTour) return;
     const step = Math.min(state.appTourStep, 3);
     const upBtn = step === 3 && state.migWindow === "open" ? document.querySelector('[data-action="ag-mig-new-upload"]') : null;
-    if (upBtn) upBtn.classList.add("is-tour-hl");
+    if (upBtn) setTimeout(() => {
+      const ov = document.querySelector(".ag-app-tour");
+      if (ov && upBtn.isConnected && !ov.querySelector(".ag-tour-spot")) {
+        const r = upBtn.getBoundingClientRect();
+        const c = upBtn.cloneNode(true);
+        c.removeAttribute("data-action"); c.setAttribute("aria-hidden", "true"); c.tabIndex = -1;
+        c.classList.add("ag-tour-spot");
+        c.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;pointer-events:none;`;
+        ov.appendChild(c);
+      }
+    }, 800);
     const hit = step === 3 ? upBtn : (document.querySelector(`.ag-app-sec.is-tour-sec`) || document.querySelector(`[data-tour-sec="${AG_TOUR_SECS[step][0]}"]`));
     const rail = step === 3 ? null : document.querySelector(".stages.is-app-nav");
     const card = document.querySelector(".ag-app-tour-card");
