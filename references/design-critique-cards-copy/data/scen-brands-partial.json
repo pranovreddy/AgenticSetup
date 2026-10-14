@@ -1,0 +1,60 @@
+{
+ "texts": 23,
+ "sizes": {
+  "12": 10,
+  "13": 5,
+  "14": 1,
+  "23": 1,
+  "12.5": 6
+ },
+ "weights": {
+  "400": 5,
+  "500": 2,
+  "600": 7,
+  "620": 1,
+  "650": 3,
+  "680": 2,
+  "700": 3
+ },
+ "small": [],
+ "low": [
+  {
+   "t": "2 of 3 approved",
+   "fs": 12.5,
+   "fw": "620",
+   "cr": 4.02,
+   "approx": false
+  },
+  {
+   "t": "Approved",
+   "fs": 12,
+   "fw": "650",
+   "cr": 4.31,
+   "approx": false
+  },
+  {
+   "t": "Approved",
+   "fs": 12,
+   "fw": "650",
+   "cr": 4.31,
+   "approx": false
+  }
+ ],
+ "lowCount": 3,
+ "smallTargets": [],
+ "hues": [
+  30,
+  150,
+  210
+ ],
+ "fontFamilies": [
+  "Geist",
+  "Inter"
+ ],
+ "errors": [],
+ "times": [
+  4,
+  9,
+  16
+ ]
+}
