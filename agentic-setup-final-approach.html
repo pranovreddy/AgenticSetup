@@ -16731,12 +16731,12 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     let telPressAt = 0;
     el.addEventListener("pointerdown", (ev) => {
       const go = ev.target.closest("[data-tel-go]");
-      const m = agTelCardModel();
-      if (!go || !m || go.dataset.telGo === m.key || go.dataset.telGo === "m") return;
-      telPressAt = Date.now();
+      if (!go) return;
       const key = go.dataset.telGo;
-      if (!agTelViewable(key) && window.__opPreview) window.__opPreview("summary", key);
-      else if (agTelViewable(key)) agSelect(key);
+      if (key === "m" || !window.__opJumpSummary) return;
+      if (document.querySelector('#agSummary[data-key="' + key + '"]')) return;
+      telPressAt = Date.now();
+      window.__opJumpSummary(key);
     });
     el.addEventListener("click", (ev) => {
       const nav = ev.target.closest("[data-tel-nav]");
@@ -24937,6 +24937,16 @@ function agMigRow() {
   }
 
   /* Preview: put the app in the state just before a screen, then show it */
+  /* From anywhere (a loader, the verification, a receipt, an inner page) the rail opens a step at its summary */
+  window.__opJumpSummary = function (key) {
+    kycVerifyToken += 1;
+    try { if (window.stopKycvLoader) window.stopKycvLoader(); } catch (e) { /* optional */ }
+    teardownVerifyLoader();
+    document.querySelectorAll("#opKvOverlay, #opKycGo, .op-done, #agBoot:not([hidden]), #agNextUp").forEach((n) => { if (n.id === "agBoot") { n.hidden = true; } else n.remove(); });
+    document.body.classList.remove("op-kyc-confirm", "ag-kyc-verify", "is-kycv-morphing");
+    opCoverShown = true;
+    opPreview("summary", key);
+  };
   function opPrepare(key) {
     agResetScenarioBase();
     clearTimeout(stepAiTimer); stepAiTimer = null;
