@@ -14357,6 +14357,19 @@ body.ag-gate .ag-brief-prose .ag-brief-pt:hover, body.ag-gate .ag-brief-prose .a
 .op-gt-c.is-best b{ color:#2563eb; }
 .op-gt-r.is-off .op-gt-c b{ color:#6b7a96; font-weight:600; } .op-gt-r.is-off .op-gt-n b{ color:#53627f; }
 .op-gt-note{ margin:10px 4px 0; font-size:12px; color:#53627f; }
+/* ---- GTM partners: one compact card per partner ---- */
+.op-gk-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+@media (max-width:1100px){ .op-gk-grid{ grid-template-columns:1fr; } }
+.op-gk{ padding:18px 18px 16px; border-radius:20px; border:1px solid rgba(196,214,245,.7); background:rgba(255,255,255,.55); backdrop-filter:blur(8px); }
+.op-gk-top{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.op-gk-top .op-gc-logo{ flex:none; width:40px; height:40px; } .op-gk-top > b{ flex:1; min-width:0; font-size:16px; font-weight:650; color:#0f1f3d; }
+.op-gk-ph{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.op-gk-c{ display:flex; flex-direction:column; gap:3px; padding:10px 10px; border-radius:14px; border:1px solid rgba(196,214,245,.7); background:rgba(255,255,255,.4); }
+.op-gk-c span{ font-size:12px; font-weight:650; letter-spacing:0; text-transform:uppercase; color:#53627f; }
+.op-gk-c b{ font-size:19px; font-weight:700; letter-spacing:-.4px; color:#0f1f3d; font-variant-numeric:tabular-nums; }
+.op-gk-c em{ align-self:flex-start; font-style:normal; font-size:12px; font-weight:600; padding:1px 8px; border-radius:99px; background:rgba(37,99,235,.08); color:#1d4ed8; } .op-gk-c em.is-n{ background:none; }
+.op-gk-c.is-best{ background:rgba(37,99,235,.06); border-color:#c9dbfb; } .op-gk-c.is-best b{ color:#2563eb; }
+.op-gk.is-off .op-gk-c b{ color:#6b7a96; font-weight:600; } .op-gk.is-off .op-gk-top > b{ color:#53627f; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24907,16 +24920,15 @@ function agMigRow() {
     };
     return `<section class="op-list op-cardgrid is-${key}">${m.items.map(card).join("")}</section>`;
   }
-  /* Compact table for every GTM partner: rates and share per phase, the reason on hover */
+  /* One compact card per GTM partner: rate and share for each phase, the reason on hover */
   function opGtmCards(m) {
     const n = m.items.filter((x) => x.on).length;
     const items = [...m.items.filter((x) => x.on), ...m.items.filter((x) => !x.on)];
-    const head = m.items[0].phases.map((p) => `<span>${p.label}</span>`).join("");
-    const row = (it) => {
-      const cells = it.phases.map((p) => `<span class="op-gt-c${p.best && it.on ? " is-best" : ""}"><b>${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : ""}</span>`).join("");
-      return `<div class="op-gt-r${it.on ? "" : " is-off"}" title="${it.why}"><span class="op-gt-p"><span class="op-gc-logo">${it.lead}</span><span class="op-gt-n"><b>${it.name}</b><span class="op-gt-s${it.on ? " is-on" : ""}"><i></i>${it.on ? "Selected" : "Not selected"}</span></span></span>${cells}</div>`;
+    const card = (it) => {
+      const cells = it.phases.map((p) => `<div class="op-gk-c${p.best && it.on ? " is-best" : ""}"><span>${p.label}</span><b>${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : `<em class="is-n">&nbsp;</em>`}</div>`).join("");
+      return `<article class="op-gk${it.on ? "" : " is-off"}" title="${it.why}"><header class="op-gk-top"><span class="op-gc-logo">${it.lead}</span><b>${it.name}</b><span class="op-gt-s${it.on ? " is-on" : ""}"><i></i>${it.on ? "Selected" : "Not selected"}</span></header><div class="op-gk-ph">${cells}</div></article>`;
     };
-    return `<p class="op-selcount"><b>${n} of ${m.items.length}</b> partners selected</p><div class="op-gt"><div class="op-gt-r is-head"><span>Partner</span>${head}</div>${items.map(row).join("")}</div><p class="op-gt-note">Blue is the lowest rate. Share of volume sits under each rate. Hover a row for the reason.</p>`;
+    return `<p class="op-selcount"><b>${n} of ${m.items.length}</b> partners selected</p><div class="op-gk-grid">${items.map(card).join("")}</div><p class="op-gt-note">Blue is the lowest rate. Share of volume sits under each rate. Hover a card for the reason.</p>`;
   }
   function opGMarkup(m) {
     const e = agSumEsc;
