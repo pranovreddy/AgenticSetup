@@ -14430,6 +14430,7 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .ag-finale-window{ margin:0 0 14px; font-size:15px; font-weight:600; color:#3c4762; text-align:center; }
 .ag-mig-wait.ag-finale-wait{ display:flex; flex-direction:column; align-items:center; background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; margin:6px 0 14px; }
 .ag-finale-wait .ag-mig-clock{ margin-bottom:6px; gap:12px; } .ag-finale-wait .ag-mig-clock b{ width:68px; height:80px; font-size:34px; } .ag-finale-wait .ag-mig-clock i{ line-height:80px; }
+.ag-app-tour-card{ z-index:60; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -15976,6 +15977,11 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     if (hit && rail) {
       const top = hit.offsetTop - 20;
       rail.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+    }
+    if (card && !hit) {
+      /* Card 4 with no control to point at: centre it on the page, clear of the menu */
+      card.style.cssText += ";position:fixed;left:calc(50% + 118px);top:50%;transform:translate(-50%,-50%);right:auto;bottom:auto;margin:0;z-index:60;";
+      return;
     }
     if (!hit || !card) return;
     const place = () => {
