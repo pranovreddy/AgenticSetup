@@ -14218,6 +14218,14 @@ body.ag-gate .cl-detail-card .ag-atabs{ background:rgba(238,243,253,.85) !import
 .op-gc-why, .op-cg-note{ border-top-color:rgba(196,214,245,.45) !important; }
 .op-gc-ph > *{ grid-row:1; } .op-gc-ph .op-gc-pl{ grid-column:1; } .op-gc-ph b{ grid-column:2; } .op-gc-ph u{ grid-column:3; text-align:left; } .op-gc-ph .op-gc-sh{ grid-column:4; justify-self:end; }
 .op-gc-ph u{ display:none !important; } .op-gc-ph, .op-gc-ph.is-best{ grid-template-columns:110px 80px minmax(0,1fr) !important; } .op-gc-ph .op-gc-sh{ grid-column:3 !important; } .op-gc-ph.is-best b::after{ content:""; display:inline-block; width:6px; height:6px; margin-left:7px; border-radius:50%; background:#2563eb; vertical-align:middle; }
+/* Terms title row stays put under the tabs; only the clauses scroll */
+body.ag-gate .cl-detail-card .ag-atabs{ top:0 !important; }
+body.ag-gate .cl-detail-card .ag-paper{ overflow:visible !important; }
+body.ag-gate .cl-detail-card .ag-paper-head{ position:sticky; top:var(--ag-tabs-h,60px); z-index:4; background:rgba(244,247,254,.92) !important; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); margin-top:0 !important; padding-top:12px !important; padding-bottom:12px !important; }
+body.ag-gate .cl-detail-card .ag-gate-hero{ position:sticky; top:0; z-index:7; background:#eef3fd !important; margin:0 !important; }
+body.ag-gate .cl-detail-card .ag-atabs{ top:90px !important; z-index:6; background:#eef3fd !important; -webkit-backdrop-filter:none; backdrop-filter:none; }
+body.ag-gate .cl-detail-card .ag-paper-head{ top:139px !important; z-index:5; background:#f4f7fe !important; -webkit-backdrop-filter:none; backdrop-filter:none; padding-top:10px !important; padding-bottom:10px !important; border-bottom:1px solid #e3eaf6; }
+body.ag-gate .ag-brief-read{ top:137px !important; z-index:8 !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
