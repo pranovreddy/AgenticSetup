@@ -14307,6 +14307,17 @@ body.ag-gate .cl-detail-card .ag-gate-hero{ z-index:20 !important; } body.ag-gat
 body.ag-gate .cl-detail-card .ag-atabs{ margin-top:-16px !important; padding-top:16px !important; top:74px !important; height:auto !important; min-height:0 !important; box-sizing:content-box; }
 body.ag-gate .cl-detail-card .ag-paper-head{ top:139px !important; }
 body.ag-gate .cl-detail-card .ag-paper-head{ top:127px !important; padding-top:30px !important; margin-top:0 !important; }
+/* Team outcomes follow the Team page: summary on the left, content on the right under the page title */
+.ag-step .ag-live > .ag-outcome.is-split{ max-width:1098px !important; width:100%; display:grid !important; grid-template-columns:426px minmax(0,1fr); column-gap:0; align-items:start; padding:60px 0 120px !important; }
+.ag-outcome.is-split .ag-outcome-head{ align-items:flex-start !important; text-align:left !important; padding-right:40px; }
+.ag-outcome.is-split .ag-outcome-eyebrow-row{ justify-content:flex-start !important; }
+.ag-outcome.is-split .ag-outcome-lead{ margin-left:0 !important; max-width:34ch !important; }
+.ag-outcome.is-split .ag-outcome-right{ display:flex; flex-direction:column; gap:18px; padding-top:6px; min-width:0; }
+.ag-outcome.is-split .ag-outcome-right .op-gr-title{ margin:0 0 4px; }
+.ag-outcome.is-split .ag-outcome-actions{ justify-content:flex-start !important; margin-top:4px !important; }
+.ag-outcome-empty-card{ display:flex; flex-direction:column; align-items:flex-start; gap:6px; padding:28px 26px; border-radius:18px; border:1px solid rgba(255,255,255,.85); background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)); box-shadow:0 0 0 1px rgba(196,214,245,.5); }
+.ag-outcome-empty-card span{ display:grid; place-items:center; width:42px; height:42px; border-radius:50%; background:#eef3ff; color:#2563eb; margin-bottom:8px; } .ag-outcome-empty-card span svg{ width:20px; height:20px; }
+.ag-outcome-empty-card b{ font-size:16px; font-weight:650; color:#0f1f3d; } .ag-outcome-empty-card p{ margin:0; font-size:13px; line-height:1.55; color:#5f7396; max-width:46ch; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21197,17 +21208,19 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
   }
 
   function agOutcomeShell({ eyebrow, tone = "wait", status, statusTone, title, lead, body = "", actions = "" }) {
-    return `<div class="ag-outcome is-${tone}" role="status">
-      <div class="ag-outcome-head">
+    const split = eyebrow === "Team";
+    const head = `<div class="ag-outcome-head">
         <div class="ag-outcome-eyebrow-row">
           ${eyebrow ? `<span class="ag-outcome-eyebrow">${agEsc(eyebrow)}</span>` : ""}
           ${agOutcomeStatus(status, statusTone || tone)}
         </div>
         <h3 class="ag-outcome-title">${title}</h3>
         ${lead ? `<p class="ag-outcome-lead">${lead}</p>` : ""}
-      </div>
-      ${body}
-      ${actions ? `<div class="ag-outcome-actions">${actions}</div>` : ""}
+      </div>`;
+    const rest = `${body}${actions ? `<div class="ag-outcome-actions">${actions}</div>` : ""}`;
+    return `<div class="ag-outcome is-${tone}${split ? " is-split" : ""}" role="status">
+      ${head}
+      ${split ? `<div class="ag-outcome-right"><h2 class="op-gr-title">Team</h2>${rest}</div>` : rest}
     </div>`;
   }
 
@@ -21281,6 +21294,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         tone: "neutral",
         title: "No Teammates Found to Invite",
         lead: "We couldn’t find colleagues to suggest from your directory. Add the people who’ll manage consent, or skip this for now and invite them later.",
+        body: `<div class="ag-outcome-empty-card"><span aria-hidden="true">${I("users")}</span><b>0 people suggested</b><p>Nobody on your DLT registration matched a role. Add a person, or invite your team later from the Team step.</p></div>`,
         actions: `<button type="button" class="ag-btn" data-action="ag-team-later">Do it later</button>
           <button type="button" class="ag-btn is-primary" data-action="ag-add-person">Add user</button>`,
       });
