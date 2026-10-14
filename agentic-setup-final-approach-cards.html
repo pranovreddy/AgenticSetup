@@ -14166,6 +14166,16 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-cg-bar{ margin-top:0 !important; } .op-cg-cap{ position:relative; margin-top:-8px; font-size:11px; color:#7b8cab; }
 @media (max-width:1100px){ .op-cardgrid{ grid-template-columns:1fr; } }
 .op-gr-hd{ padding-top:6px !important; }
+/* flush cards: no elevation, a hairline border instead */
+.op-gc, .op-cg{ background:transparent !important; box-shadow:none !important; border:1px solid #dde5f3; border-radius:18px !important; }
+.op-gc::before, .op-cg::before{ display:none !important; }
+.op-gc-logo, .op-cg-logo{ box-shadow:0 0 0 1px #dde5f3 !important; background:rgba(255,255,255,.7) !important; }
+.op-gc-ph, .op-cg-fact{ background:transparent !important; box-shadow:none !important; border:1px solid #e3eaf6; border-radius:12px !important; }
+.op-gc-ph.is-best{ background:rgba(37,99,235,.05) !important; border-color:#c9dbfb; }
+.op-cg-chips span{ background:transparent !important; box-shadow:none !important; border:1px solid #dde5f3; }
+.op-gc-why, .op-cg-note{ border-top:1px solid #e3eaf6; padding-top:12px; } .op-gc-why{ margin-top:14px !important; }
+.op-gc-sel i, .op-cg-tag i{ box-shadow:none !important; }
+.op-gc:hover, .op-cg:hover{ border-color:#c3d2ee; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
