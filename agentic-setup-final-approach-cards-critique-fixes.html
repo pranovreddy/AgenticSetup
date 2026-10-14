@@ -16075,7 +16075,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
   function agAppTourFocusNav() {
     if (!state.appTour) return;
     const step = Math.min(state.appTourStep, 3);
-    const upBtn = step === 3 && state.migWindow === "open" ? document.querySelector('[data-action="ag-mig-new-upload"]') : null;
+    const upBtn = step === 3 ? document.querySelector('[data-action="ag-mig-new-upload"]') : null;
     if (upBtn) setTimeout(() => {
       const ov = document.querySelector(".ag-app-tour");
       if (ov && upBtn.isConnected && !ov.querySelector(".ag-tour-spot")) {
