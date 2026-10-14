@@ -1,0 +1,424 @@
+{
+ "acceptAtTab": 35,
+ "total": 70,
+ "notVisibleStops": 47,
+ "rows": [
+  {
+   "txt": "Skip to content",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Business profile",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Team",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Brands and LOBs",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "N3",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "+ Add brand",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "+ Add LOB",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit HDFC Bank",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete HDFC Bank",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Collapse HDFC Bank",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Credit Cards",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Credit Cards",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Promo Examples",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Personal Loan",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Personal Loan",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Promo Examples",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Home Loan",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Home Loan",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Promo Examples",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "+ Add LOB",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit HDFC Life",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete HDFC Life",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Collapse HDFC Life",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Term Insurance",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Term Insurance",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Savings Plans",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Savings Plans",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "+ Add LOB",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit HDFC ERGO",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete HDFC ERGO",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Collapse HDFC ERGO",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Motor Insurance",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Motor Insurance",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Health Insurance",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Health Insurance",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Accept",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "org-form-frame",
+   "vis": false,
+   "hid": true,
+   "onscreen": true
+  },
+  {
+   "txt": "Scenarios",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "What was checked",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Sources",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "What happens next",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Credit Cards Rewards on ever",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "https://www.hdfc.com/en/home",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Personal Loan Pre-approved l",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "https://www.hdfc.com/en/home",
+   "vis": false,
+   "hid": true,
+   "onscreen": true
+  },
+  {
+   "txt": "Home Loan Home loan balance ",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "https://www.hdfc.com/en/home",
+   "vis": false,
+   "hid": true,
+   "onscreen": true
+  },
+  {
+   "txt": "Term Insurance Found in your",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Savings Plans Found in your ",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Motor Insurance Found in you",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Health Insurance Found in yo",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Review",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Accept",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "none": 1
+  },
+  {
+   "txt": "Skip to content",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Business profile",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Team",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Brands and LOBs",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "N3",
+   "vis": true,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "+ Add brand",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "+ Add LOB",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit HDFC Bank",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete HDFC Bank",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Collapse HDFC Bank",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Credit Cards",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Credit Cards",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Promo Examples",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Edit Personal Loan",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Delete Personal Loan",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  },
+  {
+   "txt": "Promo Examples",
+   "vis": false,
+   "hid": false,
+   "onscreen": true
+  }
+ ]
+}

@@ -1,0 +1,156 @@
+[
+ {
+  "tag": "A",
+  "cls": "skip",
+  "txt": "Skip to content",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 123,
+  "h": 46,
+  "x": 16,
+  "y": 10
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-tel-ico is-done",
+  "txt": "Business profile",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "rgb(248, 250, 253) 0px 0px 0px 4px, rgba(15, 23, 42, 0.04) 0px 1px 2px 0px",
+  "w": 32,
+  "h": 32,
+  "x": 26,
+  "y": 330
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-tel-ico is-done",
+  "txt": "Team",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "rgb(248, 250, 253) 0px 0px 0px 4px, rgba(15, 23, 42, 0.04) 0px 1px 2px 0px",
+  "w": 32,
+  "h": 32,
+  "x": 26,
+  "y": 382
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-tel-ico is-focus",
+  "txt": "Brands and LOBs",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "rgb(217, 227, 245) 0px 0px 0px 1px inset",
+  "w": 36,
+  "h": 36,
+  "x": 24,
+  "y": 432
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "cl-overview-user-btn",
+  "txt": "N3",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 40,
+  "h": 40,
+  "x": 22,
+  "y": 76
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-link",
+  "txt": "+ Add brand",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 69,
+  "h": 19,
+  "x": 1327,
+  "y": 138
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-link",
+  "txt": "+ Add LOB",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 60,
+  "h": 19,
+  "x": 1211,
+  "y": 219
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-icon",
+  "txt": "Edit HDFC Bank",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 28,
+  "h": 28,
+  "x": 1277,
+  "y": 214
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-icon",
+  "txt": "Delete HDFC Bank",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 28,
+  "h": 28,
+  "x": 1311,
+  "y": 214
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-icon ag-b-fold",
+  "txt": "Collapse HDFC Bank",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 28,
+  "h": 28,
+  "x": 1345,
+  "y": 214
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-icon",
+  "txt": "Edit Credit Cards",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 28,
+  "h": 28,
+  "x": 1303,
+  "y": 290
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-icon",
+  "txt": "Delete Credit Cards",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 28,
+  "h": 28,
+  "x": 1337,
+  "y": 290
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-promo",
+  "txt": "Promo Examples",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 129,
+  "h": 23,
+  "x": 1236,
+  "y": 342
+ },
+ {
+  "tag": "BUTTON",
+  "cls": "ag-b-icon",
+  "txt": "Edit Personal Loan",
+  "outline": "solid 2px rgb(37, 99, 235)",
+  "shadow": "none",
+  "w": 28,
+  "h": 28,
+  "x": 1303,
+  "y": 400
+ }
+]
