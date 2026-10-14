@@ -14289,6 +14289,24 @@ body.op-kyc-confirm .ag-kyc-owners{ padding-bottom:48px !important; }
 .ag-outcome-partners{ justify-content:center; }
 .ag-outcome-note{ text-align:left; }
 body.op-kyc-confirm .ag-kyc-owners{ min-height:calc(100vh - 8px) !important; justify-content:center !important; padding-top:24px !important; padding-bottom:24px !important; box-sizing:border-box; }
+/* Terms of Use: readable clauses */
+body.ag-gate .ag-paper .ag-sec{ padding:22px 0 !important; border-top:1px solid rgba(196,214,245,.5) !important; }
+body.ag-gate .ag-paper .ag-sec h4{ font-size:16px !important; margin:0 0 12px !important; letter-spacing:-.2px; }
+.ag-cls{ display:flex; flex-direction:column; gap:12px; }
+.ag-cl{ display:grid; grid-template-columns:44px minmax(0,1fr); gap:0 6px; align-items:start; }
+.ag-cl.is-plain{ grid-template-columns:minmax(0,1fr); }
+.ag-cl-n{ font-size:12px; font-weight:650; color:#2563eb; font-variant-numeric:tabular-nums; padding-top:3px; }
+.ag-cl-t p{ margin:0 !important; font-size:13.5px !important; line-height:1.7 !important; color:#35466a; }
+.ag-cl-t ul{ list-style:none; margin:8px 0 0; padding:0 0 0 2px; display:flex; flex-direction:column; gap:7px; border-left:2px solid #dbe6fa; padding-left:14px; }
+.ag-cl-t li{ font-size:13px; line-height:1.65; color:#4a5b7a; } .ag-cl-t li b{ display:inline-block; min-width:42px; margin-right:6px; font-size:11.5px; font-weight:650; color:#6b86c2; font-variant-numeric:tabular-nums; }
+body.ag-gate .ag-paper .ag-sec:first-of-type .ag-cl-t p{ font-size:12.5px !important; color:#5f7396; }
+.ag-cl.is-sub{ padding-left:26px; } .ag-cl.is-sub .ag-cl-n{ color:#6b86c2; }
+body.ag-gate .cl-detail-card .ag-gate-hero{ background:#eef3fd !important; background-image:none !important; }
+body.ag-gate .cl-detail-card .ag-gate-hero{ z-index:20 !important; } body.ag-gate .cl-detail-card .ag-atabs{ z-index:19 !important; } body.ag-gate .cl-detail-card .ag-paper-head{ z-index:18 !important; }
+.ag-cl.is-sub{ padding-left:26px; } 
+body.ag-gate .cl-detail-card .ag-atabs{ margin-top:-16px !important; padding-top:16px !important; top:74px !important; height:auto !important; min-height:0 !important; box-sizing:content-box; }
+body.ag-gate .cl-detail-card .ag-paper-head{ top:139px !important; }
+body.ag-gate .cl-detail-card .ag-paper-head{ top:127px !important; padding-top:30px !important; margin-top:0 !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21904,6 +21922,23 @@ function agMigRow() {
     </div>`;
   }
 
+  /* Terms text: each numbered sub-clause on its own row with a hanging number; nested points indented */
+  function opClauseBody(text) {
+    const parts = String(text).split("<br><br>");
+    const num = /^\s*(\d+\.\d+\.?)\s+/;
+    const sub = /^\s*(\d+\.\d+\.\d+\.?)\s+/;
+    const rows = parts.map((part) => {
+      const lines = part.split("<br>");
+      const first = lines.shift() || "";
+      const m = num.exec(first);
+      const isSub = !m && sub.test(first);
+      const head = m ? first.replace(num, "") : first;
+      const nested = lines.map((l) => { const k = sub.exec(l); return `<li>${k ? `<b>${k[1]}</b>${l.replace(sub, "")}` : l}</li>`; }).join("");
+      if (isSub) { return [first, ...lines].map((ln) => { const k = sub.exec(ln); return `<div class="ag-cl is-sub"><b class="ag-cl-n">${k ? k[1].replace(/\.$/, "") : ""}</b><div class="ag-cl-t"><p>${k ? ln.replace(sub, "") : ln}</p></div></div>`; }).join(""); }
+      return `<div class="ag-cl${m ? "" : " is-plain"}">${m ? `<b class="ag-cl-n">${m[1].replace(/\.$/, "")}</b>` : ""}<div class="ag-cl-t"><p>${head}</p>${nested ? `<ul>${nested}</ul>` : ""}</div></div>`;
+    });
+    return `<div class="ag-cls">${rows.join("")}</div>`;
+  }
   function agDocView(id) {
     const doc = agDocById(id);
     if (!doc) return;
@@ -22133,7 +22168,7 @@ function agMigRow() {
     const clauses = doc.sections.map(([head, text], i) => {
       const m = /^(\d+)\.\s*(.*)$/.exec(head);
       const pi = refs.findIndex((r) => r.includes(i));
-      return `<section class="ag-sec${pi >= 0 ? " is-key" : ""}" data-sec="${i}"><span class="ag-sec-n">${m ? (m[1] === "0" ? "i" : m[1]) : i + 1}</span><div><h4>${m ? m[2] : head}${pi >= 0 ? `<i class="ag-sec-key">In brief</i>` : ""}</h4><p>${text}</p></div></section>`;
+      return `<section class="ag-sec${pi >= 0 ? " is-key" : ""}" data-sec="${i}"><span class="ag-sec-n">${m ? (m[1] === "0" ? "i" : m[1]) : i + 1}</span><div><h4>${m ? m[2] : head}${pi >= 0 ? `<i class="ag-sec-key">In brief</i>` : ""}</h4>${opClauseBody(text)}</div></section>`;
     }).join("");
     return `${agInsight(say, "Read the summary and full text, then accept this document.")}
     <div class="ag-agree ag-agree--canvas" data-doc="${doc.id}">
