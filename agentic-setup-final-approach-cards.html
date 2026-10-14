@@ -14270,6 +14270,12 @@ body.ag-gate .ag-brief-read .ag-brief-bar, body.ag-gate .ag-brief-read .ag-brief
 .ag-outcome-head{ gap:14px !important; }
 body.ag-gate .ag-gate-hero .ag-sum-gem{ width:32px !important; height:32px !important; } body.ag-gate .ag-gate-hero .ag-sum-gem i{ transform:scale(.46) !important; } body.ag-gate .ag-gate-hero{ column-gap:12px !important; }
 #opKycGo{ border-radius:14px !important; padding:10px 12px 10px 22px !important; }
+.ag-outcome-lead, .ag-outcome-title{ text-wrap:balance; } .ag-outcome-lead{ max-width:64ch !important; }
+.ag-outcome-note{ border:1px solid rgba(255,255,255,.85) !important; background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important; box-shadow:0 0 0 1px rgba(196,214,245,.5) !important; border-radius:18px !important; padding:14px 18px !important; }
+.ag-outcome-metrics{ display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px !important; }
+.ag-outcome-metric{ padding:16px 18px !important; border:1px solid rgba(255,255,255,.85) !important; border-radius:18px !important; background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important; box-shadow:0 0 0 1px rgba(196,214,245,.5) !important; display:flex; flex-direction:column; gap:6px; }
+.ag-outcome-partner{ border-radius:14px !important; padding:8px 14px !important; background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important; box-shadow:0 0 0 1px rgba(196,214,245,.5) !important; border:1px solid rgba(255,255,255,.85) !important; }
+#agOrgFinished p{ color:#fff !important; opacity:1 !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21057,12 +21063,17 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     </section>`;
   }
 
+  /* migration dates come from the same moment as the countdown */
+  function opMigDate(addDays, short) {
+    const d = new Date(OP_MIG_AT + addDays * 86400000);
+    return d.toLocaleDateString("en-GB", short ? { day: "2-digit", month: "short", year: "numeric" } : { day: "numeric", month: "long", year: "numeric" });
+  }
   function agMigUnlockedMarkup() {
     const chev = `<span class="ag-mig-stage-sep" aria-hidden="true"><img src="${assetUrl("mig-chevron.svg")}" width="14" height="14" alt=""></span>`;
     const stages = [
-      { n: 1, title: "Upload & Submit", sub: "Opens on 10 June 2026", on: true },
-      { n: 2, title: "Consent Notification", sub: "28 Jun 2026", on: false },
-      { n: 3, title: "Consent Based Scrubbing", sub: "08 July 2026", on: false },
+      { n: 1, title: "Upload & Submit", sub: state.migWindow === "open" ? "Closes " + opMigDate(17) : "Opens on " + opMigDate(0), on: true },
+      { n: 2, title: "Consent Notification", sub: opMigDate(18, true), on: false },
+      { n: 3, title: "Consent Based Scrubbing", sub: opMigDate(28, true), on: false },
     ];
     const stageHtml = stages.map((s, i) =>
       `${i ? chev : ""}<div class="ag-mig-stage${s.on ? " is-on" : ""}">
@@ -21079,12 +21090,19 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         <p>Migrate your legacy consent records into WiselyConsent - validated, verified and notified to user in one guided flow.</p>
       </header>
       <div class="ag-mig-stages" aria-label="Migration stages">${stageHtml}</div>
-      <div class="ag-mig-wait" role="timer" aria-label="Migration window countdown">
+      ${state.migWindow === "open" ? `      <div class="ag-mig-empty" role="status">
+        <span class="ag-mig-empty-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M4.5 15v3a1.5 1.5 0 001.5 1.5h12a1.5 1.5 0 001.5-1.5v-3"/></svg></span>
+        <h3>No Consents Uploaded Yet</h3>
+        <p>Upload a CSV with consent records to migrate them into DigiConsent. AI will help validate and resolve errors automatically.</p>
+        <button type="button" class="ag-btn is-primary" data-action="ag-mig-new-upload"><img src="${assetUrl("mig-new-upload.svg")}" width="14" height="14" alt="">New Upload</button>
+      </div>
+` : `      <div class="ag-mig-wait" role="timer" aria-label="Migration window countdown">
         <span class="ag-mig-wait-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
-        <h3>Migration Window Opens on 10 June 2026</h3>
+        <h3>Migration Window Opens on ${opMigDate(0)}</h3>
         <div class="ag-mig-clock"><div><b data-mig-d>00</b><span>Days</span></div><i>:</i><div><b data-mig-h>00</b><span>Hrs</span></div><i>:</i><div><b data-mig-m>00</b><span>Mins</span></div></div>
         <p>In the meantime, Set up your Business Units or LOBs and Map Templates with LOB to ensure a smooth transition. You can also prepare your consent records using defined format below.</p>
       </div>
+`}
       ${agMigCsvFieldsMarkup()}
     </div>`;
   }
@@ -21108,7 +21126,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       </div>
       <div class="ag-mig-notopen">
         <div>
-          <h3>Migration Window Opens on 10 June 2026</h3>
+          <h3>Migration Window Opens on ${opMigDate(0)}</h3>
           <p>In the meantime, finish brands, LOBs and templates so you’re ready when upload opens.</p>
           <button type="button" class="ag-btn is-primary" data-action="ag-mig-learn">Learn more</button>
         </div>
@@ -21289,7 +21307,7 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
         tone: "attention",
         status: `${okN} approved · ${need.length} to fix`, statusTone: "attention",
         title: "Partly Approved — A Few Need Attention",
-        lead: `The Registrar approved ${okN} of ${AG_BRANDS.length} brands. ${need.length} need a quick correction before everything is live.`,
+        lead: `The Registrar approved ${okN} of ${AG_BRANDS.length} brands. ${need.length} ${need.length === 1 ? "needs" : "need"} a quick correction before everything is live.`,
         body: `<p class="ag-outcome-subhead">Needs attention</p>
           <div class="ag-outcome-cards">${needRows}</div>
           <p class="ag-outcome-subhead">Approved</p>
