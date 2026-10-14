@@ -14484,6 +14484,9 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .op-facc.is-open{ background:none !important; box-shadow:none !important; }
 /* KYC confirm: checkbox aligned to the first line */
 .kyc-confirm{ align-items:flex-start !important; } .kyc-confirm input[type=checkbox]{ margin-top:2px !important; flex:none; } .kyc-confirm p{ margin:0; }
+/* Team cards: designation on one line */
+.op-cg-id{ min-width:0; } .op-cg-id > span{ display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.op-cardgrid.is-2 .op-cg-top .op-cg-tag{ flex:none; white-space:nowrap; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
