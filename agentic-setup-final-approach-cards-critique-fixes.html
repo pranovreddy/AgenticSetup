@@ -21601,9 +21601,7 @@ function agMigRow() {
         <p class="ag-finale-sub">Here is what was set up for HDFC Bank Limited.</p>
       </div>
       
-      ${state.migWindow === "open"
-        ? `<p class="ag-finale-window">The migration window is open until ${opMigDate(17)}</p>`
-        : `<div class="ag-mig-wait ag-finale-wait" role="timer" aria-label="Migration window countdown"><p class="ag-finale-window">The migration window opens in</p><div class="ag-mig-clock"><div><b data-mig-d>00</b><span>Days</span></div><i>:</i><div><b data-mig-h>00</b><span>Hrs</span></div><i>:</i><div><b data-mig-m>00</b><span>Mins</span></div></div></div>`}
+      <div class="ag-mig-wait ag-finale-wait" role="timer" aria-label="Migration window countdown"><p class="ag-finale-window">Migration is open for 30 days</p><div class="ag-mig-clock"><div><b data-mig-d>00</b><span>Days</span></div><i>:</i><div><b data-mig-h>00</b><span>Hrs</span></div><i>:</i><div><b data-mig-m>00</b><span>Mins</span></div></div></div>
       <div class="ag-finale-actions">
         <button type="button" class="ag-btn is-primary" data-action="ag-open-migration">Go to migration${I("arrow", "sm")}</button>
       </div>
@@ -25216,6 +25214,7 @@ function agMigRow() {
 
   /* Migration is detached from the rail: a countdown sits at the bottom-left */
   const OP_MIG_AT = Date.now() + 5 * 86400000 + 59000;
+  const OP_MIG_CLOSE = Date.now() + 30 * 86400000 + 59000; /* once migration starts it is open for 30 days */
   function opMigSync() {
     const rail = document.querySelector(".cl-overview");
     let el = document.getElementById("opMig");
@@ -25224,7 +25223,7 @@ function agMigRow() {
       el = document.createElement("div");
       el.id = "opMig";
       el.setAttribute("role", "timer");
-      el.innerHTML = `<span class="op-mig-ico" aria-hidden="true">${I("migration")}</span><span class="op-mig-s"><em>Opens in</em><b></b></span><span class="op-mig-full">Migration opens in <b></b></span>`;
+      el.innerHTML = `<span class="op-mig-ico" aria-hidden="true">${I("migration")}</span><span class="op-mig-s"><em>Closes in</em><b></b></span><span class="op-mig-full">Migration closes in <b></b></span>`;
       document.body.appendChild(el);
     }
     el.hidden = !show;
@@ -25233,10 +25232,16 @@ function agMigRow() {
     const pad = (n) => String(n).padStart(2, "0");
     const pad2 = (n) => String(n).padStart(2, "0");
     const mw = document.querySelector(".ag-mig-wait");
-    if (mw) { mw.querySelector("[data-mig-d]").textContent = pad2(d); mw.querySelector("[data-mig-h]").textContent = pad2(h); mw.querySelector("[data-mig-m]").textContent = pad2(m); }
+    if (mw) {
+      let dd = d, hh = h, mm = m;
+      if (mw.classList.contains("ag-finale-wait")) { const c = Math.max(0, OP_MIG_CLOSE - Date.now()); dd = Math.floor(c / 86400000); hh = Math.floor(c % 86400000 / 3600000); mm = Math.floor(c % 3600000 / 60000); }
+      mw.querySelector("[data-mig-d]").textContent = pad2(dd); mw.querySelector("[data-mig-h]").textContent = pad2(hh); mw.querySelector("[data-mig-m]").textContent = pad2(mm);
+    }
     document.body.classList.toggle("op-mig-home", !!document.querySelector(".ag-mig-home"));
-    el.querySelector(".op-mig-s b").textContent = `${d}d ${pad(h)}h ${pad(m)}m`;
-    el.querySelector(".op-mig-full b").textContent = `${d} days, ${h} hours, ${m} minutes, ${pad(sec)} seconds`;
+    const cm = Math.max(0, OP_MIG_CLOSE - Date.now());
+    const cd = Math.floor(cm / 86400000), ch = Math.floor(cm % 86400000 / 3600000), cmi = Math.floor(cm % 3600000 / 60000), cs = Math.floor(cm % 60000 / 1000);
+    el.querySelector(".op-mig-s b").textContent = `${cd}d ${pad(ch)}h ${pad(cmi)}m`;
+    el.querySelector(".op-mig-full b").textContent = `${cd} days, ${ch} hours, ${cmi} minutes, ${pad(cs)} seconds`;
   }
   setInterval(opMigSync, 1000);
   opMigSync();
