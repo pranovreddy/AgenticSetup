@@ -14379,6 +14379,20 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .op-gl::before, .op-dside::before{ opacity:.4; }
 .op-sum::before, .ag-nextup.op-nfull::before{ opacity:.5; }
 .op-lstage::before, .op-art::before{ opacity:.6; }
+/* ---- GTM cards v2: reason shown, small rates, scrubbing rates, not-selected set apart ---- */
+.op-gk{ padding:16px 16px 14px; } .op-gk-top{ margin-bottom:10px; }
+.op-gk-why{ margin:0 0 12px; font-size:13px; line-height:1.45; color:#3c4762; } .op-gk-why i{ display:block; margin-bottom:2px; font-style:normal; font-size:12px; font-weight:650; color:#53627f; }
+.op-gk-ph{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+.op-gk-c{ display:flex; flex-direction:row; flex-wrap:wrap; align-items:baseline; gap:2px 6px; padding:7px 9px; border-radius:10px; border:1px solid rgba(196,214,245,.7); background:rgba(255,255,255,.4); }
+.op-gk-c i{ flex:0 0 100%; font-style:normal; font-size:12px; font-weight:600; color:#53627f; }
+.op-gk-c b{ font-size:14px; font-weight:700; letter-spacing:-.2px; color:#0f1f3d; font-variant-numeric:tabular-nums; }
+.op-gk-c em{ font-style:normal; font-size:12px; font-weight:600; color:#1d4ed8; padding:0; background:none; align-self:auto; flex:0 0 100%; }
+.op-gk-c.is-best{ background:rgba(37,99,235,.06); border-color:#c9dbfb; } .op-gk-c.is-best b{ color:#2563eb; }
+.op-gk-sc{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px; margin-top:8px; padding-top:8px; border-top:1px solid rgba(196,214,245,.5); font-size:12px; color:#53627f; }
+.op-gk-sc em{ font-style:normal; font-weight:650; } .op-gk-sc span{ display:inline-flex; gap:5px; } .op-gk-sc span i{ font-style:normal; } .op-gk-sc span b{ font-weight:650; color:#0f1f3d; font-variant-numeric:tabular-nums; }
+.op-gk.is-off{ border-style:dashed; border-color:#c4cfe3; background:rgba(238,241,247,.55); backdrop-filter:none; }
+.op-gk.is-off .op-gk-c{ background:transparent; border-color:rgba(196,207,227,.7); } .op-gk.is-off .op-gk-c b, .op-gk.is-off .op-gk-sc span b{ color:#53627f; font-weight:600; }
+.op-gk-div{ display:flex; align-items:center; gap:12px; margin:22px 0 14px; font-size:12px; font-weight:650; color:#53627f; } .op-gk-div::after{ content:""; flex:1; height:1px; background:rgba(196,214,245,.7); }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24929,16 +24943,22 @@ function agMigRow() {
     };
     return `<section class="op-list op-cardgrid is-${key}">${m.items.map(card).join("")}</section>`;
   }
-  /* One compact card per GTM partner: rate and share for each phase, the reason on hover */
+  /* One compact card per GTM partner: selected first, then the others set apart */
   function opGtmCards(m) {
-    const n = m.items.filter((x) => x.on).length;
-    const items = [...m.items.filter((x) => x.on), ...m.items.filter((x) => !x.on)];
+    const sel = m.items.filter((x) => x.on), off = m.items.filter((x) => !x.on);
+    const money = (v) => `₹${Number(v).toFixed(2)}`;
     const card = (it) => {
-      const cells = it.phases.map((p) => `<div class="op-gk-c${p.best && it.on ? " is-best" : ""}"><span>${p.label}</span><b>${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : `<em class="is-n">&nbsp;</em>`}</div>`).join("");
-      return `<article class="op-gk${it.on ? "" : " is-off"}" title="${it.why}"><header class="op-gk-top"><span class="op-gc-logo">${it.lead}</span><b>${it.name}</b><span class="op-gt-s${it.on ? " is-on" : ""}"><i></i>${it.on ? "Selected" : "Not selected"}</span></header><div class="op-gk-ph">${cells}</div></article>`;
+      const pool = AG_GTM_POOL.find((p) => p.name === agSumUnesc(it.name)) || {};
+      const r = pool.rates || {};
+      const cells = it.phases.map((p) => `<span class="op-gk-c${p.best && it.on ? " is-best" : ""}"><i>${p.label}</i><b>${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : ""}</span>`).join("");
+      const scrub = [["SMS", r.sms], ["Call", r.voice], ["RCS", r.rcs]].map(([l, v]) => `<span><i>${l}</i><b>${v == null ? "" : money(v)}</b></span>`).join("");
+      return `<article class="op-gk${it.on ? "" : " is-off"}"><header class="op-gk-top"><span class="op-gc-logo">${it.lead}</span><b>${it.name}</b><span class="op-gt-s${it.on ? " is-on" : ""}"><i></i>${it.on ? "Selected" : "Not selected"}</span></header>
+        <p class="op-gk-why"><i>${it.on ? "Why it was chosen" : "Why it was not chosen"}</i>${it.why}</p>
+        <div class="op-gk-ph">${cells}</div><div class="op-gk-sc"><em>Scrubbing</em>${scrub}</div></article>`;
     };
-    return `<p class="op-selcount"><b>${n} of ${m.items.length}</b> partners selected</p><div class="op-gk-grid">${items.map(card).join("")}</div><p class="op-gt-note">Blue is the lowest rate. Share of volume sits under each rate. Hover a card for the reason.</p>`;
+    return `<p class="op-selcount"><b>${sel.length} of ${m.items.length}</b> partners selected</p><div class="op-gk-grid">${sel.map(card).join("")}</div>${off.length ? `<p class="op-gk-div"><span>Not selected</span></p><div class="op-gk-grid">${off.map(card).join("")}</div>` : ""}`;
   }
+  function agSumUnesc(t) { const d = document.createElement("textarea"); d.innerHTML = t; return d.value; }
   function opGMarkup(m) {
     const e = agSumEsc;
     const info = opPanelInfo(m);
