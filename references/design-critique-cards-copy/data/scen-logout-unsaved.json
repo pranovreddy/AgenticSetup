@@ -1,0 +1,30 @@
+{
+ "texts": 5,
+ "sizes": {
+  "12": 3,
+  "14": 1,
+  "21": 1
+ },
+ "weights": {
+  "400": 1,
+  "580": 2,
+  "650": 1,
+  "700": 1
+ },
+ "small": [],
+ "low": [],
+ "lowCount": 0,
+ "smallTargets": [],
+ "hues": [
+  210
+ ],
+ "fontFamilies": [
+  "Inter"
+ ],
+ "errors": [],
+ "times": [
+  4,
+  9,
+  16
+ ]
+}
