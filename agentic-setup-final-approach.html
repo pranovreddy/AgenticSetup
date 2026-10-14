@@ -14127,6 +14127,7 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-cv-row .op-roll > span{ font-size:14.5px !important; line-height:22px !important; font-weight:600 !important; letter-spacing:-.1px !important; }
 .op-cv-row .op-roll{ height:22px !important; min-width:170px; } .op-cv-row .op-lspin{ width:14px !important; height:14px !important; border-width:2px !important; }
 .op-cv-status{ min-width:260px !important; padding:16px 26px 14px !important; gap:12px !important; border-radius:18px !important; } .op-cv-status .op-seg{ height:3px !important; }
+#opSkipIntro{ position:fixed; left:16px; bottom:16px; z-index:9998; display:grid; place-items:center; width:34px; height:34px; padding:0; border-radius:50%; border:0; cursor:pointer; background:rgba(255,255,255,.92); color:#6b7c9e; box-shadow:0 0 0 1px #dfe6f6, 0 8px 18px -10px rgba(15,31,61,.35); transition:color 160ms, transform 160ms; } #opSkipIntro:hover{ color:#2563eb; transform:translateY(-1px); } #opSkipIntro[hidden]{ display:none !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -25311,6 +25312,34 @@ function agMigRow() {
     opStrip.dataset.sig = sig;
     opStrip.innerHTML = `<button type="button" class="op-strip-lab" data-op-open title="All screens and versions">${I("layers")}<span>${agSumEsc(s.label)}</span></button><span class="op-strip-seg" role="radiogroup" aria-label="${agSumEsc(s.label)} versions">${s.opts.map(([k, name, desc]) => `<button type="button" role="radio" aria-checked="${k === v}" class="${k === v ? "is-on" : ""}" data-op-sv="${k}" title="${agSumEsc(name)}: ${agSumEsc(desc)}"><b>${k.toUpperCase()}</b><span>${agSumEsc(name)}</span></button>`).join("")}</span>`;
   }
+  /* Preview shortcut: jump past agreements, the setup cover and the plan, straight to the Business profile */
+  function opSkipIntro() {
+    AG_DOCS.forEach((d) => { state.docSigned[d.id] = true; state.docRead[d.id] = true; });
+    state.done.agreements = true;
+    state.doneAt.agreements = state.doneAt.agreements || agStamp();
+    opCoverShown = true;
+    const boot = document.getElementById("agBoot");
+    if (boot) { boot.hidden = true; boot.classList.add("is-out"); }
+    document.getElementById("agNextUp")?.remove();
+    try { agFileIntoFolder("0"); } catch (e) { /* optional */ }
+    state.successAuto = null;
+    agGo("1");
+  }
+  let opSkipBtn = null;
+  function opSkipSync() {
+    if (!opSkipBtn) {
+      opSkipBtn = document.createElement("button");
+      opSkipBtn.type = "button"; opSkipBtn.id = "opSkipIntro";
+      opSkipBtn.title = "Skip agreements and setup, go straight to the Business profile"; opSkipBtn.setAttribute("aria-label", opSkipBtn.title);
+      opSkipBtn.innerHTML = `<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3.5l5 4.5-5 4.5M9 3.5l5 4.5-5 4.5"/></svg>`;
+      opSkipBtn.addEventListener("click", opSkipIntro);
+      document.body.appendChild(opSkipBtn);
+    }
+    const b = document.body.classList;
+    const intro = b.contains("ag-gate") || !!document.getElementById("agNextUp") || (document.getElementById("agBoot") && !document.getElementById("agBoot").hidden);
+    opSkipBtn.hidden = !intro || state.ag.focus !== undefined && state.ag.focus !== "0" && !b.contains("ag-gate") && !document.getElementById("agNextUp");
+  }
+  setInterval(opSkipSync, 300);
   function opEnsureStrip() {
     if (opStrip) return;
     opStrip = document.createElement("div");
