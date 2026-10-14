@@ -14263,8 +14263,6 @@ body.ag-gate .ag-brief-read .ag-brief-bar, body.ag-gate .ag-brief-read .ag-brief
 .ag-step:has(.ag-outcome) .ag-step-title, .ag-step:has(.ag-outcome) .ag-step-sub{ display:none !important; }
 .ag-outcome .ag-outcome-actions{ position:static !important; margin-top:10px !important; padding-top:14px; border-top:1px solid rgba(196,214,245,.5); justify-content:flex-start !important; }
 .ag-outcome > .ag-outcome-note{ margin-top:2px; }
-#opKycGo{ left:auto !important; right:calc(var(--kyc-r,0px) + 28px) !important; width:auto !important; margin:0 !important; bottom:28px !important; padding:0 !important; gap:0 !important; background:none !important; box-shadow:none !important; border-radius:0 !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
-#opKycGo .ag-btn{ height:32px !important; min-height:0 !important; padding:0 14px !important; font-size:13px !important; border-radius:10px !important; }
 /* room between the Summary chip and the headline, on every page */
 .op-sumchip{ margin-bottom:18px !important; }
 .op-gl .op-sumchip, .op-dside-hd .op-sumchip{ margin-bottom:20px !important; }
@@ -24976,7 +24974,7 @@ function agMigRow() {
     document.getElementById("opKycGo")?.remove();
     const bar = document.createElement("div");
     bar.id = "opKycGo";
-    bar.innerHTML = `<button type="button" class="ag-btn is-primary">Continue${I("arrow", "sm")}</button>`;
+    bar.innerHTML = `<p><b>Approved by all 4 telecom operators.</b> Confirm to continue to your team.</p><button type="button" class="ag-btn is-primary">Continue${I("arrow", "sm")}</button>`;
     document.body.appendChild(bar);
     document.body.classList.add("op-kyc-confirm");
     /* centre the bar on the content column (right of the setup rail), not on the whole window */
