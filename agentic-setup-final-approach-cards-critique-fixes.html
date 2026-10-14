@@ -14496,6 +14496,17 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .op-metric > b{ font-size:22px !important; } .op-metric > span:not(.op-ring){ font-size:12px !important; display:flex; align-items:center; } .op-metric-t b{ font-size:15px !important; }
 .op-metric .op-ring{ width:56px !important; height:56px !important; } .op-metric .op-ring b{ font-size:14px !important; }
 .op-metrics{ padding:16px 20px 20px !important; }
+/* ---- Consent Migration, matched to the Figma frame ---- */
+.ag-mig-stage-sep{ color:#aab4c6; display:inline-grid; place-items:center; flex:none; }
+.ag-mig-stage-copy span{ font-family:"Geist Mono", ui-monospace, Menlo, monospace !important; font-size:12px !important; letter-spacing:0; color:#8a93a6; }
+.ag-mig-stage.is-on .ag-mig-stage-copy span{ color:#2548d8; font-weight:600; }
+.ag-mig-stage-copy b{ font-weight:600; }
+.ag-mig-empty{ border:1px dashed #9fb0ee !important; }
+.ag-mig-empty p{ color:#8a93a6 !important; }
+.ag-mig-empty .ag-btn{ display:inline-flex; align-items:center; gap:8px; } .ag-mig-empty .ag-btn svg{ flex:none; }
+.ag-csv-dl{ display:inline-flex; align-items:center; gap:8px; } .ag-csv-dl svg{ flex:none; }
+.ag-csv-info{ flex:none; margin-left:6px; vertical-align:-2px; }
+.ag-csv-meta{ display:inline-flex; align-items:center; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21222,11 +21233,11 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
 
   
   function agMigCsvFieldsMarkup() {
-    const info = `<img src="${assetUrl("mig-info.svg")}" width="10" height="10" alt="">`;
+    const info = `<svg class="ag-csv-info" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="5.6" fill="#5c6678"/><path d="M6 5.3v3M6 3.5v.1" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>`;
     return `<section class="ag-csv" aria-label="CSV format">
       <div class="ag-csv-head">
         <p class="ag-csv-kicker">CSV Format</p>
-        <button type="button" class="ag-csv-dl" data-action="ag-csv-template"><img src="${assetUrl("mig-download.svg")}" width="14" height="14" alt="">Download template</button>
+        <button type="button" class="ag-csv-dl" data-action="ag-csv-template"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v8M4.8 7.8L8 11l3.2-3.2M2.5 11.5v1a1 1 0 001 1h9a1 1 0 001-1v-1"/></svg>Download template</button>
       </div>
       <div class="ag-csv-cols">
         <div class="ag-csv-col">
@@ -21250,9 +21261,9 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     return d.toLocaleDateString("en-GB", short ? { day: "2-digit", month: "short", year: "numeric" } : { day: "numeric", month: "long", year: "numeric" });
   }
   function agMigUnlockedMarkup() {
-    const chev = `<span class="ag-mig-stage-sep" aria-hidden="true"><img src="${assetUrl("mig-chevron.svg")}" width="14" height="14" alt=""></span>`;
+    const chev = `<span class="ag-mig-stage-sep" aria-hidden="true"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>`;
     const stages = [
-      { n: 1, title: "Upload & Submit", sub: state.migWindow === "open" ? "Closes " + opMigDate(17) : "Opens on " + opMigDate(0), on: true },
+      { n: 1, title: "Upload & Submit", sub: state.migWindow === "open" ? "closes " + opMigDate(17) : "opens on " + opMigDate(0), on: true },
       { n: 2, title: "Consent Notification", sub: opMigDate(18, true), on: false },
       { n: 3, title: "Consent Based Scrubbing", sub: opMigDate(28, true), on: false },
     ];
@@ -21274,8 +21285,8 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
       ${state.migWindow === "open" ? `      <div class="ag-mig-empty" role="status">
         <span class="ag-mig-empty-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M4.5 15v3a1.5 1.5 0 001.5 1.5h12a1.5 1.5 0 001.5-1.5v-3"/></svg></span>
         <h3>No Consents Uploaded Yet</h3>
-        <p>Upload a CSV with consent records to migrate them into DigiConsent. AI will help validate and resolve errors automatically.</p>
-        <button type="button" class="ag-btn is-primary" data-action="ag-mig-new-upload"><img src="${assetUrl("mig-new-upload.svg")}" width="14" height="14" alt="">New Upload</button>
+        <p>Upload a CSV with consent records to migrate them into WiselyConsent. AI will help validate and resolve errors automatically.</p>
+        <button type="button" class="ag-btn is-primary" data-action="ag-mig-new-upload"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11V3M4.8 6.2L8 3l3.2 3.2M2.5 11.5v1a1 1 0 001 1h9a1 1 0 001-1v-1"/></svg> New Upload</button>
       </div>
 ` : `      <div class="ag-mig-wait" role="timer" aria-label="Migration window countdown">
         <span class="ag-mig-wait-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
