@@ -14319,6 +14319,9 @@ body.ag-gate .cl-detail-card .ag-paper-head{ top:127px !important; padding-top:3
 .ag-outcome-empty-card span{ display:grid; place-items:center; width:42px; height:42px; border-radius:50%; background:#eef3ff; color:#2563eb; margin-bottom:8px; } .ag-outcome-empty-card span svg{ width:20px; height:20px; }
 .ag-outcome-empty-card b{ font-size:16px; font-weight:650; color:#0f1f3d; } .ag-outcome-empty-card p{ margin:0; font-size:13px; line-height:1.55; color:#5f7396; max-width:46ch; }
 body.ag-gate .cl-detail-card .ag-agree--canvas, body.ag-gate .cl-detail-card .cl-detail-list{ overflow-x:hidden !important; }
+.ag-paper::before, body.ag-gate .ag-paper::before{ content:none !important; display:none !important; }
+body.ag-gate .cl-detail-card .ag-paper-head{ padding-top:14px !important; top:127px !important; }
+.ag-paper-head::before, body.ag-gate .ag-paper-head::before{ content:none !important; display:none !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
