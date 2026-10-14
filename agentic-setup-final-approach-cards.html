@@ -14276,6 +14276,8 @@ body.ag-gate .ag-gate-hero .ag-sum-gem{ width:32px !important; height:32px !impo
 .ag-outcome-metric{ padding:16px 18px !important; border:1px solid rgba(255,255,255,.85) !important; border-radius:18px !important; background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important; box-shadow:0 0 0 1px rgba(196,214,245,.5) !important; display:flex; flex-direction:column; gap:6px; }
 .ag-outcome-partner{ border-radius:14px !important; padding:8px 14px !important; background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important; box-shadow:0 0 0 1px rgba(196,214,245,.5) !important; border:1px solid rgba(255,255,255,.85) !important; }
 #agOrgFinished p{ color:#fff !important; opacity:1 !important; }
+.ag-kyc-owners #opKycGo, .ag-kyc-owners ~ #opKycGo, #opKycGo{ position:static !important; left:auto !important; right:auto !important; bottom:auto !important; transform:none !important; width:100% !important; max-width:674px !important; margin:16px auto 0 !important; box-sizing:border-box; justify-content:space-between; }
+body.op-kyc-confirm .ag-kyc-owners{ padding-bottom:48px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24995,7 +24997,7 @@ function agMigRow() {
     const bar = document.createElement("div");
     bar.id = "opKycGo";
     bar.innerHTML = `<p><b>Approved by all 4 telecom operators.</b> Confirm to continue to your team.</p><button type="button" class="ag-btn is-primary">Continue${I("arrow", "sm")}</button>`;
-    document.body.appendChild(bar);
+    (document.querySelector(".ag-kyc-owners-stack") || document.body).insertAdjacentElement(document.querySelector(".ag-kyc-owners-stack") ? "afterend" : "beforeend", bar);
     document.body.classList.add("op-kyc-confirm");
     /* centre the bar on the content column (right of the setup rail), not on the whole window */
     const alignBar = () => {
