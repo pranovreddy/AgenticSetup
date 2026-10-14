@@ -14342,6 +14342,21 @@ body.ag-gate .ag-actions.is-approve .ag-btn:disabled, #agAcceptBtn:disabled{ opa
 /* ---- Agreements "In short": linked phrases read as regular text with a light blue underline ---- */
 body.ag-gate .ag-brief-prose .ag-brief-pt, body.ag-gate .ag-brief-prose .ag-brief-pt:hover, body.ag-gate .ag-brief-prose .ag-brief-pt:focus-visible, body.ag-gate .ag-brief-prose .ag-brief-pt.is-peek{ color:inherit !important; font-weight:inherit !important; text-decoration:underline !important; text-decoration-color:rgba(96,165,250,.55) !important; text-decoration-thickness:2px !important; text-underline-offset:3px !important; }
 body.ag-gate .ag-brief-prose .ag-brief-pt:hover, body.ag-gate .ag-brief-prose .ag-brief-pt:focus-visible, body.ag-gate .ag-brief-prose .ag-brief-pt.is-peek{ text-decoration-color:rgba(37,99,235,.7) !important; }
+/* ---- GTM partners: compact table instead of text-heavy cards ---- */
+.op-gt{ border:1px solid rgba(196,214,245,.7); border-radius:18px; background:rgba(255,255,255,.55); overflow:hidden; }
+.op-gt-r{ display:grid; grid-template-columns:minmax(170px,1.5fr) repeat(3,minmax(0,1fr)); align-items:center; gap:10px; padding:14px 20px; border-top:1px solid rgba(196,214,245,.5); }
+.op-gt-r:first-child{ border-top:0; }
+.op-gt-r.is-head{ padding:11px 20px; font-size:12px; font-weight:650; letter-spacing:.06em; text-transform:uppercase; color:#53627f; background:rgba(238,244,255,.6); }
+.op-gt-p{ display:flex; align-items:center; gap:12px; min-width:0; }
+.op-gt-p .op-gc-logo{ flex:none; width:38px; height:38px; }
+.op-gt-n{ display:flex; flex-direction:column; gap:2px; min-width:0; } .op-gt-n b{ font-size:15px; font-weight:650; color:#0f1f3d; }
+.op-gt-s{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#53627f; } .op-gt-s i{ width:7px; height:7px; border-radius:50%; background:#a8b6cf; }
+.op-gt-s.is-on{ color:#13804f; } .op-gt-s.is-on i{ background:#22a06b; }
+.op-gt-c{ display:flex; flex-direction:column; gap:3px; } .op-gt-c b{ font-size:17px; font-weight:700; letter-spacing:-.3px; color:#0f1f3d; font-variant-numeric:tabular-nums; }
+.op-gt-c em{ align-self:flex-start; font-style:normal; font-size:12px; font-weight:600; padding:1px 8px; border-radius:99px; background:rgba(37,99,235,.08); color:#1d4ed8; }
+.op-gt-c.is-best b{ color:#2563eb; }
+.op-gt-r.is-off .op-gt-c b{ color:#6b7a96; font-weight:600; } .op-gt-r.is-off .op-gt-n b{ color:#53627f; }
+.op-gt-note{ margin:10px 4px 0; font-size:12px; color:#53627f; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24892,22 +24907,16 @@ function agMigRow() {
     };
     return `<section class="op-list op-cardgrid is-${key}">${m.items.map(card).join("")}</section>`;
   }
-  /* Cards view for the selected GTM partners */
+  /* Compact table for every GTM partner: rates and share per phase, the reason on hover */
   function opGtmCards(m) {
-    const sel = m.items.filter((x) => x.on);
-    const card = (it) => {
-      const bestN = it.phases.filter((p) => p.best).length;
-      const title = bestN === it.phases.length ? "Lowest rate in every phase" : bestN ? `Lowest rate in ${bestN} of ${it.phases.length} phases` : "Strong enterprise SLA coverage";
-      const cols = it.phases.map((p) => {
-        const w = parseInt(p.share, 10) || 0;
-        return `<div class="op-gc-ph${p.best ? " is-best" : ""}"><span class="op-gc-pl">${p.label}</span><b>${p.rate}</b>${p.best ? `<u>Lowest</u>` : `<u class="is-n">&nbsp;</u>`}<i class="op-gc-bar"><s style="width:${w}%"></s></i><span class="op-gc-sh">${p.share ? p.share + " of volume" : "No volume"}</span></div>`;
-      }).join("");
-      return `<article class="op-gc"><header class="op-gc-top"><span class="op-gc-logo">${it.lead}</span><div class="op-gc-id"><b>${it.name}</b><span>Telecom partner</span></div><span class="op-gc-sel"><i></i>Selected</span></header>
-        <h4 class="op-gc-title">${title}</h4>
-        <div class="op-gc-phs">${cols}</div>
-        <p class="op-gc-why"><span>${I("spark")}Why I picked it</span>${it.why}</p></article>`;
+    const n = m.items.filter((x) => x.on).length;
+    const items = [...m.items.filter((x) => x.on), ...m.items.filter((x) => !x.on)];
+    const head = m.items[0].phases.map((p) => `<span>${p.label}</span>`).join("");
+    const row = (it) => {
+      const cells = it.phases.map((p) => `<span class="op-gt-c${p.best && it.on ? " is-best" : ""}"><b>${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : ""}</span>`).join("");
+      return `<div class="op-gt-r${it.on ? "" : " is-off"}" title="${it.why}"><span class="op-gt-p"><span class="op-gc-logo">${it.lead}</span><span class="op-gt-n"><b>${it.name}</b><span class="op-gt-s${it.on ? " is-on" : ""}"><i></i>${it.on ? "Selected" : "Not selected"}</span></span></span>${cells}</div>`;
     };
-    return `<p class="op-selcount"><b>${sel.length} of ${m.items.length}</b> partners selected <span>· the others did not clear the lowest-rate bar</span></p><div class="op-gc-grid">${sel.map(card).join("")}</div>`;
+    return `<p class="op-selcount"><b>${n} of ${m.items.length}</b> partners selected</p><div class="op-gt"><div class="op-gt-r is-head"><span>Partner</span>${head}</div>${items.map(row).join("")}</div><p class="op-gt-note">Blue is the lowest rate. Share of volume sits under each rate. Hover a row for the reason.</p>`;
   }
   function opGMarkup(m) {
     const e = agSumEsc;
