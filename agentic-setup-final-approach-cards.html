@@ -14149,6 +14149,23 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 @media (max-width:1100px){ .op-gc-grid{ grid-template-columns:1fr; } }
 .ag-boot-inner:has(.op-cv-mark){ transform:translateY(58px); }
 .op-gc-pl{ font-size:9.5px !important; letter-spacing:.04em !important; } .op-gc-sh{ font-size:10.5px !important; white-space:nowrap; } .op-gc-ph{ padding:12px 10px 11px !important; }
+.op-cardgrid{ display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; padding:6px 2px 12px; border:0 !important; background:none !important; }
+.op-cg{ position:relative; display:flex; flex-direction:column; gap:14px; padding:18px 18px 16px; border-radius:22px; overflow:hidden; background:linear-gradient(180deg,#f3f7ff 0%,#fff 52%); box-shadow:0 0 0 1px #dfe8f8, 0 20px 36px -28px rgba(37,99,235,.36); }
+.op-cg::before{ content:""; position:absolute; right:-55px; top:-65px; width:170px; height:170px; border-radius:50%; background:radial-gradient(circle, rgba(96,150,255,.18), transparent 70%); pointer-events:none; }
+.op-cg[hidden]{ display:none !important; }
+.op-cg-top{ position:relative; display:flex; align-items:flex-start; gap:12px; }
+.op-cg-logo{ display:grid; place-items:center; flex:none; width:44px; height:44px; border-radius:50%; background:#fff; box-shadow:0 0 0 1px #dfe8f8, 0 8px 16px -10px rgba(37,99,235,.5); } .op-cg-logo > *{ transform:scale(.92); }
+.op-cg-id{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; padding-top:2px; } .op-cg-id b{ font-size:15px; font-weight:650; letter-spacing:-.2px; color:#0f1f3d; } .op-cg-id span{ font-size:12px; color:#7b8cab; }
+.op-cg-tag{ display:inline-flex; align-items:center; gap:6px; flex:none; margin-top:3px; font-size:11.5px; font-weight:620; color:#1d4ed8; white-space:nowrap; } .op-cg-tag i{ width:7px; height:7px; border-radius:50%; background:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.16); }
+.op-cg-tag.is-soft{ color:#52627f; } .op-cg-tag.is-soft i{ background:#8aa0c8; box-shadow:0 0 0 3px rgba(138,160,200,.2); }
+.op-cg-tag.is-amber{ color:#a15c07; } .op-cg-tag.is-amber i{ background:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,.2); }
+.op-cg-lines{ position:relative; display:flex; flex-direction:column; gap:6px; font-size:12.5px; color:#4a5b7a; } .op-cg-lines span{ display:flex; align-items:center; gap:8px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .op-cg-lines svg{ width:14px; height:14px; color:#8aa0c8; flex:none; }
+.op-cg-note{ position:relative; margin:0; padding-top:12px; border-top:1px solid #e8eef9; font-size:12.5px; line-height:1.5; color:#4a5b7a; } .op-cg-note span{ display:flex; align-items:center; gap:6px; margin-bottom:3px; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#2563eb; } .op-cg-note span svg{ width:12px; height:12px; }
+.op-cg-chips{ position:relative; display:flex; flex-wrap:wrap; gap:6px; } .op-cg-chips span{ padding:5px 10px; border-radius:99px; background:rgba(255,255,255,.9); box-shadow:0 0 0 1px #dfe8f8; font-size:12px; font-weight:560; color:#3b4d6e; }
+.op-cg-facts{ position:relative; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; } .op-cg-fact{ display:flex; flex-direction:column; gap:2px; padding:10px 11px; border-radius:14px; background:rgba(255,255,255,.88); box-shadow:0 0 0 1px #e6edf9; } .op-cg-fact span{ font-size:10px; font-weight:650; letter-spacing:.04em; text-transform:uppercase; color:#8091b0; white-space:nowrap; } .op-cg-fact b{ font-size:20px; font-weight:700; letter-spacing:-.5px; color:#0f1f3d; }
+.op-cg-bar{ margin-top:0 !important; } .op-cg-cap{ position:relative; margin-top:-8px; font-size:11px; color:#7b8cab; }
+@media (max-width:1100px){ .op-cardgrid{ grid-template-columns:1fr; } }
+.op-gr-hd{ padding-top:6px !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24460,6 +24477,7 @@ function agMigRow() {
     const roleList = [...new Set(m.items.map((x) => x.pill))];
     const peopleBar = m.key === "2" && compact ? opFilterBar(m) : "";
     const sel = m.key === "e1" && compact ? `<p class="op-selcount"><b>${m.items.filter((x) => x.on).length} of ${m.items.length}</b> partners selected <span>· the others did not clear the best-rate bar</span></p>` : "";
+    if (compact && ["2", "e0", "e2"].includes(m.key)) return metrics + peopleBar + opCardGrid(m);
     return metrics + peopleBar + sel + `<section class="op-list${compact ? " is-compact" : ""}" style="--cols:${compact ? opCompactCols(m) : m.cols}">
       ${compact ? "" : `<div class="op-row is-head">${m.head.map((h) => `<span>${agSumEsc(h)}</span>`).join("")}</div>`}
       ${(m.key === "e1" && compact ? [...m.items.filter((x) => x.on), ...m.items.filter((x) => !x.on)] : m.items).map((it, n) => `<div${m.key === "2" ? ` data-role="${it.pill}" data-q="${(it.name + " " + it.contact[0] + " " + (it.dept || "") + " " + (it.sub || "")).toLowerCase()}"` : ""} class="op-row op-item${it.dim ? " is-dim" : ""}" style="--n:${n}">${(compact ? opCompactCells(m, it) : opCells(m, it)).join("")}</div>`).join("")}
@@ -24642,6 +24660,30 @@ function agMigRow() {
     const n = m.items.length;
     return `<div class="op-ts"><div class="op-ts-top"><div class="op-ts-n"><b>${n}</b><span>People suggested</span></div><div class="op-ts-n"><b>${roles.length}</b><span>Roles matched</span></div></div>
       <ul class="op-ts-roles">${roles.map((r, i) => { const c = m.items.filter((x) => x.pill === r).length; return `<li style="--i:${i}"><u></u><span>${agSumEsc(r)}</span><em>${c}</em><i style="--w:${Math.round(c / n * 100)}%"></i></li>`; }).join("")}</ul></div>`;
+  }
+  /* Card grid for Team, Brands and Templates */
+  function opCardGrid(m) {
+    const e = agSumEsc;
+    const key = m.key;
+    const card = (it, n) => {
+      const attrs = key === "2" ? ` data-role="${it.pill}" data-q="${(it.name + " " + it.contact[0] + " " + (it.dept || "") + " " + (it.sub || "")).toLowerCase()}"` : "";
+      let body = "", tag = "";
+      if (key === "2") {
+        tag = `<span class="op-cg-tag"><i></i>${it.pill}</span>`;
+        body = `<div class="op-cg-lines"><span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="2"/><path d="M2.5 5l5.5 4 5.5-4"/></svg>${it.contact[0]}</span><span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 2.5h2.6l1.2 3-1.6 1a7.5 7.5 0 003.3 3.3l1-1.6 3 1.2v2.6a1.5 1.5 0 01-1.6 1.5A10.5 10.5 0 012 4.1 1.5 1.5 0 013.5 2.5z"/></svg>${it.contact[1]}</span></div><p class="op-cg-note"><span>${I("spark")}Suggested role</span>${it.why}</p>`;
+      } else if (key === "e0") {
+        tag = `<span class="op-cg-tag is-soft"><i></i>${it.pill}</span>`;
+        body = `<div class="op-cg-chips">${it.chips.map((c) => `<span>${c}</span>`).join("")}</div>`;
+      } else {
+        const f = it.facts.map(([k, v]) => `<div class="op-cg-fact"><span>${k.replace("High confidence", "Confident")}</span><b>${v}</b></div>`).join("");
+        const nums = it.facts.map(([, v]) => parseInt(v, 10) || 0);
+        const pct = nums[0] ? Math.round((nums[1] || 0) / nums[0] * 100) : 0;
+        tag = `<span class="op-cg-tag is-amber"><i></i>${it.pill}</span>`;
+        body = `<div class="op-cg-facts">${f}</div><i class="op-gc-bar op-cg-bar"><s style="width:${pct}%"></s></i><span class="op-cg-cap">${pct}% mapped with high confidence</span>`;
+      }
+      return `<article class="op-cg op-item"${attrs} style="--n:${n}"><header class="op-cg-top"><span class="op-cg-logo">${it.lead}</span><div class="op-cg-id"><b>${it.name}</b><span>${it.sub}</span></div>${tag}</header>${body}</article>`;
+    };
+    return `<section class="op-list op-cardgrid is-${key}">${m.items.map(card).join("")}</section>`;
   }
   /* Cards view for the selected GTM partners */
   function opGtmCards(m) {
