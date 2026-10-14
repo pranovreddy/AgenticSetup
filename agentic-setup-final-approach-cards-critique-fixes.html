@@ -17378,8 +17378,17 @@ button:focus-visible, a:focus-visible, [role=switch]:focus-visible, [role=tab]:f
     const q = (sel) => document.querySelector(sel);
     if (key === "2") { q('[data-action="ag-send-invites"]')?.click(); return; }
     if (key === "e1") {
-      document.querySelectorAll('.ag-rate-accept input[type="checkbox"]').forEach((c) => { if (!c.checked) c.click(); });
-      setTimeout(() => q('[data-action="ag-estate-confirm"][data-estate="1"]')?.click(), 350);
+      /* Accept on the summary uses the suggested partners and split, and goes straight to the done state */
+      if (!agGtmSelected().length) AG_GTM_POOL.forEach((p, i) => { p.picked = i < 2; });
+      agGtmInitAlloc();
+      agGtmWalkStop();
+      state.gtmManual = false; state.gtmManualStep = "requests"; state.gtmWalk = "ready"; state.gtmWalkPlayed = true;
+      state.done.estate[1] = true;
+      state.doneAt.e1 = agStamp();
+      successAutoArm("e1");
+      agFileIntoFolder("e1");
+      render();
+      if (agEstateAll()) welcomeSay(WELCOME_SAY.estateReady);
       return;
     }
     const i = key.slice(1);
