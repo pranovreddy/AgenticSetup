@@ -14374,6 +14374,11 @@ body.ag-gate .ag-brief-prose .ag-brief-pt:hover, body.ag-gate .ag-brief-prose .a
 body.ag-gate .cl-detail-card .ag-atabs{ position:relative !important; top:auto !important; }
 body.ag-gate .cl-detail-card .ag-paper-head{ top:74px !important; }
 body.ag-gate .ag-brief-read{ top:72px !important; }
+/* ---- Softer background gradients ---- */
+.shell:has(.setup-layout), .shell:has(.setup-layout) .content, .shell:has(.setup-layout) #main.content{ background: radial-gradient(900px 520px at 88% -8%, rgba(37,99,235,.04), transparent 62%), radial-gradient(760px 440px at -4% 104%, rgba(16,163,127,.025), transparent 62%), var(--cv-bg) !important; }
+.op-gl::before, .op-dside::before{ opacity:.4; }
+.op-sum::before, .ag-nextup.op-nfull::before{ opacity:.5; }
+.op-lstage::before, .op-art::before{ opacity:.6; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
