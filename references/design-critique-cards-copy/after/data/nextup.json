@@ -1,0 +1,41 @@
+{
+ "texts": 20,
+ "sizes": {
+  "13": 7,
+  "14": 3,
+  "15": 3,
+  "16": 5,
+  "17": 1,
+  "40": 1
+ },
+ "weights": {
+  "400": 9,
+  "600": 5,
+  "700": 6
+ },
+ "small": [],
+ "low": [
+  {
+   "t": "Start with your business profile",
+   "fs": 13,
+   "fw": "600",
+   "cr": 1.05,
+   "approx": true
+  }
+ ],
+ "lowCount": 1,
+ "smallTargets": [],
+ "hues": [
+  210
+ ],
+ "fontFamilies": [
+  "Geist"
+ ],
+ "errors": [],
+ "times": [
+  4,
+  9,
+  16,
+  24
+ ]
+}

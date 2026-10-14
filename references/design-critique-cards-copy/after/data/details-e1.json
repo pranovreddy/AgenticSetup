@@ -1,0 +1,105 @@
+{
+ "texts": 72,
+ "sizes": {
+  "12": 35,
+  "13": 26,
+  "14": 7,
+  "17": 2,
+  "21": 1,
+  "26": 1
+ },
+ "weights": {
+  "400": 29,
+  "500": 7,
+  "600": 12,
+  "700": 24
+ },
+ "small": [],
+ "low": [
+  {
+   "t": "K",
+   "fs": 12,
+   "fw": "500",
+   "cr": 1,
+   "approx": true
+  },
+  {
+   "t": "V",
+   "fs": 12,
+   "fw": "500",
+   "cr": 1,
+   "approx": true
+  },
+  {
+   "t": "R",
+   "fs": 12,
+   "fw": "500",
+   "cr": 1,
+   "approx": true
+  },
+  {
+   "t": "T",
+   "fs": 12,
+   "fw": "500",
+   "cr": 1,
+   "approx": true
+  },
+  {
+   "t": "K",
+   "fs": 12,
+   "fw": "500",
+   "cr": 1.05,
+   "approx": true
+  },
+  {
+   "t": "V",
+   "fs": 12,
+   "fw": "500",
+   "cr": 1.05,
+   "approx": true
+  },
+  {
+   "t": "R",
+   "fs": 12,
+   "fw": "500",
+   "cr": 1.05,
+   "approx": true
+  }
+ ],
+ "lowCount": 7,
+ "smallTargets": [
+  {
+   "t": "",
+   "w": 13,
+   "h": 13
+  },
+  {
+   "t": "Karix's Rate Card Terms",
+   "w": 129,
+   "h": 18
+  },
+  {
+   "t": "",
+   "w": 13,
+   "h": 13
+  },
+  {
+   "t": "Value First's Rate Card Terms",
+   "w": 160,
+   "h": 18
+  }
+ ],
+ "hues": [
+  150,
+  210
+ ],
+ "fontFamilies": [
+  "Geist",
+  "\"Geist Mono\""
+ ],
+ "errors": [],
+ "times": [
+  5,
+  9
+ ]
+}

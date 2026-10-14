@@ -1,0 +1,44 @@
+{
+ "texts": 67,
+ "sizes": {
+  "12": 22,
+  "13": 20,
+  "14": 17,
+  "15": 6,
+  "23": 2
+ },
+ "weights": {
+  "400": 29,
+  "600": 22,
+  "700": 16
+ },
+ "small": [],
+ "low": [
+  {
+   "t": "Send invites",
+   "fs": 13,
+   "fw": "600",
+   "cr": 1.05,
+   "approx": true
+  },
+  {
+   "t": "6",
+   "fs": 12,
+   "fw": "600",
+   "cr": 3.89,
+   "approx": false
+  }
+ ],
+ "lowCount": 2,
+ "smallTargets": [],
+ "hues": [
+  210
+ ],
+ "fontFamilies": [
+  "Geist"
+ ],
+ "errors": [],
+ "times": [
+  5
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "texts": 32,
+ "sizes": {
+  "12": 8,
+  "13": 7,
+  "14": 12,
+  "17": 3,
+  "23": 2
+ },
+ "weights": {
+  "400": 8,
+  "600": 17,
+  "700": 7
+ },
+ "small": [],
+ "low": [
+  {
+   "t": "Accept",
+   "fs": 13,
+   "fw": "600",
+   "cr": 1.05,
+   "approx": true
+  }
+ ],
+ "lowCount": 1,
+ "smallTargets": [],
+ "hues": [
+  210
+ ],
+ "fontFamilies": [
+  "Geist"
+ ],
+ "errors": [],
+ "times": [
+  5
+ ]
+}
