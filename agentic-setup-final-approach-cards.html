@@ -14187,6 +14187,11 @@ body.ag-gate .ag-brief::before{ display:none !important; }
 .op-cg:has(.op-cg-lob:hover), .op-cg:has(.op-cg-lob:focus){ overflow:visible; z-index:5; }
 .op-cg{ overflow:visible !important; }
 .op-cg-chips span.op-cg-pop{ background:#fff !important; padding:12px 14px 13px !important; border-radius:14px !important; border:1px solid #dde5f3 !important; box-shadow:0 14px 30px -14px rgba(15,31,61,.28) !important; }
+/* subtle glass */
+.op-gc, .op-cg{ background:linear-gradient(145deg, rgba(255,255,255,.62), rgba(255,255,255,.28)) !important; -webkit-backdrop-filter:blur(14px) saturate(1.2); backdrop-filter:blur(14px) saturate(1.2); border:1px solid rgba(255,255,255,.85) !important; box-shadow:0 0 0 1px rgba(196,214,245,.55), inset 0 1px 0 rgba(255,255,255,.9) !important; }
+.op-gc:hover, .op-cg:hover{ background:linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.36)) !important; }
+.op-gc-ph, .op-cg-fact, .op-cg-chips span:not(.op-cg-pop), .op-cg-lob{ background:rgba(255,255,255,.4) !important; border-color:rgba(196,214,245,.7) !important; }
+.op-gc-ph.is-best{ background:rgba(37,99,235,.07) !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
