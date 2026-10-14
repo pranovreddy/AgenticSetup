@@ -14479,6 +14479,9 @@ body.ag-gate .ag-brief-read{ top:72px !important; }
 .op-gk-ex[open] .op-gk-chev::before{ transform:rotate(-135deg); top:6px; }
 .op-gk-ex > summary:hover{ background:rgba(255,255,255,.5); border-radius:16px; } .op-gk-ex > summary:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; border-radius:16px; }
 .op-gk-ex-b{ padding:0 16px 14px; } .op-gk-ex-b .op-gk-c{ background:transparent; } .op-gk-ex-b .op-gk-c b, .op-gk-ex-b .op-gk-sc span b{ color:#53627f; font-weight:600; }
+/* Accordions: square rows so the divider lines run straight */
+.op-facc, .op-facc.is-open, .op-facc-h, .op-facc-h:hover, .op-facc-b{ border-radius:0 !important; }
+.op-facc.is-open{ background:none !important; box-shadow:none !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
