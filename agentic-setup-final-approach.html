@@ -14164,6 +14164,16 @@ body.ag-gate .ag-gate-hero .ag-sum-gem{ width:32px !important; height:32px !impo
 #agOrgFinished p{ color:#fff !important; opacity:1 !important; }
 .ag-kyc-owners #opKycGo, .ag-kyc-owners ~ #opKycGo, #opKycGo{ position:static !important; left:auto !important; right:auto !important; bottom:auto !important; transform:none !important; width:100% !important; max-width:674px !important; margin:16px auto 0 !important; box-sizing:border-box; justify-content:space-between; }
 body.op-kyc-confirm .ag-kyc-owners{ padding-bottom:48px !important; }
+/* scenario outcome screens centred on the same column as the Approved-for-all page */
+.ag-step .ag-live > .ag-outcome{ max-width:674px !important; margin:0 auto !important; padding:56px 0 120px !important; align-items:stretch; }
+.ag-outcome-head{ align-items:center; text-align:center; }
+.ag-outcome-eyebrow-row{ justify-content:center; }
+.ag-outcome-lead{ margin-left:auto; margin-right:auto; }
+.ag-outcome-actions{ justify-content:center !important; }
+.ag-outcome .ag-outcome-actions{ justify-content:center !important; }
+.ag-outcome-metrics{ width:100%; }
+.ag-outcome-partners{ justify-content:center; }
+.ag-outcome-note{ text-align:left; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -24079,6 +24089,7 @@ function agMigRow() {
 
   function agApplyScenario(id) {
     agResetScenarioBase();
+    document.getElementById("opKycGo")?.remove(); document.body.classList.remove("op-kyc-confirm");
     state.ag.phase = "done";
     state.ag.steps = ["live", "live", "live"];
     state.done.agreements = true;
