@@ -1,0 +1,22 @@
+const {chromium}=require('/opt/node22/lib/node_modules/playwright');
+const sharp=null;
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium',args:['--no-sandbox']});
+async function open(){const p=await b.newPage({viewport:{width:1440,height:900},deviceScaleFactor:2});await p.goto('file:///home/user/AgenticSetup/agentic-setup-final-approach-cards-copy.html');for(let i=0;i<120;i++){await p.waitForTimeout(1000);if(await p.$('#agAcceptBtn'))break}await p.waitForTimeout(1500);return p}
+const shot=async(p,fn,out)=>{const h=await p.evaluateHandle(fn);const el=h.asElement();if(!el){console.log('none',out);return}await el.screenshot({path:'show/'+out+'.png'})};
+let p=await open();
+await p.evaluate(()=>document.querySelector('[data-id="profile-none"]').click());await p.waitForTimeout(5000);
+await shot(p,()=>document.querySelector('.ag-outcome-eyebrow').parentElement,'c_status_text_red');
+await p.evaluate(()=>document.querySelector('[data-id="brands-partial"]').click());await p.waitForTimeout(5000);
+await shot(p,()=>document.querySelector('.ag-outcome-eyebrow').parentElement,'c_status_text_amber');
+await shot(p,()=>document.querySelector('.ag-outcome-chip.is-ok').closest('article'),'c_row_approved');
+await p.evaluate(()=>document.querySelector('[data-id="brands-review"]').click());await p.waitForTimeout(5000);
+await shot(p,()=>document.querySelector('.ag-outcome-chip.is-wait').closest('article'),'c_row_inreview');
+await p.evaluate(()=>window.__opPreview('summary','e1'));await p.waitForTimeout(5500);
+await shot(p,()=>document.querySelector('.op-gk-top'),'c_card_gtm');
+await p.evaluate(()=>window.__opPreview('summary','e2'));await p.waitForTimeout(5500);
+await shot(p,()=>document.querySelector('.op-cg-top'),'c_card_templates');
+await p.evaluate(()=>window.__opPreview('summary','2'));await p.waitForTimeout(5500);
+await shot(p,()=>document.querySelector('.op-cg-top'),'c_card_team');
+await p.evaluate(()=>window.__opPreview('summary','e0'));await p.waitForTimeout(5500);
+await shot(p,()=>document.querySelector('.op-cg-top'),'c_card_brands');
+await b.close()})();
