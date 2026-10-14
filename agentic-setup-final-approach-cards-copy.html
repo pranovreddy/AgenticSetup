@@ -24385,7 +24385,7 @@ function agMigRow() {
       state.done.migration = true;
       state.migWindow = id === "walkthrough-open" ? "open" : "not_open";
       state.appTour = true;
-      state.appTourStep = 2;
+      state.appTourStep = 0;
       go("m");
     } else if (id === "return-open" || id === "return-unchanged") {
       state.done.estate = [true, false, false];
