@@ -622,7 +622,7 @@ body.deep-open .closes{ opacity:0 !important; pointer-events:none; }
 .ringc .ct{ display:flex; gap:6px; margin-top:2px; } .ringc .ct i{ width:8px; height:8px; border-radius:50%; background:#16a34a; }
 body.mode-ring .card,body.v3b .card{ transition-timing-function:cubic-bezier(.22,1,.36,1); }
 body.mode-ring .card .mini{ transform:rotate(calc(var(--rz,0deg) * -1)); } .card .mini{ transition:transform .9s var(--ease); }
-body.mode-ring .deck-head{ opacity:0; pointer-events:none; } .deck-head{ transition:opacity .5s; }
+body.v3c.mode-ring .ah{ flex-direction:column; align-items:center; text-align:center; gap:2px; } body.v3c.mode-ring .ah-t{ flex:none; width:100%; } body.v3c.mode-ring .ah-k{ justify-content:center; } body.v3c.mode-ring .ah .blob{ width:84px; height:84px; } body.v3c.mode-ring .ah h1{ font-size:27px; } body.v3c.mode-ring .ah::before{ left:50%; transform:translateX(-50%); }
 body.v3a .ringc h2{ color:#fff; } body.v3a .ringc p{ color:#a9bbdc; } body.v3a .ringc .rk{ color:#8fb4ff; }
 
 /* centred agent head: blob on top, text beneath */
@@ -1223,11 +1223,11 @@ function layout() {
     return;
   }
   if (S.mode === "ring") {
-    const so = 0.6, g = 18, topM = 28, topH = 124, gap1 = 34, gap2 = 30, ctaH = 48, botM = 40;
-    const avail = r.height - topM - topH - gap1 - gap2 - ctaH - botM;
-    let f = Math.min(1.1, avail / (CH * so), r.width / (5 * CW * so + 4 * g + 40));
+    const so = 0.6, g = 18, gap2 = 30, ctaH = 48, botM = 24;
+    const avail = r.height - gap2 - ctaH - botM - 8;
+    let f = Math.min(0.92, avail / (CH * so), r.width / (5 * CW * so + 4 * g + 40));
     f = Math.max(f, 0.2);
-    const ch = CH * so * f, cardTop = topM + topH + gap1, yOff = cardTop + ch / 2 - r.height / 2;
+    const ch = CH * so * f, cardTop = Math.max(4, (avail - ch) * 0.3 + 4), yOff = cardTop + ch / 2 - r.height / 2;
     window.__ringOut = 1;
     all.forEach((el, i) => {
       size(el, CW, CH);
@@ -1236,8 +1236,7 @@ function layout() {
       el.style.setProperty("--o", 1); el.style.setProperty("--rz", "0deg"); el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus", "is-right");
       el.classList.toggle("is-clickable", false);
     });
-    const rc = $("#ringc"), cta = $("#ringcta");
-    if (rc) rc.style.top = `${topM}px`;
+    const cta = $("#ringcta");
     if (cta) cta.style.top = `${cardTop + ch + gap2}px`;
     return;
   }
@@ -1361,9 +1360,9 @@ async function analyse(run) {
 }
 async function unlock(run) {
   S.phase = "unlock";
-  if (!$("#ringc")) stage.insertAdjacentHTML("beforeend", `<div class="ringc" id="ringc" role="group" aria-label="Ready for review"><span class="rk">5 of 5 ready</span><h2>Your five steps are ready for review</h2><p>The agent prepared everything. Look it over, change anything, then approve each step.</p></div><div class="ringc ringcta" id="ringcta"><button class="go" id="ringGo" type="button">Start review<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
+  if (!$("#ringc")) stage.insertAdjacentHTML("beforeend", `<div class="ringc" id="ringc" hidden></div><div class="ringc ringcta" id="ringcta"><button class="go" id="ringGo" type="button">Start review<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
   setMode("ring");
-  head("Onboarding Agent · done", "5 of 5 ready", "All five are ready for you", "Review them one by one. About two minutes if everything looks right.", false);
+  head("Setup ready", "5 of 5 prepared", "Your five steps are ready for review", "The agent prepared everything. Look it over, change anything, then approve each step.", false);
   ripple($("#headBlob"), 2);
   await W(RM ? 0 : 700); if (run !== S.runId) return;
   setTimeout(() => { $("#ringc").classList.add("on"); $("#ringcta").classList.add("on"); }, RM ? 0 : 500); setTimeout(() => $("#ringGo").focus({ preventScroll: true }), RM ? 0 : 1500);

@@ -304,3 +304,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Ring finale (3D decks): when processing ends, cards ease onto an arc (setMode('ring'), same transform function list so transitions are smooth) around a centred 'ready for review' message with a Start review button; clicking it hands off to startReview(). Rail variant: steps pill vertically centred. UNLOCK_JS in build3d.py replaces unlock().
 - Ready screen now uses the overview-style row of five tilted cards with the ready message and Start review below (replaced the arc).
 - Ready screen layout: message at the top, card row in the middle, Start review below the cards; cards stagger in from the centre and stagger out on Start review; text and CTA fade in after the cards settle and fade out fast.
+- Ready screen now mirrors the finale layout: centred blob + kicker/title/subtitle header, card row beneath, Start review under the cards.
