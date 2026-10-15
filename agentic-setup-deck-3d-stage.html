@@ -1151,8 +1151,8 @@ function layout() {
     return;
   }
   const [aw, ah] = dims(S.active);
-  const TH = 36, GAP = 14, ZS = 150, SC = [1, .68, .54, .44, .38], OP = [1, .78, .42, .18, .06];
-  let f = Math.max(0.42, Math.min(1.06, (r.height - 90) / ah, (r.width - 48) / aw));
+  const AN = S.phase === "analyse", TH = 36, GAP = 14 + (AN ? 92 : 0), ZS = 150, SC = [1, .68, .54, .44, .38], OP = [1, .78, .42, .18, .06];
+  let f = Math.max(0.42, Math.min(1.06, (r.height - 90) / ah, (r.width - (AN ? 250 : 48)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
     const off = i - S.active, a = Math.min(Math.abs(off), 4), dir = Math.sign(off);

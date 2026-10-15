@@ -130,8 +130,8 @@ def layout_js(theta, gap, zstep, sc, op, lift, dy, yoff, faces=False):
     return;
   }
   const [aw, ah] = dims(S.active);
-  const TH = %(theta)s, GAP = %(gap)s, ZS = %(zstep)s, SC = %(sc)s, OP = %(op)s;
-  let f = Math.max(0.42, Math.min(1.06, (r.height - %(dy)s) / ah, (r.width - 48) / aw));
+  const AN = S.phase === "analyse", TH = %(theta)s, GAP = %(gap)s + (AN ? 92 : 0), ZS = %(zstep)s, SC = %(sc)s, OP = %(op)s;
+  let f = Math.max(0.42, Math.min(1.06, (r.height - %(dy)s) / ah, (r.width - (AN ? 250 : 48)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
     const off = i - S.active, a = Math.min(Math.abs(off), 4), dir = Math.sign(off);
