@@ -14552,6 +14552,16 @@ body.ag-gate .ag-gate-hero .ag-sum-gem{ box-shadow:none !important; filter:none 
 .ag-gtm-alloc-row{ padding:16px 0 !important; }
 .ag-gtm-alloc-sum{ margin:12px 24px 20px !important; }
 .ag-gtm-alloc-foot{ border-top:1px solid #e4e8f0 !important; background:#fff !important; }
+/* Agreements: Agent Summary on the left, the document on the right */
+body.ag-gate .ag-acols{ display:grid !important; grid-template-columns:minmax(260px,340px) minmax(0,1fr); column-gap:44px; align-items:start; }
+body.ag-gate .ag-acols > .ag-brief-read{ grid-column:1 / -1; grid-row:1; }
+body.ag-gate .ag-acols > .ag-brief{ grid-column:1; grid-row:2; display:block !important; position:sticky !important; top:150px; margin:18px 0 0 !important; padding:0 !important; box-shadow:none !important; background:none !important; align-self:start; }
+body.ag-gate .ag-acols > .ag-brief::before{ display:none !important; }
+body.ag-gate .ag-acols > .ag-paper{ grid-column:2; grid-row:2; min-width:0; }
+body.ag-gate .ag-brief-chip{ display:inline-flex; margin:0 0 14px; }
+body.ag-gate .ag-acols > .ag-brief{ padding-right:28px !important; box-sizing:border-box; }
+body.ag-gate .ag-brief-prose{ font-size:14px !important; line-height:1.75 !important; }
+@media (max-width:900px){ body.ag-gate .ag-acols{ grid-template-columns:minmax(0,1fr); } body.ag-gate .ag-acols > .ag-brief, body.ag-gate .ag-acols > .ag-paper{ grid-column:1; grid-row:auto; position:static !important; } }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -22469,7 +22479,7 @@ function agMigRow() {
         </div>
         <aside class="ag-brief" aria-label="Summary of ${doc.name}">
           <p class="ag-brief-eyebrow"><svg class="ag-brief-spark" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg><span>Read for you</span><i>${doc.version}</i></p>
-          <h3 class="ag-brief-title">In Short</h3>
+          <p class="op-sumchip ag-brief-chip"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Agent Summary</p>
           <p class="ag-brief-prose">${(AG_DOC_PROSE[doc.id] || []).map((seg) => typeof seg === "string" ? agEsc(seg) : `<span role="button" tabindex="0" class="ag-brief-pt" data-action="ag-brief-jump" data-secs="${seg.c.join(",")}" title="Clause ${seg.c.map((n) => n + 1).join(" and ")}">${agEsc(seg.b)}</span>`).join("")}</p>
         </aside>
         <article class="ag-paper" aria-label="Full text of ${doc.name}">
