@@ -2,6 +2,14 @@ import re
 base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
+/* centred agent head: blob on top, text beneath */
+.ah{ flex-direction:column; align-items:center; text-align:center; gap:2px; width:min(760px,100%); position:relative; }
+.ah::before{ content:""; position:absolute; top:-30px; left:50%; width:360px; height:150px; transform:translateX(-50%); background:radial-gradient(closest-side,rgba(59,110,255,.2),rgba(59,110,255,0)); pointer-events:none; }
+.ah .blob{ width:84px; height:84px; margin-bottom:-4px; }
+.ah-t{ flex:none; width:100%; } .ah-k{ justify-content:center; }
+.ah h1{ font-size:27px; margin:4px 0 3px; } .narr{ font-size:14.5px; }
+body.v3a .ah::before{ background:radial-gradient(closest-side,rgba(90,140,255,.35),rgba(90,140,255,0)); }
+
 /* top-left identity pill */
 .hdr{ right:auto; top:16px; left:16px; height:54px; width:auto; padding:0 8px 0 18px; gap:14px; border-radius:99px; background:rgba(255,255,255,.82); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 14px 30px -18px rgba(37,99,235,.45); }
 .hdr-org{ display:none; } .hdr-l,.hdr-r{ animation:none; } .hdr-r{ gap:4px; padding-left:14px; border-left:1px solid rgba(160,185,230,.55); }
