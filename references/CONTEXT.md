@@ -302,3 +302,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Rail variant: steps are now an icon-only vertical pill (connected dots, active filled blue, done = green badge, locked = lock badge, label chip on hover), like the main prototype.
 - Fix: the source deck defined typeInto twice (cover line vs input typing); the second one overrode the first so the opening cover text never showed. Input version is now typeIntoField (patched in build.py).
 - Ring finale (3D decks): when processing ends, cards ease onto an arc (setMode('ring'), same transform function list so transitions are smooth) around a centred 'ready for review' message with a Start review button; clicking it hands off to startReview(). Rail variant: steps pill vertically centred. UNLOCK_JS in build3d.py replaces unlock().
+- Ready screen now uses the overview-style row of five tilted cards with the ready message and Start review below (replaced the arc).

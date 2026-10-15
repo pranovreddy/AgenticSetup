@@ -610,12 +610,12 @@ body.deep-open .closes{ opacity:0 !important; pointer-events:none; }
 .empty{ padding:36px 20px; text-align:center; color:var(--muted); font-size:13px; }
 @media (max-width:900px){ .tsplit{ grid-template-columns:1fr; } .trow,.thead{ grid-template-columns:22px 1fr 150px; } .trow > :nth-child(2),.trow > :nth-child(4),.trow > :nth-child(6),.thead > :nth-child(2),.thead > :nth-child(4),.thead > :nth-child(6){ display:none; } .addrow{ grid-template-columns:1fr 1fr; } .rolegrid,.bgrid{ grid-template-columns:1fr; } .hdr-org,.usr-meta{ display:none; } }
 
-/* ---------- ring: cards on an arc around the ready message ---------- */
-.ringc{ position:absolute; left:50%; top:50%; width:360px; transform:translate(-50%,-46%) scale(.96); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .9s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
-.ringc.on{ opacity:1; transform:translate(-50%,-50%); pointer-events:auto; }
+/* ---------- ready: cards in a row above the ready message ---------- */
+.ringc{ position:absolute; left:50%; top:50%; width:560px; transform:translate(-50%,14px); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .9s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
+.ringc.on{ opacity:1; transform:translate(-50%,0); pointer-events:auto; }
 .ringc .rk{ font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--blue-d); }
-.ringc h2{ margin:0; font-size:30px; line-height:1.12; letter-spacing:-.025em; font-weight:650; color:var(--ink); }
-.ringc p{ margin:0; font-size:14px; line-height:1.5; color:var(--muted); max-width:300px; }
+.ringc h2{ margin:0; font-size:28px; line-height:1.12; letter-spacing:-.025em; font-weight:650; color:var(--ink); }
+.ringc p{ margin:0; font-size:14px; line-height:1.5; color:var(--muted); max-width:460px; }
 .ringc .go{ margin-top:8px; height:46px; padding:0 22px; border:0; border-radius:99px; background:linear-gradient(180deg,#3f6ef6,#2554e6); color:#fff; font:600 14.5px/1 inherit; font-family:inherit; display:inline-flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 14px 28px -12px rgba(37,84,230,.75); transition:transform .25s var(--ease),box-shadow .25s; }
 .ringc .go:hover{ transform:translateY(-2px); box-shadow:0 18px 32px -12px rgba(37,84,230,.85); } .ringc .go svg{ width:16px; height:16px; }
 .ringc .ct{ display:flex; gap:6px; margin-top:2px; } .ringc .ct i{ width:8px; height:8px; border-radius:50%; background:#16a34a; }
@@ -1221,15 +1221,17 @@ function layout() {
     return;
   }
   if (S.mode === "ring") {
-    const R = Math.max(150, Math.min(r.width * 0.3, r.height * 0.4)), cyy = r.height * 0.05, sc = Math.min(0.42, R / 640);
+    const so = 0.6, g = 18, below = 190;
+    let f = Math.min(1.1, (r.height - 40 - below) / (CH * so), r.width / (5 * CW * so + 4 * g + 40));
+    f = Math.max(f, 0.2);
+    const ch = CH * so * f, yOff = -(below / 2) - 30;
     all.forEach((el, i) => {
-      const th = (-100 + i * 50), rad = (th * Math.PI) / 180;
       size(el, CW, CH);
-      el.style.transform = `translate3d(${R * Math.sin(rad)}px, ${cyy - R * Math.cos(rad)}px, 0px) rotateY(0deg) rotateZ(${th}deg) scale(${sc})`;
-      el.style.setProperty("--o", 1); el.style.setProperty("--rz", `${th}deg`); el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus", "is-right");
+      el.style.transform = `translate3d(${(i - 2) * (CW * so + g) * f}px, ${yOff}px, ${-Math.abs(i - 2) * 30}px) rotateY(${(2 - i) * 7}deg) rotateZ(0deg) scale(${so * f})`;
+      el.style.setProperty("--o", 1); el.style.setProperty("--rz", "0deg"); el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus", "is-right");
       el.classList.toggle("is-clickable", false);
     });
-    const rc = $("#ringc"); if (rc) rc.style.top = `${r.height / 2 + cyy}px`;
+    const rc = $("#ringc"); if (rc) rc.style.top = `${r.height / 2 + yOff + ch / 2 + 30}px`;
     return;
   }
   const [aw, ah] = dims(S.active);
