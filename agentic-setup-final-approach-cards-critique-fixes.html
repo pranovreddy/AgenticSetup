@@ -14631,6 +14631,11 @@ body.ag-gate .ag-acols > .ag-paper{ padding-left:40px !important; border-left:1p
 .op-stamp{ color:#16a34a !important; } .op-stamp text{ fill:#16a34a !important; }
 .op-stamp i{ background:radial-gradient(circle at 34% 28%, #bff0d3, #4cc787 38%, #15803d 100%) !important; box-shadow:0 12px 28px rgba(22,163,74,.34) !important; }
 .op-done .op-done-next .op-lspin{ border-top-color:#16a34a; }
+/* Plan points as small picture cards (layout unchanged) */
+.op-pts-cards{ display:grid !important; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px !important; max-width:none !important; }
+.op-pc{ display:flex !important; flex-direction:column; align-items:stretch !important; gap:10px !important; padding:10px 10px 14px; border-radius:16px; background:rgba(255,255,255,.82); box-shadow:0 0 0 1px rgba(196,214,245,.7), 0 12px 26px -18px rgba(37,99,235,.3); animation:op-rise 520ms var(--op-ease) calc(300ms + var(--n) * 80ms) both; }
+.op-pc-art{ border-radius:12px; background:linear-gradient(180deg,#f3f7ff,#e9f0fe); padding:6px 4px; } .op-pc-art svg{ display:block; width:100%; height:auto; }
+.op-pc b{ display:block; padding:0 4px; font-size:13.5px !important; line-height:1.3; font-weight:650; color:var(--op-ink); }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -26021,16 +26026,28 @@ function agMigRow() {
     ][n] || "";
     return hd + art + "</svg>";
   }
+  /* Three small pictures for the plan points, same soft blue as the loaders */
+  function opPtArt(k) {
+    const hd = '<svg viewBox="0 0 200 96" fill="none" xmlns="http://www.w3.org/2000/svg">';
+    const a = {
+      work: '<rect x="20" y="16" width="46" height="64" rx="10" fill="#fff" stroke="#d6e2f6"/><rect x="30" y="28" width="26" height="5" rx="2.5" fill="#cfdcf5"/><rect x="30" y="39" width="18" height="5" rx="2.5" fill="#e3ecfb"/><path d="M66 48h28" stroke="#9cc2ff" stroke-width="1.6" stroke-dasharray="3 4"/><circle cx="116" cy="48" r="22" fill="#2563eb"/><circle cx="116" cy="48" r="30" stroke="#bcd2fb"/><path d="M107 48l6 6 11-12" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g fill="#fff" stroke="#d6e2f6"><rect x="154" y="22" width="30" height="16" rx="6"/><rect x="154" y="42" width="30" height="16" rx="6"/><rect x="154" y="62" width="30" height="16" rx="6"/></g><g fill="#60a5fa"><circle cx="164" cy="30" r="3"/><circle cx="164" cy="50" r="3"/><circle cx="164" cy="70" r="3"/></g>',
+      review: '<rect x="26" y="12" width="148" height="72" rx="12" fill="#fff" stroke="#d6e2f6"/><rect x="40" y="26" width="52" height="6" rx="3" fill="#cfdcf5"/><rect x="40" y="40" width="96" height="6" rx="3" fill="#e3ecfb"/><rect x="40" y="54" width="76" height="6" rx="3" fill="#e3ecfb"/><circle cx="148" cy="62" r="20" fill="#eef4ff" stroke="#9cc2ff" stroke-width="2"/><circle cx="148" cy="62" r="7" fill="#2563eb"/><path d="M162 76l10 10" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round"/>',
+      control: '<path d="M100 10l44 16v26c0 22-18 36-44 44-26-8-44-22-44-44V26z" fill="#eef4ff" stroke="#bcd2fb" stroke-width="2"/><path d="M100 22l32 12v18c0 16-13 27-32 33-19-6-32-17-32-33V34z" fill="#fff" stroke="#d6e2f6"/><path d="M86 52l10 10 18-20" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+    }[k] || "";
+    return hd + a + "</svg>";
+  }
   function opNextUpMarkup(v) {
     if (v === "d") {
-      return `<div class="op-route is-cards">
+      return `<div class="op-route">
         <div class="op-route-copy">
           <p class="op-route-kick"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Your setup plan</p>
           <h2>Five steps, then migration</h2>
           <p>Each step is prepared for you first. You check the summary, then accept or submit.</p>
+          <ul class="op-route-pts op-pts-cards">${[["The work is done for you","work"],["You review each step","review"],["Nothing is submitted without you","control"]].map(([t, k], n) => `<li class="op-pc" style="--n:${n}"><div class="op-pc-art" aria-hidden="true">${opPtArt(k)}</div><b>${t}</b></li>`).join("")}</ul>
         </div>
-        <ol class="op-rcards">${AG_NEXTUP.map(([ic, t], n) => `<li class="op-rc${n === 0 ? " is-here" : ""}" style="--n:${n}"><span class="op-rc-n">${n + 1}</span><div class="op-rc-art" aria-hidden="true">${opRcArt(n)}</div><b>${t}</b></li>`).join("")}</ol>
-        <div class="op-route-cta"><span class="op-route-time"></span><button type="button" class="op-btn is-primary" data-nextup-go>Start with your business profile${I("arrow", "sm")}</button></div>
+        <div class="op-route-side"><ol class="op-route-map">${AG_NEXTUP.map(([ic, t], n) => `<li style="--n:${n}" class="${n === 0 ? "is-here" : ""}"><span class="op-route-dot">${n === 0 ? opOrb() : I(ic)}</span><span class="op-route-t"><b>${t}</b><span>${OP_PLAN[n][0]}</span></span>${n === 0 ? `<span class="op-route-here">Starting here</span>` : ""}</li>`).join("")}
+          </ol>
+        <div class="op-route-cta"><span class="op-route-time"></span><button type="button" class="op-btn is-primary" data-nextup-go>Start with your business profile${I("arrow", "sm")}</button></div></div>
       </div>`;
     }
     return `<div class="op-nchat"><div class="op-chat">
