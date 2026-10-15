@@ -14568,6 +14568,11 @@ body.ag-gate .ag-acols > .ag-brief{ grid-row:2 / span 2 !important; }
 body.ag-gate .ag-acols > .ag-paper{ grid-row:3 !important; }
 .ag-profile .kyc-control.is-filling, .ag-profile .kyc-area.is-filling{ caret-color:#2563eb; }
 .op-card-ft .op-why{ font-size:11.5px !important; line-height:1.4; color:#6b7a96 !important; font-weight:450; }
+.ag-um-edit{ width:100%; height:34px; padding:0 10px; border:1px solid #d6e2f6; border-radius:9px; background:#fff; font:inherit; font-size:13px; color:#0f1f3d; box-sizing:border-box; transition:border-color .15s, box-shadow .15s; }
+.ag-um-edit::placeholder{ color:#98a6c0; }
+.ag-um-edit:hover{ border-color:#b9cdf1; }
+.ag-um-edit:focus, .ag-um-edit:focus-visible{ outline:none; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12); }
+.ag-um-edit-sel{ appearance:none; -webkit-appearance:none; padding-right:28px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%235f7396' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 4.5 3 3 3-3'/%3E%3C/svg%3E") no-repeat right 10px center; cursor:pointer; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -22690,10 +22695,9 @@ function agMigRow() {
           </div>
         </div>
         <div class="ag-um-mobile">${agEsc(mobile)}</div>
-        <div class="ag-um-dept">${agEsc(dept)}</div>
-        <div class="ag-um-role"><span class="ag-person-role-chip">${agEsc(p.platformRole)}</span></div>
+        <div class="ag-um-dept"><input type="text" class="ag-um-edit" data-person-dept="${agEsc(p.email)}" value="${agEsc(p.department || agInviteDept(p) || "")}" placeholder="Add department" aria-label="Department for ${agEsc(p.name)}" autocomplete="off"></div>
+        <div class="ag-um-role"><select class="ag-um-edit ag-um-edit-sel" data-person-role="${agEsc(p.email)}" aria-label="Role for ${agEsc(p.name)}">${INVITE_ROLES.map((o) => `<option value="${agEsc(o.pill)}"${o.pill === p.platformRole ? " selected" : ""}>${agEsc(o.pill)}</option>`).join("")}${INVITE_ROLES.some((o) => o.pill === p.platformRole) ? "" : `<option value="${agEsc(p.platformRole)}" selected>${agEsc(p.platformRole)}</option>`}</select></div>
         <div class="ag-um-actions">
-          <button type="button" class="ag-person-edit" data-action="ag-edit-person" data-email="${agEsc(p.email)}" aria-label="Edit ${agEsc(p.name)}">${editIc}</button>
           <button type="button" class="ag-person-remove" data-action="ag-remove-person" data-email="${agEsc(p.email)}" aria-label="Remove ${agEsc(p.name)}">${I("close", "sm")}</button>
         </div>
       </div>`;
@@ -23584,6 +23588,11 @@ function agMigRow() {
       if (review) review.disabled = total !== 100;
       return;
     }
+    if (e.target.matches("[data-person-dept]")) {
+      const person = agTeamPeople().find((p) => p.email === e.target.dataset.personDept);
+      if (person) person.department = e.target.value;
+      return;
+    }
     if (e.target.matches("[data-team-search]")) {
       agTeamQuery = e.target.value;
       agTeamFilter();
@@ -23600,6 +23609,16 @@ function agMigRow() {
   });
 
   document.addEventListener("change", (e) => {
+    if (e.target.matches("[data-person-role]")) {
+      const person = agTeamPeople().find((p) => p.email === e.target.dataset.personRole);
+      if (person) {
+        person.platformRole = e.target.value;
+        const row = e.target.closest(".ag-um-row");
+        if (row) { row.dataset.role = person.platformRole; row.dataset.search = agPersonHay(person); }
+        agTeamFilter();
+      }
+      return;
+    }
     if (e.target.matches("[data-agree-check]")) {
       state.docAgree = !!e.target.checked;
       const signBtn = document.querySelector('.ag-actions [data-action="ag-accept"]');
