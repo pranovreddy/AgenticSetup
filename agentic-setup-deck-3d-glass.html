@@ -644,6 +644,34 @@ body.v3b .card::before,body.v3b .card::after{ border-radius:31px; }
 .cap3 .det{ height:38px; padding:0 14px; border-radius:99px; border:0; background:rgba(37,99,235,.1); color:var(--blue-d); font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:7px; } .cap3 .det:hover:not(:disabled){ background:rgba(37,99,235,.2); } .cap3 .det:disabled{ opacity:.4; cursor:not-allowed; } .cap3 .det svg{ width:15px; height:15px; }
 .dots3{ left:50%; bottom:46px; transform:translateX(-50%); display:flex; gap:7px; align-items:center; } .dots3 i{ width:8px; height:8px; border-radius:99px; background:rgba(37,99,235,.25); transition:width .5s var(--ease),background .3s; } .dots3 i.on{ width:44px; background:rgba(37,99,235,.6); } .dots3 i.done{ background:#16a34a; }
 body.v3b .proto{ bottom:20px; }
+
+/* flip cards: gradient face when out of focus, details when in focus */
+body.v3b .card{ transform-style:preserve-3d; }
+body.v3b .card.is-far{ filter:none; }
+body.v3b .card-in{ backface-visibility:hidden; -webkit-backface-visibility:hidden; -webkit-backdrop-filter:none; backdrop-filter:none; opacity:var(--o,1); transform:rotateY(0deg); transition:transform .95s var(--ease); background:linear-gradient(165deg,rgba(255,255,255,.97),rgba(255,255,255,.9)); }
+body.v3b .card:not(.is-focus) .card-in{ background:linear-gradient(165deg,rgba(255,255,255,.97),rgba(255,255,255,.9)); }
+body.v3b .card:not(.is-focus) .pane,body.v3b .card:not(.is-focus) .c-head,body.v3b .card:not(.is-focus) .r-foot{ opacity:1; }
+body.v3b:not(.mode-overview) .card:not(.is-focus) .card-in{ transform:rotateY(180deg); }
+.cardf{ position:absolute; inset:0; border-radius:30px; overflow:hidden; backface-visibility:hidden; -webkit-backface-visibility:hidden; opacity:var(--o,1); transform:rotateY(180deg); transition:transform .95s var(--ease); color:#fff; padding:28px; display:flex; flex-direction:column; background:linear-gradient(140deg,#1e3a8a 0%,#2563eb 45%,#7db4ff 100%); box-shadow:0 0 0 1.5px rgba(255,255,255,.55) inset,0 40px 70px -34px rgba(30,70,170,.7); }
+body.v3b:not(.mode-overview) .card:not(.is-focus) .cardf{ transform:rotateY(360deg); }
+.cardf::before{ content:""; position:absolute; inset:0; background:radial-gradient(60% 55% at 85% 8%,rgba(255,255,255,.4),transparent 70%),radial-gradient(50% 50% at 8% 100%,rgba(11,26,70,.55),transparent 70%); }
+.cardf::after{ content:""; position:absolute; top:-20%; bottom:-20%; width:34%; left:-50%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent); transform:skewX(-18deg); animation:cfsweep 6s ease-in-out infinite; }
+@keyframes cfsweep{ 0%,55%{ left:-50%; } 100%{ left:130%; } }
+.cardf > *{ position:relative; z-index:1; }
+.cardf.s-queued{ background:linear-gradient(140deg,#334a7a 0%,#4b6aa8 55%,#8fa9d6 100%); }
+.cardf.s-locked{ background:linear-gradient(140deg,#3a4558 0%,#566480 55%,#94a0b8 100%); }
+.cardf.s-done{ background:linear-gradient(140deg,#0f4c81 0%,#1d6fd6 50%,#6fd0b0 100%); }
+.cf-top{ display:flex; align-items:flex-start; justify-content:space-between; }
+.cf-ic{ width:64px; height:64px; border-radius:20px; display:grid; place-items:center; background:rgba(255,255,255,.18); box-shadow:0 0 0 1px rgba(255,255,255,.4) inset; } .cf-ic svg{ width:30px; height:30px; }
+.cf-no{ font:500 12px/1 var(--mono); letter-spacing:.08em; opacity:.8; }
+.cf-mid{ margin-top:auto; }
+.cf-mid h3{ margin:0 0 12px; font-size:30px; line-height:1.1; font-weight:650; letter-spacing:-.02em; }
+.cf-st{ display:inline-flex; align-items:center; gap:8px; height:30px; padding:0 14px 0 10px; border-radius:99px; background:rgba(255,255,255,.2); box-shadow:0 0 0 1px rgba(255,255,255,.35) inset; font-size:13px; font-weight:600; backdrop-filter:blur(4px); }
+.cf-st i{ width:9px; height:9px; border-radius:50%; background:#fff; } .cf-st.run i{ border:2px solid #fff; border-right-color:transparent; background:none; animation:spin .8s linear infinite; } .cf-st.ok i{ background:#7CF0B2; } .cf-st svg{ width:13px; height:13px; }
+.cf-bot{ display:flex; align-items:center; justify-content:space-between; margin-top:26px; font:500 13px/1 var(--mono); letter-spacing:.12em; opacity:.85; }
+.card.is-far .cf-mid,.card.is-far .cf-bot{ opacity:0; }
+.cf-bot .ai-mark{ width:26px; height:26px; opacity:.95; }
+
 </style>
 </head>
 <body class="phase-gate mode-overview v3b">
@@ -1130,14 +1158,14 @@ function layout() {
     all.forEach((el, i) => {
       size(el, CW, CH);
       el.style.transform = `translate3d(${(i - 2) * (CW * so + g) * f}px, ${yOff}px, ${-Math.abs(i - 2) * 30}px) rotateY(${(2 - i) * 7}deg) scale(${so * f})`;
-      el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus");
+      el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus");
       el.classList.toggle("is-clickable", S.phase === "review");
     });
     $("#finale").style.top = `${r.height / 2 + yOff + (CH * so * f) / 2 + 28}px`;
     return;
   }
   const [aw, ah] = dims(S.active);
-  const TH = 24, GAP = -46, ZS = 90, SC = [1, .76, .64, .56, .5], OP = [1, .92, .6, .25, .08];
+  const TH = 56, GAP = -118, ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
   let f = Math.max(0.42, Math.min(1.06, (r.height - 230) / ah, (r.width - 48) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
@@ -1147,7 +1175,7 @@ function layout() {
     const [w, h] = dims(i); size(el, w, h);
     const z = a === 0 ? 40 : -ZS * a;
     el.style.transform = `translate3d(${dir * x * f}px, ${-52 * f}px, ${z}px) rotateY(${-dir * TH}deg) scale(${SC[a] * f})`;
-    el.style.opacity = OP[a]; el.style.zIndex = 20 - a;
+    el.style.setProperty("--o", OP[a]); el.style.opacity = 1; el.style.zIndex = 20 - a;
     el.classList.toggle("is-focus", off === 0);
     el.classList.toggle("is-far", a >= 2);
     el.classList.toggle("is-clickable", S.phase === "review" && off !== 0);
@@ -1865,8 +1893,34 @@ $("#logoutBtn").addEventListener("click", () => {
 
 /* ---------- 3D capsule (version B) ---------- */
 let capSig = "";
+function faceHTML(i) {
+  const s = STEPS[i], c = S.cards[i], lk = c.st === "review" && isLocked(i);
+  let cls = "s-active", txt = "", ic = "";
+  if (c.st === "queued") { cls = "s-queued"; txt = "Queued"; ic = "<i></i>"; }
+  else if (c.st === "analysing") { txt = "The agent is working"; ic = ""; }
+  else if (c.st === "ready") txt = "Ready for review";
+  else if (c.st === "review") { if (lk) { cls = "s-locked"; txt = "Locked"; ic = IC.lock; } else txt = "Your review"; }
+  else if (c.st === "done") { cls = "s-done"; txt = "Done"; ic = IC.check; }
+  else if (c.st === "later") { cls = "s-queued"; txt = "Saved for later"; }
+  else if (c.st === "inreview") { txt = "In review"; }
+  const run = c.st === "analysing" || c.st === "inreview";
+  const done = c.st === "done";
+  return { cls, html: `<div class="cf-top"><span class="cf-ic">${IC[s.key]}</span><span class="cf-no">STEP ${String(i + 1).padStart(2, "0")} / 05</span></div>
+    <div class="cf-mid"><h3>${esc(s.title)}</h3><span class="cf-st ${run ? "run" : done ? "ok" : ""}">${run ? "<i></i>" : ic || "<i></i>"}${txt}</span></div>
+    <div class="cf-bot"><span>•••• ${String(i + 1).padStart(2, "0")}</span>${AI_MARK}</div>` };
+}
+let faceSig = "";
+function faces() {
+  const sig = S.cards.map((c, i) => c.st + (c.st === "review" && isLocked(i))).join();
+  if (sig === faceSig && $$(".cardf").length === 5) return; faceSig = sig;
+  cards().forEach((el, i) => {
+    let f = $(".cardf", el); if (!f) { f = document.createElement("div"); f.className = "cardf"; el.appendChild(f); }
+    const { cls, html } = faceHTML(i); f.className = "cardf " + cls; f.innerHTML = html;
+  });
+}
 function hudSync() {
   const cap = $("#cap3"); if (!cap) return;
+  faces();
   const i = S.active, s = STEPS[i], c = S.cards[i], rev = S.phase === "review";
   const lk = c.st === "review" && isLocked(i);
   const status = { queued: "Queued", analysing: "The agent is working", ready: "Ready", review: lk ? "Locked" : "Your review", done: "Done", later: "Saved for later", inreview: "In review" }[c.st] || "";
