@@ -281,18 +281,70 @@ def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
     assert s.count(m) == 1
     s = s.replace(m, hud_js + '\n' + m)
     if 'glass' in name:
+        pass
+    if 'glass' in name or 'rail' in name:
         old = 'const CW = 372, CH = 548, AW = 640, AH = 446, RH = 500, RH_PROFILE = 566;'
         assert old in s
         s = s.replace(old, 'const CW = 372, CH = 548, AW = 760, AH = 530, RH = 570, RH_PROFILE = 620;')
     if 'glass' in name:
+        pass
+    if 'glass' in name or 'rail' in name:
         o = 'pre = lead ? `<b>${esc(lead)}</b> · ` : ""'
         assert o in s
         s = s.replace(o, 'pre = ""')
+    if 'rail' in name:
+        s = s.replace('AW = 760, AH = 530, RH = 570, RH_PROFILE = 620', 'AW = 800, AH = 560, RH = 610, RH_PROFILE = 660')
     s = s.replace('<title>DigiConsent Agent Deck Enhanced</title>', f'<title>{title}</title>')
     open(f'/home/user/AgenticSetup/{name}', 'w').write(s)
     print(name, len(s))
+
+RAIL_C_CSS = r'''
+/* ---------- Version C: steps rail on the left, compact agent head ---------- */
+body.v3c .deck{ left:268px; }
+body.v3c .ah{ flex-direction:row; align-items:center; text-align:left; gap:14px; width:min(780px,100%); }
+body.v3c .ah::before{ left:36px; top:-34px; width:260px; height:130px; transform:none; }
+body.v3c .ah .blob{ width:64px; height:64px; margin:0; }
+body.v3c .ah-t{ flex:1; width:auto; } body.v3c .ah-k{ justify-content:flex-start; }
+body.v3c .ah h1{ font-size:24px; margin:2px 0 1px; } body.v3c .narr{ font-size:13.5px; }
+body.v3c .stage{ -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 100%)!important; mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 100%)!important; }
+body.v3c .cap3{ left:calc(50% + 134px); }
+.rail3c{ position:fixed; left:16px; top:172px; width:236px; z-index:30; display:flex; flex-direction:column; gap:4px; padding:16px 10px 12px; border-radius:26px; background:rgba(255,255,255,.9); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 20px 40px -26px rgba(37,99,235,.45); opacity:0; transition:opacity .6s; pointer-events:none; }
+body.deck-on .rail3c{ opacity:1; pointer-events:auto; }
+.rail3c h4{ margin:0 8px 8px; font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.rc{ position:relative; display:flex; align-items:center; gap:12px; width:100%; padding:10px 10px; border:0; border-radius:16px; background:none; text-align:left; cursor:default; transition:background .3s; }
+.rc:not(:last-child)::after{ content:""; position:absolute; left:29px; top:100%; width:2px; height:8px; background:rgba(120,150,210,.3); z-index:0; }
+.rc .ic{ position:relative; flex:none; width:38px; height:38px; border-radius:50%; display:grid; place-items:center; background:#fff; color:var(--muted); box-shadow:0 0 0 1px rgba(196,214,245,.9) inset; z-index:1; } .rc .ic svg{ width:18px; height:18px; }
+.rc .tx{ display:flex; flex-direction:column; line-height:1.25; min-width:0; } .rc .tx b{ font-size:14px; font-weight:600; color:var(--ink); white-space:nowrap; } .rc .tx span{ font-size:12px; color:var(--muted); }
+.rc.on{ background:#fff; box-shadow:0 0 0 1px rgba(150,180,235,.7) inset,0 12px 24px -16px rgba(37,99,235,.55); } .rc.on .ic{ background:var(--blue); color:#fff; box-shadow:none; }
+.rc.done .ic{ background:#16a34a; color:#fff; box-shadow:none; } .rc.done .tx span{ color:#15803d; }
+.rc.lk{ opacity:.6; } .rc.run .tx span{ color:var(--blue-d); } .rc.run .ic::after{ content:""; position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(37,99,235,.9); border-right-color:transparent; animation:spin 1s linear infinite; }
+.rc.clk{ cursor:pointer; } .rc.clk:hover{ background:rgba(255,255,255,.8); }
+'''
+RAIL_C_HTML = '<nav class="rail3c" id="rail3c" aria-label="Steps"></nav>'
+RAIL_C_JS = r'''
+/* ---------- steps rail (version C) ---------- */
+let railSig = "";
+function railSync() {
+  const r = $("#rail3c"); if (!r) return;
+  const rev = S.phase === "review";
+  const sig = [S.active, S.phase, S.cards.map((c, i) => c.st + (c.st === "review" && isLocked(i))).join()].join("|");
+  if (sig === railSig) return; railSig = sig;
+  r.innerHTML = `<h4>Setup steps</h4>` + STEPS.map((s, i) => {
+    const c = S.cards[i], lk = c.st === "review" && isLocked(i), dn = c.st === "done";
+    const run = c.st === "analysing" || c.st === "inreview";
+    const txt = { queued: "Queued", analysing: "Agent is working", ready: "Ready", review: lk ? "Locked" : "Your review", done: "Done", later: "Saved for later", inreview: "In review" }[c.st] || "";
+    const cls = ["rc", i === S.active ? "on" : "", dn ? "done" : "", lk ? "lk" : "", run ? "run" : "", rev && !lk && i !== S.active ? "clk" : ""].join(" ");
+    return `<button class="${cls}" data-i="${i}" ${rev && !lk ? "" : "tabindex=-1"}><span class="ic">${dn ? IC.check : lk ? IC.lock : IC[s.key]}</span><span class="tx"><b>${esc(s.title)}</b><span>${txt}</span></span></button>`;
+  }).join("");
+}
+$("#rail3c").addEventListener("click", (e) => { const b = e.target.closest("button[data-i]"); if (b && S.phase === "review" && !(S.cards[+b.dataset.i].st === "review" && isLocked(+b.dataset.i))) focusCard(+b.dataset.i); });
+setInterval(railSync, 250); railSync();
+'''
 
 make('agentic-setup-deck-3d-stage.html', 'v3a', A_CSS, ENV_A, RAIL_HTML, HUD_A,
      layout_js(36, 14, 150, '[1, .68, .54, .44, .38]', '[1, .78, .42, .18, .06]', 70, 90, '-12 * f'), 'DigiConsent Agent Deck 3D Stage')
 make('agentic-setup-deck-3d-glass.html', 'v3b', B_CSS, ENV_B, CAP_HTML, HUD_B,
      faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 40, 150, '-30 * f')), 'DigiConsent Agent Deck 3D Glass')
+
+make('agentic-setup-deck-3d-glass-rail.html', 'v3b v3c', B_CSS + RAIL_C_CSS, ENV_B, CAP_HTML + RAIL_C_HTML, HUD_B + RAIL_C_JS,
+     faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 40, 128, '-26 * f')), 'DigiConsent Agent Deck 3D Glass Rail')
