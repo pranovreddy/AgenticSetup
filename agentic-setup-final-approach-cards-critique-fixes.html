@@ -25277,7 +25277,7 @@ function agMigRow() {
     aside?.remove();
     const info = opPanelInfo(key === "1" ? opProfileModel() : opSumModel(key));
     const acc = info.slice(info.indexOf('<div class="op-fr-in"'), info.lastIndexOf("</aside>"));
-    const head = key === "1" ? `<header class="op-dside-hd"><p class="op-sumchip"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Summary</p><h2 class="op-h"></h2><p class="op-sub"></p></header>` : "";
+    const head = key === "1" ? `<header class="op-dside-hd"><p class="op-sumchip"><span class="op-mark" aria-hidden="true">${bootAiMark()}</span>Agent Summary</p><h2 class="op-h"></h2><p class="op-sub"></p></header>` : "";
     body.insertAdjacentHTML("beforeend", `<aside class="op-dside" data-key="${key}" aria-label="What the agent did">${OP_FR_ART}<div class="op-dside-in">${head}${v === "g" ? opCollapse(acc) : acc}</div></aside>`);
     if (key === "1") {
       const t = AG_TELE.kyc;
