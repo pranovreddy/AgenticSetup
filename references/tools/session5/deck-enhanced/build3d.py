@@ -13,13 +13,13 @@ body.v3a .ah::before{ background:radial-gradient(closest-side,rgba(90,140,255,.3
 /* top-left vertical identity pill */
 .hdr{ position:fixed; top:16px; left:16px; right:auto; height:auto; width:auto; z-index:40; flex-direction:column; align-items:center; gap:12px; padding:10px; border-radius:40px; background:rgba(244,248,255,.9); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 16px 34px -18px rgba(37,99,235,.5); pointer-events:auto; }
 .hdr .mk{ width:50px; height:50px; border-radius:50%; background:#fff; display:grid; place-items:center; color:#3b6bf5; box-shadow:0 6px 14px -10px rgba(37,99,235,.5); }
-.hdr .mk svg{ width:24px; height:27px; }
+.hdr .mk img{ width:26px; height:auto; display:block; }
 .hdr .me{ border:0; background:none; padding:3px; border-radius:50%; cursor:pointer; box-shadow:0 0 0 3px #dfe6f5 inset; }
 .hdr .me .usr-av{ width:44px; height:44px; background:#3b5be8; color:#fff; font-size:14px; } .hdr .me .usr-av::before{ display:none; } .hdr .me .usr-av i{ background:#3b5be8; color:#fff; }
 .hdr .fly{ position:absolute; left:calc(100% + 10px); top:0; min-width:260px; padding:14px; border-radius:20px; background:rgba(255,255,255,.96); box-shadow:0 0 0 1px rgba(196,214,245,.9) inset,0 22px 44px -20px rgba(15,35,90,.4); display:flex; flex-direction:column; gap:10px; opacity:0; transform:translateX(-6px); pointer-events:none; transition:opacity .2s,transform .25s var(--ease); }
 .hdr:hover .fly,.hdr:focus-within .fly{ opacity:1; transform:none; pointer-events:auto; }
 .hdr .fly{ text-align:left; } .hdr .fly .hdr-logo{ height:24px; align-self:flex-start; }
-.hdr .who{ display:flex; flex-direction:column; line-height:1.3; padding:8px 0; border-block:1px solid #e6edf8; } .hdr .who strong{ font-size:14px; color:var(--ink); } .hdr .who span{ font-size:12px; color:var(--muted); }
+.hdr .who{ text-align:left; align-items:flex-start; display:flex; flex-direction:column; line-height:1.3; padding:8px 0; border-block:1px solid #e6edf8; } .hdr .who strong{ font-size:14px; color:var(--ink); } .hdr .who span{ font-size:12px; color:var(--muted); }
 .hdr .logout{ height:38px; justify-content:center; background:#f1f5fd!important; box-shadow:none!important; border-radius:12px; }
 body.v3a .hdr{ background:rgba(255,255,255,.1); box-shadow:0 0 0 1px rgba(160,190,255,.25) inset; } body.v3a .hdr .mk{ background:rgba(255,255,255,.92); }
 
@@ -243,9 +243,10 @@ def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
     assert s.count('</style>\n</head>') == 1
     s = s.replace('</style>\n</head>', SHARED_CSS + extra_css + '</style>\n</head>')
     ha = s.index('<header class="hdr">'); hb = s.index('</header>', ha) + 9
+    mark = open('/tmp/mark.b64').read()
     logo = re.search(r'<img class="hdr-logo" src="([^"]+)"', s[ha:hb]).group(1)
     s = s[:ha] + f'''<header class="hdr" id="hdr">
-  <span class="mk" aria-hidden="true"><svg viewBox="0 0 32 36"><path fill="currentColor" d="m15 1-9 5 9 5V1Zm3 2v10l9-5-9-5ZM3 10v10l9-5-9-5Zm13 3-9 5 9 5V13Zm4 2v10l9-5-9-5ZM5 24v9l9-5-9-4Zm12 1v10l9-5-9-5Z"/></svg></span>
+  <span class="mk" aria-hidden="true"><img src="{mark}" alt=""></span>
   <button class="me" type="button" aria-label="Account menu" aria-haspopup="true"><span class="usr-av" style="--p:0"><i>RM</i></span></button>
   <div class="fly" role="menu"><img class="hdr-logo" src="{logo}" alt="DigiConsent"><div class="who"><strong>Ravi Menon</strong><span>Super Admin · HDFC Bank Limited</span></div><button class="logout" id="logoutBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>Log out</button></div>
 </header>''' + s[hb:]
