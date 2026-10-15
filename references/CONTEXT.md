@@ -300,3 +300,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Glass deck: every unfocused card has a vertical step-name + status label on its exposed outer edge (.cf-v); layout toggles is-right for cards after the active one.
 - Version C: agentic-setup-deck-3d-glass-rail.html (Glass plus a left 'Setup steps' rail below the identity pill, compact 3-line agent head with blob at left, bigger cards, left edge fades). Built by the third make() call in build3d.py.
 - Rail variant: steps are now an icon-only vertical pill (connected dots, active filled blue, done = green badge, locked = lock badge, label chip on hover), like the main prototype.
+- Fix: the source deck defined typeInto twice (cover line vs input typing); the second one overrode the first so the opening cover text never showed. Input version is now typeIntoField (patched in build.py).

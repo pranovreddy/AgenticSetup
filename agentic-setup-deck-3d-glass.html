@@ -1370,7 +1370,7 @@ function reviewHead() {
 }
 
 /* The agent types the business profile into the card, field by field, the way it did in the product form. */
-async function typeInto(el, text, duration) {
+async function typeIntoField(el, text, duration) {
   if (RM) { el.value = text; return; }
   try { el.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
   const weights = Array.from(text, (ch, i) => 0.55 + Math.random() * 0.9 + (ch === " " ? 0.5 : 0) + (",.-/@".includes(ch) ? 0.7 : 0) + (i === 0 ? 1.2 : 0));
@@ -1395,7 +1395,7 @@ async function fillProfile() {
     const f = PROFILE.find((x) => x.k === row.dataset.k), inp = $(".pin", row);
     row.classList.remove("is-waiting"); row.classList.add("is-filling");
     if (S.active === 0) narrate(`Filling in ${f.label.toLowerCase()} from ${f.src}`, "", true);
-    await typeInto(inp, f.v, Math.min(1150, 260 + f.v.length * 26));
+    await typeIntoField(inp, f.v, Math.min(1150, 260 + f.v.length * 26));
     row.classList.remove("is-filling"); row.classList.add("is-filled");
   }
   if (run !== S.runId) return;

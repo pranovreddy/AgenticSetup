@@ -93,6 +93,8 @@ rep('if (!deep.hidden) { deep.hidden = true; deep.innerHTML = ""; }',
     'if (!deep.hidden) { deep.hidden = true; deep.innerHTML = ""; }\n  document.body.classList.remove("deep-open"); S.gtmStep = "select"; S.allocMap = {}; S.gtmTerms = false; S.tplSel = new Set(); S.dirty = false;')
 
 rep('window.__deck = { jump, S, focusCard, openDeep };','window.__deck = { jump, S, focusCard, openDeep, refreshLocks, renderReview, setStatus, firstOpen };')
+rep('async function typeInto(el, text, duration) {', 'async function typeIntoField(el, text, duration) {')
+rep('await typeInto(inp, f.v,', 'await typeIntoField(inp, f.v,')
 # title + copy
 rep('<title>DigiConsent Agent Deck</title>', '<title>DigiConsent Agent Deck Enhanced</title>')
 open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html', 'w').write(src)
