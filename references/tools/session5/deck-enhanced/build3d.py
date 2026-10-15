@@ -2,6 +2,19 @@ import re
 base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
+/* ---------- ring: cards on an arc around the ready message ---------- */
+.ringc{ position:absolute; left:50%; top:50%; width:360px; transform:translate(-50%,-46%) scale(.96); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .9s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
+.ringc.on{ opacity:1; transform:translate(-50%,-50%); pointer-events:auto; }
+.ringc .rk{ font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--blue-d); }
+.ringc h2{ margin:0; font-size:30px; line-height:1.12; letter-spacing:-.025em; font-weight:650; color:var(--ink); }
+.ringc p{ margin:0; font-size:14px; line-height:1.5; color:var(--muted); max-width:300px; }
+.ringc .go{ margin-top:8px; height:46px; padding:0 22px; border:0; border-radius:99px; background:linear-gradient(180deg,#3f6ef6,#2554e6); color:#fff; font:600 14.5px/1 inherit; font-family:inherit; display:inline-flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 14px 28px -12px rgba(37,84,230,.75); transition:transform .25s var(--ease),box-shadow .25s; }
+.ringc .go:hover{ transform:translateY(-2px); box-shadow:0 18px 32px -12px rgba(37,84,230,.85); } .ringc .go svg{ width:16px; height:16px; }
+.ringc .ct{ display:flex; gap:6px; margin-top:2px; } .ringc .ct i{ width:8px; height:8px; border-radius:50%; background:#16a34a; }
+body.mode-ring .card .mini{ transform:rotate(calc(var(--rz,0deg) * -1)); } .card .mini{ transition:transform .9s var(--ease); }
+body.mode-ring .deck-head{ opacity:0; pointer-events:none; } .deck-head{ transition:opacity .5s; }
+body.v3a .ringc h2{ color:#fff; } body.v3a .ringc p{ color:#a9bbdc; } body.v3a .ringc .rk{ color:#8fb4ff; }
+
 /* centred agent head: blob on top, text beneath */
 .ah{ flex-direction:column; align-items:center; text-align:center; gap:2px; width:min(760px,100%); position:relative; }
 .ah::before{ content:""; position:absolute; top:-30px; left:50%; width:360px; height:150px; transform:translateX(-50%); background:radial-gradient(closest-side,rgba(59,110,255,.2),rgba(59,110,255,0)); pointer-events:none; }
@@ -167,11 +180,23 @@ def layout_js(theta, gap, zstep, sc, op, lift, dy, yoff, faces=False):
     const yOff = S.phase === "finale" ? -(r.height / 2 - (CH * so * f) / 2 - 16) : 0;
     all.forEach((el, i) => {
       size(el, CW, CH);
-      el.style.transform = `translate3d(${(i - 2) * (CW * so + g) * f}px, ${yOff}px, ${-Math.abs(i - 2) * 30}px) rotateY(${(2 - i) * 7}deg) scale(${so * f})`;
+      el.style.transform = `translate3d(${(i - 2) * (CW * so + g) * f}px, ${yOff}px, ${-Math.abs(i - 2) * 30}px) rotateY(${(2 - i) * 7}deg) rotateZ(0deg) scale(${so * f})`;
       el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus");
       el.classList.toggle("is-clickable", S.phase === "review");
     });
     $("#finale").style.top = `${r.height / 2 + yOff + (CH * so * f) / 2 + 28}px`;
+    return;
+  }
+  if (S.mode === "ring") {
+    const R = Math.max(150, Math.min(r.width * 0.3, r.height * 0.4)), cyy = r.height * 0.05, sc = Math.min(0.42, R / 640);
+    all.forEach((el, i) => {
+      const th = (-100 + i * 50), rad = (th * Math.PI) / 180;
+      size(el, CW, CH);
+      el.style.transform = `translate3d(${R * Math.sin(rad)}px, ${cyy - R * Math.cos(rad)}px, 0px) rotateY(0deg) rotateZ(${th}deg) scale(${sc})`;
+      el.style.setProperty("--o", 1); el.style.setProperty("--rz", `${th}deg`); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus", "is-right");
+      el.classList.toggle("is-clickable", false);
+    });
+    const rc = $("#ringc"); if (rc) rc.style.top = `${r.height / 2 + cyy}px`;
     return;
   }
   const [aw, ah] = dims(S.active);
@@ -184,7 +209,7 @@ def layout_js(theta, gap, zstep, sc, op, lift, dy, yoff, faces=False):
     for (let k = 1; k <= a; k++) x += proj(S.active + dir * (k - 1), k - 1) + GAP + proj(S.active + dir * k, k);
     const [w, h] = dims(i); size(el, w, h);
     const z = a === 0 ? %(lift)s : -ZS * a;
-    el.style.transform = `translate3d(${dir * x * f}px, ${%(yoff)s}px, ${z}px) rotateY(${-dir * TH}deg) scale(${SC[a] * f})`;
+    el.style.transform = `translate3d(${dir * x * f}px, ${%(yoff)s}px, ${z}px) rotateY(${-dir * TH}deg) rotateZ(0deg) scale(${SC[a] * f})`;
     el.style.opacity = OP[a]; el.style.zIndex = 20 - a;
     el.classList.toggle("is-focus", off === 0);
     el.classList.toggle("is-far", a >= 2); el.classList.toggle("is-right", off > 0);
@@ -294,10 +319,33 @@ def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
         s = s.replace(o, 'pre = ""')
     if 'rail' in name:
         s = s.replace('AW = 760, AH = 530, RH = 570, RH_PROFILE = 620', 'AW = 800, AH = 560, RH = 610, RH_PROFILE = 660')
+    o = 'function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview"); layout(); }'
+    assert o in s
+    s = s.replace(o, 'function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview" || m === "ring"); document.body.classList.toggle("mode-ring", m === "ring"); layout(); }')
+    o2 = 'S.mode = "focus"; document.body.classList.remove("mode-overview");'
+    assert o2 in s
+    s = s.replace(o2, 'S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");')
+    a = s.index('async function unlock(run) {'); b = s.index('function startReview() {')
+    s = s[:a] + UNLOCK_JS + s[b:]
     s = s.replace('<title>DigiConsent Agent Deck Enhanced</title>', f'<title>{title}</title>')
     open(f'/home/user/AgenticSetup/{name}', 'w').write(s)
     print(name, len(s))
 
+UNLOCK_JS = """async function unlock(run) {
+  S.phase = "unlock";
+  if (!$("#ringc")) stage.insertAdjacentHTML("beforeend", `<div class="ringc" id="ringc" role="group" aria-label="Ready for review"><span class="rk">5 of 5 ready</span><h2>Your five steps are ready for review</h2><p>The agent prepared everything. Look it over, change anything, then approve each step.</p><button class="go" id="ringGo" type="button">Start review<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
+  setMode("ring");
+  head("Onboarding Agent · done", "5 of 5 ready", "All five are ready for you", "Review them one by one. About two minutes if everything looks right.", false);
+  ripple($("#headBlob"), 2);
+  await W(RM ? 0 : 1100); if (run !== S.runId) return;
+  $("#ringc").classList.add("on"); $("#ringGo").focus({ preventScroll: true });
+  for (let i = 0; i < 5; i++) {
+    const el = card(i); el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
+    await W(150);
+  }
+}
+if (!window.__ringBound) { window.__ringBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#ringGo") || S.phase !== "unlock") return; $("#ringc").classList.remove("on"); startReview(); }); }
+"""
 RAIL_C_CSS = r'''
 /* ---------- Version C: steps rail on the left, compact agent head ---------- */
 body.v3c .deck{ left:100px; }
@@ -308,7 +356,7 @@ body.v3c .ah-t{ flex:1; width:auto; } body.v3c .ah-k{ justify-content:flex-start
 body.v3c .ah h1{ font-size:24px; margin:2px 0 1px; } body.v3c .narr{ font-size:13.5px; }
 body.v3c .stage{ -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 100%)!important; mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 100%)!important; }
 body.v3c .cap3{ left:calc(50% + 50px); }
-.rail3c{ position:fixed; left:16px; top:172px; width:66px; z-index:30; display:flex; flex-direction:column; align-items:center; gap:14px; padding:14px 0; border-radius:34px; background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(246,248,255,.75)); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 20px 40px -26px rgba(37,99,235,.45); opacity:0; transition:opacity .6s; pointer-events:none; }
+.rail3c{ position:fixed; left:16px; top:50%; margin-top:-155px; width:66px; z-index:30; display:flex; flex-direction:column; align-items:center; gap:14px; padding:14px 0; border-radius:34px; background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(246,248,255,.75)); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 20px 40px -26px rgba(37,99,235,.45); opacity:0; transition:opacity .6s; pointer-events:none; }
 body.deck-on .rail3c{ opacity:1; pointer-events:auto; }
 .rail3c::before{ content:""; position:absolute; left:50%; top:36px; bottom:36px; width:2px; margin-left:-1px; background:rgba(120,150,210,.25); }
 .rc{ position:relative; width:44px; height:44px; border:0; padding:0; border-radius:50%; background:#fff; color:#8a96b3; display:grid; place-items:center; box-shadow:0 0 0 1px rgba(196,214,245,.9) inset; cursor:default; z-index:1; transition:transform .25s var(--ease),background .3s,color .3s; }

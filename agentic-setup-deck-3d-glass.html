@@ -610,6 +610,19 @@ body.deep-open .closes{ opacity:0 !important; pointer-events:none; }
 .empty{ padding:36px 20px; text-align:center; color:var(--muted); font-size:13px; }
 @media (max-width:900px){ .tsplit{ grid-template-columns:1fr; } .trow,.thead{ grid-template-columns:22px 1fr 150px; } .trow > :nth-child(2),.trow > :nth-child(4),.trow > :nth-child(6),.thead > :nth-child(2),.thead > :nth-child(4),.thead > :nth-child(6){ display:none; } .addrow{ grid-template-columns:1fr 1fr; } .rolegrid,.bgrid{ grid-template-columns:1fr; } .hdr-org,.usr-meta{ display:none; } }
 
+/* ---------- ring: cards on an arc around the ready message ---------- */
+.ringc{ position:absolute; left:50%; top:50%; width:360px; transform:translate(-50%,-46%) scale(.96); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .9s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
+.ringc.on{ opacity:1; transform:translate(-50%,-50%); pointer-events:auto; }
+.ringc .rk{ font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--blue-d); }
+.ringc h2{ margin:0; font-size:30px; line-height:1.12; letter-spacing:-.025em; font-weight:650; color:var(--ink); }
+.ringc p{ margin:0; font-size:14px; line-height:1.5; color:var(--muted); max-width:300px; }
+.ringc .go{ margin-top:8px; height:46px; padding:0 22px; border:0; border-radius:99px; background:linear-gradient(180deg,#3f6ef6,#2554e6); color:#fff; font:600 14.5px/1 inherit; font-family:inherit; display:inline-flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 14px 28px -12px rgba(37,84,230,.75); transition:transform .25s var(--ease),box-shadow .25s; }
+.ringc .go:hover{ transform:translateY(-2px); box-shadow:0 18px 32px -12px rgba(37,84,230,.85); } .ringc .go svg{ width:16px; height:16px; }
+.ringc .ct{ display:flex; gap:6px; margin-top:2px; } .ringc .ct i{ width:8px; height:8px; border-radius:50%; background:#16a34a; }
+body.mode-ring .card .mini{ transform:rotate(calc(var(--rz,0deg) * -1)); } .card .mini{ transition:transform .9s var(--ease); }
+body.mode-ring .deck-head{ opacity:0; pointer-events:none; } .deck-head{ transition:opacity .5s; }
+body.v3a .ringc h2{ color:#fff; } body.v3a .ringc p{ color:#a9bbdc; } body.v3a .ringc .rk{ color:#8fb4ff; }
+
 /* centred agent head: blob on top, text beneath */
 .ah{ flex-direction:column; align-items:center; text-align:center; gap:2px; width:min(760px,100%); position:relative; }
 .ah::before{ content:""; position:absolute; top:-30px; left:50%; width:360px; height:150px; transform:translateX(-50%); background:radial-gradient(closest-side,rgba(59,110,255,.2),rgba(59,110,255,0)); pointer-events:none; }
@@ -1200,11 +1213,23 @@ function layout() {
     const yOff = S.phase === "finale" ? -(r.height / 2 - (CH * so * f) / 2 - 16) : 0;
     all.forEach((el, i) => {
       size(el, CW, CH);
-      el.style.transform = `translate3d(${(i - 2) * (CW * so + g) * f}px, ${yOff}px, ${-Math.abs(i - 2) * 30}px) rotateY(${(2 - i) * 7}deg) scale(${so * f})`;
+      el.style.transform = `translate3d(${(i - 2) * (CW * so + g) * f}px, ${yOff}px, ${-Math.abs(i - 2) * 30}px) rotateY(${(2 - i) * 7}deg) rotateZ(0deg) scale(${so * f})`;
       el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus");
       el.classList.toggle("is-clickable", S.phase === "review");
     });
     $("#finale").style.top = `${r.height / 2 + yOff + (CH * so * f) / 2 + 28}px`;
+    return;
+  }
+  if (S.mode === "ring") {
+    const R = Math.max(150, Math.min(r.width * 0.3, r.height * 0.4)), cyy = r.height * 0.05, sc = Math.min(0.42, R / 640);
+    all.forEach((el, i) => {
+      const th = (-100 + i * 50), rad = (th * Math.PI) / 180;
+      size(el, CW, CH);
+      el.style.transform = `translate3d(${R * Math.sin(rad)}px, ${cyy - R * Math.cos(rad)}px, 0px) rotateY(0deg) rotateZ(${th}deg) scale(${sc})`;
+      el.style.setProperty("--o", 1); el.style.setProperty("--rz", `${th}deg`); el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus", "is-right");
+      el.classList.toggle("is-clickable", false);
+    });
+    const rc = $("#ringc"); if (rc) rc.style.top = `${r.height / 2 + cyy}px`;
     return;
   }
   const [aw, ah] = dims(S.active);
@@ -1217,7 +1242,7 @@ function layout() {
     for (let k = 1; k <= a; k++) x += proj(S.active + dir * (k - 1), k - 1) + GAP + proj(S.active + dir * k, k);
     const [w, h] = dims(i); size(el, w, h);
     const z = a === 0 ? 40 : -ZS * a;
-    el.style.transform = `translate3d(${dir * x * f}px, ${-30 * f}px, ${z}px) rotateY(${-dir * TH}deg) scale(${SC[a] * f})`;
+    el.style.transform = `translate3d(${dir * x * f}px, ${-30 * f}px, ${z}px) rotateY(${-dir * TH}deg) rotateZ(0deg) scale(${SC[a] * f})`;
     el.style.setProperty("--o", OP[a]); el.style.opacity = 1; el.style.zIndex = 20 - a;
     el.classList.toggle("is-focus", off === 0);
     el.classList.toggle("is-far", a >= 2); el.classList.toggle("is-right", off > 0);
@@ -1226,7 +1251,7 @@ function layout() {
 }
 
 addEventListener("resize", () => { layout(); $$(".ld", stage).forEach((ld) => { const i = +ld.closest(".card").dataset.i; fitScene(ld, ld.classList.contains("kv") ? KV_BOX : LD_BOX[STEPS[i].loader]); }); });
-function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview"); layout(); }
+function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview" || m === "ring"); document.body.classList.toggle("mode-ring", m === "ring"); layout(); }
 /* A soft light follows the pointer across the card in focus. */
 stage.addEventListener("pointermove", (e) => {
   const el = $(".card.is-focus", stage); if (!el) return;
@@ -1325,22 +1350,23 @@ async function analyse(run) {
   unlock(run);
 }
 async function unlock(run) {
-  S.phase = "unlock"; setMode("overview");
+  S.phase = "unlock";
+  if (!$("#ringc")) stage.insertAdjacentHTML("beforeend", `<div class="ringc" id="ringc" role="group" aria-label="Ready for review"><span class="rk">5 of 5 ready</span><h2>Your five steps are ready for review</h2><p>The agent prepared everything. Look it over, change anything, then approve each step.</p><button class="go" id="ringGo" type="button">Start review<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
+  setMode("ring");
   head("Onboarding Agent · done", "5 of 5 ready", "All five are ready for you", "Review them one by one. About two minutes if everything looks right.", false);
   ripple($("#headBlob"), 2);
-  await W(900); if (run !== S.runId) return;
+  await W(RM ? 0 : 1100); if (run !== S.runId) return;
+  $("#ringc").classList.add("on"); $("#ringGo").focus({ preventScroll: true });
   for (let i = 0; i < 5; i++) {
     const el = card(i); el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
-    ripple($(".m-badge", el), 2, 220);
     await W(150);
   }
-  await W(1700); if (run !== S.runId) return;
-  startReview();
 }
+if (!window.__ringBound) { window.__ringBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#ringGo") || S.phase !== "unlock") return; $("#ringc").classList.remove("on"); startReview(); }); }
 function startReview() {
   S.phase = "review"; S.reviewStart = Date.now();
   cards().forEach((el, i) => { el.classList.remove("is-analysing"); el.classList.add("is-review"); if (S.cards[i].st === "ready") S.cards[i].st = "review"; renderReview(i); setStatus(i); });
-  S.mode = "focus"; document.body.classList.remove("mode-overview");
+  S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
   focusCard(Math.max(0, firstOpen()));
 }
 function firstOpen(from = 0) {
