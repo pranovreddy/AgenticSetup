@@ -297,3 +297,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Glass deck: bigger cards (AW 760, review 570/620), step pill removed; bottom-centre arrows with dot stepper (#cap3 now only nav). Loader area flexes to fill the taller card.
 - Glass room: horizon/floor moved to the bottom (~79%), aurora-tinted wall, glow line at the horizon, light pool under the card.
 - Glass deck: agent narration no longer prefixes the step name (narrate pre is empty).
+- Glass deck: every unfocused card has a vertical step-name + status label on its exposed outer edge (.cf-v); layout toggles is-right for cards after the active one.

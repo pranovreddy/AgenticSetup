@@ -1182,7 +1182,7 @@ function layout() {
     el.style.transform = `translate3d(${dir * x * f}px, ${-12 * f}px, ${z}px) rotateY(${-dir * TH}deg) scale(${SC[a] * f})`;
     el.style.opacity = OP[a]; el.style.zIndex = 20 - a;
     el.classList.toggle("is-focus", off === 0);
-    el.classList.toggle("is-far", a >= 2);
+    el.classList.toggle("is-far", a >= 2); el.classList.toggle("is-right", off > 0);
     el.classList.toggle("is-clickable", S.phase === "review" && off !== 0);
   });
 }
