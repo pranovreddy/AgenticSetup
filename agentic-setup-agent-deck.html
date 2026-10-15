@@ -901,9 +901,10 @@ function playLoader(i, run) {
 }
 
 /* ---------- Layout ---------- */
-const CW = 372, CH = 548, AW = 640, AH = 446;
+const CW = 372, CH = 548, AW = 640, AH = 446, RH = 500;
 function dims(i) {
   if (S.mode === "focus" && S.phase === "analyse") return i === S.active ? [AW, AH] : [CW, AH];
+  if (S.mode === "focus") return [AW, RH];
   return [CW, CH];
 }
 function size(el, w, h) {
