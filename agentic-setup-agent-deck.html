@@ -1,0 +1,1422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DigiConsent Agent Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one canvas. Agreements gate, then a horizontal deck of five step cards the agent
+   works through left to right; the deck rewinds to card one for review; any card can open
+   into a full review page. Light product UI by design (matches DigiConsent). */
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+:root {
+  color-scheme: light;
+  --bg: #F3F5FA;
+  --surface: #FFFFFF;
+  --glass: rgba(255,255,255,.78);
+  --ink: #0B1220;
+  --ink-2: #273041;
+  --muted: #5B6474;
+  --faint: #98A1B0;
+  --line: rgba(11,18,32,.08);
+  --line-2: rgba(11,18,32,.14);
+  --blue: #3366F0;
+  --blue-d: #1F4FD6;
+  --blue-soft: rgba(51,102,240,.08);
+  --blue-line: rgba(51,102,240,.24);
+  --cyan: #2EB6F5;
+  --violet: #7B61FF;
+  --green: #16A34A;
+  --green-soft: rgba(22,163,74,.10);
+  --amber: #B7791F;
+  --amber-soft: rgba(183,121,31,.10);
+  --ai: linear-gradient(120deg, #3366F0 0%, #2EB6F5 48%, #7B61FF 100%);
+  --ease: cubic-bezier(.16,1,.3,1);
+  --ease-io: cubic-bezier(.65,0,.35,1);
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --cw: 372px;
+  --ch: 520px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; font: 14px/1.5 var(--font); color: var(--ink); background: var(--bg);
+  overflow: hidden; -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 6px; }
+[hidden] { display: none !important; }
+
+/* ---------- Ambient background ---------- */
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg .au { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5; animation: drift 26s ease-in-out infinite alternate; }
+.bg .a1 { width: 620px; height: 620px; left: -120px; top: -220px; background: radial-gradient(circle, rgba(51,102,240,.35), transparent 65%); }
+.bg .a2 { width: 560px; height: 560px; right: -160px; top: 80px; background: radial-gradient(circle, rgba(46,182,245,.28), transparent 65%); animation-delay: -8s; }
+.bg .a3 { width: 680px; height: 680px; left: 30%; bottom: -420px; background: radial-gradient(circle, rgba(123,97,255,.20), transparent 65%); animation-delay: -15s; }
+.bg .grid { position: absolute; inset: 0; background-image: radial-gradient(rgba(11,18,32,.07) 1px, transparent 1px); background-size: 22px 22px; mask-image: radial-gradient(ellipse at 50% 40%, #000 20%, transparent 75%); }
+body.is-working .bg .au { opacity: .75; }
+@keyframes drift { to { transform: translate(60px, 40px) scale(1.12); } }
+
+/* ---------- Top bar ---------- */
+.top {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 30; height: 60px;
+  display: flex; align-items: center; gap: 14px;
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.01em; }
+.brand-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--ai); display: grid; place-items: center; color: #fff; box-shadow: 0 6px 16px -6px rgba(51,102,240,.6); }
+.brand-mark svg { width: 16px; height: 16px; }
+.org { color: var(--muted); font-size: 13px; padding-left: 14px; border-left: 1px solid var(--line-2); }
+.top-r { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.agent-pill {
+  display: flex; align-items: center; gap: 9px; height: 34px; padding: 0 14px 0 6px; border-radius: 999px;
+  background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(12px); font-size: 12.5px; color: var(--ink-2);
+  transition: opacity .4s;
+}
+.agent-pill b { font-weight: 600; }
+.agent-pill .sep { width: 1px; height: 14px; background: var(--line-2); }
+.mini-orb { width: 22px; height: 22px; border-radius: 50%; position: relative; background: radial-gradient(circle at 35% 30%, #fff 0 12%, #8FB0FF 30%, #3366F0 62%, #4A3FD0 100%); box-shadow: 0 0 0 3px rgba(51,102,240,.12); }
+.mini-orb::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid transparent; border-top-color: var(--cyan); border-right-color: var(--violet); animation: spin 1.4s linear infinite; opacity: 0; transition: opacity .3s; }
+body.is-working .mini-orb::after { opacity: 1; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: #DCE5FF; color: var(--blue-d); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+body.phase-gate .agent-pill { opacity: 0; pointer-events: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Agreements gate ---------- */
+.gate { position: fixed; inset: 60px 0 0; z-index: 10; display: grid; place-items: center; padding: 8px max(20px, env(safe-area-inset-right, 0px)) 24px max(20px, env(safe-area-inset-left, 0px)); transition: opacity .7s var(--ease), transform .7s var(--ease), filter .7s; }
+.gate.is-out { opacity: 0; transform: scale(.97); filter: blur(6px); pointer-events: none; }
+.gate-card {
+  width: min(1120px, 100%); height: min(680px, 100%); display: grid; grid-template-rows: auto 1fr; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+  box-shadow: 0 30px 80px -40px rgba(20,40,100,.35), 0 1px 0 rgba(255,255,255,.9) inset;
+}
+.gate-head { display: flex; align-items: end; gap: 20px; padding: 26px 32px 0; border-bottom: 1px solid var(--line); }
+.gate-head h1 { margin: 0 0 4px; font-size: 26px; letter-spacing: -.02em; font-weight: 600; }
+.gate-head p { margin: 0 0 18px; color: var(--muted); font-size: 13.5px; }
+.tabs { margin-left: auto; display: flex; gap: 4px; align-self: end; }
+.tab { border: 0; background: none; padding: 10px 14px 12px; font-size: 13.5px; color: var(--muted); font-weight: 500; position: relative; display: flex; align-items: center; gap: 7px; }
+.tab::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; border-radius: 2px; background: var(--blue); transform: scaleX(0); transition: transform .35s var(--ease); }
+.tab.is-on { color: var(--ink); }
+.tab.is-on::after { transform: scaleX(1); }
+.tab .tk { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; background: var(--green); color: #fff; }
+.tab .tk svg { width: 10px; height: 10px; }
+.gate-body { display: grid; grid-template-columns: 340px 1fr; min-height: 0; }
+.gate-sum { padding: 26px 28px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 16px; background: linear-gradient(180deg, rgba(51,102,240,.05), transparent 60%); overflow: auto; }
+.chip-agent { display: inline-flex; align-items: center; gap: 8px; align-self: start; padding: 4px 10px 4px 4px; border-radius: 999px; background: var(--blue-soft); color: var(--blue-d); font-size: 12px; font-weight: 600; }
+.chip-agent .mini-orb { width: 18px; height: 18px; box-shadow: none; }
+.prose { margin: 0; font-size: 15px; line-height: 1.65; color: var(--ink-2); }
+.prose a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--blue-line); text-underline-offset: 3px; text-decoration-thickness: 1.5px; cursor: pointer; }
+.prose a:hover { text-decoration-color: var(--blue); }
+.note { font-size: 12.5px; color: var(--muted); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
+.gate-meta { margin-top: auto; font-size: 12px; color: var(--faint); display: flex; gap: 8px; align-items: center; }
+.doc-wrap { position: relative; min-height: 0; display: grid; grid-template-rows: 1fr auto; }
+.doc { overflow: auto; padding: 26px 40px 40px; scroll-behavior: smooth; }
+.doc h3 { font-size: 14px; margin: 22px 0 8px; font-weight: 600; scroll-margin-top: 20px; transition: background .6s; border-radius: 6px; }
+.doc h3.flash { background: rgba(51,102,240,.12); }
+.doc p { margin: 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.7; max-width: 72ch; }
+.doc-progress { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: transparent; }
+.doc-progress i { display: block; height: 100%; width: 0; background: var(--ai); transition: width .2s; }
+.doc-foot { display: flex; align-items: center; gap: 14px; padding: 14px 24px; border-top: 1px solid var(--line); background: var(--surface); }
+.doc-foot span { font-size: 12.5px; color: var(--muted); }
+.doc-foot .btn { margin-left: auto; }
+
+/* ---------- Buttons ---------- */
+.btn { height: 36px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); font-size: 13.5px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background .2s, box-shadow .2s, opacity .2s, transform .15s; white-space: nowrap; }
+.btn:hover:not(:disabled) { background: #F6F8FC; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn svg { width: 15px; height: 15px; }
+.btn-p { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: 0 6px 16px -8px rgba(51,102,240,.7); }
+.btn-p:hover:not(:disabled) { background: var(--blue-d); }
+.btn-p:disabled { background: #B9C7EE; border-color: #B9C7EE; box-shadow: none; }
+.btn-t { border-color: transparent; background: transparent; color: var(--muted); padding: 0 10px; }
+.btn-t:hover:not(:disabled) { background: rgba(11,18,32,.04); color: var(--ink); }
+
+/* ---------- Deck ---------- */
+.deck { position: fixed; inset: 60px 0 0; z-index: 5; display: grid; grid-template-rows: auto 1fr auto; opacity: 0; pointer-events: none; transition: opacity .6s; }
+body:not(.phase-gate) .deck { opacity: 1; pointer-events: auto; }
+.deck-head { text-align: center; padding: 14px 20px 0; min-height: 104px; }
+.kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--blue-d); font-weight: 600; }
+.kicker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px rgba(51,102,240,.15); }
+body.is-working .kicker .dot { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(51,102,240,0); } }
+.deck-head h1 { margin: 6px 0 4px; font-size: 28px; font-weight: 600; letter-spacing: -.025em; text-wrap: balance; }
+.narr { margin: 0 auto; max-width: 640px; color: var(--muted); font-size: 14px; min-height: 21px; }
+.narr b { color: var(--ink-2); font-weight: 600; }
+.narr .caret { display: inline-block; width: 7px; height: 14px; margin-left: 2px; vertical-align: -2px; background: var(--blue); border-radius: 1px; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.swap { animation: swapIn .5s var(--ease); }
+@keyframes swapIn { from { opacity: 0; transform: translateY(6px); filter: blur(3px); } }
+
+.stage { position: relative; min-height: 0; mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); }
+body.mode-overview .stage { mask-image: none; -webkit-mask-image: none; }
+
+/* Orb + beam */
+.orb { position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; z-index: 40; transition: transform .9s var(--ease), opacity .5s; pointer-events: none; }
+.orb .core { position: absolute; inset: 9px; border-radius: 50%; background: radial-gradient(circle at 34% 28%, #fff 0 10%, #9DB8FF 26%, #3366F0 58%, #3B2FC4 100%); box-shadow: 0 8px 24px -6px rgba(51,102,240,.7), inset 0 -4px 10px rgba(30,20,120,.35); animation: breathe 3.2s ease-in-out infinite; }
+.orb .halo { position: absolute; inset: -6px; border-radius: 50%; background: conic-gradient(from var(--ang), rgba(46,182,245,0), rgba(46,182,245,.6), rgba(123,97,255,.55), rgba(51,102,240,0) 70%); filter: blur(8px); animation: rot 3s linear infinite; opacity: .5; }
+.orb .oring { position: absolute; inset: 2px; border-radius: 50%; border: 1.5px solid rgba(51,102,240,.35); transform: rotateX(70deg); animation: ringspin 4s linear infinite; }
+.orb .oring.r2 { inset: -3px; border-color: rgba(123,97,255,.28); animation-duration: 6s; animation-direction: reverse; transform: rotateX(70deg) rotateY(30deg); }
+body.is-working .orb .halo { opacity: 1; animation-duration: 1.4s; }
+body.is-working .orb .oring { border-color: rgba(46,182,245,.6); animation-duration: 1.6s; }
+.beam { position: absolute; left: 50%; top: 22px; width: 2px; margin-left: -1px; height: 40px; background: linear-gradient(180deg, rgba(51,102,240,.7), rgba(46,182,245,0)); opacity: 0; transition: opacity .4s; }
+.beam::after { content: ""; position: absolute; left: -2px; width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 3px rgba(46,182,245,.9); animation: drop 1s linear infinite; }
+body.is-working .beam { opacity: 1; }
+body.phase-finale .orb { opacity: 0; }
+@keyframes drop { from { top: 0; opacity: 1; } to { top: 40px; opacity: 0; } }
+@keyframes rot { to { --ang: 360deg; } }
+@keyframes ringspin { to { transform: rotateX(70deg) rotateZ(360deg); } }
+@keyframes breathe { 50% { transform: scale(1.06); } }
+
+/* Cards */
+.card {
+  position: absolute; left: 50%; top: 50%; width: var(--cw); height: var(--ch); margin: calc(var(--ch) / -2) 0 0 calc(var(--cw) / -2);
+  transform-origin: 50% 50%; transition: transform .9s var(--ease), opacity .7s var(--ease), filter .7s;
+  border-radius: 22px; will-change: transform;
+}
+.card-in {
+  position: absolute; inset: 0; border-radius: 22px; overflow: hidden; background: var(--glass); backdrop-filter: blur(16px);
+  border: 1px solid var(--line); box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 24px 60px -30px rgba(20,40,100,.35);
+  display: flex; flex-direction: column; transition: background .5s, border-color .5s, box-shadow .5s;
+}
+.card.is-focus .card-in { background: rgba(255,255,255,.94); box-shadow: 0 1px 0 #fff inset, 0 40px 80px -36px rgba(20,40,100,.45); }
+.card.is-far { filter: saturate(.6); }
+.card.is-clickable { cursor: pointer; }
+.card.is-clickable:hover .card-in { border-color: var(--blue-line); }
+/* animated gradient border while the agent works on this card */
+.card::before, .card::after { content: ""; position: absolute; inset: -1.5px; border-radius: 23px; padding: 1.5px; background: conic-gradient(from var(--ang), transparent 0 55%, #2EB6F5 70%, #3366F0 82%, #7B61FF 92%, transparent 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .5s; animation: rot 2.4s linear infinite; z-index: 2; pointer-events: none; }
+.card::after { inset: -8px; padding: 8px; filter: blur(14px); border-radius: 30px; }
+.card.is-analysing::before { opacity: 1; }
+.card.is-analysing::after { opacity: .55; }
+.card.is-focus.is-review::before { opacity: .9; background: conic-gradient(from var(--ang), rgba(51,102,240,.15) 0 60%, #3366F0 80%, #2EB6F5 92%, rgba(51,102,240,.15)); animation-duration: 6s; }
+.card.is-done-flash .card-in::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.95) 48%, rgba(46,182,245,.25) 52%, transparent 70%); transform: translateX(-100%); animation: sheen 1s var(--ease) forwards; pointer-events: none; }
+@keyframes sheen { to { transform: translateX(100%); } }
+
+.c-head { display: flex; align-items: center; gap: 12px; padding: 18px 20px 14px; }
+.c-ic { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: var(--blue-soft); color: var(--blue); flex: none; transition: background .4s, color .4s; }
+.c-ic svg { width: 19px; height: 19px; }
+.card.is-analysing .c-ic { background: var(--ai); color: #fff; }
+.c-tt { min-width: 0; }
+.c-n { font: 500 11px/1 var(--mono); color: var(--faint); letter-spacing: .04em; }
+.c-title { font-size: 16.5px; font-weight: 600; letter-spacing: -.01em; margin-top: 4px; }
+.status { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 11.5px; font-weight: 600; white-space: nowrap; background: rgba(11,18,32,.05); color: var(--muted); }
+.status svg { width: 12px; height: 12px; }
+.status .sp { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: spin .8s linear infinite; }
+.status.s-work { background: var(--blue-soft); color: var(--blue-d); }
+.status.s-ready { background: rgba(51,102,240,.1); color: var(--blue-d); }
+.status.s-ok { background: var(--green-soft); color: var(--green); }
+.status.s-wait { background: var(--amber-soft); color: var(--amber); }
+
+.pane { position: absolute; left: 0; right: 0; top: 70px; bottom: 0; display: flex; flex-direction: column; transition: opacity .45s, transform .45s var(--ease); }
+.pane-r { opacity: 0; pointer-events: none; transform: translateY(10px); }
+.card.is-review .pane-a { opacity: 0; pointer-events: none; transform: translateY(-10px); }
+.card.is-review .pane-r { opacity: 1; pointer-events: auto; transform: none; }
+.card:not(.is-focus) .pane-r { pointer-events: none; }
+
+/* mini (overview) face */
+.mini { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; opacity: 0; transition: opacity .5s; pointer-events: none; padding: 30px; }
+.mini .m-ic { width: 96px; height: 96px; border-radius: 28px; display: grid; place-items: center; background: var(--blue-soft); color: var(--blue); position: relative; }
+.mini .m-ic svg { width: 44px; height: 44px; }
+.mini .m-t { font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+.mini .m-s { font-size: 19px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.mini .m-s svg { width: 20px; height: 20px; }
+.mini .m-tick { position: absolute; right: -8px; bottom: -8px; width: 34px; height: 34px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; border: 3px solid #fff; transform: scale(0); transition: transform .5s var(--ease); }
+.mini .m-tick svg { width: 18px; height: 18px; }
+.mini .m-lock { position: absolute; right: -8px; bottom: -8px; width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: #fff; display: grid; place-items: center; border: 3px solid #fff; transform: scale(0); transition: transform .5s var(--ease); }
+.mini .m-lock svg { width: 16px; height: 16px; }
+.card.st-ready .mini .m-lock, .card.st-review .mini .m-lock { transform: scale(1); }
+.card.st-done .mini .m-tick { transform: scale(1); }
+body.mode-overview .mini { opacity: 1; }
+body.mode-overview .pane, body.mode-overview .c-head { opacity: 0 !important; pointer-events: none !important; }
+.c-head { transition: opacity .4s; }
+
+/* analysis pane */
+.scene { position: relative; height: 158px; margin: 0 20px; border-radius: 14px; background: linear-gradient(180deg, #F7F9FE, #EFF3FC); border: 1px solid var(--line); overflow: hidden; flex: none; }
+.scene::after { content: ""; position: absolute; left: 0; right: 0; height: 40px; top: -40px; background: linear-gradient(180deg, transparent, rgba(46,182,245,.18) 70%, rgba(51,102,240,.5) 100%); opacity: 0; }
+.card.is-analysing .scene::after { opacity: 1; animation: scan 2.2s var(--ease-io) infinite; }
+@keyframes scan { to { top: 100%; } }
+.log { list-style: none; margin: 14px 20px 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.log li { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--ink-2); animation: swapIn .4s var(--ease); }
+.log li.q { color: var(--faint); }
+.log .ico { width: 16px; height: 16px; flex: none; display: grid; place-items: center; border-radius: 50%; }
+.log li.run .ico { border: 1.75px solid var(--blue); border-right-color: transparent; animation: spin .7s linear infinite; }
+.log li.run span { background: linear-gradient(90deg, var(--ink-2) 0 40%, var(--blue) 50%, var(--ink-2) 60% 100%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 1.6s linear infinite; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+.log li.ok .ico { background: var(--green-soft); color: var(--green); }
+.log li.ok .ico svg { width: 10px; height: 10px; }
+.log li.q .ico { border: 1.5px dashed var(--line-2); }
+.result { margin: auto 20px 20px; padding: 14px; border-radius: 14px; background: linear-gradient(135deg, rgba(51,102,240,.08), rgba(46,182,245,.06)); border: 1px solid var(--blue-line); opacity: 0; transform: translateY(8px); transition: opacity .5s, transform .5s var(--ease); }
+.result.on { opacity: 1; transform: none; }
+.result .r-k { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--blue-d); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.result .r-k svg { width: 13px; height: 13px; }
+.result .r-v { margin-top: 5px; font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.queued-note { margin: 18px 20px; font-size: 12.5px; color: var(--faint); }
+
+/* review pane */
+.r-body { flex: 1; min-height: 0; overflow: auto; padding: 0 20px 6px; display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; }
+.r-h { font-size: 18px; font-weight: 600; letter-spacing: -.015em; line-height: 1.3; margin: 0; text-wrap: balance; }
+.r-p { margin: -4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.facts { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.fact { display: grid; grid-template-columns: 112px 1fr auto; gap: 10px; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+.fact dt { color: var(--muted); }
+.fact dd { margin: 0; color: var(--ink); font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.src-tag { font: 500 10px/1 var(--mono); color: var(--blue-d); background: var(--blue-soft); padding: 4px 6px; border-radius: 5px; letter-spacing: .02em; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; color: var(--ink-2); cursor: pointer; line-height: 1.45; padding: 10px 12px; border-radius: 10px; background: rgba(11,18,32,.03); }
+.check input { margin: 1px 0 0; width: 16px; height: 16px; accent-color: var(--blue); flex: none; }
+.r-foot { display: flex; align-items: center; gap: 8px; padding: 14px 20px 18px; border-top: 1px solid var(--line); background: rgba(255,255,255,.7); }
+.r-foot .btn-p { margin-left: auto; }
+.what { border-top: 1px solid var(--line); padding-top: 4px; }
+.what summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); padding: 6px 0; }
+.what summary::-webkit-details-marker { display: none; }
+.what summary svg { width: 14px; height: 14px; color: var(--muted); transition: transform .3s; margin-left: auto; }
+.what[open] summary svg { transform: rotate(180deg); }
+.what summary .mini-orb { width: 16px; height: 16px; box-shadow: none; }
+.what ul { list-style: none; margin: 4px 0 6px; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.what li { font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.what li svg { width: 11px; height: 11px; color: var(--green); flex: none; }
+.what .srcs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
+
+.people { display: flex; flex-direction: column; gap: 2px; }
+.pgroup { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.pgroup b { font-size: 13px; font-weight: 600; }
+.pgroup small { grid-column: 1; color: var(--muted); font-size: 12px; }
+.stack { grid-row: 1 / span 2; grid-column: 2; display: flex; }
+.av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 600; border: 2px solid #fff; margin-left: -8px; }
+.av:first-child { margin-left: 0; }
+.av.t0 { background: #DCE5FF; color: #1F4FD6; } .av.t1 { background: #D6F0FC; color: #0E6E9A; } .av.t2 { background: #E7E2FF; color: #5340C8; } .av.t3 { background: #E3EAF7; color: #34507F; }
+
+.ent { border: 1px solid var(--line-2); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; background: #fff; }
+.ent-h { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.ent-h b { color: var(--ink); font-size: 13px; }
+.ent-h svg { width: 14px; height: 14px; color: var(--blue); }
+.brand-row { display: grid; grid-template-columns: 92px 1fr; gap: 8px; align-items: start; padding: 8px 10px; border-radius: 9px; background: #F6F8FD; }
+.brand-row b { font-size: 12.5px; }
+.lobs { display: flex; flex-wrap: wrap; gap: 4px; }
+.lob { font-size: 11.5px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid var(--line); color: var(--ink-2); }
+
+.pt { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: 12.5px; }
+.pt > div { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.pt > div:nth-last-child(-n+3) { border-bottom: 0; }
+.pt .ph { color: var(--muted); }
+.pt .hd { font-weight: 600; background: #F6F8FD; display: flex; align-items: center; gap: 7px; }
+.pt .num { font-variant-numeric: tabular-nums; font-weight: 500; }
+.pt .num small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+.mk { width: 20px; height: 20px; border-radius: 6px; display: inline-grid; place-items: center; font-size: 10.5px; font-weight: 700; color: #fff; flex: none; }
+.mk.violet { background: #6A4FE0; } .mk.red { background: #D83A3A; } .mk.teal { background: #138A8A; } .mk.amber { background: #C9811B; }
+
+.ringrow { display: flex; align-items: center; gap: 16px; }
+.ring { --p: 98; width: 74px; height: 74px; border-radius: 50%; flex: none; background: conic-gradient(var(--blue) calc(var(--p) * 1%), rgba(11,18,32,.07) 0); display: grid; place-items: center; }
+.ring span { width: 58px; height: 58px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.segbar { display: flex; height: 8px; border-radius: 99px; overflow: hidden; gap: 2px; }
+.segbar i { display: block; height: 100%; }
+.segbar .hi { background: var(--blue); } .segbar .md { background: #8FB0FF; } .segbar .un { background: rgba(11,18,32,.15); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11.5px; color: var(--muted); margin-top: 7px; }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; }
+.lobbars { display: flex; flex-direction: column; gap: 6px; }
+.lobbar { display: grid; grid-template-columns: 112px 1fr 26px; gap: 10px; align-items: center; font-size: 12px; }
+.lobbar .tr { height: 6px; border-radius: 99px; background: rgba(11,18,32,.06); overflow: hidden; }
+.lobbar .tr i { display: block; height: 100%; background: linear-gradient(90deg, #8FB0FF, var(--blue)); border-radius: 99px; }
+.lobbar span:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* done & lock states in review pane */
+.done-face { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; padding: 0 28px 20px; }
+.stamp { width: 70px; height: 70px; border-radius: 50%; display: grid; place-items: center; background: var(--green-soft); color: var(--green); position: relative; animation: pop .6s var(--ease); }
+.stamp::before { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 1.5px dashed rgba(22,163,74,.35); animation: spin 14s linear infinite; }
+.stamp svg { width: 30px; height: 30px; }
+.stamp.wait { background: var(--amber-soft); color: var(--amber); }
+.stamp.wait::before { border-color: rgba(183,121,31,.35); }
+.stamp.later { background: rgba(11,18,32,.05); color: var(--muted); }
+.stamp.later::before { border-color: var(--line-2); }
+@keyframes pop { from { transform: scale(.6); opacity: 0; } }
+.done-face h3 { margin: 6px 0 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em; text-wrap: balance; }
+.done-face p { margin: 0; font-size: 12.5px; color: var(--muted); max-width: 30ch; }
+.done-face .btn { margin-top: 8px; }
+.lock-face { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; padding: 30px; background: rgba(255,255,255,.82); backdrop-filter: blur(4px); }
+.lock-face svg { width: 26px; height: 26px; color: var(--muted); }
+.lock-face b { font-size: 14px; }
+.lock-face span { font-size: 12.5px; color: var(--muted); max-width: 28ch; }
+.verify { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--amber); }
+.verify .sp { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: spin .8s linear infinite; }
+
+/* ---------- Scenes ---------- */
+.sc { position: absolute; inset: 0; }
+/* profile */
+.sp-src { position: absolute; left: 14px; top: 14px; bottom: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+.src { width: 74px; height: 24px; border-radius: 7px; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; gap: 6px; padding: 0 7px; font: 500 10.5px/1 var(--mono); color: var(--faint); transition: all .4s var(--ease); }
+.src i { width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); transition: background .3s; }
+.src.cur { color: var(--blue-d); border-color: var(--blue-line); box-shadow: 0 0 0 4px rgba(51,102,240,.1), 0 6px 14px -6px rgba(51,102,240,.5); transform: translateX(4px); }
+.src.cur i { background: var(--blue); animation: pulse 1s infinite; }
+.src.ok { color: var(--ink-2); }
+.src.ok i { background: var(--green); }
+.form-sk { position: absolute; right: 14px; top: 14px; bottom: 14px; left: 118px; border-radius: 10px; background: #fff; border: 1px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between; }
+.fr { display: grid; grid-template-columns: 52px 1fr; gap: 8px; align-items: center; }
+.fr b { height: 5px; border-radius: 3px; background: rgba(11,18,32,.09); }
+.fr span { height: 13px; border-radius: 4px; background: #F1F4FA; position: relative; overflow: hidden; }
+.fr em { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 4px; background: linear-gradient(90deg, rgba(51,102,240,.35), rgba(46,182,245,.25)); transition: width .9s var(--ease); }
+.fr.on em { width: var(--w); }
+.pkt { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 3px rgba(51,102,240,.8); z-index: 3; pointer-events: none; }
+/* team */
+.tm-doc { position: absolute; left: 18px; top: 50%; width: 58px; height: 74px; margin-top: -37px; border-radius: 8px; background: #fff; border: 1px solid var(--line); display: flex; flex-direction: column; gap: 5px; padding: 10px 8px; }
+.tm-doc b { font: 500 9px/1 var(--mono); color: var(--blue-d); }
+.tm-doc i { height: 4px; border-radius: 2px; background: rgba(11,18,32,.08); }
+.tm-grid { position: absolute; left: 96px; right: 14px; top: 14px; bottom: 14px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; }
+.tm-p { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; opacity: 0; transform: scale(.6) translateX(-30px); transition: all .6s var(--ease); }
+.tm-p .av { margin: 0; border: 0; width: 30px; height: 30px; }
+.tm-p em { font-style: normal; font-size: 9.5px; padding: 2px 6px; border-radius: 99px; background: var(--blue-soft); color: var(--blue-d); font-weight: 600; opacity: 0; transform: translateY(4px); transition: all .4s var(--ease); white-space: nowrap; }
+.tm-p.on { opacity: 1; transform: none; }
+.tm-p.role em { opacity: 1; transform: none; }
+/* brands */
+.br-chip { position: absolute; font: 500 10px/1 var(--mono); padding: 5px 7px; border-radius: 6px; background: #fff; border: 1px solid var(--line); color: var(--ink-2); opacity: 0; transform: scale(.7); transition: all .7s var(--ease); }
+.br-chip.on { opacity: 1; transform: none; animation: bob 2.4s ease-in-out infinite; }
+.br-chip.gone { opacity: 0; transform: scale(.5); }
+@keyframes bob { 50% { translate: 0 -4px; } }
+.br-ent { position: absolute; inset: 12px; border-radius: 10px; border: 1.5px dashed transparent; transition: all .6s; }
+.br-ent.on { border-color: var(--blue-line); background: rgba(255,255,255,.5); }
+.br-ent > b { position: absolute; left: 10px; top: -8px; background: #EFF3FC; padding: 0 5px; font-size: 9.5px; color: var(--blue-d); font-weight: 600; opacity: 0; transition: opacity .4s; }
+.br-ent.on > b { opacity: 1; }
+.br-cols { position: absolute; left: 22px; right: 22px; top: 24px; bottom: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.br-col { border-radius: 8px; background: #fff; border: 1px solid var(--line); padding: 7px; display: flex; flex-direction: column; gap: 5px; opacity: 0; transform: translateY(10px); transition: all .6s var(--ease); }
+.br-col.on { opacity: 1; transform: none; }
+.br-col > b { font-size: 10px; font-weight: 600; }
+.br-col i { height: 14px; border-radius: 4px; background: var(--blue-soft); border: 1px solid var(--blue-line); opacity: 0; transform: scaleX(.3); transform-origin: left; transition: all .5s var(--ease); }
+.br-col i.on { opacity: 1; transform: none; }
+/* gtm */
+.gt-rows { position: absolute; left: 14px; right: 14px; top: 12px; display: flex; flex-direction: column; gap: 7px; }
+.gt-r { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: center; opacity: 0; transform: translateX(-12px); transition: all .5s var(--ease); }
+.gt-r.on { opacity: 1; transform: none; }
+.gt-r .bars { display: flex; flex-direction: column; gap: 2px; }
+.gt-r .bars i { height: 4px; border-radius: 3px; width: 0; background: rgba(11,18,32,.18); transition: width .9s var(--ease), background .4s; }
+.gt-r.cmp .bars i { width: var(--w); }
+.gt-r.pick .bars i { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+.gt-r.drop { opacity: .35; }
+.gt-split { position: absolute; left: 14px; right: 14px; bottom: 12px; height: 16px; display: flex; gap: 3px; opacity: 0; transition: opacity .4s; }
+.gt-split.on { opacity: 1; }
+.gt-split i { height: 100%; border-radius: 4px; width: 0; transition: width 1s var(--ease); font: 600 9px/16px var(--font); color: #fff; padding-left: 6px; overflow: hidden; white-space: nowrap; }
+.gt-split i:first-child { background: #6A4FE0; } .gt-split i:last-child { background: #D83A3A; }
+/* templates */
+.tp-grid { position: absolute; left: 14px; right: 14px; top: 14px; display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px; }
+.tp-grid i { aspect-ratio: 1; border-radius: 3px; background: #fff; border: 1px solid var(--line); opacity: 0; transform: scale(.4); transition: all .4s var(--ease); }
+.tp-grid i.on { opacity: 1; transform: none; }
+.tp-grid i.c { border-color: transparent; background: var(--c); }
+.tp-grid i.u { background: transparent; border: 1.5px dashed rgba(183,121,31,.6); }
+.tp-conf { position: absolute; left: 14px; right: 14px; bottom: 12px; opacity: 0; transition: opacity .4s; }
+.tp-conf.on { opacity: 1; }
+.tp-conf .segbar i { width: 0; transition: width 1s var(--ease); }
+
+/* ---------- Rail ---------- */
+.rail { display: flex; justify-content: center; align-items: center; gap: 0; padding: 0 20px 18px; }
+.rn { display: flex; align-items: center; gap: 8px; border: 0; background: none; padding: 6px 8px; border-radius: 8px; font-size: 12.5px; color: var(--muted); }
+.rn:hover { background: rgba(11,18,32,.04); }
+.rn .d { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--line-2); display: grid; place-items: center; font: 500 9.5px/1 var(--mono); color: var(--faint); background: #fff; transition: all .4s; }
+.rn .d svg { width: 11px; height: 11px; }
+.rn.cur { color: var(--ink); font-weight: 600; }
+.rn.cur .d { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 0 4px rgba(51,102,240,.12); }
+.rn.ok .d { background: var(--green); border-color: var(--green); color: #fff; }
+.rn.rd .d { border-color: var(--blue-line); color: var(--blue-d); }
+.rn.wt .d { border-color: var(--amber); color: var(--amber); }
+.rl { width: 36px; height: 1.5px; background: var(--line-2); position: relative; overflow: hidden; }
+.rl i { position: absolute; inset: 0; background: var(--blue); transform: scaleX(0); transform-origin: left; transition: transform .6s var(--ease); }
+.rl.on i { transform: scaleX(1); }
+.timer { margin-left: 18px; font: 500 12px/1 var(--mono); color: var(--muted); padding: 6px 10px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); }
+
+/* ---------- Finale ---------- */
+.finale { position: absolute; left: 50%; bottom: 0; transform: translate(-50%, 20px); width: min(560px, calc(100% - 32px)); text-align: center; opacity: 0; pointer-events: none; transition: all .8s var(--ease); z-index: 50; }
+body.phase-finale .finale { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.clock { display: inline-flex; gap: 6px; margin: 4px 0 14px; }
+.clock div { min-width: 64px; padding: 10px 8px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.clock b { display: block; font: 600 24px/1 var(--font); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.clock span { font-size: 11px; color: var(--muted); }
+.finale p { margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+.finale .btn-p { height: 42px; padding: 0 22px; font-size: 14.5px; }
+
+/* ---------- Deep review page ---------- */
+.deep { position: fixed; inset: 0; z-index: 60; background: var(--bg); display: grid; grid-template-rows: auto 1fr auto; }
+.deep-top { display: flex; align-items: center; gap: 14px; height: 64px; padding: 0 max(24px, env(safe-area-inset-right, 0px)) 0 max(24px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); background: rgba(255,255,255,.8); backdrop-filter: blur(12px); }
+.deep-top h2 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+.deep-top .crumb { font: 500 11px/1 var(--mono); color: var(--faint); }
+.deep-main { display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
+.deep-aside { border-right: 1px solid var(--line); padding: 24px; overflow: auto; display: flex; flex-direction: column; gap: 16px; background: linear-gradient(180deg, rgba(51,102,240,.05), transparent 50%); }
+.deep-aside h4 { margin: 0; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.deep-aside ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; position: relative; }
+.deep-aside ol::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 1.5px; background: var(--line-2); }
+.deep-aside ol li { display: flex; gap: 10px; font-size: 13px; color: var(--ink-2); position: relative; }
+.deep-aside ol li i { width: 16px; height: 16px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; flex: none; margin-top: 1px; }
+.deep-aside ol li i svg { width: 9px; height: 9px; }
+.deep-aside .res { font-size: 13.5px; font-weight: 600; line-height: 1.5; padding: 12px; border-radius: 12px; background: #fff; border: 1px solid var(--blue-line); }
+.deep-content { overflow: auto; padding: 28px 36px 40px; }
+.deep-content > .inner { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.deep-foot { display: flex; align-items: center; gap: 10px; padding: 14px max(24px, env(safe-area-inset-right, 0px)) 14px max(24px, env(safe-area-inset-left, 0px)); border-top: 1px solid var(--line); background: rgba(255,255,255,.9); }
+.deep-foot .msg { font-size: 12.5px; color: var(--muted); }
+.deep-foot .btn-p { margin-left: auto; }
+.deep-in { animation: deepIn .5s .25s var(--ease) both; }
+@keyframes deepIn { from { opacity: 0; transform: translateY(14px); } }
+.banner { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: var(--blue-soft); border: 1px solid var(--blue-line); font-size: 13px; color: var(--ink-2); }
+.banner svg { width: 16px; height: 16px; color: var(--blue); flex: none; margin-top: 2px; }
+.banner.warn { background: var(--amber-soft); border-color: rgba(183,121,31,.3); }
+.banner.warn svg { color: var(--amber); }
+.panel { background: #fff; border: 1px solid var(--line); border-radius: 16px; }
+.panel-h { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.panel-h b { font-size: 14px; }
+.panel-h span { font-size: 12.5px; color: var(--muted); }
+.panel-h .r { margin-left: auto; }
+.fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; padding: 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+.field label { font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.field label .src-tag { margin-left: auto; }
+.inp, .sel { height: 38px; border-radius: 8px; border: 1px solid var(--line-2); padding: 0 12px; font: inherit; font-size: 13.5px; color: var(--ink); background: #fff; width: 100%; transition: border-color .2s, box-shadow .2s; }
+.inp:focus, .sel:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(51,102,240,.15); }
+.inp.edited { border-color: var(--amber); }
+.sel { padding-right: 28px; appearance: none; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6474' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center; }
+.tbl-wrap { overflow-x: auto; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.tbl td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tr.off td { opacity: .45; }
+.tbl .sel { height: 32px; font-size: 12.5px; min-width: 150px; }
+.who { display: flex; align-items: center; gap: 10px; }
+.who .av { margin: 0; border: 0; }
+.who b { display: block; font-weight: 600; font-size: 13px; }
+.who small { color: var(--muted); font-size: 12px; }
+.mono { font-family: var(--mono); font-size: 12px; }
+.best { font-size: 10px; font-weight: 600; color: var(--green); background: var(--green-soft); padding: 2px 6px; border-radius: 99px; margin-left: 6px; }
+.tog { display: inline-block; vertical-align: middle; position: relative; width: 34px; height: 20px; flex: none; }
+.tog input { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; z-index: 1; }
+.tog span { position: absolute; inset: 0; border-radius: 99px; background: rgba(11,18,32,.15); transition: background .2s; }
+.tog span::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .25s var(--ease); }
+.tog input:checked + span { background: var(--blue); }
+.tog input:checked + span::after { transform: translateX(14px); }
+.alloc { display: grid; grid-template-columns: 120px 1fr 160px; gap: 16px; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.alloc:last-child { border-bottom: 0; }
+.alloc input[type=range] { width: 100%; accent-color: var(--blue); }
+.alloc .split { display: flex; height: 22px; border-radius: 6px; overflow: hidden; font-size: 11px; font-weight: 600; color: #fff; }
+.alloc .split i { display: flex; align-items: center; padding-left: 7px; font-style: normal; transition: width .3s; white-space: nowrap; overflow: hidden; }
+.bgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 18px; }
+.bcard { border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: #FAFBFE; }
+.bcard-h { display: flex; align-items: center; gap: 8px; }
+.bcard-h b { font-size: 14px; }
+.bcard-h .mono { color: var(--faint); margin-left: auto; }
+.lobrow { display: flex; align-items: center; gap: 6px; }
+.lobrow .inp { height: 34px; font-size: 13px; }
+.x { width: 30px; height: 30px; border-radius: 7px; border: 0; background: transparent; color: var(--faint); display: grid; place-items: center; flex: none; }
+.x:hover { background: rgba(11,18,32,.05); color: var(--ink); }
+.x svg { width: 14px; height: 14px; }
+.addlob { border: 1px dashed var(--line-2); background: transparent; border-radius: 8px; height: 32px; font-size: 12.5px; color: var(--blue-d); }
+.filters { display: flex; gap: 6px; }
+.fchip { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line-2); background: #fff; font-size: 12.5px; color: var(--ink-2); }
+.fchip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.conf { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
+.conf.h { background: var(--blue-soft); color: var(--blue-d); }
+.conf.m { background: var(--amber-soft); color: var(--amber); }
+.conf.u { background: rgba(11,18,32,.06); color: var(--muted); }
+.tpl-text { color: var(--muted); font-size: 12px; max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Toast + prototype panel ---------- */
+.toast { position: fixed; left: 50%; top: 68px; transform: translate(-50%, -12px); z-index: 90; background: var(--ink); color: #fff; font-size: 13px; padding: 10px 16px; border-radius: 10px; opacity: 0; transition: all .4s var(--ease); pointer-events: none; display: flex; align-items: center; gap: 8px; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+.toast svg { width: 14px; height: 14px; color: #7CE0A3; }
+.proto { position: fixed; left: max(14px, env(safe-area-inset-left, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); z-index: 55; font-size: 12px; }
+.proto > button { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--glass); backdrop-filter: blur(10px); color: var(--muted); }
+.proto-menu { position: absolute; bottom: 38px; left: 0; width: 220px; background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 20px 40px -20px rgba(20,40,100,.35); padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+.proto-menu b { font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: .07em; padding: 6px 8px 2px; font-weight: 600; }
+.proto-menu button { border: 0; background: none; text-align: left; padding: 7px 8px; border-radius: 7px; font-size: 12.5px; }
+.proto-menu button:hover { background: #F3F5FA; }
+.proto-menu .row { display: flex; gap: 4px; padding: 2px 8px 6px; }
+.proto-menu .row button { flex: 1; text-align: center; border: 1px solid var(--line); }
+.proto-menu .row button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .gate-body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .gate-sum { border-right: 0; border-bottom: 1px solid var(--line); max-height: 34vh; }
+  .gate-head { flex-wrap: wrap; padding: 18px 18px 0; }
+  .tabs { margin-left: 0; }
+  .doc { padding: 18px; }
+  .org, .rn span { display: none; }
+  .deep-main { grid-template-columns: 1fr; }
+  .deep-aside { display: none; }
+  .deep-content { padding: 18px 16px 30px; }
+  .fgrid, .bgrid { grid-template-columns: 1fr; }
+  .alloc { grid-template-columns: 1fr; gap: 8px; }
+  .deck-head h1 { font-size: 22px; }
+  .rl { width: 14px; }
+  .rn { padding: 6px 4px; }
+  .timer { margin-left: 8px; }
+}
+@media (max-width: 600px) {
+  .agent-pill b, .agent-pill .sep { display: none; }
+  .agent-pill { padding-right: 12px; }
+  .proto { left: auto; right: max(10px, env(safe-area-inset-right, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px)); }
+  .proto > button { padding: 0 10px; font-size: 11px; }
+  .proto-menu { left: auto; right: 0; }
+  .rail { justify-content: flex-start; padding-left: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+</style>
+</head>
+<body class="phase-gate mode-overview">
+<div class="bg" aria-hidden="true"><div class="au a1"></div><div class="au a2"></div><div class="au a3"></div><div class="grid"></div></div>
+
+<header class="top">
+  <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7v5c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V7z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>DigiConsent</div>
+  <div class="org">HDFC Bank Limited · Onboarding</div>
+  <div class="top-r">
+    <div class="agent-pill" id="agentPill"><span class="mini-orb"></span><b>Onboarding Agent</b><span class="sep"></span><span id="agentState">Ready</span></div>
+    <div class="avatar" title="Ravi Menon">RM</div>
+  </div>
+</header>
+
+<section class="gate" id="gate" aria-label="Review and accept">
+  <div class="gate-card">
+    <div class="gate-head">
+      <div>
+        <h1>Review and accept</h1>
+        <p>Accept both documents to start. The Onboarding Agent then prepares your whole setup at once.</p>
+      </div>
+      <div class="tabs" role="tablist" id="tabs"></div>
+    </div>
+    <div class="gate-body">
+      <aside class="gate-sum">
+        <span class="chip-agent"><span class="mini-orb"></span>Agent Summary</span>
+        <p class="prose" id="prose"></p>
+        <div class="note">This summary is only a guide. What you accept is the full text of the document.</div>
+        <div class="gate-meta" id="docMeta"></div>
+      </aside>
+      <div class="doc-wrap">
+        <div class="doc-progress"><i id="docBar"></i></div>
+        <div class="doc" id="doc" tabindex="0"></div>
+        <div class="doc-foot">
+          <span id="docHint">Scroll to the end to accept</span>
+          <button class="btn btn-p" id="acceptBtn" disabled>Accept</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="deck" id="deck">
+  <div class="deck-head">
+    <div class="kicker" id="kicker"><span class="dot"></span><span id="kickerT">Onboarding Agent</span></div>
+    <h1 id="deckTitle">Preparing your setup</h1>
+    <p class="narr" id="narr"></p>
+  </div>
+  <div class="stage" id="stage">
+    <div class="orb" id="orb"><div class="halo"></div><div class="oring"></div><div class="oring r2"></div><div class="core"></div><div class="beam"></div></div>
+    <div class="finale" id="finale">
+      <div class="clock" id="clock"></div>
+      <p>Your migration window is open until <b id="closeDate"></b>.</p>
+      <p id="elapsed"></p>
+      <div style="margin-top:12px"><button class="btn btn-p" id="goMig">Go to migration <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    </div>
+  </div>
+  <nav class="rail" id="rail" aria-label="Steps"></nav>
+</main>
+
+<div class="deep" id="deep" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+<div class="proto" id="proto">
+  <div class="proto-menu" id="protoMenu" hidden>
+    <b>Agent speed</b>
+    <div class="row" id="speedRow"><button data-speed="1">1×</button><button data-speed="2">2×</button><button data-speed="4">4×</button></div>
+    <b>Jump to</b>
+    <button data-jump="analyse">Agent analysis</button>
+    <button data-jump="review">Review cards</button>
+    <button data-jump="finale">Finale</button>
+    <button data-jump="restart">Restart from agreements</button>
+  </div>
+  <button id="protoBtn">Prototype</button>
+</div>
+
+<script>
+(() => {
+"use strict";
+const DOCS = [{"id":"terms","name":"Terms of Use","pages":9,"version":"v1.1","sections":[["0. Introduction","THIS DOCUMENT IS AN ELECTRONIC RECORD IN TERMS OF THE INFORMATION TECHNOLOGY ACT, 2000 AND RULES THERE UNDER AS APPLICABLE. THIS ELECTRONIC RECORD IS GENERATED BY A COMPUTER SYSTEM AND DOES NOT REQUIRE ANY PHYSICAL OR DIGITAL SIGNATURES. These terms and conditions (“Terms and Conditions”) govern the use of the consent management platform called Wisely Consent (“Platform”) accessible via designated web portals and/or as a mobile application provided by Tanla Platforms Limited. In consideration of the mutual covenants hereof, the Terms and Conditions constitute a binding and enforceable contract between the Tanla Platforms Limited (“Company”) and you (defined below). These Terms and Conditions may be updated by the Company from time to time and the Terms and Conditions, as amended, shall apply to you. You may always review the most current version of the Terms and Conditions on the Platform. Your continued use of the Platform after any such updates constitutes definitive acceptance of the revised terms."],["1. General Terms","1.1. These Terms and Conditions set out the terms on which Senders, Registered Telemarketers, Partners and Access Providers (Telecom Service Providers), operating on their own or via their authorised representatives, may utilize the platform infrastructure and consent management services (“Services”) from the Company for inter alia Consent migration, Consent acquisition, and the transmission of Promotional Messages (defined below) and Promotional Voice Calls (defined below) in a manner compliant with the Telecom Commercial Communications Customer Preference Regulations, 2018 (TCCCPR). Unless the context otherwise requires, the terms ‘Access Providers’, ’Authority’, ‘Consent’, ‘Promotional Message’, ‘Promotional Voice Call’, ‘Registered Telemarketer / RTM’, ‘Sender’, ‘Service Message’, ‘Service Call’, ‘Transactions Message’, and ‘Transactional Voice Call’ shall have the meanings ascribed to them under the TCCCPR.<br><br>1.2. Within these Terms and Conditions, 'Privacy Notice' shall mean the privacy notice of the Platform, which shall be read as a part of these Terms and Conditions.<br><br>1.3. You agree that these Terms and Conditions and the Privacy Notice shall apply in conjunction with any Codes of Practice (complied or implemented by the Company, Access Providers or Authority), customer agreement form, purchase order, or separate agreement signed by you with the Company, or implemented by the Company, where they relate the Platform.<br><br>1.4. Within these Terms and Conditions, “User” or “you” shall mean any Sender (an individual/entity/enterprise), a Registered Telemarketer, a Partner or an Access Provider (Telecom Service Provider/TSP) accessing, integrating with, or otherwise utilizing the Platform.<br><br>1.5. By clicking 'I/We Accept' during the sign-up process, you agree and acknowledge that by accessing the Platform, you<br><br>1.5.1. are at least 18 years of age;<br>1.5.2. have read, understood, and are bound by the Terms and Conditions and Privacy Notice, and where you represent a Sender or Access Provider, confirm and represent that you have the necessary power and authority to bind such Sender or Access Provider to these Terms and Conditions and the Privacy Notice;<br>1.5.3. represent that you are compliant with all applicable laws (including the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, the TCCCPR, and the Digital Personal Data Protection Act, 2023 and their underlying rules and regulations).<br><br>1.6. While (i) the Terms and Conditions are subject to revision at any time, as determined by the Company, and all changes are effective immediately upon being posted on the Platform, and (ii) it is your responsibility to review these Terms and Conditions periodically for any updates or changes; the Company shall make commercially reasonable efforts to periodically inform you of the Terms and Conditions, Privacy Notice and other relevant terms that you are bound by, and update you of any change in such terms (if any). To the extent the Company is required to obtain your consent for any changes to the Terms and Conditions or Privacy Notice under applicable laws, the Company will seek your consent for the same.<br><br>1.7. You agree and accept that your registration on the Platform will be subject to risk assessments carried out by the Company based on data provided by you or data received from third party sources, using inter alia Artificial Intelligence (AI) or Machine Learning (ML) systems. The Company is under no obligation to provide you with access to the Platform, and may reject your registration on its Platform, in its sole discretion.<br><br>1.8. You agree to not use the Platform for any purpose that is prohibited by these Terms and Conditions or applicable law."],["2. Information and Data Integrity","2.1. You warrant the accuracy, completeness, consistency, and truthfulness of all information, including Subscriber Consent and preference records and any ‘Know Your Customer’ (“KYC”) documents, that you submit on the Platform.<br><br>2.2. If you provide any information which is inaccurate, incomplete, inconsistent, or untrue, or if there are reasonable grounds to suspect the same, the Company reserves the right to suspend or terminate your access to the Platform.<br><br>2.3. Any Personal Data uploaded to, or provided on, the Platform will be processed in accordance with the applicable data protection laws including the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 (“Privacy Rules”) and the Digital Personal Data Protection Act, 2023 (“DPDP Act”). Unless the context otherwise requires, in these Terms and Conditions the phrase ‘Personal Data’ will have the meaning ascribed to it under the DPDP Act.<br><br>2.4. You permit us to contact your authorized personnel on their phone number or e-mail ID (as required) provided, for administrative and compliance purposes, and in relation to your access to and use of the Platform.<br><br>2.5. You shall remain solely responsible for maintaining the confidentiality and data security of your username, access tokens, password, API credentials, cryptographic keys and any other information required to register for, or access, the Platform. The right to use the Platform is not transferable to any other person or entity. The Company shall not be liable for any loss or damage arising from your failure to maintain the secrecy and confidentiality of your access credentials to the Platform. You agree to immediately notify the Company of any unauthorized use of your account or any other security breach via dpo@tanla.com, as soon as you become are aware of such unauthorized use or security breach. Such notification will include a description of the breach, including the nature, timing, and extent of occurrence, and the datasets believed to be affected. You hereby agree to cooperate with all efforts made by the Company to investigate into, remedy, and report this breach to relevant regulatory authorities, as may be required, and provide information to the Company as may be requested from time to time in relation to the same.<br><br>2.6. You represent and warrant that all Consent data uploaded to the Platform has been explicitly, lawfully, and verifiably obtained directly from the Subscriber in strict compliance with applicable laws, including but not limited to, the Privacy Rules, the TCCCPR, and the DPDP Act (collectively “Data Protection Laws”), and these Terms and Conditions.<br><br>2.7. You shall not submit Consent records that are fabricated, synthetically generated, mechanically duplicated, or otherwise non-compliant with requirements under Data Protection Laws.<br><br>2.8. You acknowledge that the provision or attempted provision of any fraudulent data, including mechanically duplicated or legally defective consent records, constitutes a material breach of these Terms and Conditions.<br><br>2.9. The obligation to ensure the authenticity, validity, and scope of any data provided by the you, including Subscriber Consent data, lies solely with you, and you shall cooperate with any and all requests submitted by the Company in this regard .<br><br>2.10. You will upload or provide data to the Platform only per formats or specifications prescribed by the Company, and you agree and accept that the Company may reject any data uploaded to the Platform that does not conform to these formats or specifications.<br><br>2.11. You agree and accept that the Company’s processing of uploaded Consent data is subject to applicable laws, particularly the TCCCPR. For this reason, the Company’s processing of this data may be subject to limits such volume based limits, or limitations on Subscribers for whom the Company may register Consents.<br><br>2.12. You shall:<br><br>2.12.1. secure all facilities and services (including terminals, software, modem, telecommunications facilities and internet connectivity and browsers, and any third-party keys) necessary for utilizing the Platform;<br>2.12.2. provide the Company with access to the relevant data required to enable it to provide the Platform and associated services to you; and<br>2.12.3. comply with the Company’s instructions and guidelines, in connection with the Platform and its use thereof.<br><br>2.13. You shall not attempt to gain access to the software, data, systems or controls underlying the Platform otherwise than as expressly permitted by the Company in writing."],["3. AI Validation","3.1. You acknowledge that the Platform utilizes proprietary AI and ML models to conduct pre-ingestion validation and continuous risk assessment of Users, Consent records, and ingestion behaviour. The automated assessments may impact the services made available to you on the Platform or your ability to access the Platform, further discussed under this clause 3.<br><br>3.2. The Company reserves the absolute right to unilaterally block, reject, throttle, or route for manual audit your Platform registration request, Consent records, or batch uploads that the system identifies as anomalous, statistically invalid, or high-risk.<br><br>3.3. The Company explicitly disclaims all liability for AI or ML driven operational errors, including false positives or negatives, and any other results of AI or ML driven operations.<br><br>3.4. For clarity, as the processing of Consent records is subject to requirements under applicable laws (particularly the TCCCPR), the successful upload of a Consent record on the Platform (a) does not constitute a validation of its authenticity; (b) does not absolve you of regulatory or contractual liability if the Consent is later found to be non- compliant with Data Protection Laws; and (c) does not guarantee that your Promotional Messages or Promotional Voice Calls will be delivered to Subscribers."],["4. Technical and Data Security","4.1. The Platform utilizes cryptographic tokenization and encryption standards to secure Consent records stored within its underlying ledgers and databases.<br><br>4.2. You must secure your API keys, callback endpoints, administrative credentials, and all other data and systems utilised to access and use the Platform.<br><br>4.3. You acknowledge and agree that you are solely liable for any unauthorized access, data exfiltration, or rogue/malicious data uploads resulting from compromised credentials originating from you or any RTM appointed by you."],["5. Consent and Preference Management Limitations","5.1. You acknowledge and agrees that the Platform executes validation against Subscriber Consent and Preference data exclusively for commercial communications categorized as Promotional Messages and Promotional Voice Calls.<br><br>5.2. You are solely responsible for, and will ensure, the accurate classification of your communications as Promotional Messages / Promotional Voice Calls, and any other form communications recognised under the TCCCPR.<br><br>5.3. You acknowledge that the Company may use behavioural signals to detect and flag traffic misclassification as part of its dynamic trust evaluation and risk scoring processes. You further acknowledge that the Company may incorporate additional measures to ensure regulatory compliance and safeguard Subscriber Consents and preferences."],["6. Consequences of Wrong Classification of Commercial Communication","6.1. If you misclassify, disguise or attempt to disguise Promotional Messages or Promotional Voice Calls as Service Messages, Service Voice Calls, Transactional Messages, Transactional Voice Calls to bypass automated validation, you shall solely be responsible and liable for the same, and the Company will bear no liability or responsibility for the same.<br><br>6.2. Further, any such actions will constitute a material breach of these Terms and Conditions."],["7. Exclusions","7.1. The Platform is provided to you on \"as is\" and \"as available\" basis without warranty of any kind either express or implied. The Company does not warrant that the Platform will be uninterrupted or error free or that the Platform or its hosting server are free from viruses or other harmful components. Further, you acknowledge that on occasion the Platform may be temporarily down due to periodic maintenance, technical issues, or for any security reasons beyond the Company's control. In such instances of downtime, the Company shall not be held liable for any losses which you may incur.<br><br>7.2. The Terms and Conditions do not govern pricing or commercial arrangements. Such functions are managed under separate commercial agreements between you and the Company."],["8. Intellectual Property","8.1. You acknowledge that you acquire no rights under these Terms and Conditions to the Company’s intellectual property (including the Platform), other than as specifically granted under these Terms and Conditions.<br><br>8.2. By accepting, and subject to your compliance with these Terms and Conditions, the Company provides you a limited, non-transferable, royalty-free, revocable, non- sublicensable, non-exclusive right to use the Platform solely for the use of the Services. You are strictly prohibited from:<br><br>8.2.1. using or allowing a third-party to use the Platform except as set out in these Terms and Conditions;<br>8.2.2. license, sublicense, sell, resell, lease, transfer, assign, distribute, or commercially exploit the Platform, or make it available to third parties other than authorised users, and then only as permitted under these Terms and Conditions;<br>8.2.3. create derivative works of the Platform or its components, or of any proprietary software used in the Platform;<br>8.2.4. access the source code or attempt to reverse engineer, decompile, transform, disassemble, modify, copy, distribute, transmit, or reproduce the Platform or its components;<br>8.2.5. use the Platform to build a competing product or service, copy features, functions, or graphics, or perform/disclose any benchmarks, security, or performance testing;<br>8.2.6. rent, share, lend, or operate the Platform on a time-share, service bureau, or marketplace basis, or permit a single Platform account owned by you to be used by other third parties (except as expressly permitted); or<br>8.2.7. use the Platform account for testing, development, or training purposes unless specifically allowed.<br><br>8.3. By accepting these Terms and Conditions, you hereby grant the Company:<br><br>8.3.1. A limited, non-exclusive, revocable, worldwide, royalty-free, fully-paid up license for the duration of the subsistence of the Terms and Conditions to use your intellectual property (such as trademarks, trade names etc.) to enable the Services.<br>8.3.2. An unlimited, exclusive, irrevocable, worldwide, perpetual, royalty-free, fully-paid up, license (with rights to sublicense through one or more tiers of sublicensees) to use, exploit and commercialize in any manner now known or in the future discovered and for whatever purpose, the rights in and to all feedback, comments, suggestions, ideas, observations, modifications, insights, improvements, enhancements and/or any other inputs obtained from you in any manner in relation to access to and use of the Platform. Further, you understand and agree that any rights licensed under this Clause 8.3 shall not revert to you solely due to non-use by the Company."],["9. Indemnification and Limitation of Liability","9.1. In no event shall the Company, including their affiliates, directors, or employees, be liable for any direct, indirect, punitive, or consequential damages resulting from the use or inability to use the Platform.<br><br>9.2. You agree to release, indemnify, and hold the Company and its affiliates and its officers, employees, directors and agents harmless from any and all losses, damages, expenses, regulatory penalties (including financial disincentives imposed by the Telecom Regulatory Authority of India or the Department of Telecommunications), including reasonable attorneys' fees, rights, claims, actions of any kind and injury arising out of or relating to (a) a breach of these Terms and Conditions; (b) any breach of applicable laws including the Data Protection Laws; (c) your use of the Platform; or (d) the submission of invalid, fraudulent, or unverified Consent data.<br><br>9.3. In no event shall the Company’s total cumulative liability to you, for the entire duration of the Terms and Conditions, including any extensions thereof, for any and all losses, liabilities, damages, deficiencies, demands, claims (including third party claims), actions, judgments or causes of action, assessments, interest, penalties and other costs or expenses (including, without limitation, reasonable attorneys' fees and expenses), whether in contract or tort, exceed three (3) calendar months from the date on which a claim is made by you.<br><br>9.4. These indemnity obligations will survive the termination these Terms and Conditions or the termination of your access to the Platform."],["10. Suspension and Termination","10.1. The Company reserves the right to modify, suspend, or withdraw access to the Platform at its sole discretion, in view of business exigencies or guidelines issued by Telecom Regulatory Authority of India, the Department of Telecommunications, regulatory agencies or legal orders from a court of competent jurisdiction.<br><br>10.2. You agree that the Company may, in its sole discretion, suspend or terminate these Terms and Conditions (including your access to the Platform) if the Company believes that (a) you have violated or acted inconsistently with the letter or spirit of these Terms and Conditions; or (b) you are in breach of any requirements under applicable laws (including the Privacy Rules, the TCCCPR, and the DPDP Act).<br><br>10.3. You agree that the Company will not be liable to you or any third party for the suspension of your access to the Platform or the termination of these Terms and Conditions."],["11. General Provisions","11.1. These Terms and Conditions are governed in accordance with the laws of India. Any dispute shall be subject to the exclusive jurisdiction of courts in Hyderabad, Telangana, India.<br><br>11.2. You shall not host, display, upload, modify, publish, transmit, store, update or share any information (including synthetically generated information) on or over the Platform that, among other things:<br><br>11.2.1. belongs to another person and to which you do not have any right;<br>11.2.2. is defamatory, obscene, pornographic, paedophilic, invasive of another’s privacy (including bodily privacy), insulting or harassing on the basis of gender, racially or ethnically objectionable;<br>11.2.3. encourages money laundering or gambling or an online game that causes user harm;<br>11.2.4. promotes enmity between different groups on the grounds of religion or caste with the intent to incite violence;<br>11.2.5. is harmful to children;<br>11.2.6. infringes intellectual property rights;<br>11.2.7. deceives or misleads the addressee about the origin of the message or communicates misinformation or patently false and untrue information;<br>11.2.8. is regarding the Central Government’s business that is identified as fake or false or misleading by such authorised fact check unit;<br>11.2.9. impersonates another person;<br>11.2.10. threatens unity, sovereignty, integrity, defence, security of India, public order or friendly relations with foreign states;<br>11.2.11. is insulting to another nation;<br>11.2.12. contains viruses or malicious code;<br>11.2.13. causes incitement to the commission of any cognizable offence, or prevents investigation of any offence;<br>11.2.14. in the nature of an online game that is not verified as a permissible online game, or is in the nature of an advertisement or surrogate advertisement or promotion of such a game or any platform/entity offering such game; and/or<br>11.2.15. violates any law in force."],["12. No Waiver and Severability","You agree that no action of the Company, other than an express written waiver or amendment, may be interpreted as a waiver or amendment of any of these Terms and Conditions. In the event any clause of these Terms is found to be unenforceable, then whenever possible, this will not affect any other clause, and each shall remain in full force and effect."],["13. Grievance Redressal","In relation to any queries, support requests, complaints, or grievances in relation to access to and/or use of the Platform, please contact our Grievance Officer: <br><br>Designation: Grievance Officer, Wisely Consent <br>Corporate Address: Tanla Platforms Limited, Tanla Technology Centre, Hitech City Road, Madhapur, Hyderabad, Telangana, India - 500081 <br>Contact email: dpo@tanla.com <br><br>By clicking on the \"Accept Terms of Use\" box, I confirm that I have read, understood, and agree to the Platform Terms and Conditions. I confirm I am authorized to bind my organization to these regulatory and technical obligations. If I do not agree to the terms of these Terms and Conditions, the Company may not be able to provide access to the Platform."]]},{"id":"privacy","name":"Privacy Policy","pages":3,"version":"v1.1","sections":[["0. About this notice","This Privacy Notice (“Privacy Notice”) is issued by Tanla Platforms Limited (“Tanla”, “Company”, “we”, “us”, or “our”). This document describes how Tanla collects, records, evaluates, secures, and handles the Personal Data of individuals acting as authorized administrators, operational managers, technical personnel, or corporate representatives (“Platform Users”, “Corporate Users”, or “you”) on behalf of Senders (Enterprises), Telecom Service Providers (Access Providers / TSPs), Partners, Registered Telemarketers (RTMs) who access, integrate with, or operate our proprietary Wisely Consent Platform and its associated APIs and administrative interfaces (collectively, the “Platform”). This notice does not govern the underlying end-subscriber consumer communications data, for which your organization acts as the primary Data Fiduciary. You agree that these terms shall apply in conjunction with, and are additional to, the general Terms of Use, or any other agreement/terms governing your use of Wisely Consent Platform."],["1. Personal data we process","The table below sets out the categories of personal data processed, why each is processed, and the services it enables.<br><br><b>Name, mobile number, email id, subscriber ID, user account ID or other platform identifier</b><br>Purpose: To identify you as the user and tie consent and communication preference records to the right profile, and to support account queries and grievances.<br>Enables: Account access, consent management, preference updates, retrieval of consent history, support.<br><br><b>Personal data in corporate KYC documents (directors' government IDs, authorised signatories, power of attorney, registration certificates)</b><br>Purpose: To run legal and technical risk assessments, verify corporate legitimacy, prevent identity fraud and validate the registering user's authority.<br>Enables: Completing onboarding, authorising high-volume consent migrations.<br><br><b>Consent status records: given, denied, modified, updated or withdrawn</b><br>Purpose: To keep a verifiable record of your consent choices.<br>Enables: Activation, denial, modification or revocation of promotional message and voice call preferences, per sender.<br><br><b>Communication preference settings (category, channel, other preferences)</b><br>Purpose: To record your preferences for promotional messages and voice calls.<br>Enables: Preference-based delivery of particular categories or channels.<br><br><b>Date, time and method of consent capture or withdrawal</b><br>Purpose: To create an auditable record of when and how a consent choice was made or changed.<br>Enables: Compliance validation, dispute resolution, audit trail, proof of consent lifecycle.<br><br><b>Platform logs: access and transaction logs, device or browser metadata, API access keys, IP address, session information</b><br>Purpose: To secure the Platform, detect misuse, troubleshoot issues and maintain integrity and auditability.<br>Enables: Secure access, fraud detection, monitoring, incident investigation, service continuity.<br><br><b>Grievance, complaint or support request details and correspondence</b><br>Purpose: To respond to your queries, requests, grievances and complaints.<br>Enables: Grievance redressal, support resolution, exercise of data principal rights.<br><br><b>Records of sharing consent instructions or preference updates with relevant Principal Entities, Senders or ecosystem participants</b><br>Purpose: To put your consent and preference choices into effect and pass updates to the parties who rely on them.<br>Enables: Applying updated consents and preferences; sender-side compliance."],["2. Who we share it with","In order to make the Platform and its services available to you, we will need to share your personal data with certain third parties, such as authorised telecom service providers, technology service providers such as cloud hosting providers, database administrators and security log management vendors, government authorities, and third parties in case we undergo any mergers / acquisitions / investments / sale.<br><br>In such cases, to the extent permitted under applicable laws, we will ensure that the recipients of your personal data adopt appropriate security measures which are commensurate with the kind of personal data that they are accessing."],["3. Your rights","As an individual acting as a Platform User, you may have the following rights in respect of the processing of your personal data under this Privacy Notice to the extent provided under applicable laws:<br><br>(a) the right to access, correct, and update your personal data;<br>(b) the right to request deletion of your personal information;<br>(c) the right to seek redressal of your grievances by us or the relevant authority;<br>and (d) the right to nominate one or more individuals to be able to exercise your rights in the event of your death or incapacity.<br><br>To enable exercise of the above rights, please reach out to dpo@tanla.com. When reaching out to exercise your rights, please ensure you provide your name and phone number to help us identify you and support the exercise of your rights. You also have the right to lodge a complaint with the Data Protection Board of India if you believe we have processed your personal information in violation of applicable data protection law. However, we encourage you to raise any complaint with us first so we can do our best to resolve it."],["4. Security measures","We have implemented security policies, rules and technical measures, as required under applicable law including firewalls, transport layer security and other physical and electronic security measures to protect your personal data from inter alia unauthorised access, improper use or disclosure, unauthorised modification and unlawful destruction or accidental loss."],["5. Consent","By clicking \"Accept Privacy Policy\", you acknowledge that:<br>a) You have read and understood how your personal data will be processed as per this Privacy Notice.<br>b) You hereby provide your consent to our processing of your personal information in accordance with this Privacy Notice. You have the right to withdraw your consent to processing of your personal information you have provided to us."]]}]
+;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Icons ---------- */
+const P = (d, sw = 1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const IC = {
+  profile: P('<path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6M9 10h.01M15 10h.01"/>'),
+  team: P('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.6c1.8.7 3 2.6 3.5 5.4"/>'),
+  brands: P('<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>'),
+  gtm: P('<path d="M4 17 9 12l4 4 7-8"/><path d="M15 8h5v5"/>'),
+  templates: P('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6M7 17h8"/>'),
+  check: P('<path d="m5 12.5 4.5 4.5L19 7.5"/>', 3),
+  lock: P('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
+  unlock: P('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/>'),
+  spark: P('<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>'),
+  chev: P('<path d="m6 9 6 6 6-6"/>'),
+  back: P('<path d="M19 12H5M11 6l-6 6 6 6"/>'),
+  info: P('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'),
+  x: P('<path d="M6 6l12 12M18 6 6 18"/>'),
+  expand: P('<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>'),
+  clock: P('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+  later: P('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+  build: P('<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/>'),
+};
+
+/* ---------- Data ---------- */
+const PROFILE = [
+  { k: "name", label: "Legal entity name", v: "HDFC Bank Limited", src: "MCA" },
+  { k: "pan", label: "Business PAN", v: "AAACH2702H", src: "GSTIN" },
+  { k: "tan", label: "Business TAN", v: "MUMH03189E", src: "MCA" },
+  { k: "cin", label: "CIN", v: "L65920MH1994PLC080618", src: "MCA" },
+  { k: "gstin", label: "GSTIN", v: "27AAACH2702H1ZK", src: "GSTIN" },
+  { k: "type", label: "Entity type", v: "Public limited company", src: "MCA" },
+  { k: "addr", label: "Registered address", v: "HDFC Bank House, Senapati Bapat Marg, Lower Parel, Mumbai 400013", src: "GSTIN", wide: true },
+  { k: "web", label: "Website URL", v: "www.hdfcbank.com", src: "Website" },
+  { k: "ind", label: "Primary industry", v: "Banking and financial services", src: "DLT" },
+  { k: "dlt", label: "DLT principal entity ID", v: "1101 4471 9285 0213 554", src: "DLT" },
+];
+const ROLES = [
+  { id: "Regulatory / Legal", desc: "Can approve consent policies" },
+  { id: "Business Admin", desc: "Can manage brands and campaigns" },
+  { id: "Super Admin", desc: "Full access, manages users" },
+];
+const DEPTS = ["Legal & Compliance", "Risk & Audit", "Marketing", "Technology", "Finance Operations", "Operations"];
+const PEOPLE = [
+  { i: "AK", name: "Anita Kulkarni", email: "anita.kulkarni@hdfc.com", role: "Regulatory / Legal", title: "VP, Legal & Compliance", dept: "Legal & Compliance" },
+  { i: "MI", name: "Meera Iyer", email: "meera.iyer@hdfc.com", role: "Regulatory / Legal", title: "Compliance Manager", dept: "Legal & Compliance" },
+  { i: "AM", name: "Arjun Menon", email: "arjun.menon@hdfc.com", role: "Regulatory / Legal", title: "Head of Risk and Audit", dept: "Risk & Audit" },
+  { i: "SP", name: "Sanjay Prabhu", email: "sanjay.prabhu@hdfc.com", role: "Business Admin", title: "Head of Marketing Operations", dept: "Marketing" },
+  { i: "KR", name: "Kavya Reddy", email: "kavya.reddy@hdfc.com", role: "Business Admin", title: "Digital Campaigns Lead", dept: "Marketing" },
+  { i: "DN", name: "Divya Nair", email: "divya.nair@hdfc.com", role: "Super Admin", title: "Senior Manager, Technology", dept: "Technology" },
+].map((p, n) => ({ ...p, on: true, t: n % 4 }));
+const BRANDS = [
+  { name: "HDFC Bank", hdr: "HDFCBK", lobs: ["Credit Cards", "Personal Loan", "Home Loan"] },
+  { name: "HDFC Life", hdr: "HDFCLI", lobs: ["Term Insurance", "Savings Plans"] },
+  { name: "HDFC ERGO", hdr: "HDFCER", lobs: ["Motor Insurance", "Health Insurance"] },
+];
+const BRANDS0 = JSON.stringify(BRANDS);
+const PHASES = [{ k: "mig", label: "Migration" }, { k: "acq", label: "Acquisition" }, { k: "ref", label: "Refresh" }];
+const PARTNERS = [
+  { id: "karix", name: "Karix", mark: "K", tone: "violet", picked: true, rates: { mig: .75, acq: 1.2, ref: .6, sms: .38, voice: .32, rcs: .44 }, why: "Lowest rates on migration and refresh." },
+  { id: "vf", name: "Value First", mark: "V", tone: "red", picked: true, rates: { mig: .8, acq: 1.2, ref: .7, sms: .4, voice: .35, rcs: .48 }, why: "Ties on acquisition at ₹1.20, with stronger enterprise SLA coverage." },
+  { id: "tata", name: "Tata", mark: "T", tone: "amber", picked: false, rates: { mig: .82, acq: 1.28, ref: .68, sms: .41, voice: .36, rcs: .5 }, why: "Close on refresh, but higher on migration and acquisition." },
+  { id: "route", name: "Route Mobile", mark: "R", tone: "teal", picked: false, rates: { mig: .88, acq: 1.35, ref: .72, sms: .42, voice: .38, rcs: .52 }, why: "Above the chosen pair on every phase." },
+];
+const ALLOC = { mig: 60, acq: 50, ref: 65 };
+const TPL_LOBS = [
+  { lob: "Credit Cards", n: 22, check: 16 }, { lob: "Personal Loan", n: 18, check: 13 }, { lob: "Home Loan", n: 14, check: 10 },
+  { lob: "Term Insurance", n: 12, check: 9 }, { lob: "Health Insurance", n: 12, check: 8 }, { lob: "Motor Insurance", n: 11, check: 9 }, { lob: "Savings Plans", n: 9, check: 6 },
+];
+const TPLS = [
+  { id: "1107164521", name: "CC_REWARDS_WKND", text: "Earn 5X reward points on dining this weekend with your HDFC Bank Credit Card. T&C apply.", lob: "Credit Cards", c: "h" },
+  { id: "1107164588", name: "CC_EMI_CONVERT", text: "Convert purchases above ₹5,000 into easy EMIs at low interest. Reply EMI to know more.", lob: "Credit Cards", c: "m" },
+  { id: "1107165102", name: "PL_PREAPPROVED", text: "You are pre-approved for a Personal Loan up to ₹10 lakh. Disbursal in 10 seconds.", lob: "Personal Loan", c: "h" },
+  { id: "1107165140", name: "PL_BT_OFFER", text: "Transfer your existing loan to HDFC Bank and save on interest. Apply in minutes.", lob: "Personal Loan", c: "m" },
+  { id: "1107165877", name: "HL_TOPUP", text: "Get a top-up on your Home Loan at attractive rates. No extra documents needed.", lob: "Home Loan", c: "h" },
+  { id: "1107165903", name: "HL_RATE_CUT", text: "Home Loan rates now start lower. Check how much your EMI could drop.", lob: "Home Loan", c: "m" },
+  { id: "1107166230", name: "LIFE_TERM_1CR", text: "Secure ₹1 crore cover for your family from ₹490 a month with HDFC Life Click 2 Protect.", lob: "Term Insurance", c: "h" },
+  { id: "1107166251", name: "LIFE_SAVE_PLAN", text: "Guaranteed returns for your child's education. Start a savings plan today.", lob: "Savings Plans", c: "m" },
+  { id: "1107166610", name: "ERGO_MOTOR_RNW", text: "Your car insurance renews soon. Renew now and keep your no-claim bonus.", lob: "Motor Insurance", c: "h" },
+  { id: "1107166655", name: "ERGO_HEALTH_FAM", text: "Cover your whole family with Optima Secure. Cashless at 13,000+ hospitals.", lob: "Health Insurance", c: "m" },
+  { id: "1107167001", name: "FEST_GENERIC_01", text: "Festive offers are live across HDFC products. Tap to explore.", lob: "", c: "u" },
+  { id: "1107167019", name: "APP_UPDATE_NUDGE", text: "Update your app to enjoy the latest offers and faster payments.", lob: "", c: "u" },
+];
+TPLS.forEach((t) => (t.lob0 = t.lob));
+
+const STEPS = [
+  { key: "profile", title: "Business profile", short: "Business profile",
+    checks: [["Checking DLT", "Checked DLT"], ["Checking GSTIN", "Checked GSTIN"], ["Checking MCA", "Checked MCA"], ["Looking up the company website", "Looked up the company website"], ["Filling in the business profile", "Filled in the business profile"]],
+    sources: ["DLT registration", "GSTIN", "MCA", "Company website"],
+    result: "Filled all 10 fields from 4 sources", mini: "10 fields filled" },
+  { key: "team", title: "Team", short: "Team",
+    checks: [["Finding people on the DLT registration", "Found people on the DLT registration"], ["Matching a role to each person", "Matched a role to each person"]],
+    sources: ["DLT registration"],
+    result: "Found 6 people and suggested a role for each", mini: "6 people found" },
+  { key: "brands", title: "Brands and LOBs", short: "Brands",
+    checks: [["Reading the DLT headers and entities", "Read the DLT headers and entities"], ["Grouping them into brands", "Grouped them into brands"], ["Creating lines of business", "Created lines of business"]],
+    sources: ["DLT registrations"],
+    result: "Drafted 3 brands and 7 lines of business", mini: "3 brands · 7 LOBs" },
+  { key: "gtm", title: "GTM partners", short: "GTM partners",
+    checks: [["Reading partner requests", "Read partner requests"], ["Comparing rates for each phase", "Compared rates for each phase"], ["Choosing a combination", "Chose a combination"], ["Setting the allocation across phases", "Set the allocation across phases"]],
+    sources: ["Rate cards from 4 partners"],
+    result: "Chose Karix and Value First and split volume by phase", mini: "2 of 4 chosen" },
+  { key: "templates", title: "Templates", short: "Templates",
+    checks: [["Reading the templates", "Read the templates"], ["Suggesting a line of business for each", "Suggested a line of business for each"], ["Scoring confidence", "Scored confidence"]],
+    sources: ["Your 100 DLT templates"],
+    result: "Suggested a line of business for 98 of 100 templates", mini: "98 of 100 mapped" },
+];
+
+/* ---------- State ---------- */
+const S = {
+  phase: "gate", docIdx: 0, accepted: {}, active: 0, speed: 1, mode: "overview",
+  cards: STEPS.map(() => ({ st: "queued", done: null, at: null })),
+  profileAuth: false, gtmTerms: false, reviewStart: 0, runId: 0,
+};
+const W = (ms) => new Promise((res) => setTimeout(res, RM ? 0 : ms / S.speed));
+const now = () => new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+
+/* ---------- Gate ---------- */
+const PROSE = {
+  terms: [
+    { b: "You warrant that the consent data and KYC details you submit are accurate and lawfully obtained", c: 2 }, ". ",
+    { b: "AI checks can block, reject or route your registration and uploads for audit", c: 3 }, ", and a successful upload is not proof that a consent is valid. ",
+    { b: "You indemnify the Company, and its liability to you is capped at three months", c: 9 }, ".",
+  ],
+  privacy: [
+    { b: "We process your identity, KYC, consent, log and grievance data", c: 1 }, " to run the platform. ",
+    { b: "We share it with telecom providers, hosting and security vendors, and authorities where required", c: 2 }, ". ",
+    { b: "You can access, correct or delete your data", c: 3 }, ", or complain to us or the Data Protection Board.",
+  ],
+};
+function renderGate() {
+  const d = DOCS[S.docIdx];
+  $("#tabs").innerHTML = DOCS.map((x, n) => `<button class="tab${n === S.docIdx ? " is-on" : ""}" role="tab" aria-selected="${n === S.docIdx}" data-doc="${n}">${S.accepted[x.id] ? `<span class="tk">${IC.check}</span>` : ""}${esc(x.name)}</button>`).join("");
+  $("#prose").innerHTML = PROSE[d.id].map((p) => typeof p === "string" ? esc(p) : `<a data-clause="${p.c}">${esc(p.b)}</a>`).join("");
+  $("#docMeta").textContent = `${d.name} · ${d.pages} pages · ${d.version}`;
+  const doc = $("#doc");
+  doc.innerHTML = d.sections.map(([h, t], n) => `<h3 id="cl-${n}">${esc(h)}</h3><p>${t}</p>`).join("");
+  doc.scrollTop = 0;
+  const btn = $("#acceptBtn");
+  btn.textContent = S.accepted[d.id] ? "Accepted" : `Accept ${d.name.toLowerCase()}`;
+  btn.disabled = true;
+  readSync();
+}
+function readSync() {
+  const doc = $("#doc"); const d = DOCS[S.docIdx];
+  const max = doc.scrollHeight - doc.clientHeight;
+  const p = max <= 0 ? 1 : doc.scrollTop / max;
+  $("#docBar").style.width = `${Math.round(p * 100)}%`;
+  const read = p > 0.985;
+  const btn = $("#acceptBtn");
+  if (S.accepted[d.id]) { btn.disabled = true; $("#docHint").textContent = "Accepted"; return; }
+  btn.disabled = !read;
+  $("#docHint").textContent = read ? `You're accepting on behalf of HDFC Bank Limited as Ravi Menon` : `Scroll to the end to accept · ${Math.round(p * 100)}% read`;
+}
+$("#doc").addEventListener("scroll", readSync, { passive: true });
+$("#tabs").addEventListener("click", (e) => { const t = e.target.closest("[data-doc]"); if (!t) return; S.docIdx = +t.dataset.doc; renderGate(); });
+$("#prose").addEventListener("click", (e) => {
+  const a = e.target.closest("[data-clause]"); if (!a) return;
+  const h = $(`#cl-${a.dataset.clause}`); if (!h) return;
+  $("#doc").scrollTop = h.offsetTop - 16; h.classList.add("flash"); setTimeout(() => h.classList.remove("flash"), 1200);
+});
+$("#acceptBtn").addEventListener("click", () => {
+  const d = DOCS[S.docIdx]; S.accepted[d.id] = true;
+  toast(`${d.name} accepted`);
+  const next = DOCS.findIndex((x) => !S.accepted[x.id]);
+  if (next >= 0) { S.docIdx = next; renderGate(); return; }
+  renderGate(); setTimeout(startDeck, 500);
+});
+
+/* ---------- Deck build ---------- */
+const stage = $("#stage");
+function buildCards() {
+  $$(".card", stage).forEach((c) => c.remove());
+  STEPS.forEach((s, i) => {
+    const el = document.createElement("article");
+    el.className = "card st-queued"; el.dataset.i = i;
+    el.setAttribute("aria-label", s.title);
+    el.innerHTML = `<div class="card-in">
+      <div class="c-head"><span class="c-ic">${IC[s.key]}</span><div class="c-tt"><div class="c-n">STEP ${i + 1} OF 5</div><div class="c-title">${esc(s.title)}</div></div><span class="status" data-status></span></div>
+      <div class="pane pane-a">
+        <div class="scene">${sceneHTML(s.key)}</div>
+        <ul class="log" data-log>${s.checks.map((c) => `<li class="q"><span class="ico"></span><span>${esc(c[1])}</span></li>`).join("")}</ul>
+        <div class="result" data-result><div class="r-k">${IC.spark} Suggestion ready</div><div class="r-v">${esc(s.result)}</div></div>
+      </div>
+      <div class="pane pane-r" data-review></div>
+      <div class="mini"><div class="m-ic">${IC[s.key]}<span class="m-tick">${IC.check}</span><span class="m-lock">${IC.unlock}</span></div><div class="m-t">${esc(s.title)}</div><div class="m-s" data-mini>Queued</div></div>
+    </div>`;
+    stage.appendChild(el);
+  });
+  cards().forEach((c, i) => setStatus(i));
+}
+const cards = () => $$(".card", stage);
+const card = (i) => cards()[i];
+
+function setStatus(i) {
+  const c = S.cards[i]; const el = card(i); if (!el) return;
+  const map = {
+    queued: ["", "Queued", "Queued"],
+    analysing: ["s-work", `<span class="sp"></span>Analysing`, "Analysing…"],
+    ready: ["s-ready", "Ready", "Ready for review"],
+    review: ["s-ready", "Your review", "Ready for review"],
+    done: ["s-ok", `${IC.check}Done`, "Done"],
+    later: ["", "Later", "Later"],
+    inreview: ["s-wait", `<span class="sp"></span>In review`, "In review"],
+  };
+  const [cls, html, mini] = map[c.st] || map.queued;
+  const st = $("[data-status]", el); st.className = `status ${cls}`; st.innerHTML = html;
+  let m = mini;
+  if (c.st === "done" || c.st === "inreview") m = doneMini(i);
+  if (c.st === "ready" || c.st === "review") m = STEPS[i].mini;
+  $("[data-mini]", el).innerHTML = (c.st === "done" ? `<span style="color:var(--green)">${IC.check}</span>` : "") + esc(m);
+  el.className = el.className.replace(/\bst-\S+/g, "").trim() + ` st-${c.st === "inreview" ? "done" : c.st}`;
+  renderRail();
+}
+function doneMini(i) {
+  const k = STEPS[i].key, c = S.cards[i];
+  if (k === "profile") return c.st === "inreview" ? "Verifying" : "Approved";
+  if (k === "team") return c.st === "later" ? "Later" : `${PEOPLE.filter((p) => p.on).length} invited`;
+  if (k === "brands") return c.st === "inreview" ? "In review" : "Set up";
+  if (k === "gtm") return "Confirmed";
+  return "Mapped";
+}
+
+/* ---------- Layout ---------- */
+function layout() {
+  const r = stage.getBoundingClientRect();
+  const cw = 372, ch = 520;
+  let f;
+  if (S.mode === "overview") {
+    const so = 0.6, g = 18;
+    const need = 5 * cw * so + 4 * g + 40;
+    f = Math.min(1.15, (r.height - 40) / (ch * so), r.width / need);
+    if (S.phase === "finale") f = Math.min(f, 0.78, (r.height - 250) / (ch * so));
+    f = Math.max(f, 0.2);
+    const yOff = S.phase === "finale" ? -(r.height / 2 - (ch * so * f) / 2 - 10) : 0;
+    cards().forEach((el, i) => {
+      el.style.transform = `translate(${(i - 2) * (cw * so + g) * f}px, ${yOff}px) scale(${so * f})`;
+      el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus");
+      el.classList.toggle("is-clickable", S.phase === "review");
+    });
+    placeOrb(S.active, (S.active - 2) * (cw * so + g) * f, yOff - (ch * so * f) / 2 - 30);
+  } else {
+    const wide = r.width >= 900;
+    f = Math.min(1, (r.height - 70) / ch, wide ? r.width / (cw + 2 * cw * 0.8 + 60) : (r.width - 32) / cw);
+    f = Math.max(f, 0.45);
+    const G = 26, SC = [1, .8, .66, .58, .52], OP = [1, .92, .55, .2, .05];
+    const pos = [0]; for (let a = 1; a < 5; a++) pos[a] = pos[a - 1] + cw * SC[a - 1] / 2 + G + cw * SC[a] / 2;
+    const y = 20 * f;
+    cards().forEach((el, i) => {
+      const off = i - S.active, a = Math.min(Math.abs(off), 4);
+      const x = Math.sign(off) * pos[a] * f;
+      el.style.transform = `translate(${x}px, ${y}px) scale(${SC[a] * f})`;
+      el.style.opacity = OP[a]; el.style.zIndex = 20 - a;
+      el.classList.toggle("is-focus", off === 0);
+      el.classList.toggle("is-far", a >= 2);
+      el.classList.toggle("is-clickable", S.phase === "review" && off !== 0);
+    });
+    placeOrb(S.active, 0, y - (ch * f) / 2 - 34);
+  }
+}
+function placeOrb(i, x, y) { $("#orb").style.transform = `translate(${x}px, ${y}px)`; }
+addEventListener("resize", layout);
+function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview"); layout(); }
+
+/* ---------- Rail ---------- */
+function renderRail() {
+  const rail = $("#rail");
+  rail.innerHTML = STEPS.map((s, i) => {
+    const c = S.cards[i];
+    const cls = (i === S.active && S.phase !== "finale" ? "cur " : "") + (c.st === "done" || c.st === "later" ? "ok" : c.st === "inreview" ? "wt" : c.st === "ready" || c.st === "review" ? "rd" : "");
+    const d = c.st === "done" || c.st === "later" ? IC.check : i + 1;
+    const line = i < 4 ? `<span class="rl${["done", "later", "inreview", "ready", "review"].includes(c.st) ? " on" : ""}"><i></i></span>` : "";
+    return `<button class="rn ${cls}" data-go="${i}"><span class="d">${d}</span><span>${esc(s.short)}</span></button>${line}`;
+  }).join("") + (S.phase === "review" || S.phase === "finale" ? `<span class="timer" id="timer">${fmtElapsed()}</span>` : "");
+}
+$("#rail").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b && S.phase === "review") focusCard(+b.dataset.go); });
+function fmtElapsed() { if (!S.reviewStart) return "0:00"; const s = Math.floor((Date.now() - S.reviewStart) / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }
+setInterval(() => { const t = $("#timer"); if (t && S.phase === "review") t.textContent = fmtElapsed(); }, 1000);
+
+/* ---------- Header copy ---------- */
+function head(kicker, title, narr, working) {
+  document.body.classList.toggle("is-working", !!working);
+  const k = $("#kickerT"), h = $("#deckTitle"), n = $("#narr");
+  if (k.textContent !== kicker) { k.textContent = kicker; }
+  if (h.textContent !== title) { h.textContent = title; h.classList.remove("swap"); void h.offsetWidth; h.classList.add("swap"); }
+  n.innerHTML = narr; n.classList.remove("swap"); void n.offsetWidth; n.classList.add("swap");
+}
+function agentState(t) { $("#agentState").textContent = t; }
+
+/* ---------- Scenes ---------- */
+function sceneHTML(k) {
+  if (k === "profile") {
+    const srcs = ["DLT", "GSTIN", "MCA", "Web"];
+    const w = [78, 62, 88, 54, 70];
+    return `<div class="sc" data-sc="profile"><div class="sp-src">${srcs.map((s, n) => `<span class="src" data-k="${n + 1}"><i></i>${s}</span>`).join("")}</div>
+      <div class="form-sk">${w.map((x) => `<div class="fr" style="--w:${x}%"><b></b><span><em></em></span></div>`).join("")}</div></div>`;
+  }
+  if (k === "team") {
+    const roles = ["Legal", "Legal", "Legal", "Business", "Business", "Super"];
+    return `<div class="sc" data-sc="team"><div class="tm-doc"><b>DLT</b><i></i><i style="width:70%"></i><i></i><i style="width:50%"></i><i></i></div>
+      <div class="tm-grid">${PEOPLE.map((p, n) => `<div class="tm-p" style="transition-delay:${n * 90}ms"><span class="av t${p.t}">${p.i}</span><em style="transition-delay:${n * 90}ms">${roles[n]}</em></div>`).join("")}</div></div>`;
+  }
+  if (k === "brands") {
+    const chips = [["HDFCBK", 22, 18], ["HDFCCC", 150, 26], ["HDFCLI", 250, 16], ["HDFCER", 64, 92], ["HLIFE", 196, 100], ["ERGOIN", 268, 78], ["HDFCHL", 118, 64]];
+    return `<div class="sc" data-sc="brands">${chips.map(([t, x, y], n) => `<span class="br-chip" style="left:${x}px;top:${y}px;transition-delay:${n * 70}ms;animation-delay:-${n * 0.4}s">${t}</span>`).join("")}
+      <div class="br-ent"><b>HDFC Bank Limited</b></div>
+      <div class="br-cols">${BRANDS.map((b, n) => `<div class="br-col" style="transition-delay:${n * 120}ms"><b>${b.name}</b>${b.lobs.map((l, m) => `<i style="transition-delay:${(n * 3 + m) * 90}ms"></i>`).join("")}</div>`).join("")}</div></div>`;
+  }
+  if (k === "gtm") {
+    const max = 1.4;
+    return `<div class="sc" data-sc="gtm"><div class="gt-rows">${PARTNERS.map((p, n) => `<div class="gt-r" style="transition-delay:${n * 100}ms" data-p="${p.picked ? 1 : 0}"><span class="mk ${p.tone}">${p.mark}</span><div class="bars">${PHASES.map((ph, m) => `<i style="--w:${Math.round(p.rates[ph.k] / max * 100)}%;transition-delay:${(n * 3 + m) * 60}ms"></i>`).join("")}</div></div>`).join("")}</div>
+      <div class="gt-split"><i data-w="60">Karix 60%</i><i data-w="40">Value First 40%</i></div></div>`;
+  }
+  const shades = ["#3366F0", "#5B8CFF", "#8FB0FF", "#2EB6F5", "#7FD0F7", "#6A5CFF", "#A99DFF"];
+  let tiles = "";
+  for (let n = 0; n < 42; n++) {
+    const u = n === 17 || n === 33;
+    tiles += `<i class="${u ? "uu" : ""}" style="--c:${shades[(n * 5) % 7]};transition-delay:${(n % 14) * 25 + Math.floor(n / 14) * 60}ms"></i>`;
+  }
+  return `<div class="sc" data-sc="templates"><div class="tp-grid">${tiles}</div>
+    <div class="tp-conf"><div class="segbar"><i class="hi" data-w="27"></i><i class="md" data-w="71"></i><i class="un" data-w="2"></i></div><div class="legend"><span><i style="background:var(--blue)"></i>27 high</span><span><i style="background:#8FB0FF"></i>71 to check</span><span><i style="background:rgba(11,18,32,.15)"></i>2 unmapped</span></div></div></div>`;
+}
+/* step n starts (cur) or finishes (fin) */
+function sceneStep(i, n, fin) {
+  const k = STEPS[i].key, sc = $(".scene", card(i));
+  if (k === "profile") {
+    const src = $(`.src[data-k="${n}"]`, sc);
+    if (n <= 4) {
+      if (!fin) { src.classList.add("cur"); }
+      else { src.classList.remove("cur"); src.classList.add("ok"); flyPacket(sc, src, $$(".fr", sc)[n - 1]); setTimeout(() => $$(".fr", sc)[n - 1].classList.add("on"), 380 / S.speed); }
+    } else if (!fin) { $$(".fr", sc)[4].classList.add("on"); }
+  }
+  if (k === "team") {
+    if (n === 1 && !fin) $$(".tm-p", sc).forEach((p) => p.classList.add("on"));
+    if (n === 2 && !fin) $$(".tm-p", sc).forEach((p) => p.classList.add("role"));
+  }
+  if (k === "brands") {
+    if (n === 1 && !fin) $$(".br-chip", sc).forEach((c) => c.classList.add("on"));
+    if (n === 2 && !fin) { $$(".br-chip", sc).forEach((c) => c.classList.add("gone")); $(".br-ent", sc).classList.add("on"); $$(".br-col", sc).forEach((c) => c.classList.add("on")); }
+    if (n === 3 && !fin) $$(".br-col i", sc).forEach((c) => c.classList.add("on"));
+  }
+  if (k === "gtm") {
+    if (n === 1 && !fin) $$(".gt-r", sc).forEach((r) => r.classList.add("on"));
+    if (n === 2 && !fin) $$(".gt-r", sc).forEach((r) => r.classList.add("cmp"));
+    if (n === 3 && !fin) $$(".gt-r", sc).forEach((r) => r.classList.add(r.dataset.p === "1" ? "pick" : "drop"));
+    if (n === 4 && !fin) { const s = $(".gt-split", sc); s.classList.add("on"); setTimeout(() => $$("i", s).forEach((x) => (x.style.width = x.dataset.w + "%")), 60); }
+  }
+  if (k === "templates") {
+    if (n === 1 && !fin) $$(".tp-grid i", sc).forEach((t) => t.classList.add("on"));
+    if (n === 2 && !fin) $$(".tp-grid i", sc).forEach((t) => t.classList.add(t.classList.contains("uu") ? "u" : "c"));
+    if (n === 3 && !fin) { const s = $(".tp-conf", sc); s.classList.add("on"); setTimeout(() => $$(".segbar i", s).forEach((x) => (x.style.width = x.dataset.w + "%")), 60); }
+  }
+}
+function flyPacket(sc, a, b) {
+  if (RM || !a || !b) return;
+  const r0 = sc.getBoundingClientRect(), ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+  const k = r0.width / sc.offsetWidth || 1;
+  const x0 = (ra.right - r0.left) / k, y0 = (ra.top + ra.height / 2 - r0.top) / k;
+  const x1 = (rb.left + 30 - r0.left) / k, y1 = (rb.top + rb.height / 2 - r0.top) / k;
+  const p = document.createElement("i"); p.className = "pkt"; sc.appendChild(p);
+  p.animate([{ left: x0 + "px", top: y0 + "px", opacity: 1 }, { left: (x0 + x1) / 2 + "px", top: Math.min(y0, y1) - 16 + "px", opacity: 1, offset: .5 }, { left: x1 + "px", top: y1 + "px", opacity: 0 }], { duration: 520 / S.speed, easing: "cubic-bezier(.65,0,.35,1)" }).onfinish = () => p.remove();
+}
+function finishScene(i) {
+  for (let n = 1; n <= STEPS[i].checks.length; n++) { sceneStep(i, n, false); sceneStep(i, n, true); }
+  const el = card(i);
+  $$(".log li", el).forEach((li, n) => { li.className = "ok"; li.innerHTML = `<span class="ico">${IC.check}</span><span>${esc(STEPS[i].checks[n][1])}</span>`; });
+  $("[data-result]", el).classList.add("on");
+}
+
+/* ---------- Phases ---------- */
+async function startDeck() {
+  const run = ++S.runId;
+  $("#gate").classList.add("is-out");
+  document.body.classList.remove("phase-gate");
+  S.phase = "intro"; setMode("overview");
+  head("Onboarding Agent", "Five steps, prepared at once", "I'll work through all five now. Nothing goes live until you accept it.", false);
+  agentState("Starting");
+  cards().forEach((el, i) => { if (!RM) el.animate([{ opacity: 0, transform: el.style.transform + " translateY(60px)" }, { opacity: 1, transform: el.style.transform }], { duration: 800, delay: i * 90, easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards" }); });
+  await W(2200); if (run !== S.runId) return;
+  analyse(run);
+}
+async function analyse(run) {
+  S.phase = "analyse"; S.active = 0; setMode("focus");
+  for (let i = 0; i < STEPS.length; i++) {
+    if (run !== S.runId) return;
+    S.active = i; layout();
+    const s = STEPS[i]; const el = card(i);
+    S.cards[i].st = "analysing"; setStatus(i); el.classList.add("is-analysing");
+    agentState(`Working · ${i + 1} of 5`);
+    await W(700); if (run !== S.runId) return;
+    const lis = $$(".log li", el);
+    for (let n = 0; n < s.checks.length; n++) {
+      head("Onboarding Agent · working", "Preparing your setup", `<b>${esc(s.title)}</b> · ${esc(s.checks[n][0])}<span class="caret"></span>`, true);
+      lis[n].className = "run"; lis[n].innerHTML = `<span class="ico"></span><span>${esc(s.checks[n][0])}</span>`;
+      sceneStep(i, n + 1, false);
+      await W(1150); if (run !== S.runId) return;
+      lis[n].className = "ok"; lis[n].innerHTML = `<span class="ico">${IC.check}</span><span>${esc(s.checks[n][1])}</span>`;
+      sceneStep(i, n + 1, true);
+    }
+    $("[data-result]", el).classList.add("on");
+    el.classList.remove("is-analysing"); el.classList.add("is-done-flash");
+    S.cards[i].st = "ready"; setStatus(i);
+    head("Onboarding Agent · working", "Preparing your setup", `<b>${esc(s.title)}</b> · ${esc(s.result)}`, true);
+    await W(1300); if (run !== S.runId) return;
+    el.classList.remove("is-done-flash");
+  }
+  unlock(run);
+}
+async function unlock(run) {
+  S.phase = "unlock"; document.body.classList.remove("is-working");
+  agentState("Waiting for you");
+  setMode("overview");
+  head("Onboarding Agent · done", "All five are ready for you", "I've prepared every step. Review them one by one, about two minutes if everything looks right.", false);
+  await W(900); if (run !== S.runId) return;
+  for (let i = 0; i < 5; i++) { const el = card(i); el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100); await W(130); }
+  await W(1600); if (run !== S.runId) return;
+  startReview();
+}
+function startReview() {
+  S.phase = "review"; S.reviewStart = Date.now();
+  cards().forEach((el, i) => { el.classList.remove("is-analysing"); el.classList.add("is-review"); if (S.cards[i].st === "ready") S.cards[i].st = "review"; renderReview(i); setStatus(i); });
+  S.active = firstOpen(); setMode("focus"); reviewHead();
+}
+function firstOpen(from = 0) {
+  for (let k = 0; k < 5; k++) { const i = (from + k) % 5; if (S.cards[i].st === "review") return i; }
+  return -1;
+}
+function focusCard(i) { S.active = i; layout(); reviewHead(); renderRail(); }
+function reviewHead() {
+  const i = S.active, s = STEPS[i];
+  const left = S.cards.filter((c) => c.st === "review").length;
+  head(`Your review · ${5 - left} of 5 done`, s.title, left ? `${left} left to review. Accept what looks right, or open it to change anything.` : "Everything is reviewed.", false);
+  agentState(left ? "Waiting for you" : "Done");
+  renderRail();
+}
+
+/* ---------- Review pane content ---------- */
+function whatIDid(i) {
+  const s = STEPS[i];
+  return `<details class="what"><summary><span class="mini-orb"></span>What I did ${IC.chev}</summary>
+    <div class="srcs">${s.sources.map((x) => `<span class="src-tag">${esc(x)}</span>`).join("")}</div>
+    <ul>${s.checks.map((c) => `<li>${IC.check}${esc(c[1])}</li>`).join("")}</ul></details>`;
+}
+function renderReview(i) {
+  const el = card(i), box = $("[data-review]", el), c = S.cards[i], k = STEPS[i].key;
+  if (c.st === "done" || c.st === "later" || c.st === "inreview") { box.innerHTML = doneFace(i); return; }
+  let body = "", foot = "";
+  const deepBtn = `<button class="btn" data-act="deep" data-i="${i}">${IC.expand}Details</button>`;
+  if (k === "profile") {
+    const show = PROFILE.filter((f) => ["name", "pan", "type", "addr", "web", "ind"].includes(f.k));
+    body = `<h3 class="r-h">HDFC Bank Limited, matched on 4 sources</h3>
+      <p class="r-p">All 10 fields are filled. Check them, then submit for approval.</p>
+      <dl class="facts">${show.map((f) => `<div class="fact"><dt>${esc(f.label)}</dt><dd title="${esc(f.v)}">${esc(f.v)}</dd><span class="src-tag">${esc(f.src)}</span></div>`).join("")}</dl>
+      <label class="check"><input type="checkbox" id="pAuth" data-act="pauth" ${S.profileAuth ? "checked" : ""}>I'm authorised to submit these details for HDFC Bank Limited.</label>
+      ${whatIDid(i)}`;
+    foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${S.profileAuth ? "" : "disabled"}>Submit for approval</button>`;
+  }
+  if (k === "team") {
+    const on = PEOPLE.filter((p) => p.on);
+    body = `<h3 class="r-h">${on.length} people to invite, each with a role</h3>
+      <p class="r-p">Found on your DLT registration. They get an email invite to DigiConsent.</p>
+      <div class="people">${ROLES.map((r) => { const ps = on.filter((p) => p.role === r.id); if (!ps.length) return ""; return `<div class="pgroup"><b>${esc(r.id)} · ${ps.length}</b><small>${esc(r.desc)}</small><div class="stack">${ps.map((p) => `<span class="av t${p.t}" title="${esc(p.name)}">${p.i}</span>`).join("")}</div></div>`; }).join("")}</div>
+      ${whatIDid(i)}`;
+    foot = `<button class="btn btn-t" data-act="later" data-i="${i}">Do it later</button>${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${on.length ? "" : "disabled"}>Send ${on.length} invites</button>`;
+  }
+  if (k === "brands") {
+    const lobs = BRANDS.reduce((a, b) => a + b.lobs.length, 0);
+    body = `<h3 class="r-h">${BRANDS.length} brands and ${lobs} lines of business</h3>
+      <p class="r-p">Drafted from your DLT headers. Confirm as drafted and they're set up straight away. Any change goes for review.</p>
+      <div class="ent"><div class="ent-h">${IC.build}<b>HDFC Bank Limited</b><span>Enterprise</span></div>
+      ${BRANDS.map((b) => `<div class="brand-row"><b>${esc(b.name)}</b><div class="lobs">${b.lobs.map((l) => `<span class="lob">${esc(l)}</span>`).join("")}</div></div>`).join("")}</div>
+      ${whatIDid(i)}`;
+    foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}">${brandsChanged() ? "Send for review" : "Confirm brands"}</button>`;
+  }
+  if (k === "gtm") {
+    const sel = PARTNERS.filter((p) => p.picked);
+    const two = sel.length === 2;
+    body = `<h3 class="r-h">${sel.map((p) => esc(p.name)).join(" and ")}, split by phase</h3>
+      <p class="r-p">4 partners sent rate cards. ${two ? "These two have the lowest rates across the three phases." : "Your selection, split evenly."}</p>
+      ${two ? `<div class="pt"><div class="hd">Phase</div>${sel.map((p) => `<div class="hd"><span class="mk ${p.tone}">${p.mark}</span>${esc(p.name)}</div>`).join("")}
+      ${PHASES.map((ph) => `<div class="ph">${ph.label}</div>${sel.map((p, n) => `<div class="num">₹${p.rates[ph.k].toFixed(2)}<small>${n === 0 ? ALLOC[ph.k] : 100 - ALLOC[ph.k]}%</small></div>`).join("")}`).join("")}</div>` : `<div class="facts">${sel.map((p) => `<div class="fact"><dt>${esc(p.name)}</dt><dd>${Math.round(100 / sel.length)}% of volume</dd><span></span></div>`).join("")}</div>`}
+      <label class="check"><input type="checkbox" id="gTerms" data-act="gterms" ${S.gtmTerms ? "checked" : ""}>I accept the rate card terms of ${sel.map((p) => esc(p.name)).join(" and ")}.</label>
+      ${whatIDid(i)}`;
+    foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${S.gtmTerms ? "" : "disabled"}>Confirm partners</button>`;
+  }
+  if (k === "templates") {
+    const lock = !brandsReady();
+    const changed = TPLS.some((t) => t.lob !== t.lob0);
+    body = `<div class="ringrow"><div class="ring" style="--p:98"><span>98%</span></div><div><h3 class="r-h">98 of 100 templates have a line of business</h3></div></div>
+      <div><div class="segbar"><i class="hi" style="width:27%"></i><i class="md" style="width:71%"></i><i class="un" style="width:2%"></i></div>
+      <div class="legend"><span><i style="background:var(--blue)"></i>27 high confidence</span><span><i style="background:#8FB0FF"></i>71 to check</span><span><i style="background:rgba(11,18,32,.15)"></i>2 unmapped</span></div></div>
+      <div class="lobbars">${TPL_LOBS.slice(0, 4).map((l) => `<div class="lobbar"><span>${esc(l.lob)}</span><span class="tr"><i style="width:${l.n / 22 * 100}%"></i></span><span>${l.n}</span></div>`).join("")}</div>
+      <p class="r-p" style="margin:0">The 2 unmapped templates don't hold up migration. You can map them later.</p>
+      ${whatIDid(i)}`;
+    foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${lock ? "disabled" : ""}>${changed ? "Send for review" : "Confirm mapping"}</button>`;
+    if (lock) body += `<div class="lock-face">${IC.lock}<b>Opens when brands and LOBs are set up</b><span>Templates are mapped to your lines of business, so they wait for that step.</span></div>`;
+  }
+  box.innerHTML = `<div class="r-body">${body}</div><div class="r-foot">${foot}</div>`;
+}
+function doneFace(i) {
+  const c = S.cards[i], k = STEPS[i].key;
+  let cls = "", h = "", p = "";
+  if (c.st === "later") { cls = "later"; h = "Team invites saved for later"; p = "You can invite people any time from User and Roles. Nothing is blocked."; }
+  else if (k === "profile") {
+    if (c.st === "inreview") { cls = "wait"; h = "Submitted for approval"; p = `<span class="verify"><span class="sp"></span>Verifying with telecom operators</span>`; }
+    else { h = "Business profile approved"; p = `Approved by 4 of 4 operators · ${c.at}`; }
+  }
+  else if (k === "team") { h = `${PEOPLE.filter((x) => x.on).length} invites sent`; p = `Sent by Ravi Menon · ${c.at}`; }
+  else if (k === "brands") {
+    if (c.st === "inreview") { cls = "wait"; h = "Brands sent for review"; p = `<span class="verify"><span class="sp"></span>Your changes are being reviewed</span>`; }
+    else { h = "Brands and LOBs set up"; p = `${BRANDS.length} brands, ${BRANDS.reduce((a, b) => a + b.lobs.length, 0)} lines of business · ${c.at}`; }
+  }
+  else if (k === "gtm") { h = `${PARTNERS.filter((x) => x.picked).map((x) => x.name).join(" and ")} confirmed`; p = `Rate card terms accepted · ${c.at}`; }
+  else { h = TPLS.some((t) => t.lob !== t.lob0) ? "Mapping sent for review" : "Template mapping confirmed"; p = `2 unmapped stay as a reminder · ${c.at}`; }
+  const icon = cls === "wait" ? IC.clock : cls === "later" ? IC.later : IC.check;
+  return `<div class="done-face"><div class="stamp ${cls}">${icon}</div><h3>${h}</h3><p>${p}</p><button class="btn btn-t" data-act="deep" data-i="${i}">Open again</button></div>`;
+}
+const brandsChanged = () => JSON.stringify(BRANDS) !== BRANDS0;
+const brandsReady = () => S.cards[2].st === "done";
+
+/* ---------- Decisions ---------- */
+function decide(i, kind) {
+  const k = STEPS[i].key, c = S.cards[i];
+  c.at = now();
+  const el = card(i);
+  if (kind === "later") { c.st = "later"; toast("Team saved for later"); }
+  else if (k === "profile") {
+    c.st = "inreview"; toast("Business profile submitted");
+    setTimeout(() => { c.st = "done"; renderReview(i); setStatus(i); toast("Business profile approved by 4 of 4 operators"); if (S.phase === "review") reviewHead(); maybeFinale(); }, RM ? 0 : 6500 / S.speed);
+  }
+  else if (k === "brands" && brandsChanged()) {
+    c.st = "inreview"; toast("Brands sent for review");
+    setTimeout(() => { c.st = "done"; renderReview(i); setStatus(i); renderReview(4); toast("Brands and LOBs approved. Templates are open."); maybeFinale(); }, RM ? 0 : 7000 / S.speed);
+  }
+  else { c.st = "done"; toast(k === "team" ? "Invites sent" : k === "gtm" ? "Partners confirmed" : k === "brands" ? "Brands and LOBs set up" : "Template mapping confirmed"); }
+  if (k === "brands") renderReview(4);
+  el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
+  renderReview(i); setStatus(i); reviewHead();
+  setTimeout(() => {
+    const nx = firstOpen(i + 1);
+    if (nx >= 0) focusCard(nx); else maybeFinale();
+  }, RM ? 0 : 1200);
+}
+function maybeFinale() {
+  if (S.phase !== "review") return;
+  if (S.cards.some((c) => c.st === "review")) return;
+  if (S.cards.some((c) => c.st === "inreview")) { head("Your review · 5 of 5 done", "Almost there", "Waiting on the last checks to come back. This takes a moment.", false); agentState("Verifying"); return; }
+  finale();
+}
+function finale() {
+  S.phase = "finale"; document.body.classList.add("phase-finale");
+  const took = fmtElapsed();
+  head("Setup complete", "You're set to start migration", "Every step is done. Your migration window is open.", false);
+  agentState("Done");
+  setMode("overview"); renderRail();
+  const close = new Date(Date.now() + 30 * 864e5);
+  $("#closeDate").textContent = close.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  $("#clock").innerHTML = `<div><b>30</b><span>days</span></div><div><b>00</b><span>hrs</span></div><div><b>00</b><span>mins</span></div>`;
+  $("#elapsed").textContent = S.reviewStart ? `You reviewed the whole setup in ${took}.` : "";
+}
+$("#goMig").addEventListener("click", () => toast("Opening Consent Migration…"));
+
+/* ---------- Card events ---------- */
+stage.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-act]");
+  if (a) {
+    const i = +a.dataset.i;
+    if (a.dataset.act === "accept") return decide(i, "accept");
+    if (a.dataset.act === "later") return decide(i, "later");
+    if (a.dataset.act === "deep") return openDeep(i);
+    return;
+  }
+  const c = e.target.closest(".card");
+  if (c && S.phase === "review" && +c.dataset.i !== S.active) focusCard(+c.dataset.i);
+});
+stage.addEventListener("change", (e) => {
+  const a = e.target.closest("[data-act]"); if (!a) return;
+  if (a.dataset.act === "pauth") { S.profileAuth = a.checked; renderReview(0); }
+  if (a.dataset.act === "gterms") { S.gtmTerms = a.checked; renderReview(3); }
+});
+addEventListener("keydown", (e) => {
+  if (S.phase !== "review" || !$("#deep").hidden || e.target.closest("input,select,textarea")) return;
+  if (e.key === "ArrowRight" && S.active < 4) focusCard(S.active + 1);
+  if (e.key === "ArrowLeft" && S.active > 0) focusCard(S.active - 1);
+});
+
+/* ---------- Deep review page ---------- */
+let deepI = -1;
+function openDeep(i) {
+  deepI = i;
+  const d = $("#deep"); const r = card(i).getBoundingClientRect();
+  renderDeep();
+  d.hidden = false;
+  if (!RM) d.animate([{ clipPath: `inset(${r.top}px ${innerWidth - r.right}px ${innerHeight - r.bottom}px ${r.left}px round 22px)`, opacity: .6 }, { clipPath: "inset(0px 0px 0px 0px round 0px)", opacity: 1 }], { duration: 620, easing: "cubic-bezier(.2,.8,.2,1)" });
+}
+function closeDeep(then) {
+  const d = $("#deep"); const el = card(deepI); const r = el.getBoundingClientRect();
+  const fin = () => { d.hidden = true; d.innerHTML = ""; renderReview(deepI); if (then) then(); };
+  if (RM) return fin();
+  d.animate([{ clipPath: "inset(0px 0px 0px 0px round 0px)", opacity: 1 }, { clipPath: `inset(${r.top}px ${innerWidth - r.right}px ${innerHeight - r.bottom}px ${r.left}px round 22px)`, opacity: .4 }], { duration: 480, easing: "cubic-bezier(.65,0,.35,1)" }).onfinish = fin;
+}
+function renderDeep() {
+  const i = deepI, s = STEPS[i], c = S.cards[i];
+  const closed = ["done", "later", "inreview"].includes(c.st);
+  const d = $("#deep");
+  const { main, action, msg } = deepBody(s.key, closed);
+  d.innerHTML = `<div class="deep-top"><button class="btn btn-t" data-dact="close">${IC.back}Back to cards</button><div><div class="crumb">STEP ${i + 1} OF 5</div><h2>${esc(s.title)}</h2></div></div>
+    <div class="deep-main">
+      <aside class="deep-aside">
+        <span class="chip-agent"><span class="mini-orb"></span>Agent Summary</span>
+        <div class="res">${esc(s.result)}</div>
+        <h4>What I did</h4><ol>${s.checks.map((x) => `<li><i>${IC.check}</i>${esc(x[1])}</li>`).join("")}</ol>
+        <h4>Sources</h4><div style="display:flex;flex-wrap:wrap;gap:6px">${s.sources.map((x) => `<span class="src-tag">${esc(x)}</span>`).join("")}</div>
+      </aside>
+      <div class="deep-content"><div class="inner deep-in" id="deepInner">${main}</div></div>
+    </div>
+    <div class="deep-foot"><span class="msg" id="deepMsg">${msg || ""}</span>${closed ? `<button class="btn btn-p" data-dact="close">Done</button>` : action}</div>`;
+}
+function deepBody(k, closed) {
+  const dis = closed ? "disabled" : "";
+  if (k === "profile") {
+    return {
+      main: `${closed ? `<div class="banner">${IC.info}<span>Submitted for approval. Fields are read-only while it's checked.</span></div>` : `<div class="banner">${IC.info}<span>Every field was filled from a public record. The tag shows where each one came from. Change anything that's wrong.</span></div>`}
+        <div class="panel"><div class="panel-h"><b>Business details</b><span>10 of 10 filled</span></div>
+        <div class="fgrid">${PROFILE.map((f) => `<div class="field${f.wide ? " wide" : ""}"><label for="pf-${f.k}">${esc(f.label)}<span class="src-tag">${esc(f.src)}</span></label><input class="inp" id="pf-${f.k}" data-pf="${f.k}" value="${esc(f.v)}" ${dis}></div>`).join("")}</div></div>
+        <label class="check" style="background:#fff;border:1px solid var(--line)"><input type="checkbox" id="pAuthDeep" data-dact="pauth" ${S.profileAuth ? "checked" : ""} ${dis}>I'm authorised to submit these details for HDFC Bank Limited.</label>`,
+      action: `<button class="btn btn-p" data-dact="accept" ${S.profileAuth ? "" : "disabled"}>Submit for approval</button>`,
+      msg: "Submitting sends the profile to telecom operators for approval.",
+    };
+  }
+  if (k === "team") {
+    const n = PEOPLE.filter((p) => p.on).length;
+    return {
+      main: `<div class="panel"><div class="panel-h"><b>People found on your DLT registration</b><span>${n} of ${PEOPLE.length} selected</span></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Name</th><th>Email</th><th>Department</th><th>Role</th></tr></thead><tbody>
+        ${PEOPLE.map((p, j) => `<tr class="${p.on ? "" : "off"}"><td><span class="tog"><input type="checkbox" aria-label="Invite ${esc(p.name)}" data-pp="${j}" ${p.on ? "checked" : ""} ${dis}><span></span></span></td>
+        <td><div class="who"><span class="av t${p.t}">${p.i}</span><div><b>${esc(p.name)}</b><small>${esc(p.title)}</small></div></div></td>
+        <td class="mono">${esc(p.email)}</td>
+        <td><select class="sel" data-pd="${j}" aria-label="Department" ${dis}>${DEPTS.map((x) => `<option ${x === p.dept ? "selected" : ""}>${esc(x)}</option>`).join("")}</select></td>
+        <td><select class="sel" data-pr="${j}" aria-label="Role" ${dis}>${ROLES.map((r) => `<option ${r.id === p.role ? "selected" : ""}>${esc(r.id)}</option>`).join("")}</select></td></tr>`).join("")}
+        </tbody></table></div></div>
+        <div class="panel"><div class="panel-h"><b>What each role can do</b></div><div class="fgrid">${ROLES.map((r) => `<div><b style="font-size:13px">${esc(r.id)}</b><div style="color:var(--muted);font-size:12.5px">${esc(r.desc)}</div></div>`).join("")}</div></div>`,
+      action: `<button class="btn btn-t" data-dact="later">Do it later</button><button class="btn btn-p" data-dact="accept" ${n ? "" : "disabled"}>Send ${n} invites</button>`,
+      msg: "Invites go out by email. You can add more people later.",
+    };
+  }
+  if (k === "brands") {
+    const ch = brandsChanged();
+    return {
+      main: `<div class="banner ${ch ? "warn" : ""}">${IC.info}<span>${ch ? "You changed the draft, so it goes for review before it's set up. Templates wait until it's approved." : "Confirm the draft as it is and it's set up straight away, with no review."}</span></div>
+        <div class="panel"><div class="panel-h">${IC.build.replace("<svg", '<svg style="width:16px;height:16px;color:var(--blue)"')}<b>HDFC Bank Limited</b><span>Enterprise · ${BRANDS.length} brands</span></div>
+        <div class="bgrid">${BRANDS.map((b, bi) => `<div class="bcard"><div class="bcard-h"><b>${esc(b.name)}</b><span class="mono">${b.hdr}</span></div>
+        ${b.lobs.map((l, li) => `<div class="lobrow"><input class="inp" aria-label="Line of business" data-lob="${bi}:${li}" value="${esc(l)}" ${dis}>${closed ? "" : `<button class="x" data-dact="rmlob" data-b="${bi}" data-l="${li}" aria-label="Remove ${esc(l)}">${IC.x}</button>`}</div>`).join("")}
+        ${closed ? "" : `<button class="addlob" data-dact="addlob" data-b="${bi}">+ Add line of business</button>`}</div>`).join("")}</div></div>`,
+      action: `<button class="btn btn-p" data-dact="accept">${ch ? "Send for review" : "Confirm brands"}</button>`,
+      msg: "",
+    };
+  }
+  if (k === "gtm") {
+    const sel = PARTNERS.filter((p) => p.picked);
+    const best = {}; ["mig", "acq", "ref", "sms", "voice", "rcs"].forEach((r) => (best[r] = Math.min(...PARTNERS.map((p) => p.rates[r]))));
+    const cell = (p, r) => `₹${p.rates[r].toFixed(2)}${p.rates[r] === best[r] ? `<span class="best">Best</span>` : ""}`;
+    return {
+      main: `<div class="panel"><div class="panel-h"><b>Partner rate cards</b><span>${sel.length} of ${PARTNERS.length} selected</span></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th>Partner</th><th>Migration</th><th>Acquisition</th><th>Refresh</th><th>SMS scrub</th><th>Call scrub</th><th>RCS scrub</th></tr></thead><tbody>
+        ${PARTNERS.map((p, j) => `<tr class="${p.picked ? "" : "off"}"><td><span class="tog"><input type="checkbox" aria-label="Select ${esc(p.name)}" data-gp="${j}" ${p.picked ? "checked" : ""} ${dis}><span></span></span></td>
+        <td><div class="who"><span class="mk ${p.tone}">${p.mark}</span><div><b>${esc(p.name)}</b><small>${esc(p.why)}</small></div></div></td>
+        ${["mig", "acq", "ref", "sms", "voice", "rcs"].map((r) => `<td class="mono">${cell(p, r)}</td>`).join("")}</tr>`).join("")}
+        </tbody></table></div></div>
+        <div class="panel"><div class="panel-h"><b>Allocation by phase</b><span>${sel.length === 2 ? "Drag to change the split" : "Split evenly across your selection"}</span></div>
+        ${PHASES.map((ph) => allocRow(ph, sel, closed)).join("")}</div>
+        <label class="check" style="background:#fff;border:1px solid var(--line)"><input type="checkbox" id="gTermsDeep" data-dact="gterms" ${S.gtmTerms ? "checked" : ""} ${dis}>I accept the rate card terms of ${sel.map((p) => esc(p.name)).join(" and ") || "the selected partners"}.</label>`,
+      action: `<button class="btn btn-p" data-dact="accept" ${S.gtmTerms && sel.length ? "" : "disabled"}>Confirm partners</button>`,
+      msg: "The agent chose these for the lowest rates. You can change the choice and split.",
+    };
+  }
+  const f = deepTplFilter;
+  const rows = TPLS.filter((t) => f === "all" || (f === "check" && t.c === "m") || (f === "un" && !t.lob));
+  const ch = TPLS.some((t) => t.lob !== t.lob0);
+  return {
+    main: `<div class="banner">${IC.info}<span>A mapping change is only saved when you send it for approval. Templates without a line of business don't hold up migration.</span></div>
+      <div class="panel"><div class="panel-h"><b>Templates</b><span>Showing ${rows.length} of 100 (sample)</span><div class="r filters">${[["all", "All"], ["check", "To check"], ["un", "Unmapped"]].map(([v, l]) => `<button class="fchip${f === v ? " on" : ""}" data-dact="tf" data-f="${v}">${l}</button>`).join("")}</div></div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Template</th><th>Message</th><th>Line of business</th><th>Confidence</th></tr></thead><tbody>
+      ${rows.map((t) => { const j = TPLS.indexOf(t); return `<tr><td><b style="font-size:12.5px">${esc(t.name)}</b><div class="mono" style="color:var(--faint)">${t.id}</div></td><td><div class="tpl-text" title="${esc(t.text)}">${esc(t.text)}</div></td>
+      <td><select class="sel" data-tl="${j}" aria-label="Line of business" ${dis}><option value="">Not mapped</option>${TPL_LOBS.map((l) => `<option ${l.lob === t.lob ? "selected" : ""}>${esc(l.lob)}</option>`).join("")}</select></td>
+      <td><span class="conf ${t.lob !== t.lob0 ? "m" : t.c}">${t.lob !== t.lob0 ? "Changed" : t.c === "h" ? "High" : t.c === "m" ? "Check" : "Unmapped"}</span></td></tr>`; }).join("")}
+      </tbody></table></div></div>
+      <div class="panel"><div class="panel-h"><b>By line of business</b></div><div style="padding:14px 18px" class="lobbars">${TPL_LOBS.map((l) => `<div class="lobbar"><span>${esc(l.lob)}</span><span class="tr"><i style="width:${l.n / 22 * 100}%"></i></span><span>${l.n}</span></div>`).join("")}</div></div>`,
+    action: `<button class="btn btn-p" data-dact="accept" ${brandsReady() ? "" : "disabled"}>${ch ? "Send for review" : "Confirm mapping"}</button>`,
+    msg: brandsReady() ? "" : "Opens when brands and LOBs are set up.",
+  };
+}
+let deepTplFilter = "all";
+function allocRow(ph, sel, closed) {
+  if (sel.length !== 2) return `<div class="alloc"><b>${ph.label}</b><div class="split">${sel.map((p) => `<i class="mk-bg" style="width:${100 / sel.length}%;background:${toneC(p.tone)}">${esc(p.name)} ${Math.round(100 / sel.length)}%</i>`).join("")}</div><span></span></div>`;
+  const a = ALLOC[ph.k];
+  return `<div class="alloc"><b>${ph.label}</b><div class="split"><i style="width:${a}%;background:${toneC(sel[0].tone)}">${esc(sel[0].name)} ${a}%</i><i style="width:${100 - a}%;background:${toneC(sel[1].tone)}">${esc(sel[1].name)} ${100 - a}%</i></div><input type="range" min="0" max="100" step="5" value="${a}" data-al="${ph.k}" aria-label="${ph.label} split" ${closed ? "disabled" : ""}></div>`;
+}
+const toneC = (t) => ({ violet: "#6A4FE0", red: "#D83A3A", teal: "#138A8A", amber: "#C9811B" }[t]);
+
+const deep = $("#deep");
+deep.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-dact]"); if (!a) return;
+  const act = a.dataset.dact;
+  if (act === "close") return closeDeep();
+  if (act === "accept") { const i = deepI; return closeDeep(() => decide(i, "accept")); }
+  if (act === "later") { const i = deepI; return closeDeep(() => decide(i, "later")); }
+  if (act === "rmlob") { BRANDS[+a.dataset.b].lobs.splice(+a.dataset.l, 1); return rerenderDeep(); }
+  if (act === "addlob") { BRANDS[+a.dataset.b].lobs.push("New line of business"); rerenderDeep(); const ins = $$(`[data-lob^="${a.dataset.b}:"]`, deep); const last = ins[ins.length - 1]; if (last) { last.focus(); last.select(); } return; }
+  if (act === "tf") { deepTplFilter = a.dataset.f; return rerenderDeep(); }
+});
+deep.addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.dataset.dact === "pauth") { S.profileAuth = t.checked; rerenderDeep(); }
+  if (t.dataset.dact === "gterms") { S.gtmTerms = t.checked; rerenderDeep(); }
+  if (t.dataset.pp != null) { PEOPLE[+t.dataset.pp].on = t.checked; rerenderDeep(); }
+  if (t.dataset.pr != null) { PEOPLE[+t.dataset.pr].role = t.value; }
+  if (t.dataset.pd != null) { PEOPLE[+t.dataset.pd].dept = t.value; }
+  if (t.dataset.gp != null) { PARTNERS[+t.dataset.gp].picked = t.checked; rerenderDeep(); }
+  if (t.dataset.tl != null) { TPLS[+t.dataset.tl].lob = t.value; rerenderDeep(); }
+  if (t.dataset.lob != null) { const [b, l] = t.dataset.lob.split(":").map(Number); BRANDS[b].lobs[l] = t.value.trim() || BRANDS[b].lobs[l]; rerenderDeep(); }
+});
+deep.addEventListener("input", (e) => {
+  const t = e.target;
+  if (t.dataset.al) { ALLOC[t.dataset.al] = +t.value; const row = t.closest(".alloc"); const sel = PARTNERS.filter((p) => p.picked); const [x, y] = $$(".split i", row); x.style.width = t.value + "%"; y.style.width = 100 - t.value + "%"; x.textContent = `${sel[0].name} ${t.value}%`; y.textContent = `${sel[1].name} ${100 - t.value}%`; }
+  if (t.dataset.pf) { const f = PROFILE.find((x) => x.k === t.dataset.pf); f.v = t.value; t.classList.add("edited"); }
+});
+function rerenderDeep() {
+  const sc = $(".deep-content", deep)?.scrollTop || 0;
+  renderDeep(); $(".deep-in", deep)?.classList.remove("deep-in");
+  const c = $(".deep-content", deep); if (c) c.scrollTop = sc;
+}
+addEventListener("keydown", (e) => { if (e.key === "Escape" && !deep.hidden) closeDeep(); });
+
+/* ---------- Toast ---------- */
+let tt;
+function toast(msg) { const t = $("#toast"); t.innerHTML = `${IC.check}${esc(msg)}`; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2600); }
+
+/* ---------- Prototype panel ---------- */
+$("#protoBtn").addEventListener("click", () => { const m = $("#protoMenu"); m.hidden = !m.hidden; syncSpeed(); });
+function syncSpeed() { $$("#speedRow button").forEach((b) => b.classList.toggle("on", +b.dataset.speed === S.speed)); }
+$("#protoMenu").addEventListener("click", (e) => {
+  const sp = e.target.closest("[data-speed]"); if (sp) { S.speed = +sp.dataset.speed; syncSpeed(); return; }
+  const j = e.target.closest("[data-jump]"); if (!j) return;
+  $("#protoMenu").hidden = true;
+  jump(j.dataset.jump);
+});
+function resetAll() {
+  S.runId++; S.cards = STEPS.map(() => ({ st: "queued", at: null })); S.active = 0; S.profileAuth = false; S.gtmTerms = false; S.reviewStart = 0;
+  document.body.classList.remove("phase-finale", "is-working");
+  if (!deep.hidden) { deep.hidden = true; deep.innerHTML = ""; }
+  buildCards();
+}
+function jump(where) {
+  resetAll();
+  if (where === "restart") {
+    S.phase = "gate"; S.accepted = {}; S.docIdx = 0; document.body.classList.add("phase-gate"); $("#gate").classList.remove("is-out"); setMode("overview"); renderGate(); renderRail(); return;
+  }
+  DOCS.forEach((d) => (S.accepted[d.id] = true));
+  $("#gate").classList.add("is-out"); document.body.classList.remove("phase-gate");
+  if (where === "analyse") { startDeck(); return; }
+  STEPS.forEach((s, i) => { finishScene(i); S.cards[i].st = "ready"; });
+  startReview();
+  if (where === "finale") {
+    S.profileAuth = S.gtmTerms = true;
+    S.cards.forEach((c, i) => { c.st = "done"; c.at = now(); renderReview(i); setStatus(i); });
+    finale();
+  }
+}
+window.__deck = { jump, S, focusCard, openDeep };
+
+/* ---------- Boot ---------- */
+buildCards(); renderGate(); renderRail(); layout();
+if (location.hash === "#review") jump("review");
+if (location.hash === "#analyse") jump("analyse");
+if (location.hash === "#finale") jump("finale");
+})();
+</script>
+</body>
+</html>

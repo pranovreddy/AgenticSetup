@@ -275,3 +275,18 @@ Blue success disc + ring stamp (summary receipt green); actions near content on 
 - Three older threads were left open for questions (GTM edit flow, Template scan, kick-off counter).
 - Not re-tested: reduced-motion for walkthrough and the new loaders, narrow windows (1000x650) for the new Agreements split layout, Team summary after inline edits, the blinking caret during profile typing, Team loader labels inside the full flow, Brand/other loaders at other viewport sizes.
 - Figma frames the owner referenced (node ids, e.g. 10501-112019, 10501-112033, 21531-38304) could not be fetched; screenshots were used.
+
+## 8g. Session 6: new approach, `agentic-setup-agent-deck.html` (READ THIS FIRST)
+
+Branch `claude/determined-davinci-yv91et`. A fresh, lightweight file (~140 KB, no embedded loader document, no override layers) built for a new direction the owner asked for:
+
+1. **Agreements first** (Terms of Use, then Privacy Policy). Agent Summary left with clause links, full text right, Accept enabled only at the end of the document. Text is the real `AG_DOCS` content.
+2. **Five cards in a row** (Business profile, Team, Brands and LOBs, GTM partners, Templates). The agent analyses them one after another in a single batch (~35 s at 1x): the active card sits in the centre with an animated gradient border, a mini scene per step, and the step's checks (from the requirements' "What I did" table) ticking off; then a "Suggestion ready" result, and the deck slides left to the next card. An orb with a beam hovers over the active card.
+3. **Unlock**: the deck zooms out to all five ("All five are ready for you"), a sheen sweeps across, then it rewinds to card one.
+4. **Review one by one**: each card turns into a context card (agent suggestion, key facts, "What I did", CTAs). Primary actions: Submit for approval (needs authorisation tick), Send 6 invites / Do it later, Confirm brands (or Send for review if edited), Confirm partners (needs rate-card terms tick), Confirm mapping (locked until brands are set up). Accepting stamps the card and moves to the next open one. **Details** expands the card into a full review page (clip-path morph) with Agent Summary left and editable content right (profile fields, team table with role/department selects and include toggles, brands/LOB editing, GTM rate table + allocation sliders, templates table with LOB select and filters).
+5. **Background outcomes**: business profile verifies and becomes "Approved by 4 of 4 operators" while the user carries on; edited brands go "In review" and auto-approve, which unlocks Templates.
+6. **Finale**: all five stamped, 30-day window clock, review time, Go to migration.
+
+Code map (one IIFE): data `PROFILE`, `PEOPLE`, `ROLES`, `BRANDS`, `PARTNERS`, `ALLOC`, `TPL_LOBS`, `TPLS`, `STEPS` (checks present/past tense, sources, result). Flow `startDeck` -> `analyse` -> `unlock` -> `startReview` -> `decide` -> `maybeFinale`/`finale`. Layout `layout()` (overview vs focus coverflow, fit-to-viewport). Scenes `sceneHTML`/`sceneStep`. Review cards `renderReview`/`doneFace`. Detail page `openDeep`/`renderDeep`/`deepBody`. Prototype menu (bottom left; bottom right on phones): speed 1x/2x/4x, jump to analysis/review/finale, restart. URL hashes `#analyse`, `#review`, `#finale` jump straight there; `window.__deck` exposes `jump`, `S`, `focusCard`, `openDeep` for tests.
+
+Checked with Playwright screenshots at 1280x800, 1000x650, 400x820 and 1440x900 (no page errors, no horizontal scroll). Not checked: reduced motion, keyboard-only use of the detail pages, the 1x analysis at 1000x650 end to end.
