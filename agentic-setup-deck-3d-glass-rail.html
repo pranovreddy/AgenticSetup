@@ -719,25 +719,27 @@ body.v3b.mode-overview .cf-v{ display:none!important; }
 .card.is-far .cf-v{ opacity:.8; }
 
 /* ---------- Version C: steps rail on the left, compact agent head ---------- */
-body.v3c .deck{ left:268px; }
+body.v3c .deck{ left:100px; }
 body.v3c .ah{ flex-direction:row; align-items:center; text-align:left; gap:14px; width:min(780px,100%); }
 body.v3c .ah::before{ left:36px; top:-34px; width:260px; height:130px; transform:none; }
 body.v3c .ah .blob{ width:64px; height:64px; margin:0; }
 body.v3c .ah-t{ flex:1; width:auto; } body.v3c .ah-k{ justify-content:flex-start; }
 body.v3c .ah h1{ font-size:24px; margin:2px 0 1px; } body.v3c .narr{ font-size:13.5px; }
 body.v3c .stage{ -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 100%)!important; mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 100%)!important; }
-body.v3c .cap3{ left:calc(50% + 134px); }
-.rail3c{ position:fixed; left:16px; top:172px; width:236px; z-index:30; display:flex; flex-direction:column; gap:4px; padding:16px 10px 12px; border-radius:26px; background:rgba(255,255,255,.9); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 20px 40px -26px rgba(37,99,235,.45); opacity:0; transition:opacity .6s; pointer-events:none; }
+body.v3c .cap3{ left:calc(50% + 50px); }
+.rail3c{ position:fixed; left:16px; top:172px; width:66px; z-index:30; display:flex; flex-direction:column; align-items:center; gap:14px; padding:14px 0; border-radius:34px; background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(246,248,255,.75)); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 20px 40px -26px rgba(37,99,235,.45); opacity:0; transition:opacity .6s; pointer-events:none; }
 body.deck-on .rail3c{ opacity:1; pointer-events:auto; }
-.rail3c h4{ margin:0 8px 8px; font:600 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
-.rc{ position:relative; display:flex; align-items:center; gap:12px; width:100%; padding:10px 10px; border:0; border-radius:16px; background:none; text-align:left; cursor:default; transition:background .3s; }
-.rc:not(:last-child)::after{ content:""; position:absolute; left:29px; top:100%; width:2px; height:8px; background:rgba(120,150,210,.3); z-index:0; }
-.rc .ic{ position:relative; flex:none; width:38px; height:38px; border-radius:50%; display:grid; place-items:center; background:#fff; color:var(--muted); box-shadow:0 0 0 1px rgba(196,214,245,.9) inset; z-index:1; } .rc .ic svg{ width:18px; height:18px; }
-.rc .tx{ display:flex; flex-direction:column; line-height:1.25; min-width:0; } .rc .tx b{ font-size:14px; font-weight:600; color:var(--ink); white-space:nowrap; } .rc .tx span{ font-size:12px; color:var(--muted); }
-.rc.on{ background:#fff; box-shadow:0 0 0 1px rgba(150,180,235,.7) inset,0 12px 24px -16px rgba(37,99,235,.55); } .rc.on .ic{ background:var(--blue); color:#fff; box-shadow:none; }
-.rc.done .ic{ background:#16a34a; color:#fff; box-shadow:none; } .rc.done .tx span{ color:#15803d; }
-.rc.lk{ opacity:.6; } .rc.run .tx span{ color:var(--blue-d); } .rc.run .ic::after{ content:""; position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(37,99,235,.9); border-right-color:transparent; animation:spin 1s linear infinite; }
-.rc.clk{ cursor:pointer; } .rc.clk:hover{ background:rgba(255,255,255,.8); }
+.rail3c::before{ content:""; position:absolute; left:50%; top:36px; bottom:36px; width:2px; margin-left:-1px; background:rgba(120,150,210,.25); }
+.rc{ position:relative; width:44px; height:44px; border:0; padding:0; border-radius:50%; background:#fff; color:#8a96b3; display:grid; place-items:center; box-shadow:0 0 0 1px rgba(196,214,245,.9) inset; cursor:default; z-index:1; transition:transform .25s var(--ease),background .3s,color .3s; }
+.rc svg{ width:20px; height:20px; }
+.rc.on{ width:50px; height:50px; background:linear-gradient(160deg,#4a78f7,#2554e6); color:#fff; box-shadow:0 0 0 4px rgba(59,107,245,.18),0 10px 22px -8px rgba(37,84,230,.7); }
+.rc.done:not(.on){ color:#16a34a; background:#effaf3; box-shadow:0 0 0 1px rgba(110,200,150,.6) inset; }
+.rc.lk{ opacity:.55; } .rc.run::after{ content:""; position:absolute; inset:-5px; border-radius:50%; border:2px solid rgba(37,99,235,.9); border-right-color:transparent; animation:spin 1s linear infinite; }
+.rc.clk{ cursor:pointer; } .rc.clk:hover{ transform:scale(1.08); }
+.rc .bd{ position:absolute; right:-3px; bottom:-3px; width:17px; height:17px; border-radius:50%; display:grid; place-items:center; background:#16a34a; color:#fff; box-shadow:0 0 0 2px #fff; } .rc .bd svg{ width:10px; height:10px; } .rc .bd.l{ background:#94a0b8; }
+.rc .lab{ position:absolute; left:calc(100% + 12px); top:50%; transform:translate(-6px,-50%); display:flex; flex-direction:column; line-height:1.25; white-space:nowrap; padding:8px 14px 8px 12px; border-radius:99px; background:rgba(255,255,255,.97); box-shadow:0 0 0 1px rgba(196,214,245,.9) inset,0 14px 26px -14px rgba(37,84,230,.55); opacity:0; pointer-events:none; transition:opacity .2s,transform .25s var(--ease); }
+.rc .lab b{ font-size:13px; font-weight:650; color:var(--ink); } .rc .lab i{ font-style:normal; font-size:11px; color:var(--muted); }
+.rc:hover .lab,.rc:focus-visible .lab{ opacity:1; transform:translate(0,-50%); }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2008,12 +2010,12 @@ function railSync() {
   const rev = S.phase === "review";
   const sig = [S.active, S.phase, S.cards.map((c, i) => c.st + (c.st === "review" && isLocked(i))).join()].join("|");
   if (sig === railSig) return; railSig = sig;
-  r.innerHTML = `<h4>Setup steps</h4>` + STEPS.map((s, i) => {
+  r.innerHTML = STEPS.map((s, i) => {
     const c = S.cards[i], lk = c.st === "review" && isLocked(i), dn = c.st === "done";
     const run = c.st === "analysing" || c.st === "inreview";
     const txt = { queued: "Queued", analysing: "Agent is working", ready: "Ready", review: lk ? "Locked" : "Your review", done: "Done", later: "Saved for later", inreview: "In review" }[c.st] || "";
     const cls = ["rc", i === S.active ? "on" : "", dn ? "done" : "", lk ? "lk" : "", run ? "run" : "", rev && !lk && i !== S.active ? "clk" : ""].join(" ");
-    return `<button class="${cls}" data-i="${i}" ${rev && !lk ? "" : "tabindex=-1"}><span class="ic">${dn ? IC.check : lk ? IC.lock : IC[s.key]}</span><span class="tx"><b>${esc(s.title)}</b><span>${txt}</span></span></button>`;
+    return `<button class="${cls}" data-i="${i}" aria-label="${esc(s.title)}: ${txt}" ${rev && !lk ? "" : "tabindex=-1"}>${IC[s.key]}${dn ? `<span class="bd">${IC.check}</span>` : lk ? `<span class="bd l">${IC.lock}</span>` : ""}<span class="lab"><b>${esc(s.title)}</b><i>${txt}</i></span></button>`;
   }).join("");
 }
 $("#rail3c").addEventListener("click", (e) => { const b = e.target.closest("button[data-i]"); if (b && S.phase === "review" && !(S.cards[+b.dataset.i].st === "review" && isLocked(+b.dataset.i))) focusCard(+b.dataset.i); });
