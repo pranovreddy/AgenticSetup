@@ -14566,6 +14566,8 @@ body.ag-gate .ag-acols > .ag-atabs{ grid-column:2; grid-row:2; margin:20px 0 0 !
 body.ag-gate .ag-acols > .ag-atabs .ag-atab:first-child{ margin-left:0 !important; }
 body.ag-gate .ag-acols > .ag-brief{ grid-row:2 / span 2 !important; }
 body.ag-gate .ag-acols > .ag-paper{ grid-row:3 !important; }
+.ag-profile .kyc-control.is-filling, .ag-profile .kyc-area.is-filling{ caret-color:#2563eb; }
+.op-card-ft .op-why{ font-size:11.5px !important; line-height:1.4; color:#6b7a96 !important; font-weight:450; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -21927,17 +21929,29 @@ function agMigRow() {
     if (reduce || duration <= 0) {
       el.value = text;
     } else {
-      const start = performance.now();
-      await new Promise((resolve) => {
-        function tick(now) {
-          const t = Math.min(1, (now - start) / duration);
-          el.value = text.slice(0, Math.max(1, Math.round(t * text.length)));
-          el.scrollTop = el.scrollHeight;
-          if (t < 1) requestAnimationFrame(tick);
-          else resolve();
-        }
-        requestAnimationFrame(tick);
+      /* Real typing: the field takes the caret, characters land one by one with human rhythm, the caret rests for a beat at the end */
+      const wasReadonly = el.readOnly;
+      el.readOnly = false;
+      try { el.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
+      const n = text.length;
+      const weights = Array.from(text, (ch, i) => {
+        let w = 0.55 + Math.random() * 0.9;
+        if (ch === " ") w += 0.5;
+        if (",.-/@".includes(ch)) w += 0.7;
+        if (i === 0) w += 1.2;
+        return w;
       });
+      const sum = weights.reduce((x, y) => x + y, 0);
+      const budget = Math.max(260, duration - 220);
+      for (let i = 0; i < n; i += 1) {
+        el.value = text.slice(0, i + 1);
+        try { el.setSelectionRange(i + 1, i + 1); } catch (e) { /* ignore */ }
+        el.scrollTop = el.scrollHeight;
+        await agProfileWait(Math.max(12, (weights[i] / sum) * budget));
+      }
+      await agProfileWait(220);
+      el.readOnly = wasReadonly;
+      if (document.activeElement === el) el.blur();
     }
     el.classList.remove("is-filling");
     el.classList.add("is-filled");
@@ -24907,7 +24921,7 @@ function agMigRow() {
   /* ---- Agent summary: one model, three layouts ---- */
   const OP_AREA = { "1": "Business profile", "2": "Team", e0: "Brands and LOBs", e1: "GTM partners", e2: "Templates" };
   const OP_TITLE = { "2": "Team", e0: "Brands and LOBs", e1: "GTM partners", e2: "Templates" };
-  const OP_ROLE_CAN = { "Regulatory / Legal": "Approves consent policies", "Business Admin": "Runs brands and campaigns", "Super Admin": "Full access to the workspace", "Finance Admin": "Billing and rate cards" };
+  const OP_ROLE_CAN = { "Regulatory / Legal": "Can approve consent policies", "Business Admin": "Can run brands and campaigns", "Super Admin": "Has full access to the workspace", "Finance Admin": "Can manage billing and rate cards" };
   /* per line of business, "suggested" already includes the ones that still need a review */
   const opTpl = () => {
     const rows = AG_TM_LOBS.map((l) => ({ ...l, total: l.suggested, sure: l.suggested - l.review, pct: Math.round(((l.suggested - l.review) / l.suggested) * 100) }));
