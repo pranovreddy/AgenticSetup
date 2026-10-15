@@ -283,3 +283,9 @@ Blue success disc + ring stamp (summary receipt green); actions near content on 
 - **Order and gates**: Business profile -> Team (invite or skip) -> GTM partners -> Brands and LOBs -> Templates. A step opens only after the previous is done (or skipped, for Team); locked cards show a blurred lock face with the reason; profile counts as passed only after operator approval; brands sent for review keep Templates locked until approved.
 - **Inner pages** (match the product's review pages): shared-element expand from the card, deck eases back, staged entrance; aside = Agent Summary + accordions (what was checked, sources, what happens next); Team (Users / Roles tabs, search, add user, mobile, department and role dropdowns, remove), GTM (select partners with BEST tags, then per-phase allocation with totals = 100, same-for-all toggle, split bars, terms), Brands (enterprise container, editable brand names and LOBs, add brand), Templates (stats, LOB list, filters, search, bulk assign, drag handles, pagination), Profile (logo slot, source tags).
 - Not tested: reduced motion, narrow windows, the unsaved-changes logout message, brands "send for review" path with the new gates.
+
+### 8f.11 3D card environments (two options for the owner to pick)
+Built from `agentic-setup-deck-enhanced.html` by `references/tools/session5/deck-enhanced/build3d.py` (replaces `layout()` with perspective transforms, adds an environment layer and a HUD):
+- `agentic-setup-deck-3d-stage.html`: dark hall with a light shaft and floor grid; side panels angled like a corridor, floor reflection, left icon rail to jump between steps.
+- `agentic-setup-deck-3d-glass.html`: soft room, frosted glass cards on a curve, control capsule under the focused card (previous, step name and status, Details, next) and progress dots.
+In both, the step in process is the large, forward, fully lit card and the others recede.
