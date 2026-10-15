@@ -2,6 +2,15 @@ import re
 base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
+/* top-left identity pill */
+.hdr{ right:auto; top:16px; left:16px; height:54px; width:auto; padding:0 8px 0 18px; gap:14px; border-radius:99px; background:rgba(255,255,255,.82); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); box-shadow:0 0 0 1px rgba(196,214,245,.85) inset,0 14px 30px -18px rgba(37,99,235,.45); }
+.hdr-org{ display:none; } .hdr-l,.hdr-r{ animation:none; } .hdr-r{ gap:4px; padding-left:14px; border-left:1px solid rgba(160,185,230,.55); }
+.hdr .usr,.hdr .logout{ background:transparent!important; box-shadow:none!important; -webkit-backdrop-filter:none; backdrop-filter:none; height:40px; }
+.hdr .usr{ padding:0 8px 0 4px; } .hdr .logout{ width:40px; padding:0; justify-content:center; font-size:0; gap:0; } .hdr .logout svg{ width:17px; height:17px; }
+.hdr .logout:hover{ background:rgba(37,99,235,.1)!important; transform:none; }
+body.v3a .hdr{ background:rgba(255,255,255,.08); box-shadow:0 0 0 1px rgba(160,190,255,.25) inset; }
+@media (max-width:760px){ .usr-meta{ display:none; } }
+
 /* ===== 3D environment for the cards ===== */
 .stage{ perspective:1500px; perspective-origin:50% 42%; -webkit-mask-image:none !important; mask-image:none !important; }
 .card{ transform-style:flat; }

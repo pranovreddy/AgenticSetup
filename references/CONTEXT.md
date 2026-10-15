@@ -291,3 +291,4 @@ Built from `agentic-setup-deck-enhanced.html` by `references/tools/session5/deck
 In both, the step in process is the large, forward, fully lit card and the others recede.
 - Owner picked **Glass (B)**. Update: out-of-focus cards are stacked at a steeper angle (56 deg), tighter and fainter, and each shows a gradient **front face** (step icon, name, status such as Queued, Working, Your review, Locked, Done, with a sweep of light). The card in focus **flips** (rotateY) to its details face. Opacity is applied per face (`--o`) because opacity on the card would flatten the 3D flip. Faces are rendered by `faces()` in the HUD script.
 - Processing stage (phase analyse) now reserves side room (+92 gap, narrower focus card) so neighbouring cards and their step names stay exposed, like the review stage.
+- 3D decks: full-width top header replaced by a top-left identity pill (logo, user, icon-only Log out).
