@@ -295,3 +295,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - 3D decks: agent head is centred at top (blob above, kicker, title, narration centred, soft glow).
 - 3D decks: identity is a slim vertical pill top-left (logo mark above, initials avatar below); hover or focus opens a flyout with wordmark, name, role and Log out.
 - Glass deck: bigger cards (AW 760, review 570/620), step pill removed; bottom-centre arrows with dot stepper (#cap3 now only nav). Loader area flexes to fill the taller card.
+- Glass room: horizon/floor moved to the bottom (~79%), aurora-tinted wall, glow line at the horizon, light pool under the card.

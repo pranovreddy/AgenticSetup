@@ -701,6 +701,13 @@ body.v3b:not(.mode-overview) .card:not(.is-focus) .cardf{ transform:rotateY(360d
 .cap3 .dts{ display:flex; gap:9px; align-items:center; } .cap3 .dts i{ width:9px; height:9px; border-radius:99px; background:rgba(37,99,235,.25); transition:width .5s var(--ease),background .3s; } .cap3 .dts i.on{ width:30px; background:var(--blue); } .cap3 .dts i.done{ background:#16a34a; }
 .dots3{ display:none!important; }
 body.v3b .card .ld{ flex:1 1 auto; height:auto; min-height:300px; }
+
+/* richer room, floor at the bottom */
+body.v3b:not(.phase-gate){ background:linear-gradient(180deg,#f7faff 0,#e8effb 55%,#dce6f6 100%); }
+body.v3b .env .wall{ inset:0 0 21% 0; background:radial-gradient(60% 70% at 50% 100%,rgba(120,160,255,.28),rgba(120,160,255,0) 70%),radial-gradient(40% 40% at 18% 20%,rgba(190,210,255,.5),rgba(190,210,255,0)),radial-gradient(38% 38% at 84% 14%,rgba(205,190,255,.35),rgba(205,190,255,0)),linear-gradient(180deg,rgba(255,255,255,.6),rgba(214,226,246,.3)); }
+body.v3b .env .wall::after{ left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(110,150,230,.5) 30%,rgba(110,150,230,.5) 70%,transparent); box-shadow:0 0 18px 2px rgba(110,150,255,.35); }
+body.v3b .env .floor{ top:79%; bottom:auto; height:70%; background:repeating-linear-gradient(90deg,rgba(90,125,200,.16) 0 1px,transparent 1px 90px),repeating-linear-gradient(0deg,rgba(90,125,200,.16) 0 1px,transparent 1px 90px),radial-gradient(50% 60% at 50% 0,rgba(255,255,255,.95),rgba(206,220,244,.35)); -webkit-mask-image:linear-gradient(180deg,#000,transparent 85%); mask-image:linear-gradient(180deg,#000,transparent 85%); }
+body.v3b .env::after{ content:""; position:absolute; left:50%; bottom:3%; width:min(980px,86vw); height:150px; transform:translateX(-50%); background:radial-gradient(closest-side,rgba(70,120,240,.28),rgba(70,120,240,0)); filter:blur(6px); }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b">
