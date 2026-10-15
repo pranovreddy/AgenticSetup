@@ -123,6 +123,14 @@ body.v3b:not(.mode-overview) .card:not(.is-focus) .cardf{ transform:rotateY(360d
 .card.is-far .cf-mid,.card.is-far .cf-bot{ opacity:0; }
 .cf-bot .ai-mark{ width:26px; height:26px; opacity:.95; }
 
+
+/* bottom nav: arrows with dots, no step pill */
+.cap3{ bottom:26px; height:auto; padding:0; gap:18px; background:none!important; box-shadow:none!important; -webkit-backdrop-filter:none!important; backdrop-filter:none!important; border-radius:0; }
+.cap3 .nav{ width:42px; height:42px; background:rgba(255,255,255,.85); box-shadow:0 0 0 1px rgba(196,214,245,.9) inset,0 10px 20px -12px rgba(37,99,235,.5); }
+.cap3 .nav:disabled{ opacity:.4; }
+.cap3 .dts{ display:flex; gap:9px; align-items:center; } .cap3 .dts i{ width:9px; height:9px; border-radius:99px; background:rgba(37,99,235,.25); transition:width .5s var(--ease),background .3s; } .cap3 .dts i.on{ width:30px; background:var(--blue); } .cap3 .dts i.done{ background:#16a34a; }
+.dots3{ display:none!important; }
+body.v3b .card .ld{ flex:1 1 auto; height:auto; min-height:300px; }
 '''
 
 ENV_A = '<div class="env" aria-hidden="true"><div class="wall"></div><div class="beam"></div><div class="arch l"></div><div class="arch r"></div><div class="floor"></div><div class="dust">' + ''.join(f'<i style="left:{(i*53)%100}%;bottom:{(i*37)%40}%;animation-delay:-{i*0.9}s;animation-duration:{11+i%5*2}s"></i>' for i in range(22)) + '</div></div>'
@@ -224,11 +232,9 @@ function hudSync() {
   const status = { queued: "Queued", analysing: "The agent is working", ready: "Ready", review: lk ? "Locked" : "Your review", done: "Done", later: "Saved for later", inreview: "In review" }[c.st] || "";
   const sig = [i, c.st, lk, rev, S.cards.map((x) => x.st).join()].join("|");
   if (sig === capSig) return; capSig = sig;
-  cap.innerHTML = `<button class="nav" data-n="-1" aria-label="Previous step" ${rev && i > 0 ? "" : "disabled"}>${IC.back}</button>
-    <span class="tile">${IC[s.key]}</span><span class="tx"><b>${esc(s.title)}</b><span>Step ${i + 1} of 5 · ${status}</span></span>
-    <button class="det" data-det="1" ${rev && !lk ? "" : "disabled"}>${IC.expand}Details</button>
+  cap.innerHTML = `<button class="nav" data-n="-1" aria-label="Previous step" ${rev && i > 0 ? "" : "disabled"}>${IC.back}</button><span class="dts">${STEPS.map((x, k) => `<i class="${k === i ? "on" : passed(k) ? "done" : ""}" title="${esc(x.title)}"></i>`).join("")}</span>
     <button class="nav" data-n="1" aria-label="Next step" ${rev && i < 4 ? "" : "disabled"} style="transform:scaleX(-1)">${IC.back}</button>`;
-  $("#dots3").innerHTML = STEPS.map((_, k) => `<i class="${k === i ? "on" : passed(k) ? "done" : ""}"></i>`).join("");
+  if ($("#dots3")) $("#dots3").innerHTML = STEPS.map((_, k) => `<i class="${k === i ? "on" : passed(k) ? "done" : ""}"></i>`).join("");
 }
 $("#cap3").addEventListener("click", (e) => {
   const n = e.target.closest("[data-n]"), d = e.target.closest("[data-det]");
@@ -258,6 +264,10 @@ def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
     m = '/* ---------- Boot ---------- */'
     assert s.count(m) == 1
     s = s.replace(m, hud_js + '\n' + m)
+    if 'glass' in name:
+        old = 'const CW = 372, CH = 548, AW = 640, AH = 446, RH = 500, RH_PROFILE = 566;'
+        assert old in s
+        s = s.replace(old, 'const CW = 372, CH = 548, AW = 760, AH = 530, RH = 570, RH_PROFILE = 620;')
     s = s.replace('<title>DigiConsent Agent Deck Enhanced</title>', f'<title>{title}</title>')
     open(f'/home/user/AgenticSetup/{name}', 'w').write(s)
     print(name, len(s))
@@ -265,4 +275,4 @@ def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
 make('agentic-setup-deck-3d-stage.html', 'v3a', A_CSS, ENV_A, RAIL_HTML, HUD_A,
      layout_js(36, 14, 150, '[1, .68, .54, .44, .38]', '[1, .78, .42, .18, .06]', 70, 90, '-12 * f'), 'DigiConsent Agent Deck 3D Stage')
 make('agentic-setup-deck-3d-glass.html', 'v3b', B_CSS, ENV_B, CAP_HTML, HUD_B,
-     faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 40, 230, '-52 * f')), 'DigiConsent Agent Deck 3D Glass')
+     faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 40, 150, '-30 * f')), 'DigiConsent Agent Deck 3D Glass')

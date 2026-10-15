@@ -693,6 +693,14 @@ body.v3b:not(.mode-overview) .card:not(.is-focus) .cardf{ transform:rotateY(360d
 .card.is-far .cf-mid,.card.is-far .cf-bot{ opacity:0; }
 .cf-bot .ai-mark{ width:26px; height:26px; opacity:.95; }
 
+
+/* bottom nav: arrows with dots, no step pill */
+.cap3{ bottom:26px; height:auto; padding:0; gap:18px; background:none!important; box-shadow:none!important; -webkit-backdrop-filter:none!important; backdrop-filter:none!important; border-radius:0; }
+.cap3 .nav{ width:42px; height:42px; background:rgba(255,255,255,.85); box-shadow:0 0 0 1px rgba(196,214,245,.9) inset,0 10px 20px -12px rgba(37,99,235,.5); }
+.cap3 .nav:disabled{ opacity:.4; }
+.cap3 .dts{ display:flex; gap:9px; align-items:center; } .cap3 .dts i{ width:9px; height:9px; border-radius:99px; background:rgba(37,99,235,.25); transition:width .5s var(--ease),background .3s; } .cap3 .dts i.on{ width:30px; background:var(--blue); } .cap3 .dts i.done{ background:#16a34a; }
+.dots3{ display:none!important; }
+body.v3b .card .ld{ flex:1 1 auto; height:auto; min-height:300px; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b">
@@ -1155,7 +1163,7 @@ function runScene(ld, id, box, run, onStep, extra, limit = 18000) {
 const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)));
 
 /* ---------- Layout ---------- */
-const CW = 372, CH = 548, AW = 640, AH = 446, RH = 500, RH_PROFILE = 566;
+const CW = 372, CH = 548, AW = 760, AH = 530, RH = 570, RH_PROFILE = 620;
 function dims(i) {
   if (S.mode === "focus" && S.phase === "analyse") return i === S.active ? [AW, AH] : [CW, AH];
   if (S.mode === "focus") return [AW, STEPS[i].key === "profile" ? RH_PROFILE : RH];
@@ -1185,7 +1193,7 @@ function layout() {
   }
   const [aw, ah] = dims(S.active);
   const AN = S.phase === "analyse", TH = 56, GAP = -118 + (AN ? 92 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
-  let f = Math.max(0.42, Math.min(1.06, (r.height - 230) / ah, (r.width - (AN ? 250 : 48)) / aw));
+  let f = Math.max(0.42, Math.min(1.06, (r.height - 150) / ah, (r.width - (AN ? 250 : 48)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
     const off = i - S.active, a = Math.min(Math.abs(off), 4), dir = Math.sign(off);
@@ -1193,7 +1201,7 @@ function layout() {
     for (let k = 1; k <= a; k++) x += proj(S.active + dir * (k - 1), k - 1) + GAP + proj(S.active + dir * k, k);
     const [w, h] = dims(i); size(el, w, h);
     const z = a === 0 ? 40 : -ZS * a;
-    el.style.transform = `translate3d(${dir * x * f}px, ${-52 * f}px, ${z}px) rotateY(${-dir * TH}deg) scale(${SC[a] * f})`;
+    el.style.transform = `translate3d(${dir * x * f}px, ${-30 * f}px, ${z}px) rotateY(${-dir * TH}deg) scale(${SC[a] * f})`;
     el.style.setProperty("--o", OP[a]); el.style.opacity = 1; el.style.zIndex = 20 - a;
     el.classList.toggle("is-focus", off === 0);
     el.classList.toggle("is-far", a >= 2);
@@ -1945,11 +1953,9 @@ function hudSync() {
   const status = { queued: "Queued", analysing: "The agent is working", ready: "Ready", review: lk ? "Locked" : "Your review", done: "Done", later: "Saved for later", inreview: "In review" }[c.st] || "";
   const sig = [i, c.st, lk, rev, S.cards.map((x) => x.st).join()].join("|");
   if (sig === capSig) return; capSig = sig;
-  cap.innerHTML = `<button class="nav" data-n="-1" aria-label="Previous step" ${rev && i > 0 ? "" : "disabled"}>${IC.back}</button>
-    <span class="tile">${IC[s.key]}</span><span class="tx"><b>${esc(s.title)}</b><span>Step ${i + 1} of 5 · ${status}</span></span>
-    <button class="det" data-det="1" ${rev && !lk ? "" : "disabled"}>${IC.expand}Details</button>
+  cap.innerHTML = `<button class="nav" data-n="-1" aria-label="Previous step" ${rev && i > 0 ? "" : "disabled"}>${IC.back}</button><span class="dts">${STEPS.map((x, k) => `<i class="${k === i ? "on" : passed(k) ? "done" : ""}" title="${esc(x.title)}"></i>`).join("")}</span>
     <button class="nav" data-n="1" aria-label="Next step" ${rev && i < 4 ? "" : "disabled"} style="transform:scaleX(-1)">${IC.back}</button>`;
-  $("#dots3").innerHTML = STEPS.map((_, k) => `<i class="${k === i ? "on" : passed(k) ? "done" : ""}"></i>`).join("");
+  if ($("#dots3")) $("#dots3").innerHTML = STEPS.map((_, k) => `<i class="${k === i ? "on" : passed(k) ? "done" : ""}"></i>`).join("");
 }
 $("#cap3").addEventListener("click", (e) => {
   const n = e.target.closest("[data-n]"), d = e.target.closest("[data-det]");
