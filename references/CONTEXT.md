@@ -293,3 +293,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Processing stage (phase analyse) now reserves side room (+92 gap, narrower focus card) so neighbouring cards and their step names stay exposed, like the review stage.
 - 3D decks: full-width top header replaced by a top-left identity pill (logo, user, icon-only Log out).
 - 3D decks: agent head is centred at top (blob above, kicker, title, narration centred, soft glow).
+- 3D decks: identity is a slim vertical pill top-left (logo mark above, initials avatar below); hover or focus opens a flyout with wordmark, name, role and Log out.
