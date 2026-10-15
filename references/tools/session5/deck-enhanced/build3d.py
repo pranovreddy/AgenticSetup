@@ -275,6 +275,10 @@ def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
         old = 'const CW = 372, CH = 548, AW = 640, AH = 446, RH = 500, RH_PROFILE = 566;'
         assert old in s
         s = s.replace(old, 'const CW = 372, CH = 548, AW = 760, AH = 530, RH = 570, RH_PROFILE = 620;')
+    if 'glass' in name:
+        o = 'pre = lead ? `<b>${esc(lead)}</b> · ` : ""'
+        assert o in s
+        s = s.replace(o, 'pre = ""')
     s = s.replace('<title>DigiConsent Agent Deck Enhanced</title>', f'<title>{title}</title>')
     open(f'/home/user/AgenticSetup/{name}', 'w').write(s)
     print(name, len(s))

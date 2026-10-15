@@ -1240,7 +1240,7 @@ async function narrate(text, lead = "", caret = false) {
   const n = $("#narr"), key = `${lead}|${text}|${caret}`;
   if (n.dataset.k === key) return;
   n.dataset.k = key;
-  const tok = ++narrTok, pre = lead ? `<b>${esc(lead)}</b> · ` : "", tail = caret ? `<span class="caret"></span>` : "";
+  const tok = ++narrTok, pre = "", tail = caret ? `<span class="caret"></span>` : "";
   if (RM || !text) { n.innerHTML = pre + esc(text) + tail; return; }
   const blob = $("#headBlob"); blob.classList.add("speak");
   for (let i = 0; i <= text.length; i += 2) {
