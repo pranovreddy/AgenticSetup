@@ -14597,6 +14597,16 @@ body.ag-gate .ag-brief-note svg{ flex:none; margin-top:2px; color:#2563eb; }
 body.ag-gate .ag-acols{ column-gap:0 !important; }
 body.ag-gate .ag-acols > .ag-brief{ padding-right:36px !important; }
 body.ag-gate .ag-acols > .ag-paper{ padding-left:40px !important; border-left:1px solid #d6e2f6 !important; }
+/* GTM summary cards: why it was chosen stands out, one rate per row */
+.op-gk .op-gk-why{ margin:0 0 14px !important; padding:11px 14px 12px; border-radius:12px; background:#eef4ff; border-left:3px solid #2563eb; color:#1a2a4a !important; font-size:14px !important; line-height:1.5 !important; }
+.op-gk .op-gk-why i{ margin-bottom:3px !important; font-size:11px !important; font-weight:700 !important; letter-spacing:.07em; text-transform:uppercase; color:#2563eb !important; }
+.op-gk.is-off .op-gk-why, .op-gk-ex .op-gk-why{ background:#f3f5f9; border-left-color:#aab5cb; color:#3c4762 !important; } .op-gk.is-off .op-gk-why i, .op-gk-ex .op-gk-why i{ color:#6b7a96 !important; }
+.op-gk .op-gk-ph{ display:flex !important; flex-direction:column; gap:6px !important; }
+.op-gk .op-gk-r{ display:grid !important; grid-template-columns:minmax(0,1fr) auto 64px; align-items:center !important; gap:12px !important; padding:9px 12px !important; border-radius:10px; }
+.op-gk .op-gk-r i{ flex:none !important; font-size:13px !important; font-weight:600; color:#3c4762 !important; }
+.op-gk .op-gk-r b{ font-size:15px !important; text-align:right; }
+.op-gk .op-gk-r em{ flex:none !important; justify-self:end; min-width:44px; text-align:center; padding:1px 8px !important; border-radius:99px; background:rgba(37,99,235,.08) !important; font-size:12px !important; }
+.op-gk .op-gk-r em.is-n{ background:none !important; }
 /* ---- Design critique fixes ---- */
 /* 1,18 next-up: scrollable, never clipped at short heights */
 .ag-nextup{ overflow-y:auto; place-items:start center; }
@@ -25283,7 +25293,7 @@ function agMigRow() {
     const inner = (it) => {
       const pool = AG_GTM_POOL.find((p) => p.name === agSumUnesc(it.name)) || {};
       const r = pool.rates || {};
-      const cells = it.phases.map((p) => `<div class="op-gk-c${p.best && it.on ? " is-best" : ""}"><i>${p.label}</i><b>${p.best && it.on ? `<span class="op-gk-low" title="Lowest rate">${I("check", "sm")}</span>` : ""}${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : `<em class="is-n">&nbsp;</em>`}</div>`).join("");
+      const cells = it.phases.map((p) => `<div class="op-gk-c op-gk-r${p.best && it.on ? " is-best" : ""}"><i>${p.label}</i><b>${p.best && it.on ? `<span class="op-gk-low" title="Lowest rate">${I("check", "sm")}</span>` : ""}${p.rate}</b>${it.on && p.share ? `<em>${p.share}</em>` : `<em class="is-n">&nbsp;</em>`}</div>`).join("");
       const scrub = [["SMS", r.sms], ["Call", r.voice], ["RCS", r.rcs]].map(([l, v]) => `<span><i>${l}</i><b>${v == null ? "" : money(v)}</b></span>`).join("");
       return `<p class="op-gk-why"><i>${it.on ? "Why it was chosen" : "Why it was not chosen"}</i>${it.why}</p><div class="op-gk-ph">${cells}</div><div class="op-gk-sc"><em>Scrubbing</em>${scrub}</div>`;
     };
