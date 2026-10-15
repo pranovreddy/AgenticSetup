@@ -420,6 +420,35 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 .proto-menu button { border: 0; background: none; text-align: left; padding: 7px 8px; border-radius: 7px; font-size: 12.5px; }
 .proto-menu button:hover { background: #F3F5FA; }
 
+/* ---------- Enhancements: materialise, typed fields, spotlight, spark, ripples ---------- */
+.mz { animation: mz .7s var(--ease) both; animation-delay: var(--d, 0ms); }
+@keyframes mz { from { opacity: 0; transform: translateY(10px); filter: blur(6px); } }
+.glow { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .5s; background: radial-gradient(460px circle at var(--mx, 50%) var(--my, 0%), rgba(51,102,240,.085), transparent 62%); }
+.card.is-focus .glow { opacity: 1; }
+.c-head { position: relative; }
+.pform { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 14px; }
+.pf { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.pf.wide { grid-column: 1 / -1; }
+.pf label { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--muted); }
+.pf label .src-tag { margin-left: auto; opacity: 0; transform: scale(.6); transition: opacity .3s, transform .45s var(--ease); }
+.pf.is-filled label .src-tag { opacity: 1; transform: none; }
+.pin { height: 34px; border-radius: 8px; border: 1px solid var(--line-2); background: #fff; padding: 0 10px; font: 500 13px/1 var(--font); color: var(--ink); width: 100%; outline: none; caret-color: var(--blue); cursor: default; transition: border-color .25s, box-shadow .25s, background .4s; text-overflow: ellipsis; }
+.pf.is-filling .pin { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(51,102,240,.14); background: #fff; }
+.pf.is-filled .pin { background: #FAFBFF; }
+.pf.is-waiting .pin { background: linear-gradient(90deg, #F3F6FC 0%, #E7EDFB 50%, #F3F6FC 100%); background-size: 200% 100%; animation: skel 1.4s linear infinite; border-color: transparent; }
+@keyframes skel { to { background-position: -200% 0; } }
+.r-foot .more { font-size: 12px; color: var(--faint); }
+.kv { height: 330px; margin-top: 4px; }
+.kv-note { margin: 12px 20px 0; font-size: 12.5px; color: var(--muted); }
+.cap-row .t.swap { animation: swapIn .45s var(--ease), shimmer 1.6s linear infinite; }
+.spark { position: fixed; left: 0; top: 0; z-index: 95; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px 4px rgba(51,102,240,.85), 0 0 28px 10px rgba(46,182,245,.45); pointer-events: none; }
+.spark.tail { width: 6px; height: 6px; margin: -3px 0 0 -3px; box-shadow: 0 0 10px 3px rgba(123,97,255,.6); }
+.ripple { position: absolute; left: 50%; top: 50%; width: 100%; height: 100%; margin: -50% 0 0 -50%; border-radius: 50%; border: 1.5px solid rgba(51,102,240,.55); pointer-events: none; }
+.stamp .ripple { border-color: rgba(22,163,74,.45); }
+#headBlob .agent-core { transition: transform .35s var(--ease); }
+#headBlob.speak .agent-core { transform: translate(-50%, -50%) scale(1.08); }
+.clock div { min-width: 58px; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .gate-body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
@@ -799,7 +828,7 @@ function buildCards() {
     const el = document.createElement("article");
     el.className = "card st-queued"; el.dataset.i = i;
     el.setAttribute("aria-label", s.title);
-    el.innerHTML = `<div class="card-in">
+    el.innerHTML = `<div class="card-in"><span class="glow" aria-hidden="true"></span>
       <div class="c-head"><span class="c-ic">${IC[s.key]}</span><div class="c-tt"><div class="c-n">STEP ${i + 1} OF 5</div><div class="c-title">${esc(s.title)}</div></div><span class="status" data-status></span></div>
       <div class="pane pane-a" data-analyse></div>
       <div class="pane pane-r" data-review></div>
@@ -859,52 +888,54 @@ function renderAnalyse(i) {
 function capStep(i, n) {
   const s = STEPS[i], el = card(i); if (!el) return;
   n = Math.max(1, Math.min(n, s.checks.length));
+  if (S.cards[i].step === n && $("[data-line]", el)?.textContent === s.checks[n - 1][0]) return;
   S.cards[i].step = n;
   const line = $("[data-line]", el); if (!line) return;
-  line.textContent = s.checks[n - 1][0];
+  line.textContent = s.checks[n - 1][0]; line.classList.remove("swap"); void line.offsetWidth; line.classList.add("swap");
   $("[data-n]", el).textContent = `${n} of ${s.checks.length}`;
   $$(".segs i", el).forEach((seg, k) => { seg.classList.toggle("on", k < n - 1); seg.classList.toggle("cur", k === n - 1); });
-  narrate(`<b>${esc(s.title)}</b> · ${esc(s.checks[n - 1][0])}<span class="caret"></span>`);
+  narrate(s.checks[n - 1][0], s.title, true);
 }
-function fitLoader(i) {
-  const el = card(i), ld = el && $(".ld", el); if (!ld) return;
+/* Crops a 720x360 product scene to its content box and centres it in its frame. */
+function fitScene(ld, box) {
   const crop = $(".ld-crop", ld), fr = $("iframe", ld);
-  const [x0, y0, x1, y1] = LD_BOX[STEPS[i].loader];
-  const bw = x1 - x0, bh = y1 - y0;
-  const s = Math.min((AW - 40 - 24) / bw, (300 - 20) / bh, 1.1);
+  const [x0, y0, x1, y1] = box, bw = x1 - x0, bh = y1 - y0;
+  const W0 = ld.clientWidth || AW - 40, H0 = ld.clientHeight || 300;
+  const s = Math.min((W0 - 24) / bw, (H0 - 20) / bh, 1.1);
   crop.style.width = `${bw * s}px`; crop.style.height = `${bh * s}px`;
   crop.style.marginLeft = `${(-bw * s) / 2}px`; crop.style.marginTop = `${(-bh * s) / 2}px`;
   fr.style.transform = `translate(${-x0 * s}px, ${-y0 * s}px) scale(${s})`;
 }
-function loaderDoc(id) {
+function loaderDoc(id, extra = "") {
   return LOADER_DOC.replace("__AG_ID__", id).replace("__AG_VI__", "0")
-    .replace("</head>", `<style>.copy{visibility:hidden !important}html,body{background:transparent !important}.tm-lab{position:absolute;font:500 11px/1 Inter,system-ui,sans-serif;color:#5B6474;white-space:nowrap}</style></head>`);
+    .replace("</head>", `<style>.copy{visibility:hidden !important}html,body{background:transparent !important}.tm-lab{position:absolute;font:500 11px/1 Inter,system-ui,sans-serif;color:#5B6474;white-space:nowrap}${extra}</style></head>`);
 }
-/* Plays the product scene for card i; resolves when the scene reports it is done. */
-function playLoader(i, run) {
+/* Plays one product scene in a frame; onStep gets its step numbers; resolves when the scene reports it is done. */
+function runScene(ld, id, box, run, onStep, extra, limit = 18000) {
   return new Promise((resolve) => {
-    if (RM) return resolve();
-    const fr = $("iframe", card(i));
+    if (RM || !ld) return resolve();
+    const fr = $("iframe", ld);
     let fin = false;
     const done = () => { if (fin) return; fin = true; removeEventListener("message", on); clearTimeout(to); resolve(); };
     const on = (e) => {
       if (run !== S.runId) return done();
       if (!fr.isConnected || e.source !== fr.contentWindow || !e.data || !e.data.agLoader) return;
-      if (e.data.step) capStep(i, Math.max(S.cards[i].step, e.data.step));
+      if (e.data.step && onStep) onStep(e.data.step);
       if (e.data.state === "done" || e.data.ended) done();
     };
     addEventListener("message", on);
-    const to = setTimeout(done, 18000);
-    fitLoader(i);
-    fr.srcdoc = loaderDoc(STEPS[i].loader);
+    const to = setTimeout(done, limit);
+    fitScene(ld, box);
+    fr.srcdoc = loaderDoc(id, extra);
   });
 }
+const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)));
 
 /* ---------- Layout ---------- */
-const CW = 372, CH = 548, AW = 640, AH = 446, RH = 500;
+const CW = 372, CH = 548, AW = 640, AH = 446, RH = 500, RH_PROFILE = 566;
 function dims(i) {
   if (S.mode === "focus" && S.phase === "analyse") return i === S.active ? [AW, AH] : [CW, AH];
-  if (S.mode === "focus") return [AW, RH];
+  if (S.mode === "focus") return [AW, STEPS[i].key === "profile" ? RH_PROFILE : RH];
   return [CW, CH];
 }
 function size(el, w, h) {
@@ -931,7 +962,7 @@ function layout() {
   }
   const [aw, ah] = dims(S.active);
   const wide = r.width >= 900;
-  let f = Math.min(1, (r.height - 36) / ah, wide ? r.width / (aw + 2 * CW * 0.8 + 60) : (r.width - 32) / aw);
+  let f = Math.min(1, (r.height - 30) / ah, wide ? r.width / (aw + 2 * CW * 0.8 + 60) : (r.width - 32) / aw);
   f = Math.max(f, 0.4);
   const G = 26, SC = [1, .8, .66, .58, .52], OP = [1, .92, .55, .2, .05];
   const half = (i, a) => (dims(i)[0] * SC[a]) / 2;
@@ -940,27 +971,84 @@ function layout() {
     let x = 0;
     for (let k = 1; k <= a; k++) x += half(S.active + dir * (k - 1), k - 1) + G + half(S.active + dir * k, k);
     const [w, h] = dims(i); size(el, w, h);
-    el.style.transform = `translate(${dir * x * f}px, ${-10 * f}px) scale(${SC[a] * f})`;
+    el.style.transform = `translate(${dir * x * f}px, ${-8 * f}px) scale(${SC[a] * f})`;
     el.style.opacity = OP[a]; el.style.zIndex = 20 - a;
     el.classList.toggle("is-focus", off === 0);
     el.classList.toggle("is-far", a >= 2);
     el.classList.toggle("is-clickable", S.phase === "review" && off !== 0);
   });
 }
-addEventListener("resize", layout);
+addEventListener("resize", () => { layout(); $$(".ld", stage).forEach((ld) => { const i = +ld.closest(".card").dataset.i; fitScene(ld, ld.classList.contains("kv") ? KV_BOX : LD_BOX[STEPS[i].loader]); }); });
 function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview"); layout(); }
+/* A soft light follows the pointer across the card in focus. */
+stage.addEventListener("pointermove", (e) => {
+  const el = $(".card.is-focus", stage); if (!el) return;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+  el.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+});
 
-/* ---------- Header ---------- */
-function head(kicker, count, title, narr, working) {
+/* ---------- Header: the agent speaks by typing ---------- */
+let narrTok = 0;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function head(kicker, count, title, narr, working, lead = "") {
   document.body.classList.toggle("is-working", !!working);
   $("#kickerT").textContent = kicker; $("#kickerN").textContent = count;
   const h = $("#deckTitle");
   if (h.textContent !== title) { h.textContent = title; h.classList.remove("swap"); void h.offsetWidth; h.classList.add("swap"); }
-  narrate(narr);
+  narrate(narr, lead, working);
 }
-function narrate(html) {
-  const n = $("#narr"); if (n.innerHTML === html) return;
-  n.innerHTML = html; n.classList.remove("swap"); void n.offsetWidth; n.classList.add("swap");
+async function narrate(text, lead = "", caret = false) {
+  const n = $("#narr"), key = `${lead}|${text}|${caret}`;
+  if (n.dataset.k === key) return;
+  n.dataset.k = key;
+  const tok = ++narrTok, pre = lead ? `<b>${esc(lead)}</b> · ` : "", tail = caret ? `<span class="caret"></span>` : "";
+  if (RM || !text) { n.innerHTML = pre + esc(text) + tail; return; }
+  const blob = $("#headBlob"); blob.classList.add("speak");
+  for (let i = 0; i <= text.length; i += 2) {
+    if (tok !== narrTok) return;
+    n.innerHTML = `${pre}${esc(text.slice(0, i))}<span class="caret"></span>`;
+    await sleep(14);
+  }
+  if (tok !== narrTok) return;
+  n.innerHTML = pre + esc(text) + tail; blob.classList.remove("speak");
+}
+async function typeText(el, text, step = 2, ms = 16) {
+  if (RM) { el.textContent = text; return; }
+  for (let i = 0; i <= text.length; i += step) { el.textContent = text.slice(0, i); await sleep(ms); }
+  el.textContent = text;
+}
+/* Content builds in, piece by piece. */
+function materialize(root, base = 0) {
+  if (RM || !root) return;
+  [...root.children].forEach((c, k) => {
+    c.style.setProperty("--d", `${base + k * 70}ms`);
+    c.classList.remove("mz"); void c.offsetWidth; c.classList.add("mz");
+    setTimeout(() => c.classList.remove("mz"), 900 + base + k * 70);
+  });
+}
+/* A spark leaves the place where the user acted and lands in the agent. */
+function sendToAgent(from) {
+  if (RM || !from) return;
+  const a = from.getBoundingClientRect(), b = $("#headBlob").getBoundingClientRect();
+  const x0 = a.left + a.width / 2, y0 = a.top + a.height / 2, x1 = b.left + b.width / 2, y1 = b.top + b.height / 2;
+  const mx = (x0 + x1) / 2 + (x1 > x0 ? -90 : 90), my = Math.min(y0, y1) + (y0 - y1) * 0.25;
+  [0, 70, 140].forEach((delay, k) => {
+    const s = document.createElement("i"); s.className = "spark" + (k ? " tail" : ""); document.body.appendChild(s);
+    s.animate([
+      { transform: `translate(${x0}px, ${y0}px) scale(.4)`, opacity: 0 },
+      { transform: `translate(${x0}px, ${y0}px) scale(1)`, opacity: 1, offset: .08 },
+      { transform: `translate(${mx}px, ${my}px) scale(${1.1 - k * .25})`, opacity: 1, offset: .55 },
+      { transform: `translate(${x1}px, ${y1}px) scale(.5)`, opacity: .9 },
+    ], { duration: 950, delay, easing: "cubic-bezier(.65,0,.35,1)", fill: "both" }).onfinish = () => { s.remove(); if (!k) ripple($("#headBlob"), 2); };
+  });
+}
+function ripple(host, n = 1, gap = 320) {
+  if (RM || !host) return;
+  for (let k = 0; k < n; k++) {
+    const r = document.createElement("i"); r.className = "ripple"; host.appendChild(r);
+    r.animate([{ transform: "scale(.55)", opacity: .9 }, { transform: "scale(1.7)", opacity: 0 }], { duration: 1200, delay: k * gap, easing: "cubic-bezier(.16,1,.3,1)", fill: "both" }).onfinish = () => r.remove();
+  }
 }
 
 /* ---------- Phases ---------- */
@@ -971,7 +1059,7 @@ async function analyse(run) {
     const s = STEPS[i], el = card(i);
     S.active = i; S.cards[i].st = "analysing"; S.cards[i].step = 0;
     renderAnalyse(i); setStatus(i); el.classList.add("is-analysing");
-    head("Onboarding Agent · working", `${i + 1} of 5`, "Preparing your setup", "", true);
+    head("Onboarding Agent · working", `${i + 1} of 5`, "Preparing your setup", s.checks[0][0], true, s.title);
     layout();
     capStep(i, 1);
     await W(450); if (run !== S.runId) return;
@@ -979,10 +1067,12 @@ async function analyse(run) {
     capStep(i, s.checks.length); $$(".segs i", el).forEach((x) => { x.classList.add("on"); x.classList.remove("cur"); });
     await W(900); if (run !== S.runId) return;
     el.classList.remove("is-analysing"); el.classList.add("is-done-flash");
-    const ld = $(".ld", el); if (ld && !RM) await ld.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350, fill: "forwards" }).finished;
+    const ld = $(".ld", el); if (ld && !RM) await ld.animate([{ opacity: 1, filter: "blur(0)" }, { opacity: 0, filter: "blur(6px)" }], { duration: 380, fill: "forwards" }).finished;
     S.cards[i].st = "ready"; renderAnalyse(i); setStatus(i);
-    narrate(`<b>${esc(s.title)}</b> · ${esc(s.result)}`);
-    await W(1500); if (run !== S.runId) return;
+    const v = $(".res-a .v", el); if (v) typeText(v, s.result);
+    materialize($(".plan", el), 200);
+    narrate(s.result, s.title);
+    await W(1700); if (run !== S.runId) return;
     el.classList.remove("is-done-flash");
   }
   unlock(run);
@@ -990,27 +1080,102 @@ async function analyse(run) {
 async function unlock(run) {
   S.phase = "unlock"; setMode("overview");
   head("Onboarding Agent · done", "5 of 5 ready", "All five are ready for you", "Review them one by one. About two minutes if everything looks right.", false);
+  ripple($("#headBlob"), 2);
   await W(900); if (run !== S.runId) return;
-  for (let i = 0; i < 5; i++) { const el = card(i); el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100); await W(130); }
+  for (let i = 0; i < 5; i++) {
+    const el = card(i); el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
+    ripple($(".m-badge", el), 2, 220);
+    await W(150);
+  }
   await W(1700); if (run !== S.runId) return;
   startReview();
 }
 function startReview() {
   S.phase = "review"; S.reviewStart = Date.now();
   cards().forEach((el, i) => { el.classList.remove("is-analysing"); el.classList.add("is-review"); if (S.cards[i].st === "ready") S.cards[i].st = "review"; renderReview(i); setStatus(i); });
-  S.active = Math.max(0, firstOpen()); setMode("focus"); reviewHead();
+  S.mode = "focus"; document.body.classList.remove("mode-overview");
+  focusCard(Math.max(0, firstOpen()));
 }
 function firstOpen(from = 0) {
   for (let k = 0; k < 5; k++) { const i = (from + k) % 5; if (S.cards[i].st === "review") return i; }
   return -1;
 }
-function focusCard(i) { S.active = i; layout(); reviewHead(); }
+function focusCard(i) {
+  S.active = i; layout(); reviewHead();
+  const c = S.cards[i];
+  if (c.st === "review" && !c.seen) {
+    c.seen = true;
+    setTimeout(() => materialize($(".r-body", card(i)), 300), 0);
+    if (STEPS[i].key === "profile") setTimeout(fillProfile, RM ? 0 : 900);
+  }
+}
 function reviewHead() {
   const s = STEPS[S.active], c = S.cards[S.active];
+  if (STEPS[S.active].key === "profile" && c.st === "review" && !S.profileFilled) {
+    head("Onboarding Agent · filling", "", "Business profile", "Typing in what I found on DLT, GSTIN, MCA and your website.", true);
+    return;
+  }
   const left = S.cards.filter((x) => x.st === "review").length;
   const line = c.st === "review" ? (left === 1 ? "Last one. Accept it if it looks right, or open the details to change anything." : `Accept it if it looks right, or open the details to change anything. ${left - 1} more after this.`)
     : left ? `Already reviewed. ${left} left.` : "Everything is reviewed.";
   head("Your review", `${5 - left} of 5 done`, s.title, line, false);
+}
+
+/* The agent types the business profile into the card, field by field, the way it did in the product form. */
+async function typeInto(el, text, duration) {
+  if (RM) { el.value = text; return; }
+  try { el.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
+  const weights = Array.from(text, (ch, i) => 0.55 + Math.random() * 0.9 + (ch === " " ? 0.5 : 0) + (",.-/@".includes(ch) ? 0.7 : 0) + (i === 0 ? 1.2 : 0));
+  const sum = weights.reduce((x, y) => x + y, 0), budget = Math.max(260, duration - 220);
+  for (let i = 0; i < text.length; i++) {
+    el.value = text.slice(0, i + 1);
+    try { el.setSelectionRange(i + 1, i + 1); } catch (e) { /* ignore */ }
+    el.scrollLeft = el.scrollWidth;
+    await sleep(Math.max(12, (weights[i] / sum) * budget));
+  }
+  await sleep(200);
+  if (document.activeElement === el) el.blur();
+  el.scrollLeft = 0;
+}
+async function fillProfile() {
+  if (S.profileFilled || S.profileFilling) return;
+  const el = card(0); if (!el || S.cards[0].st !== "review") return;
+  S.profileFilling = true; const run = S.runId;
+  if (S.active === 0) document.body.classList.add("is-working");
+  for (const row of $$(".pf", el)) {
+    if (run !== S.runId || !row.isConnected) return;
+    const f = PROFILE.find((x) => x.k === row.dataset.k), inp = $(".pin", row);
+    row.classList.remove("is-waiting"); row.classList.add("is-filling");
+    if (S.active === 0) narrate(`Filling in ${f.label.toLowerCase()} from ${f.src}`, "", true);
+    await typeInto(inp, f.v, Math.min(1150, 260 + f.v.length * 26));
+    row.classList.remove("is-filling"); row.classList.add("is-filled");
+  }
+  if (run !== S.runId) return;
+  S.profileFilled = true; S.profileFilling = false;
+  const pa = $("#pAuth", el); if (pa) pa.disabled = false;
+  const st = $("[data-pstat]", el); if (st) typeText(st, "All 10 fields are filled. Check them, then submit for approval.");
+  ripple($("#headBlob"), 1);
+  if (S.active === 0 && S.phase === "review") reviewHead();
+}
+
+/* After submit, the product's verification scene plays in the card while the user carries on. */
+const KV_BOX = [10, 20, 570, 340];
+async function verifyProfile() {
+  const el = card(0), run = S.runId, ld = $(".kv", el); if (!ld) return;
+  const lines = ["Checking your business details", "Sending it to telecom operators for approval"];
+  const setCap = (n) => {
+    const t = $("[data-vline]", el); if (!t) return;
+    t.textContent = lines[n - 1]; $("[data-vn]", el).textContent = `${n} of 2`;
+    $$(".segs i", ld.parentElement).forEach((s, k) => { s.classList.toggle("on", k < n - 1); s.classList.toggle("cur", k === n - 1); });
+  };
+  await runScene(ld, "kycv", KV_BOX, run, setCap, ".chk-scroll{left:390px !important}", 24000);
+  if (run !== S.runId) return;
+  const c = S.cards[0]; c.st = "done"; c.at = now();
+  el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
+  renderReview(0); setStatus(0); ripple($(".stamp", el), 2);
+  toast("Business profile approved by 4 of 4 telecom operators");
+  if (S.phase === "review") reviewHead();
+  maybeFinale();
 }
 
 /* ---------- Review pane ---------- */
@@ -1023,17 +1188,19 @@ function whatIDid(i) {
 }
 function renderReview(i) {
   const el = card(i), box = $("[data-review]", el), c = S.cards[i], k = STEPS[i].key;
+  if (k === "profile" && c.st === "inreview" && $(".kv iframe", box)) return;
   if (c.st === "done" || c.st === "later" || c.st === "inreview") { box.innerHTML = doneFace(i); return; }
   let body = "", foot = "";
   const deepBtn = `<button class="btn" data-act="deep" data-i="${i}">${IC.expand}Details</button>`;
   if (k === "profile") {
-    const show = PROFILE.filter((f) => ["name", "pan", "type", "addr", "web"].includes(f.k));
+    const show = ["name", "pan", "cin", "gstin", "type", "web", "addr"].map((x) => PROFILE.find((f) => f.k === x));
+    const done = S.profileFilled;
     body = `<h3 class="r-h">HDFC Bank Limited, matched on 4 sources</h3>
-      <p class="r-p">All 10 fields are filled. Check them, then submit for approval.</p>
-      <dl class="facts">${show.map((f) => `<div class="fact"><dt>${esc(f.label)}</dt><dd title="${esc(f.v)}">${esc(f.v)}</dd><span class="src-tag">${esc(f.src)}</span></div>`).join("")}</dl>
-      <label class="check"><input type="checkbox" id="pAuth" data-act="pauth" ${S.profileAuth ? "checked" : ""}>I'm authorised to submit these details for HDFC Bank Limited.</label>
+      <p class="r-p" data-pstat>${done ? "All 10 fields are filled. Check them, then submit for approval." : "Filling in your business details…"}</p>
+      <div class="pform">${show.map((f) => `<div class="pf${f.k === "addr" ? " wide" : ""} ${done ? "is-filled" : "is-waiting"}" data-k="${f.k}"><label for="pc-${f.k}">${esc(f.label)}<span class="src-tag">${esc(f.src)}</span></label><input class="pin" id="pc-${f.k}" readonly tabindex="-1" value="${done ? esc(f.v) : ""}"></div>`).join("")}</div>
+      <label class="check"><input type="checkbox" id="pAuth" data-act="pauth" ${S.profileAuth ? "checked" : ""} ${done ? "" : "disabled"}>I'm authorised to submit these details for HDFC Bank Limited.</label>
       ${whatIDid(i)}`;
-    foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${S.profileAuth ? "" : "disabled"}>Submit for approval</button>`;
+    foot = `${deepBtn}<span class="more">+3 more fields in Details</span><button class="btn btn-p" data-act="accept" data-i="${i}" ${S.profileAuth && done ? "" : "disabled"}>Submit for approval</button>`;
   }
   if (k === "team") {
     const on = PEOPLE.filter((p) => p.on);
@@ -1080,8 +1247,10 @@ function doneFace(i) {
   let cls = "", h = "", p = "";
   if (c.st === "later") { cls = "later"; h = "Team invites saved for later"; p = "You can invite people any time from User and Roles. Nothing is blocked."; }
   else if (k === "profile") {
-    if (c.st === "inreview") { cls = "wait"; h = "Submitted for approval"; p = `<span class="verify"><span class="sp"></span>Verifying with telecom operators</span>`; }
-    else { h = "Business profile approved"; p = `Approved by 4 of 4 operators · ${c.at}`; }
+    if (c.st === "inreview") return `<div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div>
+      <div class="cap"><div class="cap-row"><span class="sp"></span><span class="t run" data-vline>Checking your business details</span><span class="n" data-vn>1 of 2</span></div><div class="segs"><i class="cur"></i><i></i></div></div>
+      <p class="kv-note">Submitted for approval. You can carry on; I'll keep checking in the background.</p>`;
+    h = "Business profile approved"; p = `Approved by 4 of 4 telecom operators · ${c.at}`;
   }
   else if (k === "team") { h = `${PEOPLE.filter((x) => x.on).length} invites sent`; p = `Sent by Ravi Menon · ${c.at}`; }
   else if (k === "brands") {
@@ -1100,10 +1269,11 @@ const brandsReady = () => S.cards[2].st === "done";
 function decide(i, kind) {
   const k = STEPS[i].key, c = S.cards[i], el = card(i);
   c.at = now();
+  sendToAgent($(kind === "later" ? '[data-act="later"]' : '[data-act="accept"]', el) || el);
   if (kind === "later") { c.st = "later"; toast("Team saved for later"); }
   else if (k === "profile") {
     c.st = "inreview"; toast("Business profile submitted");
-    setTimeout(() => { c.st = "done"; renderReview(i); setStatus(i); toast("Business profile approved by 4 of 4 operators"); if (S.phase === "review") reviewHead(); maybeFinale(); }, RM ? 0 : 6500);
+    setTimeout(verifyProfile, 60);
   }
   else if (k === "brands" && brandsChanged()) {
     c.st = "inreview"; toast("Brands sent for review");
@@ -1113,7 +1283,8 @@ function decide(i, kind) {
   if (k === "brands") renderReview(4);
   el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
   renderReview(i); setStatus(i); reviewHead();
-  setTimeout(() => { const nx = firstOpen(i + 1); if (nx >= 0) focusCard(nx); else maybeFinale(); }, RM ? 0 : 1200);
+  setTimeout(() => ripple($(".stamp", el), 2), 120);
+  setTimeout(() => { const nx = firstOpen(i + 1); if (nx >= 0) focusCard(nx); else maybeFinale(); }, RM ? 0 : (k === "profile" ? 2200 : 1300));
 }
 function maybeFinale() {
   if (S.phase !== "review") return;
@@ -1126,9 +1297,16 @@ function finale() {
   const took = S.reviewStart ? Math.round((Date.now() - S.reviewStart) / 1000) : 0;
   head("Setup complete", "5 of 5 done", "You're set to start migration", "Every step is done and your migration window is open.", false);
   setMode("overview");
-  const close = new Date(Date.now() + 30 * 864e5);
-  $("#closeDate").textContent = close.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-  $("#clock").innerHTML = `<div><b>30</b><span>days</span></div><div><b>00</b><span>hrs</span></div><div><b>00</b><span>mins</span></div>`;
+  const closeAt = Date.now() + 30 * 864e5;
+  $("#closeDate").textContent = new Date(closeAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+  const tickClock = () => {
+    const t = Math.max(0, Math.floor((closeAt - Date.now()) / 1000));
+    const parts = [[Math.floor(t / 86400), "days"], [Math.floor(t / 3600) % 24, "hrs"], [Math.floor(t / 60) % 60, "mins"], [t % 60, "secs"]];
+    $("#clock").innerHTML = parts.map(([v, l]) => `<div><b>${String(v).padStart(2, "0")}</b><span>${l}</span></div>`).join("");
+  };
+  tickClock(); clearInterval(S.clockT); S.clockT = setInterval(tickClock, 1000);
+  ripple($("#headBlob"), 3);
+  cards().forEach((el, i) => setTimeout(() => ripple($(".m-badge", el), 1), 500 + i * 140));
   $("#elapsed").textContent = took ? `You reviewed the whole setup in ${Math.floor(took / 60)} min ${took % 60} s.` : "";
 }
 $("#goMig").addEventListener("click", () => toast("Opening Consent Migration…"));
@@ -1163,7 +1341,9 @@ const deep = $("#deep");
 function openDeep(i) {
   deepI = i;
   const r = card(i).getBoundingClientRect();
+  if (STEPS[i].key === "profile") S.profileFilled = true;
   renderDeep(); deep.hidden = false;
+  materialize($(".deep-content .inner", deep), 260); materialize($(".deep-aside", deep), 200);
   if (!RM) deep.animate([{ clipPath: `inset(${r.top}px ${innerWidth - r.right}px ${innerHeight - r.bottom}px ${r.left}px round 22px)`, opacity: .6 }, { clipPath: "inset(0px 0px 0px 0px round 0px)", opacity: 1 }], { duration: 620, easing: "cubic-bezier(.2,.8,.2,1)" });
 }
 function closeDeep(then) {
@@ -1184,7 +1364,7 @@ function renderDeep() {
         <h4>What I did</h4><ol>${s.checks.map((x) => `<li><i>${IC.check}</i>${esc(x[1])}</li>`).join("")}</ol>
         <h4>Sources</h4><div style="display:flex;flex-wrap:wrap;gap:6px">${s.sources.map((x) => `<span class="src-tag">${esc(x)}</span>`).join("")}</div>
       </aside>
-      <div class="deep-content"><div class="inner deep-in">${main}</div></div>
+      <div class="deep-content"><div class="inner">${main}</div></div>
     </div>
     <div class="deep-foot"><span class="msg">${msg || ""}</span>${closed ? `<button class="btn btn-p" data-dact="close">Done</button>` : action}</div>`;
 }
@@ -1294,7 +1474,7 @@ deep.addEventListener("input", (e) => {
 });
 function rerenderDeep() {
   const sc = $(".deep-content", deep)?.scrollTop || 0;
-  renderDeep(); $(".deep-in", deep)?.classList.remove("deep-in");
+  renderDeep();
   const c = $(".deep-content", deep); if (c) c.scrollTop = sc;
 }
 addEventListener("keydown", (e) => { if (e.key === "Escape" && !deep.hidden) closeDeep(); });
@@ -1307,7 +1487,7 @@ function toast(msg) { const t = $("#toast"); t.innerHTML = `${IC.check}${esc(msg
 $("#protoBtn").addEventListener("click", () => { $("#protoMenu").hidden = !$("#protoMenu").hidden; });
 $("#protoMenu").addEventListener("click", (e) => { const j = e.target.closest("[data-jump]"); if (!j) return; $("#protoMenu").hidden = true; jump(j.dataset.jump); });
 function resetAll() {
-  S.runId++; S.cards = STEPS.map(() => ({ st: "queued", at: null, step: 0 })); S.active = 0; S.profileAuth = false; S.gtmTerms = false; S.reviewStart = 0;
+  S.runId++; S.cards = STEPS.map(() => ({ st: "queued", at: null, step: 0 })); S.active = 0; S.profileAuth = false; S.gtmTerms = false; S.reviewStart = 0; S.profileFilled = false; S.profileFilling = false; clearInterval(S.clockT);
   document.body.classList.remove("phase-finale", "is-working");
   $("#boot").hidden = true; $("#bootBlob").getAnimations().forEach((a) => a.cancel());
   if (!deep.hidden) { deep.hidden = true; deep.innerHTML = ""; }
@@ -1329,7 +1509,7 @@ function jump(where) {
   STEPS.forEach((s, i) => { S.cards[i].st = "ready"; renderAnalyse(i); });
   startReview();
   if (where === "finale") {
-    S.profileAuth = S.gtmTerms = true;
+    S.profileAuth = S.gtmTerms = S.profileFilled = true;
     S.cards.forEach((c, i) => { c.st = "done"; c.at = now(); renderReview(i); setStatus(i); });
     finale();
   }
