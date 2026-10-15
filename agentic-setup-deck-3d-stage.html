@@ -611,14 +611,16 @@ body.deep-open .closes{ opacity:0 !important; pointer-events:none; }
 @media (max-width:900px){ .tsplit{ grid-template-columns:1fr; } .trow,.thead{ grid-template-columns:22px 1fr 150px; } .trow > :nth-child(2),.trow > :nth-child(4),.trow > :nth-child(6),.thead > :nth-child(2),.thead > :nth-child(4),.thead > :nth-child(6){ display:none; } .addrow{ grid-template-columns:1fr 1fr; } .rolegrid,.bgrid{ grid-template-columns:1fr; } .hdr-org,.usr-meta{ display:none; } }
 
 /* ---------- ready: cards in a row above the ready message ---------- */
-.ringc{ position:absolute; left:50%; top:50%; width:560px; transform:translate(-50%,14px); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .9s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
-.ringc.on{ opacity:1; transform:translate(-50%,0); pointer-events:auto; }
+.ringc{ position:absolute; left:50%; top:50%; width:560px; transform:translate(-50%,14px); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .8s var(--ease),transform 1s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
+.ringc.on{ opacity:1; transform:translate(-50%,0); pointer-events:auto; transition-delay:.6s; } .ringcta.on{ transition-delay:1s; } .ringc{ transition-delay:0s; }
+.ringc.ringcta{ width:auto; gap:0; } .ringc:not(.on){ transition-duration:.22s,.3s; }
 .ringc .rk{ font:600 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--blue-d); }
 .ringc h2{ margin:0; font-size:28px; line-height:1.12; letter-spacing:-.025em; font-weight:650; color:var(--ink); }
 .ringc p{ margin:0; font-size:14px; line-height:1.5; color:var(--muted); max-width:460px; }
 .ringc .go{ margin-top:8px; height:46px; padding:0 22px; border:0; border-radius:99px; background:linear-gradient(180deg,#3f6ef6,#2554e6); color:#fff; font:600 14.5px/1 inherit; font-family:inherit; display:inline-flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 14px 28px -12px rgba(37,84,230,.75); transition:transform .25s var(--ease),box-shadow .25s; }
 .ringc .go:hover{ transform:translateY(-2px); box-shadow:0 18px 32px -12px rgba(37,84,230,.85); } .ringc .go svg{ width:16px; height:16px; }
 .ringc .ct{ display:flex; gap:6px; margin-top:2px; } .ringc .ct i{ width:8px; height:8px; border-radius:50%; background:#16a34a; }
+body.mode-ring .card,body.v3b .card{ transition-timing-function:cubic-bezier(.22,1,.36,1); }
 body.mode-ring .card .mini{ transform:rotate(calc(var(--rz,0deg) * -1)); } .card .mini{ transition:transform .9s var(--ease); }
 body.mode-ring .deck-head{ opacity:0; pointer-events:none; } .deck-head{ transition:opacity .5s; }
 body.v3a .ringc h2{ color:#fff; } body.v3a .ringc p{ color:#a9bbdc; } body.v3a .ringc .rk{ color:#8fb4ff; }
@@ -1183,19 +1185,25 @@ function layout() {
     return;
   }
   if (S.mode === "ring") {
-    const so = 0.6, g = 18, below = 190;
-    let f = Math.min(1.1, (r.height - 40 - below) / (CH * so), r.width / (5 * CW * so + 4 * g + 40));
+    const so = 0.6, g = 18, topM = 28, topH = 124, gap1 = 34, gap2 = 30, ctaH = 48, botM = 40;
+    const avail = r.height - topM - topH - gap1 - gap2 - ctaH - botM;
+    let f = Math.min(1.1, avail / (CH * so), r.width / (5 * CW * so + 4 * g + 40));
     f = Math.max(f, 0.2);
-    const ch = CH * so * f, yOff = -(below / 2) - 30;
+    const ch = CH * so * f, cardTop = topM + topH + gap1, yOff = cardTop + ch / 2 - r.height / 2;
+    window.__ringOut = 1;
     all.forEach((el, i) => {
       size(el, CW, CH);
+      el.style.transitionDelay = `${Math.abs(i - 2) * 70}ms`;
       el.style.transform = `translate3d(${(i - 2) * (CW * so + g) * f}px, ${yOff}px, ${-Math.abs(i - 2) * 30}px) rotateY(${(2 - i) * 7}deg) rotateZ(0deg) scale(${so * f})`;
       el.style.setProperty("--o", 1); el.style.setProperty("--rz", "0deg"); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus", "is-right");
       el.classList.toggle("is-clickable", false);
     });
-    const rc = $("#ringc"); if (rc) rc.style.top = `${r.height / 2 + yOff + ch / 2 + 30}px`;
+    const rc = $("#ringc"), cta = $("#ringcta");
+    if (rc) rc.style.top = `${topM}px`;
+    if (cta) cta.style.top = `${cardTop + ch + gap2}px`;
     return;
   }
+  if (window.__ringOut) { window.__ringOut = 0; all.forEach((el, i) => { el.style.transitionDelay = `${Math.abs(i - S.active) * 80}ms`; }); setTimeout(() => all.forEach((el) => { el.style.transitionDelay = ""; }), 1600); }
   const [aw, ah] = dims(S.active);
   const AN = S.phase === "analyse", TH = 36, GAP = 14 + (AN ? 92 : 0), ZS = 150, SC = [1, .68, .54, .44, .38], OP = [1, .78, .42, .18, .06];
   let f = Math.max(0.42, Math.min(1.06, (r.height - 90) / ah, (r.width - (AN ? 250 : 48)) / aw));
@@ -1315,18 +1323,18 @@ async function analyse(run) {
 }
 async function unlock(run) {
   S.phase = "unlock";
-  if (!$("#ringc")) stage.insertAdjacentHTML("beforeend", `<div class="ringc" id="ringc" role="group" aria-label="Ready for review"><span class="rk">5 of 5 ready</span><h2>Your five steps are ready for review</h2><p>The agent prepared everything. Look it over, change anything, then approve each step.</p><button class="go" id="ringGo" type="button">Start review<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
+  if (!$("#ringc")) stage.insertAdjacentHTML("beforeend", `<div class="ringc" id="ringc" role="group" aria-label="Ready for review"><span class="rk">5 of 5 ready</span><h2>Your five steps are ready for review</h2><p>The agent prepared everything. Look it over, change anything, then approve each step.</p></div><div class="ringc ringcta" id="ringcta"><button class="go" id="ringGo" type="button">Start review<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
   setMode("ring");
   head("Onboarding Agent · done", "5 of 5 ready", "All five are ready for you", "Review them one by one. About two minutes if everything looks right.", false);
   ripple($("#headBlob"), 2);
-  await W(RM ? 0 : 1100); if (run !== S.runId) return;
-  $("#ringc").classList.add("on"); $("#ringGo").focus({ preventScroll: true });
+  await W(RM ? 0 : 700); if (run !== S.runId) return;
+  setTimeout(() => { $("#ringc").classList.add("on"); $("#ringcta").classList.add("on"); }, RM ? 0 : 500); setTimeout(() => $("#ringGo").focus({ preventScroll: true }), RM ? 0 : 1500);
   for (let i = 0; i < 5; i++) {
     const el = card(i); el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
     await W(150);
   }
 }
-if (!window.__ringBound) { window.__ringBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#ringGo") || S.phase !== "unlock") return; $("#ringc").classList.remove("on"); startReview(); }); }
+if (!window.__ringBound) { window.__ringBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#ringGo") || S.phase !== "unlock") return; $("#ringc").classList.remove("on"); $("#ringcta").classList.remove("on"); startReview(); }); }
 function startReview() {
   S.phase = "review"; S.reviewStart = Date.now();
   cards().forEach((el, i) => { el.classList.remove("is-analysing"); el.classList.add("is-review"); if (S.cards[i].st === "ready") S.cards[i].st = "review"; renderReview(i); setStatus(i); });
