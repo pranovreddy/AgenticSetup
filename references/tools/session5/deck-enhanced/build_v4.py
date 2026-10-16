@@ -25,6 +25,8 @@ rep('.replace("</head>", `<style>.copy{visibility:hidden !important}','.replace(
 
 rep('const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)));','const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600);')
 rep('return LOADER_DOC.replace("__AG_ID__", id)','return LOADER_DOC.replace("(now - s) / ms", "(now - s) / (ms / 1.7)").replace("__AG_ID__", id)')
+rep('function resetAll() {\n  S.runId++;','function resetAll() {\n  document.body.classList.remove("all-closed"); { const r0 = document.getElementById("readyL"); if (r0) r0.remove(); const pc = document.getElementById("pcap"); if (pc) pc.remove(); }\n  S.runId++;')
+rep('function startReview() {\n','function startReview() {\n  document.body.classList.remove("all-closed"); { const r0 = document.getElementById("readyL"); if (r0) { r0.classList.remove("on"); setTimeout(() => r0.remove(), 600); } }\n')
 # 3. closed cards + left title instead of the ready row
 a=s.index("async function unlock(run) {")
 b=s.index("function startReview() {")
@@ -52,7 +54,7 @@ s=s[:a]+NEW+s[b:]
 
 # layout: closed cards are smaller and sit right of the left title
 rep("function dims(i) {\n","function dims(i) {\n  if (document.body.classList.contains(\"all-closed\")) return [CW + 40, CH + 30];\n")
-rep("translate3d(${dir * x * f}px, ${-4 * f}px, ${z}px)","translate3d(${dir * x * f + (document.body.classList.contains(\"all-closed\") ? r.width * .12 : 0)}px, ${-4 * f}px, ${z}px)")
+rep("translate3d(${dir * x * f}px, ${-4 * f}px, ${z}px)","translate3d(${dir * x * f + (document.body.classList.contains(\"all-closed\") ? Math.max(r.width * .16, 170) : 0)}px, ${-4 * f}px, ${z}px)")
 
 # face carries the result in plain words
 rep('<div class="cf-mid"><h3>${esc(s.title)}</h3><span class="cf-st','<div class="cf-mid"><h3>${esc(s.title)}</h3>${c.st === "ready" || c.st === "review" || c.st === "done" ? `<p class="cf-res">${esc(s.mini)}</p>` : ""}<span class="cf-st')
@@ -61,12 +63,12 @@ css=r'''
 /* ---- cards variant: per-card processing, closed cards with a left title ---- */
 body.v3b.all-closed .card.is-focus .card-in{ transform:rotateY(180deg); }
 body.v3b.all-closed .card.is-focus .cardf{ transform:rotateY(360deg); }
-body.all-closed .deck-head{ min-height:0!important; height:0!important; padding:0!important; } body.all-closed .ah{ display:none!important; }
+body.all-closed .deck-head{ min-height:0!important; height:0!important; padding:0!important; } body.all-closed .ah,body:has(#readyL.on) .ah{ display:none!important; } body:has(#readyL.on) .deck-head{ min-height:0!important; height:0!important; padding:0!important; }
 body.v3c.all-closed .stage,body.v3c.all-closed .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
 .cf-res{ margin:-2px 0 14px; font-size:15px; opacity:.92; letter-spacing:-.005em; }
 .pcap{ position:fixed; left:50%; top:20px; z-index:45; transform:translate(-50%,-10px); opacity:0; display:flex; align-items:center; gap:10px; height:42px; padding:0 20px 0 16px; border-radius:99px; background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(240,244,252,.84)); box-shadow:0 0 0 1px rgba(170,185,215,.7) inset,0 20px 34px -22px rgba(30,60,140,.5); font-size:14px; font-weight:600; color:var(--ink); letter-spacing:-.01em; transition:opacity .5s var(--ease),transform .6s var(--ease); }
 .pcap.on{ opacity:1; transform:translate(-50%,0); } .pcap i{ width:9px; height:9px; border-radius:50%; background:#2f63ff; box-shadow:0 0 0 4px rgba(47,99,255,.18),0 0 12px rgba(47,99,255,.8); animation:beam 1.2s ease-in-out infinite; }
-.rdl{ position:absolute; left:2%; top:50%; width:min(380px,30%); z-index:60; transform:translate(-14px,-50%); opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .9s var(--ease); }
+.rdl{ position:absolute; left:116px; top:50%; width:min(360px,30%); z-index:60; transform:translate(-14px,-50%); opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .9s var(--ease); }
 .rdl.on{ opacity:1; transform:translate(0,-50%); pointer-events:auto; }
 .rdl-k{ display:inline-flex; align-items:center; gap:8px; font:600 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#2f63ff; } .rdl-k i{ width:8px; height:8px; border-radius:50%; background:#16a34a; box-shadow:0 0 0 4px rgba(22,163,74,.16); }
 .rdl h2{ margin:14px 0 10px; font-size:36px; line-height:1.08; letter-spacing:-.03em; font-weight:650; color:var(--ink); }
@@ -75,6 +77,7 @@ body.v3c.all-closed .stage,body.v3c.all-closed .stage{ -webkit-mask-image:none!i
 .rdl-l li{ display:flex; align-items:center; gap:12px; height:46px; padding:0 14px 0 8px; border-radius:16px; background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(240,244,252,.78)); box-shadow:0 0 0 1px rgba(170,185,215,.6) inset; }
 .rdl-l li span{ width:30px; height:30px; border-radius:10px; display:grid; place-items:center; color:#2f63ff; background:linear-gradient(160deg,#e3ebff,#f6f8ff); } .rdl-l li span svg{ width:16px; height:16px; }
 .rdl-l li b{ font-size:14px; font-weight:600; color:var(--ink); } .rdl-l li em{ margin-left:auto; font-style:normal; font-size:12.5px; color:#15803d; font-weight:600; }
+@media (max-height:760px){ .rdl-l{ display:none; } .rdl h2{ font-size:30px; } .rdl p{ margin-bottom:16px; } }
 .rdl-go{ height:50px; padding:0 26px; border:0; border-radius:99px; background:linear-gradient(180deg,#3f6ef6,#2554e6); color:#fff; font:600 15px/1 var(--font); display:inline-flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 16px 30px -12px rgba(37,84,230,.8); transition:transform .25s var(--ease),box-shadow .25s; } .rdl-go:hover{ transform:translateY(-2px); box-shadow:0 20px 34px -12px rgba(37,84,230,.9); } .rdl-go svg{ width:17px; height:17px; }
 /* what was done: a clearer result block */
 .res-a{ padding:18px 20px!important; border-radius:18px!important; background:linear-gradient(135deg,rgba(51,102,240,.1),rgba(46,182,245,.06))!important; }
