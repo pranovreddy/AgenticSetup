@@ -611,7 +611,7 @@ body.deep-open .closes{ opacity:0 !important; pointer-events:none; }
 @media (max-width:900px){ .tsplit{ grid-template-columns:1fr; } .trow,.thead{ grid-template-columns:22px 1fr 150px; } .trow > :nth-child(2),.trow > :nth-child(4),.trow > :nth-child(6),.thead > :nth-child(2),.thead > :nth-child(4),.thead > :nth-child(6){ display:none; } .addrow{ grid-template-columns:1fr 1fr; } .rolegrid,.bgrid{ grid-template-columns:1fr; } .hdr-org,.usr-meta{ display:none; } }
 
 /* gate: no box around the policies, content sits on the page */
-.gate-card{ background:transparent!important; border:0!important; box-shadow:none!important; }
+.gate-card{ height:100%!important; width:min(1200px,100%)!important; background:transparent!important; border:0!important; box-shadow:none!important; }
 .gate-head{ border-bottom:1px solid rgba(160,185,230,.45); }
 .gate-sum{ background:none!important; border-right:1px solid rgba(160,185,230,.45); }
 .doc-wrap{ background:transparent!important; border:0!important; box-shadow:none!important; }

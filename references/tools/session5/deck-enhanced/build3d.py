@@ -3,7 +3,7 @@ base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
 /* gate: no box around the policies, content sits on the page */
-.gate-card{ background:transparent!important; border:0!important; box-shadow:none!important; }
+.gate-card{ height:100%!important; width:min(1200px,100%)!important; background:transparent!important; border:0!important; box-shadow:none!important; }
 .gate-head{ border-bottom:1px solid rgba(160,185,230,.45); }
 .gate-sum{ background:none!important; border-right:1px solid rgba(160,185,230,.45); }
 .doc-wrap{ background:transparent!important; border:0!important; box-shadow:none!important; }
