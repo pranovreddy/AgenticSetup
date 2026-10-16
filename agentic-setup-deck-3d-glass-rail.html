@@ -790,6 +790,42 @@ body.v3b:not(.mode-overview) .card:not(.is-focus) .cf-mid{ display:none; }
 body.v3b.mode-overview .cf-v{ display:none!important; }
 .card.is-far .cf-v{ opacity:.8; }
 
+.sg .sg-ic{ width:76px; height:76px; } .sg .sg-ic svg{ width:30px; height:30px; }
+.sg .sg-src{ margin-top:-38px; gap:8px; }
+.sg-say{ top:calc(var(--by) + 206px)!important; }
+
+.sg .sg-orb{ width:150px; height:150px; margin:-75px 0 0 -75px; } .sg .fx-core{ inset:46px; }
+.sg .sg-ic u svg{ width:11px; height:11px; }
+.sg-say{ top:calc(var(--by) + 192px)!important; }
+
+/* ---------- v7: characterful sources, cards and clean connections ---------- */
+.sg .sg-src{ width:124px; margin-left:-62px; margin-top:-42px; gap:10px; transform:scale(.86); } .sg .sg-src.is-on{ transform:none; }
+.sg .sg-src b{ font:600 13px/1.2 var(--font); color:#4d5b78; }
+.sg .sg-src.is-active b,.sg .sg-src.is-done b{ color:var(--ink); }
+.sg .sg-ic{ width:84px; height:84px; color:var(--sc); background:radial-gradient(circle at 32% 26%,#fff 0,color-mix(in srgb,var(--sc) 14%,#fff) 72%); box-shadow:0 0 0 1px color-mix(in srgb,var(--sc) 32%,#fff) inset,0 0 0 6px color-mix(in srgb,var(--sc) 9%,transparent),0 20px 32px -16px color-mix(in srgb,var(--sc) 70%,#1e3a8a); }
+.sg .sg-ic svg{ width:32px; height:32px; }
+.sg .sg-src.is-active .sg-ic{ transform:scale(1.08); box-shadow:0 0 0 1.5px var(--sc) inset,0 0 0 9px color-mix(in srgb,var(--sc) 16%,transparent),0 24px 38px -14px var(--sc); }
+.sg .sg-src.is-active .sg-ic::before{ content:""; position:absolute; inset:-9px; border-radius:50%; border:2px solid transparent; border-top-color:var(--sc); border-right-color:color-mix(in srgb,var(--sc) 35%,transparent); animation:fxspin .9s linear infinite; }
+.sg .sg-src.is-done .sg-ic{ box-shadow:0 0 0 1px color-mix(in srgb,var(--sc) 40%,#fff) inset,0 0 0 6px color-mix(in srgb,var(--sc) 12%,transparent),0 18px 28px -16px color-mix(in srgb,var(--sc) 70%,#1e3a8a); }
+.sg-cb{ fill:none; stroke:rgba(79,132,255,.26); stroke-width:2.2; stroke-linecap:round; transition:stroke .4s,stroke-width .4s; }
+.sg-port{ fill:#fff; stroke:rgba(79,132,255,.7); stroke-width:1.6; }
+.sg-pl{ fill:none; stroke:#4f84ff; stroke-width:3; stroke-linecap:round; opacity:0; filter:drop-shadow(0 0 6px rgba(79,132,255,.95)); }
+.sg-cn.is-hot .sg-cb{ stroke:rgba(79,132,255,.5); stroke-width:3; } .sg-cn.is-hot .sg-port{ fill:#4f84ff; }
+.sg-ln,.sg-lane{ display:none; }
+.sg-gd{ display:none; }
+/* cards: accent colour, bigger icon, source dots */
+.card[data-i="0"]{ --ac:#3b6bf5; } .card[data-i="1"]{ --ac:#8b5cf6; } .card[data-i="2"]{ --ac:#f59e0b; } .card[data-i="3"]{ --ac:#10b981; } .card[data-i="4"]{ --ac:#ec4899; }
+body.mode-ingest .card-in{ background:linear-gradient(180deg,#fff 38%,color-mix(in srgb,var(--ac) 11%,#fff) 100%)!important; box-shadow:0 0 0 1px color-mix(in srgb,var(--ac) 18%,#fff) inset,0 30px 50px -28px color-mix(in srgb,var(--ac) 55%,#1e3a8a)!important; }
+body.mode-ingest .mini::before{ content:""; position:absolute; top:0; left:22%; right:22%; height:6px; border-radius:0 0 8px 8px; background:var(--ac); box-shadow:0 6px 22px color-mix(in srgb,var(--ac) 70%,transparent); }
+body.mode-ingest .mini .m-ic{ width:124px; height:124px; border-radius:38px; background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 22%,#fff),color-mix(in srgb,var(--ac) 8%,#fff)); color:var(--ac); box-shadow:0 0 0 1px color-mix(in srgb,var(--ac) 24%,#fff) inset,0 18px 30px -18px var(--ac); }
+body.mode-ingest .mini .m-ic svg{ width:56px; height:56px; }
+body.mode-ingest .mini .m-t{ font-size:36px; }
+body.mode-ingest .mini .m-s{ font-size:22px; }
+body.mode-ingest .mini .ig-pr{ display:none; }
+.mini .ig-dots{ display:none; gap:10px; margin-top:6px; } body.mode-ingest .mini .ig-dots{ display:flex; }
+.mini .ig-dots i{ width:22px; height:22px; border-radius:50%; background:color-mix(in srgb,var(--ac) 14%,#fff); box-shadow:0 0 0 2px color-mix(in srgb,var(--ac) 30%,#fff) inset; transition:background .5s,box-shadow .5s,transform .5s var(--ease); }
+.mini .ig-dots i.on{ background:var(--ac); box-shadow:0 0 0 2px var(--ac) inset,0 0 14px color-mix(in srgb,var(--ac) 75%,transparent); transform:scale(1.08); }
+
 /* the steps pill belongs to the review stage only */
 body.v3c .rail3c{ opacity:0!important; pointer-events:none!important; }
 body.v3c.ph-review .rail3c{ opacity:1!important; pointer-events:auto!important; }
@@ -1447,9 +1483,9 @@ function layout() {
   }
   if (S.mode === "ingest") {
     const W = r.width, H = r.height;
-    const f = Math.max(.3, Math.min(.56, (H * .965 - 412) / (1.13 * CH), (W * .92) / (4 * CW * 1.12 + CW)));
-    const cwid = CW * f, chei = CH * f, step = Math.min(cwid * 1.12, (W * .92 - cwid) / 4), amp = chei * .13;
-    const by = H * .035 + chei + amp + 206, sgEl = $("#sg");
+    const f = Math.max(.3, Math.min(.58, (H * .965 - 422) / (1.16 * CH), (W * .9) / (4 * CW * .98 + CW)));
+    const cwid = CW * f, chei = CH * f, step = Math.min(cwid * .98, (W * .9 - cwid) / 4), amp = chei * .16;
+    const by = H * .035 + chei + amp + 184, sgEl = $("#sg");
     if (sgEl) sgEl.style.setProperty("--by", `${by}px`);
     window.__ringOut = 1;
     all.forEach((el, i) => {
@@ -1457,7 +1493,7 @@ function layout() {
       size(el, CW, CH);
       el.style.transitionDelay = `${Math.abs(i - 2) * 80}ms`;
       const y = H * .035 + chei / 2 + (1 - t * t) * amp - H / 2;
-      el.style.transform = `translate3d(${(i - 2) * step}px, ${y}px, ${(1 - Math.abs(t)) * -30}px) rotateY(${-t * 16}deg) rotateZ(${t * 7}deg) scale(${f})`;
+      el.style.transform = `translate3d(${(i - 2) * step}px, ${y}px, ${(1 - Math.abs(t)) * -30}px) rotateY(${-t * 22}deg) rotateZ(${t * 9}deg) scale(${f})`;
       el.style.setProperty("--o", 1); el.style.setProperty("--rz", "0deg"); el.style.opacity = 1; el.style.zIndex = 10 - Math.abs(i - 2); el.classList.remove("is-far", "is-focus", "is-right");
       el.classList.toggle("is-clickable", false);
     });
@@ -2331,22 +2367,24 @@ function fxSphere(cv, speed, ok, pal) {
 
 /* ---------- one scene for all five steps (Rail): cards on an arc above, the agent on its podium, all sources in one tray ---------- */
 const IG_SRC = [
-  { k: "dlt", name: "DLT registration", ico: "db", feeds: [0, 1, 3, 4] },
-  { k: "gstin", name: "GSTIN", ico: "doc", feeds: [0] },
-  { k: "mca", name: "MCA", ico: "doc", feeds: [0] },
-  { k: "web", name: "Company website", ico: "globe", feeds: [0] },
-  { k: "rates", name: "Partner rate cards", ico: "tag", feeds: [2], sub: "4 partners" },
-  { k: "tpl", name: "DLT templates", ico: "doc", feeds: [4], sub: "100 templates" },
+  { k: "dlt", name: "DLT registration", ico: "db", ac: "#6366f1", feeds: [0, 1, 3, 4] },
+  { k: "gstin", name: "GSTIN", ico: "doc", ac: "#f59e0b", feeds: [0] },
+  { k: "mca", name: "MCA", ico: "doc", ac: "#10b981", feeds: [0] },
+  { k: "web", name: "Company website", ico: "globe", ac: "#0ea5e9", feeds: [0] },
+  { k: "rates", name: "Partner rate cards", ico: "tag", ac: "#8b5cf6", feeds: [2], sub: "4 partners" },
+  { k: "tpl", name: "DLT templates", ico: "doc", ac: "#ec4899", feeds: [4], sub: "100 templates" },
 ];
 const IG_NEED = [4, 1, 1, 1, 2];
-function igEnsure(el) {
+function igEnsure(el, i) {
   const m = $(".mini", el); if (!m) return;
   if (!$(".ig-pr", m)) m.insertAdjacentHTML("beforeend", '<div class="ig-pr"><i></i></div>');
+  const old = $(".ig-dots", m); if (old) old.remove();
+  m.insertAdjacentHTML("beforeend", `<div class="ig-dots">${Array.from({ length: IG_NEED[i] }, () => "<i></i>").join("")}</div>`);
 }
 async function analyseAll(run) {
   S.phase = "analyse"; S.active = 0;
   const cs = cards();
-  cs.forEach((el, i) => { S.cards[i].st = "analysing"; S.cards[i].step = 0; el.classList.add("is-analysing"); igEnsure(el); setStatus(i); $("[data-mini]", el).textContent = "Waiting for sources"; $(".ig-pr i", el).style.transform = "scaleX(0)"; });
+  cs.forEach((el, i) => { S.cards[i].st = "analysing"; S.cards[i].step = 0; el.classList.add("is-analysing"); igEnsure(el, i); setStatus(i); $("[data-mini]", el).textContent = "Waiting for sources"; $(".ig-pr i", el).style.transform = "scaleX(0)"; });
   const old = $("#sg"); if (old) old.remove();
   stage.insertAdjacentHTML("beforeend", `<div class="sg" id="sg"><span class="sg-beam"></span><svg class="sg-svg" data-svg></svg>
     <div class="sg-pod" data-pod></div><div class="fx-orb sg-orb" data-orb><span class="sg-r4"></span><span class="sg-r3"></span><span class="sg-r2"></span><span class="sg-r1"></span><canvas></canvas><span class="fx-core">${AI_MARK}</span></div>
@@ -2355,6 +2393,7 @@ async function analyseAll(run) {
   setMode("ingest");
   await W(560); if (run !== S.runId) return;
   layout();
+  await W(1500); if (run !== S.runId) return;
   const sg = $("#sg"), svg = $("[data-svg]", sg), orb = $("[data-orb]", sg), pod = $("[data-pod]", sg), srcBox = $("[data-srcs]", sg), say = $("[data-say]", sg), kick = $("[data-kick]", sg), line2 = $("[data-line2]", sg);
   const ok = () => run === S.runId && sg.isConnected;
   const speed = { v: .7 };
@@ -2367,10 +2406,14 @@ async function analyseAll(run) {
       say.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 420, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" });
     };
   };
-  const setCard = (i, text, p) => { const el = cs[i]; $("[data-mini]", el).textContent = text; $(".ig-pr i", el).style.transform = `scaleX(${p})`; };
+  const dotsOf = (i) => $$(".ig-dots i", cs[i]);
+  const setCard = (i, text, p, nDots) => {
+    const el = cs[i]; $("[data-mini]", el).textContent = text; $(".ig-pr i", el).style.transform = `scaleX(${p})`;
+    if (nDots != null) dotsOf(i).forEach((d, j) => d.classList.toggle("on", j < nDots));
+  };
   const finishCard = (i) => {
     S.cards[i].st = "ready"; S.cards[i].at = now(); setStatus(i); renderAnalyse(i);
-    $(".ig-pr i", cs[i]).style.transform = "scaleX(1)"; cs[i].classList.add("is-done-flash"); setTimeout(() => cs[i].classList.remove("is-done-flash"), 1100);
+    $(".ig-pr i", cs[i]).style.transform = "scaleX(1)"; dotsOf(i).forEach((d) => d.classList.add("on")); cs[i].classList.add("is-done-flash"); setTimeout(() => cs[i].classList.remove("is-done-flash"), 1100);
   };
   const N = IG_SRC.length, got = [0, 0, 0, 0, 0];
   if (RM) { STEPS.forEach((_, i) => finishCard(i)); speak("Ready for review", "All five steps are prepared"); sg.classList.add("is-in"); await W(0); sg.remove(); unlock(run); return; }
@@ -2379,47 +2422,46 @@ async function analyseAll(run) {
   const rel = (el) => { const r = el.getBoundingClientRect(); return { x: r.left - st0.left, y: r.top - st0.top, w: r.width, h: r.height }; };
   svg.setAttribute("viewBox", `0 0 ${st0.width} ${st0.height}`); svg.setAttribute("width", st0.width); svg.setAttribute("height", st0.height);
   const ob = rel(orb), ox = ob.x + ob.w / 2, oy = ob.y + ob.h / 2, pb = rel(pod), px = pb.x + pb.w / 2, py = pb.y + pb.h / 2;
-  /* sources travel along two belts, one each side of the agent, and are read one by one as they reach it */
-  const RIM = 104, SLOT0 = 168, SLOTD = 138;
-  const laneOf = { L: [], R: [] };
+  /* six source nodes in a tight arc around the agent; they stay where they are */
+  const RIM = 91, NR = 38, offs = [[-190, -114], [-262, 0], [-190, 114]];
   const items = IG_SRC.map((src, k) => {
-    const left = k < 3, slot = k % 3, el = document.createElement("div"); el.className = `sg-src ${left ? "is-l" : "is-r"}`;
-    el.style.top = `${oy}px`;
+    const left = k < 3, row = k % 3, dx = offs[row][0], dy = offs[row][1];
+    const x = ox + (left ? dx : -dx), y = oy + dy;
+    const el = document.createElement("div"); el.className = `sg-src ${left ? "is-l" : "is-r"}`;
+    el.style.left = `${x}px`; el.style.top = `${y}px`; el.style.setProperty("--sc", src.ac);
     el.innerHTML = `<i class="sg-ic">${FX_ICO[src.ico]}<u>${IC.check}</u></i><b>${esc(src.name)}</b>`;
     srcBox.appendChild(el);
-    const it = { src, el, left, slot, x: 0, y: oy };
-    laneOf[left ? "L" : "R"].push(it);
-    return it;
+    return { src, el, left, x, y, row };
   });
-  const place = (it) => { it.x = ox + (it.left ? -1 : 1) * (SLOT0 + it.slot * SLOTD); it.el.style.left = `${it.x}px`; };
-  items.forEach(place);
   const svgNS = "http://www.w3.org/2000/svg";
-  const curve = (x1, y1, x2, y2, bend = .5, b2 = bend) => { const dy = y2 - y1; return `M${x1} ${y1} C ${x1} ${y1 + dy * bend}, ${x2} ${y2 - dy * b2}, ${x2} ${y2}`; };
   const mk = (cls, d, parent = svg) => { const p = document.createElementNS(svgNS, "path"); p.setAttribute("d", d); p.setAttribute("class", cls); parent.appendChild(p); return p; };
-  const cardBot = (i) => { const r = rel(cs[i]); return [r.x + r.w / 2, r.y + r.h - 4]; };
-  /* arcs behind the cards */
+  const curve = (x1, y1, x2, y2, bend = .5, b2 = bend) => { const dy = y2 - y1; return `M${x1} ${y1} C ${x1} ${y1 + dy * bend}, ${x2} ${y2 - dy * b2}, ${x2} ${y2}`; };
+  const hcurve = (x1, y1, x2, y2) => { const dx = x2 - x1; return `M${x1} ${y1} C ${x1 + dx * .6} ${y1}, ${x2 - dx * .45} ${y2}, ${x2} ${y2}`; };
+  const cardBot = (i) => { const r = rel(cs[i]); return [r.x + r.w / 2, r.y + r.h - 3]; };
+  /* faint arcs behind the cards */
   [1, 2].forEach((n) => { const cr = rel(cs[2]); const R = Math.max(120, oy - cr.y - cr.h * .55) + n * 70; const a2 = mk("sg-arc", `M${ox - R} ${oy - 20} A ${R} ${R} 0 0 1 ${ox + R} ${oy - 20}`); a2.style.opacity = 0; a2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1400, delay: 300 + n * 200, fill: "forwards" }); });
-  /* two dashed belts running in from the edges, always moving towards the agent */
-  const lanes = ["L", "R"].map((side) => {
-    const sgn = side === "L" ? 1 : -1, far = side === "L" ? 16 : st0.width - 16, g = document.createElementNS(svgNS, "g"); g.setAttribute("class", "sg-rb"); svg.appendChild(g);
-    const d = `M${far} ${oy} L${ox - sgn * RIM} ${oy}`, lane = mk("sg-lane", d, g); lane.style.opacity = 0;
-    return { g, lane, d, side };
-  });
-  const guideOut = STEPS.map((_, i) => { const [x, y] = cardBot(i); const d = curve(ox, oy - 68, x, y, .92, .3); const p = mk("sg-gd", d); p.style.opacity = 0; return p; });
-  const bundle = (x1, y1, x2, y2, dur, bb = [.5, .5]) => {
-    const g = document.createElementNS(svgNS, "g"); svg.appendChild(g);
-    const defs = [["sg-glow", 0, 1], ["sg-th", 0, 1], ["sg-st", -.12, .55], ["sg-st", .12, .55]];
-    const out = defs.map(([cls, off, op]) => { const d = curve(x1, y1, x2, y2, bb[0] + off, bb[1] - off), p = document.createElementNS(svgNS, "path"); p.setAttribute("d", d); p.setAttribute("class", cls); g.appendChild(p); const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p.animate([{ strokeDashoffset: L, opacity: 0 }, { opacity: op, offset: .25 }, { strokeDashoffset: 0, opacity: op }], { duration: dur, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }); return d; });
-    return { g, d: out[1], ds: out };
+  /* connections: one clean curve per link with a port at each end; light travels along them as short pulses */
+  const link = (d, x1, y1, x2, y2, startPort = true) => {
+    const g = document.createElementNS(svgNS, "g"); g.setAttribute("class", "sg-cn"); svg.appendChild(g);
+    const base = mk("sg-cb", d, g), L = base.getTotalLength();
+    base.style.strokeDasharray = L; base.style.strokeDashoffset = L; base.style.opacity = 0;
+    (startPort ? [[x1, y1], [x2, y2]] : [[x2, y2]]).forEach(([cx, cy]) => { const c = document.createElementNS(svgNS, "circle"); c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", 3.6); c.setAttribute("class", "sg-port"); c.style.opacity = 0; g.appendChild(c); });
+    return { g, base, d, L };
   };
-  const unbundle = (b, delay = 0) => { b.g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, delay, fill: "forwards" }).onfinish = () => b.g.remove(); };
-  const comets = (ds, n, dur, gap) => {
+  const reveal = (c, delay) => { c.base.animate([{ strokeDashoffset: c.L, opacity: 0 }, { opacity: 1, offset: .2 }, { strokeDashoffset: 0, opacity: 1 }], { duration: 1000, delay, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }); [...c.g.querySelectorAll("circle")].forEach((p) => p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, delay: delay + 600, fill: "forwards" })); };
+  const fire = (c, n = 2, dur = 1000, gap = 260) => {
     for (let j = 0; j < n; j++) {
-      const d = ds[j % ds.length], c = document.createElement("i"); c.className = "sg-dot"; c.style.offsetPath = `path('${d}')`; sg.appendChild(c);
-      const dd = dur * (.85 + Math.random() * .3);
-      c.animate([{ offsetDistance: "0%", opacity: 0 }, { opacity: 1, offset: .14 }, { offsetDistance: "100%", opacity: 1, offset: .9 }, { offsetDistance: "100%", opacity: 0 }], { duration: dd, delay: j * gap, easing: "cubic-bezier(.5,.05,.45,.95)", fill: "both" }).onfinish = () => c.remove();
+      const p = mk("sg-pl", c.d, c.g); p.style.strokeDasharray = `26 ${c.L + 40}`;
+      p.animate([{ strokeDashoffset: 26, opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 1, offset: .88 }, { strokeDashoffset: -c.L, opacity: 0 }], { duration: dur, delay: j * gap, easing: "cubic-bezier(.45,.05,.55,.95)", fill: "both" }).onfinish = () => p.remove();
     }
   };
+  const srcLinks = items.map((it) => {
+    const sgn = it.left ? 1 : -1, ang = (it.row === 0 ? -36 : it.row === 2 ? 36 : 0) * Math.PI / 180;
+    const x1 = it.x + sgn * NR, rx = ox - sgn * RIM * Math.cos(ang), ry = oy + RIM * Math.sin(ang);
+    return link(hcurve(x1, it.y, rx, ry), x1, it.y, rx, ry);
+  });
+  const cardLinks = STEPS.map((_, i) => { const [x, y] = cardBot(i); return link(curve(ox, oy - 78, x, y, .9, .3), ox, oy - 78, x, y, false); });
+  const hotOn = (c) => c.g.classList.add("is-hot"), hotOff = (c) => c.g.classList.remove("is-hot");
   const pulse = () => {
     orb.animate([{ transform: "scale(1)" }, { transform: "scale(1.1)" }, { transform: "scale(1)" }], { duration: 560, easing: "cubic-bezier(.16,1,.3,1)" });
     const rp = document.createElement("i"); rp.className = "sg-rip"; rp.style.left = `${ox}px`; rp.style.top = `${oy}px`; sg.appendChild(rp);
@@ -2434,58 +2476,40 @@ async function analyseAll(run) {
   /* act 1: the agent arrives, the sources appear around it and connect */
   sg.classList.add("is-in"); speak("Collecting sources", "Connecting to your sources");
   await sleep(800); if (!ok()) return;
-  items.forEach((it) => setTimeout(() => ok() && it.el.classList.add("is-on"), 120 + it.slot * 170));
-  lanes.forEach((l, k) => l.lane.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 400 + k * 150, fill: "forwards" }));
-  guideOut.forEach((p, k) => p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 700 + k * 90, fill: "forwards" }));
-  await sleep(1500); if (!ok()) return;
-  /* connected the whole time: a steady trickle of data from every source into the agent */
-  const hot = new Set();
-  const flow = setInterval(() => {
-    if (!ok()) { clearInterval(flow); return; }
-    const l = lanes[Math.floor(Math.random() * 2)]; if (!hot.has(l.side) && Math.random() < .5) return;
-    comets([l.d], 1, 1500, 0);
-  }, 340);
-  /* act 2: the agent reads each source, then sends what it learned up to the cards it feeds */
-  const seq = [0, 3, 1, 4, 2, 5];
-  const beat = async (n) => {
-    const it = items[seq[n]], src = it.src, lane = lanes[it.left ? 0 : 1], side = lane.side; if (!ok()) return;
-    speak(`Source ${n + 1} of ${N} · Feeds ${src.feeds.length} step${src.feeds.length > 1 ? "s" : ""}`, `Reading ${src.name}`);
-    it.el.classList.add("is-active"); lane.g.classList.add("is-hot"); hot.add(side);
+  items.forEach((it, k) => setTimeout(() => ok() && it.el.classList.add("is-on"), k * 110));
+  srcLinks.forEach((c, k) => reveal(c, 350 + k * 110));
+  cardLinks.forEach((c, k) => reveal(c, 800 + k * 90));
+  await sleep(1700); if (!ok()) return;
+  /* connected the whole time: a slow trickle of light from every source into the agent */
+  const flow = setInterval(() => { if (!ok()) { clearInterval(flow); return; } if (Math.random() < .6) fire(srcLinks[Math.floor(Math.random() * N)], 1, 1800, 0); }, 420);
+  /* act 2: the agent reads each source in turn, then sends what it learned up to the cards it feeds */
+  const beat = async (k) => {
+    const it = items[k], src = it.src, c = srcLinks[k]; if (!ok()) return;
+    speak(`Source ${k + 1} of ${N} · Feeds ${src.feeds.length} step${src.feeds.length > 1 ? "s" : ""}`, `Reading ${src.name}`);
+    it.el.classList.add("is-active"); hotOn(c);
     src.feeds.forEach((i) => setCard(i, `Reading ${src.name}`, .72 * (got[i] / IG_NEED[i]) + .03));
-    const dir = it.left ? 1 : -1, sx = it.x + dir * 40, ex = ox - dir * RIM, line = `M${sx} ${oy} L${ex} ${oy}`;
-    const th = mk("sg-th", line); const L = th.getTotalLength(); th.style.strokeDasharray = L; th.style.strokeDashoffset = L;
-    th.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], { duration: 420, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" });
-    await sleep(380); if (!ok()) return;
-    comets([line], 8, 700, 70);
-    await sleep(760); if (!ok()) return;
-    /* the badge is drawn into the agent */
-    await it.el.animate([{ transform: "none", opacity: 1 }, { transform: `translateX(${(ox - it.x) * .96}px) scale(.3)`, opacity: 0 }], { duration: 560, easing: "cubic-bezier(.5,0,.8,.4)", fill: "forwards" }).finished;
-    if (!ok()) return;
-    it.el.remove(); th.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: "forwards" }).onfinish = () => th.remove();
-    laneOf[it.left ? "L" : "R"].forEach((o) => { if (o !== it && o.slot > it.slot) { o.slot--; place(o); } });
-    pulse(); orb.style.setProperty("--e", (n + 1) / N); lane.g.classList.remove("is-hot"); hot.delete(side);
-    const outs = src.feeds.map((i) => { const [cx2, cy2] = cardBot(i); return { i, cx2, cy2, b: bundle(ox, oy - 68, cx2, cy2, 620, [.92, .3]) }; });
-    await sleep(320); if (!ok()) return;
-    outs.forEach(({ b }) => comets(b.ds, 7, 760, 90));
-    await sleep(820); if (!ok()) return;
-    outs.forEach(({ i, cx2, cy2, b }) => {
-      got[i]++; cs[i].classList.add("is-hit"); setTimeout(() => cs[i].classList.remove("is-hit"), 900); landing(cx2, cy2);
-      setCard(i, got[i] >= IG_NEED[i] ? "Sources read" : `Read ${got[i]} of ${IG_NEED[i]} sources`, .72 * (got[i] / IG_NEED[i]));
-      unbundle(b, 120);
+    fire(c, 4, 900, 210);
+    await sleep(1150); if (!ok()) return;
+    pulse(); orb.style.setProperty("--e", (k + 1) / N);
+    it.el.classList.remove("is-active"); it.el.classList.add("is-done"); hotOff(c);
+    const outs = src.feeds.map((i) => ({ i, c: cardLinks[i] }));
+    outs.forEach(({ c: cc }) => { hotOn(cc); fire(cc, 3, 950, 200); });
+    await sleep(1000); if (!ok()) return;
+    outs.forEach(({ i, c: cc }) => {
+      got[i]++; cs[i].classList.add("is-hit"); setTimeout(() => cs[i].classList.remove("is-hit"), 900); const [lx, ly] = cardBot(i); landing(lx, ly);
+      setCard(i, got[i] >= IG_NEED[i] ? "Sources read" : `Read ${got[i]} of ${IG_NEED[i]} sources`, .72 * (got[i] / IG_NEED[i]), got[i]); hotOff(cc);
     });
   };
-  await Promise.all(seq.map((_, n) => sleep(n * 1750).then(() => ok() && beat(n)))); if (!ok()) return; await sleep(200);
+  await Promise.all(items.map((_, k) => sleep(k * 1750).then(() => ok() && beat(k)))); if (!ok()) return; await sleep(200);
   /* act 3: the agent puts it all together for every card at once */
-  speed.v = 3; sg.classList.add("is-proc"); lanes.forEach((l) => { l.g.classList.add("is-hot"); hot.add(l.side); });
+  speed.v = 3; sg.classList.add("is-proc"); srcLinks.forEach(hotOn);
   speak("Processing", "Putting your five steps together");
-  const outs = STEPS.map((_, i) => { const [x, y] = cardBot(i); return { x, y, b: bundle(ox, oy - 68, x, y, 700, [.92, .3]) }; });
-  await sleep(560); if (!ok()) return;
-  outs.forEach(({ b }) => comets(b.ds, 8, 900, 160));
-  STEPS.forEach((_, i) => setTimeout(() => ok() && setCard(i, "Processing", .97), i * 110));
-  await sleep(2100); if (!ok()) return;
-  outs.forEach(({ b, x, y }) => { unbundle(b); landing(x, y); });
+  cardLinks.forEach((c) => { hotOn(c); fire(c, 4, 1000, 380); });
+  STEPS.forEach((_, i) => setTimeout(() => ok() && setCard(i, "Processing", .97, IG_NEED[i]), i * 110));
+  await sleep(2400); if (!ok()) return;
+  cardLinks.forEach((c, i) => { hotOff(c); const [lx, ly] = cardBot(i); landing(lx, ly); });
   /* act 4: ready */
-  clearInterval(flow); lanes.forEach((l) => l.g.classList.remove("is-hot"));
+  clearInterval(flow); srcLinks.forEach(hotOff);
   STEPS.forEach((_, i) => setTimeout(() => ok() && finishCard(i), i * 160));
   speak("Ready for review", "All five steps are prepared");
   await sleep(4 * 160 + 1200); if (!ok()) return;
