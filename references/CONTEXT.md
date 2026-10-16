@@ -333,3 +333,5 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Cards variant: Prototype menu gets "Ready for review" (jumps straight to the closed-cards ready screen); clicking a closed card also starts review. Earlier stale-panel/header state came from the Prototype jumps not clearing the ready panel (fixed in a01e483).
 
 - ROOT CAUSE of "published page differs from preview" (Cards + Tether): publishing rewrites every html on disk with a leading skeleton (`<!doctype html><html><head>…<style>…</style></head><body>` + a nested real doc). build_v2/v4 read that wrapped Rail file and `rindex('</style>')` before the first `</head>` put all new CSS inside the skeleton's style block, which the host drops. Builders now `_unwrap()` the source first, so CSS lands in the real `<style>`. Always verify by Artifact `read` of the published copy and rendering that saved file.
+
+- Cards variant: removed the step list from the ready-for-review left panel (comment request); panel is now kicker, title, line and Review button.

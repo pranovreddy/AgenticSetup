@@ -46,7 +46,6 @@ NEW=r'''function procCap(t) {
 async function unlock(run) {
   S.phase = "unlock"; procCap(null);
   if (!$("#readyL")) stage.insertAdjacentHTML("beforeend", `<div class="rdl" id="readyL"><span class="rdl-k"><i></i>5 of 5 prepared</span><h2>Your five steps are ready for review</h2><p>The agent has done the groundwork. Open each step, check it and approve.</p>
-    <ul class="rdl-l">${STEPS.map((s) => `<li><span>${IC[s.key]}</span><b>${esc(s.title)}</b><em>${esc(s.mini)}</em></li>`).join("")}</ul>
     <button class="rdl-go" id="rdlGo" type="button">Review them<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
   head("Setup ready", "5 of 5", "Your five steps are ready for review", "", false);
   document.body.classList.add("all-closed");
