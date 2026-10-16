@@ -2,6 +2,14 @@ import re
 base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
+/* gate: no box around the policies, content sits on the page */
+.gate-card{ background:transparent!important; border:0!important; box-shadow:none!important; }
+.gate-head{ border-bottom:1px solid rgba(160,185,230,.45); }
+.gate-sum{ background:none!important; border-right:1px solid rgba(160,185,230,.45); }
+.doc-wrap{ background:transparent!important; border:0!important; box-shadow:none!important; }
+.doc{ background:transparent!important; }
+.doc-foot{ background:transparent!important; border-top:1px solid rgba(160,185,230,.45); }
+
 /* ---------- ready: cards in a row above the ready message ---------- */
 .ringc{ position:absolute; left:50%; top:50%; width:560px; transform:translate(-50%,14px); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .8s var(--ease),transform 1s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
 .ringc.on{ opacity:1; transform:translate(-50%,0); pointer-events:auto; transition-delay:.6s; } .ringcta.on{ transition-delay:1s; } .ringc{ transition-delay:0s; }

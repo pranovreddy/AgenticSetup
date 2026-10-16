@@ -610,6 +610,14 @@ body.deep-open .closes{ opacity:0 !important; pointer-events:none; }
 .empty{ padding:36px 20px; text-align:center; color:var(--muted); font-size:13px; }
 @media (max-width:900px){ .tsplit{ grid-template-columns:1fr; } .trow,.thead{ grid-template-columns:22px 1fr 150px; } .trow > :nth-child(2),.trow > :nth-child(4),.trow > :nth-child(6),.thead > :nth-child(2),.thead > :nth-child(4),.thead > :nth-child(6){ display:none; } .addrow{ grid-template-columns:1fr 1fr; } .rolegrid,.bgrid{ grid-template-columns:1fr; } .hdr-org,.usr-meta{ display:none; } }
 
+/* gate: no box around the policies, content sits on the page */
+.gate-card{ background:transparent!important; border:0!important; box-shadow:none!important; }
+.gate-head{ border-bottom:1px solid rgba(160,185,230,.45); }
+.gate-sum{ background:none!important; border-right:1px solid rgba(160,185,230,.45); }
+.doc-wrap{ background:transparent!important; border:0!important; box-shadow:none!important; }
+.doc{ background:transparent!important; }
+.doc-foot{ background:transparent!important; border-top:1px solid rgba(160,185,230,.45); }
+
 /* ---------- ready: cards in a row above the ready message ---------- */
 .ringc{ position:absolute; left:50%; top:50%; width:560px; transform:translate(-50%,14px); text-align:center; z-index:60; opacity:0; pointer-events:none; transition:opacity .8s var(--ease),transform 1s var(--ease); display:flex; flex-direction:column; align-items:center; gap:10px; }
 .ringc.on{ opacity:1; transform:translate(-50%,0); pointer-events:auto; transition-delay:.6s; } .ringcta.on{ transition-delay:1s; } .ringc{ transition-delay:0s; }
