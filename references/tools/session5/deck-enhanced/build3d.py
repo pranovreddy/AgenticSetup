@@ -2,6 +2,20 @@ import re
 base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
+/* ---------- processing: blob centred on its own, telemetry inside the card ---------- */
+.deck-head{ min-height:132px; align-items:center; }
+body.is-working .ah{ flex-direction:column; align-items:center; justify-content:center; }
+body.is-working .ah-t{ display:none; }
+body.is-working .ah .blob{ width:96px!important; height:96px!important; margin:0; }
+body.is-working .ah::before{ left:50%!important; top:50%!important; transform:translate(-50%,-50%)!important; width:420px; height:170px; background:radial-gradient(closest-side,rgba(59,110,255,.28),rgba(59,110,255,0)); }
+body.is-working .ah::after{ content:""; position:absolute; left:50%; bottom:-18px; width:2px; height:26px; transform:translateX(-50%); background:linear-gradient(180deg,rgba(59,110,255,.55),rgba(59,110,255,0)); animation:beam 1.6s ease-in-out infinite; }
+@keyframes beam{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+.tele{ position:absolute; left:76px; right:20px; top:60px; z-index:3; font-size:13px; line-height:1.3; color:var(--blue-d); display:flex; align-items:center; gap:8px; min-height:18px; }
+.tele::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--blue); box-shadow:0 0 0 4px rgba(59,110,255,.18); animation:beam 1.4s ease-in-out infinite; flex:none; }
+.tele b{ color:var(--ink); font-weight:600; } .tele:empty{ display:none; }
+body.is-working .card.is-focus .pane{ top:94px; }
+body.is-working .card.is-focus .c-head{ padding-bottom:6px; }
+
 /* less top space */
 .gate{ inset:24px 0 0!important; } .deck{ inset:30px 0 0!important; } .gate-head{ padding-top:20px!important; }
 /* gate: no box around the policies, content sits on the page */
@@ -302,6 +316,25 @@ $("#cap3").addEventListener("click", (e) => {
   if (d && S.phase === "review") openDeep(S.active);
 });
 setInterval(hudSync, 250); hudSync();
+
+/* ---------- telemetry line inside the focused card ---------- */
+(function () {
+  const n = $("#narr"); if (!n) return;
+  let raf = 0;
+  const sync = () => {
+    raf = 0;
+    const html = n.innerHTML;
+    $$(".card", stage).forEach((el) => {
+      let t = $(".tele", el);
+      const on = el.classList.contains("is-focus") && document.body.classList.contains("is-working");
+      if (!t && on) { t = document.createElement("div"); t.className = "tele"; t.setAttribute("aria-live", "polite"); $(".c-head", el).after(t); }
+      if (t) t.innerHTML = on ? html : "";
+    });
+  };
+  new MutationObserver(() => { if (!raf) raf = requestAnimationFrame(sync); }).observe(n, { childList: true, subtree: true, characterData: true });
+  new MutationObserver(() => { if (!raf) raf = requestAnimationFrame(sync); }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  stage.addEventListener("transitionend", () => { if (!raf) raf = requestAnimationFrame(sync); });
+})();
 '''
 
 def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):

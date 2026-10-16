@@ -308,3 +308,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - 3D decks: the Review and accept gate has no card box (transparent, hairline dividers only).
 - 3D decks: the accept gate fills the available height (about 1200px wide).
 - 3D decks: top space trimmed (gate inset 24px, deck inset 30px).
+- Processing view (3D Glass and Rail): header text hidden while the agent works; the blob sits alone at top centre (bigger, with a pulsing beam to the card); the telemetry line shows inside the focused card under the title (.tele, mirrored from #narr by a MutationObserver).
