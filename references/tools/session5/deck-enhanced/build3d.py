@@ -495,6 +495,15 @@ UNLOCK_JS = """async function unlock(run) {
 if (!window.__ringBound) { window.__ringBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#ringGo") || S.phase !== "unlock") return; $("#ringc").classList.remove("on"); $("#ringcta").classList.remove("on"); startReview(); }); }
 """
 RAIL_C_CSS = r'''
+/* no source tags on the profile fields (Rail only) */
+body.v3c .pf label .src-tag{ display:none; }
+/* review stage: the card carries the details, so the agent header keeps only the blob */
+body.v3c.ph-review .deck-head{ min-height:96px; align-items:flex-start; padding-top:0; }
+body.v3c.ph-review .ah{ flex-direction:column; align-items:center; justify-content:flex-start; }
+body.v3c.ph-review .ah-t{ display:none; }
+body.v3c.ph-review .ah .blob{ width:80px; height:80px; margin:0; }
+body.v3c.ph-review .ah::before{ left:50%; top:50%; transform:translate(-50%,-50%); width:380px; height:150px; background:radial-gradient(closest-side,rgba(59,110,255,.2),rgba(59,110,255,0)); }
+
 /* ---------- Version C: steps rail on the left, compact agent head ---------- */
 body.v3c .deck{ left:100px; }
 body.v3c .ah{ flex-direction:row; align-items:center; text-align:left; gap:14px; width:min(780px,100%); }
@@ -521,6 +530,15 @@ body.deck-on .rail3c{ opacity:1; pointer-events:auto; }
 '''
 RAIL_C_HTML = '<nav class="rail3c" id="rail3c" aria-label="Steps"></nav>'
 RAIL_C_JS = r'''
+/* review phase flag for the compact header (Rail only) */
+let phSeen = null;
+setInterval(() => {
+  const r = S.phase === "review" && S.mode === "focus";
+  if (r === phSeen) return; phSeen = r;
+  document.body.classList.toggle("ph-review", r);
+  setTimeout(() => window.dispatchEvent(new Event("resize")), 450);
+}, 150);
+
 /* ---------- steps rail (version C) ---------- */
 let railSig = "";
 function railSync() {
