@@ -531,6 +531,10 @@ UNLOCK_JS = """async function unlock(run) {
 if (!window.__ringBound) { window.__ringBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#ringGo") || S.phase !== "unlock") return; $("#ringc").classList.remove("on"); $("#ringcta").classList.remove("on"); startReview(); }); }
 """
 RAIL_C_CSS = r'''
+/* the steps pill belongs to the review stage only */
+body.v3c .rail3c{ opacity:0!important; pointer-events:none!important; }
+body.v3c.ph-review .rail3c{ opacity:1!important; pointer-events:auto!important; }
+
 /* steps as a horizontal pill at the top; no bottom arrows (Rail) */
 body.v3c .deck{ inset:80px 0 0!important; }
 .cap3,.dots3{ display:none!important; }
