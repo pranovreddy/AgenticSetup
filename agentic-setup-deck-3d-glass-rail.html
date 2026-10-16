@@ -790,6 +790,33 @@ body.v3b:not(.mode-overview) .card:not(.is-focus) .cf-mid{ display:none; }
 body.v3b.mode-overview .cf-v{ display:none!important; }
 .card.is-far .cf-v{ opacity:.8; }
 
+/* ---------- one-scene ingest (Rail) ---------- */
+.ig{ position:absolute; left:0; top:0; z-index:5; pointer-events:none; opacity:0; transition:opacity .6s var(--ease); --e:0; }
+.ig.is-in{ opacity:1; } .ig:not(.is-in){ transition-duration:.3s; }
+.ig-panel{ position:absolute; inset:14px 0 14px 108px; border-radius:26px; overflow:hidden; background:radial-gradient(75% 95% at 50% 50%,#10297a 0,#08143f 52%,#040a24 100%); box-shadow:0 0 0 1px rgba(100,150,255,.5) inset,0 0 52px -8px rgba(59,110,255,.6) inset,0 30px 60px -28px rgba(20,50,170,.75); }
+.ig-panel::before{ content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(120,165,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(120,165,255,.07) 1px,transparent 1px); background-size:32px 32px; -webkit-mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent 85%); mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent 85%); }
+.ig .fx-orb{ top:50%; transform:scale(.55); opacity:0; transition:transform .9s var(--ease),opacity .7s var(--ease); } .ig.is-in .fx-orb{ transform:none; opacity:1; }
+.ig .fx-core{ box-shadow:0 0 calc(22px + var(--e) * 34px) calc(4px + var(--e) * 8px) rgba(80,130,255,.7),0 0 calc(60px + var(--e) * 70px) rgba(60,100,255,.38); }
+.ig.is-proc .fx-orb::before{ animation-duration:.8s; }
+.ig-orbit{ position:absolute; inset:0; }
+.ig-src{ position:absolute; left:0; top:0; width:58px; height:58px; margin:-29px 0 0 -29px; will-change:transform,opacity; }
+.ig-src>i{ display:grid; place-items:center; width:100%; height:100%; border-radius:50%; color:#e6efff; background:linear-gradient(160deg,rgba(78,124,250,.7),rgba(22,44,142,.74)); box-shadow:0 0 0 1px rgba(150,190,255,.6) inset,0 0 24px -2px rgba(80,140,255,.7),0 14px 28px -12px rgba(20,50,180,.9); }
+.ig-src>i svg{ width:25px; height:25px; }
+.ig-lab{ position:absolute; top:calc(100% + 12px); left:50%; transform:translate(-50%,-4px); opacity:0; white-space:nowrap; text-align:center; transition:opacity .3s,transform .4s var(--ease); }
+.ig-src.is-focus .ig-lab{ opacity:1; transform:translate(-50%,0); }
+.ig-lab b{ display:block; font:600 15.5px/1.2 var(--font); color:#fff; letter-spacing:-.01em; text-shadow:0 0 16px rgba(90,150,255,.6); }
+.ig-lab em{ display:block; margin-top:5px; font:600 10.5px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#8fb4ff; font-style:normal; }
+.ig-say{ position:absolute; left:0; right:0; bottom:28px; text-align:center; display:flex; flex-direction:column; gap:7px; align-items:center; padding:0 24px; }
+.ig-say em{ font:600 10.5px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:#8fb4ff; font-style:normal; }
+.ig-say b{ font-size:19px; line-height:1.25; font-weight:600; letter-spacing:-.015em; color:#fff; text-shadow:0 0 18px rgba(90,150,255,.55); }
+body.mode-ingest .card .pane,body.mode-ingest .card .mini,body.mode-ingest .card .cardf{ display:none!important; }
+body.mode-ingest .card .c-head{ opacity:1!important; padding:13px 16px 0; } body.mode-ingest .card .ig-st,body.mode-ingest .card .ig-pr{ display:block; }
+.ig-st{ display:none; position:absolute; left:66px; right:16px; top:58px; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .ig-st.ok{ color:#15803d; font-weight:600; }
+.ig-pr{ display:none; position:absolute; left:16px; right:16px; bottom:12px; height:4px; border-radius:4px; background:rgba(120,150,210,.2); overflow:hidden; }
+.ig-pr i{ display:block; height:100%; width:100%; transform-origin:left; transform:scaleX(0); transition:transform .8s var(--ease); background:linear-gradient(90deg,#6aa8ff,#2f63ff); border-radius:4px; }
+body.v3c.mode-ingest .deck-head{ min-height:0; height:0; padding:0; } body.v3c.mode-ingest .ah{ display:none; }
+body.v3c.mode-ingest .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
+
 /* v2: source cards, caption text, fewer objects */
 .fx-segs,.fx-pl{ display:none!important; }
 .fx-orb::after{ display:none; }
@@ -1377,6 +1404,20 @@ function layout() {
     $("#finale").style.top = `${r.height / 2 + yOff + (CH * so * f) / 2 + 28}px`;
     return;
   }
+  if (S.mode === "ingest") {
+    const cw = Math.min(400, r.width * 0.4), ch = 92, g = 12, tot = 5 * ch + 4 * g;
+    const x = (r.width - cw) / 2 - 24, y0 = -tot / 2 + ch / 2;
+    window.__ringOut = 1;
+    all.forEach((el, i) => {
+      size(el, cw, ch);
+      el.style.transitionDelay = `${i * 60}ms`;
+      el.style.transform = `translate3d(${x}px, ${y0 + i * (ch + g)}px, 0px) rotateY(0deg) rotateZ(0deg) scale(1)`;
+      el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = 10; el.classList.remove("is-far", "is-focus", "is-right");
+      el.classList.toggle("is-clickable", false);
+    });
+    const ig = $("#ig"); if (ig) { ig.style.width = `${r.width - cw - 72}px`; ig.style.height = `${r.height}px`; }
+    return;
+  }
   if (S.mode === "ring") {
     const so = 0.6, g = 18, gap2 = 30, ctaH = 48, botM = 24;
     const avail = r.height - gap2 - ctaH - botM - 8;
@@ -1415,7 +1456,7 @@ function layout() {
 }
 
 addEventListener("resize", () => { layout(); $$(".ld", stage).forEach((ld) => { const i = +ld.closest(".card").dataset.i; fitScene(ld, ld.classList.contains("kv") ? KV_BOX : LD_BOX[STEPS[i].loader]); }); });
-function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview" || m === "ring"); document.body.classList.toggle("mode-ring", m === "ring"); layout(); }
+function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview" || m === "ring" || m === "ingest"); document.body.classList.toggle("mode-ring", m === "ring"); document.body.classList.toggle("mode-ingest", m === "ingest"); layout(); }
 /* A soft light follows the pointer across the card in focus. */
 stage.addEventListener("pointermove", (e) => {
   const el = $(".card.is-focus", stage); if (!el) return;
@@ -2214,13 +2255,6 @@ const FX_ICO = {
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
   tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12 12 20 4 12V4h8z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>',
 };
-const FX_DATA = {
-  profile: () => ({ chips: [["DLT registration", "db"], ["GSTIN", "doc"], ["MCA", "doc"], ["Company website", "globe"]], rows: [["Legal entity", "HDFC Bank Limited"], ["PAN / TAN", "AAACH2702H"], ["Entity type", "Public Limited"], ["Website", "hdfcbank.com"]] }),
-  team: () => ({ chips: [["DLT registration", "db"], ["Email directory", "mail"], ["Org chart", "doc"], ["Role map", "tag"]], rows: PEOPLE.slice(0, 4).map((p) => [p.name, p.role]) }),
-  gtm: () => ({ chips: [["Karix", "doc"], ["Value First", "doc"], ["Tata", "doc"], ["Route Mobile", "doc"]], rows: [["Karix", "60% of migration"], ["Value First", "40% of migration"], ["Tata", "Held back"], ["Route Mobile", "Held back"]] }),
-  brands: () => ({ chips: [["DLT headers", "db"], ["Entities", "doc"], ["Sender IDs", "tag"], ["Categories", "doc"]], rows: BRANDS.map((b) => [b.name, `${b.lobs.length} lines of business`]) }),
-  templates: () => ({ chips: [["CC_REWARDS_WKND", "doc"], ["PL_PREAPPROVED", "doc"], ["HL_TOPUP", "doc"], ["LIFE_TERM_1CR", "doc"]], rows: TPL_LOBS.slice(0, 4).map((x) => [x.lob, `${x.n} templates`]) }),
-};
 function fxMarkup(i, s) {
   return `<div class="fx" data-fx><span class="fx-glow"></span>
     <div class="fx-say" data-say><em data-kick>Collecting sources</em><b data-line2>Getting ready</b></div>
@@ -2249,81 +2283,121 @@ function fxSphere(cv, speed, ok) {
   };
   requestAnimationFrame(frame);
 }
-async function playFx(i, run) {
-  const el = card(i), fx = el && $("[data-fx]", el); if (!fx) return;
-  const s = STEPS[i], d = FX_DATA[s.key](), len = s.checks.length;
-  const ok = () => run === S.runId && fx.isConnected;
-  const orb = $("[data-orb]", fx), chipsBox = $("[data-chips]", fx), prog = $("[data-prog]", fx), rowsBox = $("[data-rows]", fx), bar = $(".fx-bar i", fx);
-  const kick = $("[data-kick]", fx), line2 = $("[data-line2]", fx), say = $("[data-say]", fx);
-  const speed = { v: 1 }; fxSphere($("canvas", orb), speed, () => fx.isConnected);
-  const rowsHTML = (r) => `<b>${esc(r[0])}</b><span>${esc(r[1])}</span><i class="fx-tg"></i>`;
+
+/* ---------- one scene for all five steps (Rail): sources orbit the agent, cards fill in parallel ---------- */
+const IG_SRC = [
+  { k: "dlt", name: "DLT registration", ico: "db", feeds: [0, 1, 3, 4] },
+  { k: "gstin", name: "GSTIN", ico: "doc", feeds: [0] },
+  { k: "mca", name: "MCA", ico: "doc", feeds: [0] },
+  { k: "web", name: "Company website", ico: "globe", feeds: [0] },
+  { k: "rates", name: "Rate cards from 4 partners", ico: "tag", feeds: [2] },
+  { k: "tpl", name: "Your 100 DLT templates", ico: "doc", feeds: [4] },
+];
+const IG_NEED = [4, 1, 1, 1, 2];
+function igEnsure(el) {
+  const inn = $(".card-in", el); if (!inn) return;
+  if (!$(".ig-st", inn)) inn.insertAdjacentHTML("beforeend", '<div class="ig-st"></div><div class="ig-pr"><i></i></div>');
+}
+async function analyseAll(run) {
+  S.phase = "analyse"; S.active = 0;
+  const cs = cards();
+  cs.forEach((el, i) => { S.cards[i].st = "analysing"; S.cards[i].step = 0; el.classList.add("is-analysing"); igEnsure(el); setStatus(i); const st = $(".ig-st", el); st.textContent = "Waiting for sources"; st.classList.remove("ok"); $(".ig-pr i", el).style.transform = "scaleX(0)"; });
+  const old = $("#ig"); if (old) old.remove();
+  stage.insertAdjacentHTML("beforeend", `<div class="ig" id="ig"><div class="ig-panel"><span class="fx-glow"></span><div class="ig-orbit" data-orbit></div><div class="fx-orb" data-orb><canvas></canvas><span class="fx-core">${AI_MARK}</span></div><div class="ig-say" data-say><em data-kick>Collecting sources</em><b data-line2>Getting ready</b></div></div></div>`);
+  head("Onboarding Agent · working", "5 steps", "Preparing your setup", "Reading your sources", true);
+  setMode("ingest");
+  await W(520); if (run !== S.runId) return;
+  layout();
+  const ig = $("#ig"), panel = $(".ig-panel", ig), orbitBox = $("[data-orbit]", ig), orb = $("[data-orb]", ig), say = $("[data-say]", ig), kick = $("[data-kick]", ig), line2 = $("[data-line2]", ig);
+  const ok = () => run === S.runId && ig.isConnected;
+  const speed = { v: 1 }; fxSphere($("canvas", orb), speed, () => ig.isConnected);
   const speak = (k, t) => {
     if (kick.textContent === k && line2.textContent === t) return;
     if (RM) { kick.textContent = k; line2.textContent = t; return; }
-    say.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-6px)" }], { duration: 160, fill: "forwards" }).onfinish = () => {
+    say.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-6px)" }], { duration: 150, fill: "forwards" }).onfinish = () => {
       kick.textContent = k; line2.textContent = t;
-      say.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" });
+      say.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 300, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" });
     };
   };
-  capStep(i, 1);
+  const setCard = (i, text, p, cls) => {
+    const el = cs[i], st = $(".ig-st", el); if (!st) return;
+    st.textContent = text; st.classList.toggle("ok", !!cls);
+    $(".ig-pr i", el).style.transform = `scaleX(${p})`;
+  };
+  const finishCard = (i) => {
+    S.cards[i].st = "ready"; S.cards[i].at = now(); setStatus(i); renderAnalyse(i);
+    setCard(i, STEPS[i].mini, 1, true); cs[i].classList.add("is-done-flash"); setTimeout(() => cs[i].classList.remove("is-done-flash"), 1100);
+  };
+  const N = IG_SRC.length, got = [0, 0, 0, 0, 0];
+  ig.classList.add("is-in");
   if (RM) {
-    fx.classList.add("is-in", "is-out"); speak("Ready", s.result);
-    d.rows.forEach((r) => { const e = document.createElement("div"); e.className = "fx-row"; e.innerHTML = rowsHTML(r); $(".fx-tg", e).classList.add("on"); rowsBox.appendChild(e); });
-    capStep(i, len); return;
+    STEPS.forEach((_, i) => finishCard(i));
+    speak("Ready for review", "All five steps are prepared");
+    await W(0); ig.remove(); unlock(run); return;
   }
-  requestAnimationFrame(() => fx.classList.add("is-in"));
-  await sleep(500); if (!ok()) return;
-  const W0 = fx.clientWidth, H0 = fx.clientHeight, cx = W0 / 2, cy = H0 * .5, n = d.chips.length, gap = 520;
-  speak(`Source 1 of ${n}`, `Reading ${d.chips[0][0]}`);
+  /* orbit */
+  const PW = panel.clientWidth, PH = panel.clientHeight, cx = PW / 2, cy = PH * .5, rx = PW * .36, ry = PH * .26;
+  const items = IG_SRC.map((src, k) => {
+    const el = document.createElement("div"); el.className = "ig-src";
+    const feeds = src.feeds.length;
+    el.innerHTML = `<i>${FX_ICO[src.ico]}</i><span class="ig-lab"><b>${esc(src.name)}</b><em>Feeds ${feeds} step${feeds > 1 ? "s" : ""}</em></span>`;
+    orbitBox.appendChild(el);
+    return { src, el, a: k * (360 / N) - 90, x: cx, y: cy, sc: 1, alive: true, busy: false };
+  });
+  const T = (x, y, sc) => `translate(${x}px, ${y}px) scale(${sc})`;
+  let base = 0, last = performance.now();
+  const loop = (t) => {
+    if (!ok()) return;
+    const dt = Math.min(.05, (t - last) / 1000); last = t; base += dt * 17;
+    const live = items.filter((it) => it.alive && !it.busy), n = live.length;
+    live.forEach((it, j) => {
+      let target = base + j * (360 / Math.max(1, n)) - 90, d = target - it.a;
+      d = ((d % 360) + 540) % 360 - 180; it.a += d * Math.min(1, dt * 7);
+      const rad = it.a * Math.PI / 180, dep = (Math.sin(rad) + 1) / 2;
+      it.x = cx + Math.cos(rad) * rx; it.y = cy + Math.sin(rad) * ry; it.sc = .82 + .3 * dep;
+      it.el.style.transform = T(it.x, it.y, it.sc); it.el.style.opacity = .5 + .5 * dep; it.el.style.zIndex = Math.round(dep * 10);
+    });
+    requestAnimationFrame(loop);
+  };
+  items.forEach((it) => { it.el.style.transform = T(cx, cy, .2); it.el.style.opacity = 0; });
+  requestAnimationFrame(loop);
+  await sleep(700); if (!ok()) return;
   const pulse = (k) => {
     if (!ok()) return;
-    fx.style.setProperty("--e", (k + 1) / n);
     orb.animate([{ transform: "scale(1)" }, { transform: "scale(1.14)" }, { transform: "scale(1)" }], { duration: 480, easing: "cubic-bezier(.16,1,.3,1)" });
-    const rp = document.createElement("i"); rp.className = "fx-rip"; rp.style.left = `${cx}px`; rp.style.top = `${cy}px`; fx.appendChild(rp);
+    ig.style.setProperty("--e", (k + 1) / N);
+    const rp = document.createElement("i"); rp.className = "fx-rip"; rp.style.left = `${cx}px`; rp.style.top = `${cy}px`; panel.appendChild(rp);
     rp.animate([{ transform: "translate(-50%,-50%) scale(.5)", opacity: .8 }, { transform: "translate(-50%,-50%) scale(2.1)", opacity: 0 }], { duration: 900, easing: "cubic-bezier(.16,1,.3,1)" }).onfinish = () => rp.remove();
-    capStep(i, Math.max(1, Math.min(len - 1, Math.ceil(((k + 1) / n) * (len - 1)))));
   };
-  const spots = [[-1, -1], [1, -1], [-1, 1], [1, 1], [-1, 0], [1, 0]];
-  const T = (x, y, sc, rot) => `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${rot}deg) scale(${sc})`;
-  d.chips.forEach(([label, ico], k) => {
-    const [sx, sy] = spots[k % spots.length], x0 = sx * W0 * .31, y0 = sy * H0 * .24, rot0 = sx * (4 + (k % 3) * 2) * (sy || 1) * -1;
-    const c = document.createElement("div"); c.className = "fx-card";
-    c.innerHTML = `<div class="fc-h"><i>${FX_ICO[ico] || FX_ICO.doc}</i><b>${esc(label)}</b></div><div class="fc-l"><u></u><u></u><u></u></div><div class="fc-s"><span></span>Reading</div>`;
-    c.style.left = `${cx}px`; c.style.top = `${cy}px`; chipsBox.appendChild(c);
-    const mx = x0 * .46 - y0 * .3, my = y0 * .46 + x0 * .3;
-    c.animate([
-      { transform: T(x0 * 1.22, y0 * 1.1, .86, rot0 * 1.6), opacity: 0, filter: "blur(8px)" },
-      { transform: T(x0, y0, 1, rot0), opacity: 1, filter: "blur(0px)", offset: .24 },
-      { transform: T(x0, y0, 1.02, rot0), opacity: 1, filter: "blur(0px)", offset: .42 },
-      { transform: T(mx, my, .7, rot0 * .4), opacity: 1, filter: "blur(0px)", offset: .72 },
-      { transform: T(0, 0, .12, 0), opacity: 0, filter: "blur(4px)" },
-    ], { duration: 1750, delay: k * gap, easing: "cubic-bezier(.45,.05,.55,.95)", fill: "both" });
-    setTimeout(() => { if (ok()) { speak(`Source ${k + 1} of ${n}`, `Reading ${label}`); c.classList.add("is-read"); } }, k * gap + 120);
-    setTimeout(() => pulse(k), k * gap + 1650);
-  });
-  await sleep((n - 1) * gap + 1800); if (!ok()) return;
-  /* processing */
-  fx.classList.add("is-proc"); speed.v = 3.4; prog.classList.add("on");
-  speak("Processing", "Putting it all together");
-  fx.animate([{ transform: "perspective(900px) rotateX(0) rotateY(0)" }, { transform: "perspective(900px) rotateX(4deg) rotateY(-5deg) scale(1.008)" }, { transform: "perspective(900px) rotateX(0) rotateY(0)" }], { duration: 1500, easing: "ease-in-out" });
-  const t0 = performance.now(), dur = 1100;
-  for (;;) {
-    const p = Math.min(1, (performance.now() - t0) / dur), e = 1 - Math.pow(1 - p, 2);
-    bar.style.transform = `scaleX(${e})`;
-    if (p >= 1 || !ok()) break; await new Promise((r) => requestAnimationFrame(r));
-  }
-  if (!ok()) return;
-  capStep(i, len); await sleep(150); if (!ok()) return;
-  /* furnish the details */
-  prog.classList.remove("on"); fx.style.setProperty("--dy", `${-(H0 * .5 - 118)}px`); fx.classList.add("is-out"); fx.classList.remove("is-proc"); speed.v = 1.1;
-  speak("Ready for review", s.result);
-  d.rows.forEach((r, k) => {
-    const e = document.createElement("div"); e.className = "fx-row"; e.innerHTML = rowsHTML(r); rowsBox.appendChild(e);
-    e.animate([{ opacity: 0, transform: "translateY(24px) scale(.96)", filter: "blur(6px)" }, { opacity: 1, transform: "none", filter: "blur(0px)" }], { duration: 560, delay: 260 + k * 150, easing: "cubic-bezier(.16,1,.3,1)", fill: "both" });
-    setTimeout(() => { if (ok()) $(".fx-tg", e).classList.add("on"); }, 260 + k * 150 + 380);
-  });
-  await sleep(260 + d.rows.length * 150 + 800);
+  const beat = async (k) => {
+    const it = items[k], src = it.src; it.busy = true;
+    const fxp = cx, fyp = PH * .2;
+    speak(`Source ${k + 1} of ${N}`, `Reading ${src.name}`);
+    await it.el.animate([{ transform: T(it.x, it.y, it.sc), opacity: it.el.style.opacity || 1 }, { transform: T(fxp, fyp, 1.4), opacity: 1 }], { duration: 480, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" }).finished;
+    if (!ok()) return;
+    it.el.classList.add("is-focus"); it.el.style.zIndex = 20;
+    src.feeds.forEach((i) => setCard(i, `Reading ${src.name}`, .7 * (got[i] / IG_NEED[i]) + .04, false));
+    await sleep(430); if (!ok()) return;
+    await it.el.animate([{ transform: T(fxp, fyp, 1.4), opacity: 1 }, { transform: T(cx, cy, .14), opacity: 0 }], { duration: 430, easing: "cubic-bezier(.5,0,.8,.4)", fill: "forwards" }).finished;
+    if (!ok()) return;
+    it.alive = false; it.el.remove(); pulse(k);
+    src.feeds.forEach((i) => { got[i]++; setCard(i, got[i] >= IG_NEED[i] ? "Sources read" : `Read ${got[i]} of ${IG_NEED[i]} sources`, .7 * (got[i] / IG_NEED[i]), false); });
+  };
+  const gap = 900, tasks = [];
+  for (let k = 0; k < N; k++) { tasks.push(sleep(k * gap).then(() => ok() && beat(k))); }
+  await Promise.all(tasks); if (!ok()) return;
+  /* processing: all five fill the rest together */
+  speed.v = 3.4; ig.classList.add("is-proc");
+  speak("Processing", "Putting your five steps together");
+  STEPS.forEach((_, i) => { setTimeout(() => ok() && setCard(i, "Processing", .96, false), i * 120); });
+  await sleep(1200 + 4 * 120); if (!ok()) return;
+  STEPS.forEach((_, i) => setTimeout(() => ok() && finishCard(i), i * 130));
+  speak("Ready for review", "All five steps are prepared");
+  await sleep(4 * 130 + 800); if (!ok()) return;
+  ig.classList.remove("is-in"); setTimeout(() => ig.remove(), 700); speed.v = 1;
+  unlock(run);
 }
+analyse = analyseAll;
 
 /* review phase flag for the compact header (Rail only) */
 let phSeen = null;
