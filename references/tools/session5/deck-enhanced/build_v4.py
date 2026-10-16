@@ -84,6 +84,11 @@ body.v3c.all-closed .stage,body.v3c.all-closed .stage{ -webkit-mask-image:none!i
 .res-a .v{ font-size:20px!important; letter-spacing:-.02em!important; }
 .plan li.ok{ font-size:14px; } .plan li.ok i{ width:20px!important; height:20px!important; }
 '''
+# 7. prototype menu: jump straight to the ready-for-review screen; clicking a closed card also starts review
+rep('    <button data-jump="review">Review cards</button>','    <button data-jump="ready">Ready for review</button>\n    <button data-jump="review">Review cards</button>')
+rep('  if (where === "analyse") {\n','  if (where === "ready") {\n    STEPS.forEach((s, i) => { S.cards[i].st = "ready"; renderAnalyse(i); });\n    S.phase = "analyse"; setMode("overview"); const run = S.runId;\n    setTimeout(() => run === S.runId && unlock(run), 200); return;\n  }\n  if (where === "analyse") {\n')
+rep('if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#rdlGo") ||','if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) ||')
+
 i=s.rindex('</style>',0,s.index('</head>'))
 s=s[:i]+css+s[i:]
 s=s.replace('<title>DigiConsent Agent Deck 3D Glass Rail</title>','<title>DigiConsent Agent Deck 3D Glass Rail Cards</title>')

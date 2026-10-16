@@ -1116,6 +1116,7 @@ body.deck-on .rail3c{ opacity:1; pointer-events:auto; }
   <div class="proto-menu" id="protoMenu" hidden>
     <b>Jump to</b>
     <button data-jump="analyse">Agent analysis</button>
+    <button data-jump="ready">Ready for review</button>
     <button data-jump="review">Review cards</button>
     <button data-jump="finale">Finale</button>
     <button data-jump="restart">Restart from agreements</button>
@@ -1713,7 +1714,7 @@ async function unlock(run) {
   S.active = 2; layout(); faceSig = ""; faces();
   setTimeout(() => { const r = $("#readyL"); if (r) { r.classList.add("on"); $("#rdlGo").focus({ preventScroll: true }); } }, RM ? 0 : 700);
 }
-if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#rdlGo") || S.phase !== "unlock") return; const r = $("#readyL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600); document.body.classList.remove("all-closed"); startReview(); }); }
+if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) || S.phase !== "unlock") return; const r = $("#readyL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600); document.body.classList.remove("all-closed"); startReview(); }); }
 function startReview() {
   document.body.classList.remove("all-closed"); { const r0 = document.getElementById("readyL"); if (r0) { r0.classList.remove("on"); setTimeout(() => r0.remove(), 600); } }
   S.phase = "review"; S.reviewStart = Date.now();
@@ -2273,6 +2274,11 @@ function jump(where) {
   DOCS.forEach((d) => (S.accepted[d.id] = true));
   $("#gate").classList.add("is-out"); document.body.classList.remove("phase-gate"); document.body.classList.add("deck-on");
   $("#headBlob").style.opacity = 1;
+  if (where === "ready") {
+    STEPS.forEach((s, i) => { S.cards[i].st = "ready"; renderAnalyse(i); });
+    S.phase = "analyse"; setMode("overview"); const run = S.runId;
+    setTimeout(() => run === S.runId && unlock(run), 200); return;
+  }
   if (where === "analyse") {
     S.phase = "intro"; setMode("overview"); const run = S.runId;
     head("Onboarding Agent", "", "Five steps, prepared at once", "I'll work through all five now. Nothing goes live until you accept it.", false);
