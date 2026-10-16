@@ -1,5 +1,12 @@
 import re
-src = open('/home/user/AgenticSetup/agentic-setup-deck-3d-glass-rail.html').read()
+
+def _unwrap(t):
+    k = '</head><body>\n<!doctype html>'
+    if t.startswith('<!doctype html><html><head><meta charset=utf8>') and k in t:
+        t = t[t.index(k)+len('</head><body>\n'):]
+        t = t[:t.rindex('</html>')+len('</html>')] + '\n'
+    return t
+src = _unwrap(open('/home/user/AgenticSetup/agentic-setup-deck-3d-glass-rail.html').read())
 
 a = src.index("async function analyseAll(run) {")
 endm = "analyse = analyseAll;\n"
