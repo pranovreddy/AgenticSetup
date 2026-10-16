@@ -32,6 +32,20 @@ css=r'''
 .s4-src{ width:124px; margin-left:-62px; margin-top:-36px; }
 .s4-src .s3-ic{ width:66px; height:66px; }
 '''
+
+# cards on a clean arc (flat to camera, tilted along the arc), telemetry as pure text
+rep("const R = Math.min(W * .35, 480), Rz = 210,","const R = Math.min(W * .39, 560), Rz = 0,")
+rep("const th = (i - 2) * 31, rad","const th = (i - 2) * 24, rad")
+rep("translate3d(${R * Math.sin(rad)}px, ${yc - (1 - Math.cos(rad)) * 70}px, ${-Rz * Math.cos(rad) + 40}px) rotateY(${-th * .9}deg) rotateZ(0deg) scale(${f})","translate3d(${R * Math.sin(rad)}px, ${yc - (1 - Math.cos(rad)) * R * .6}px, 0px) rotateY(0deg) rotateZ(${-th * .38}deg) scale(${f})")
+css2=r"""
+.sg .tl{ background:none!important; box-shadow:none!important; backdrop-filter:none!important; padding:0!important; width:760px!important; margin-left:-380px!important; top:calc(var(--by) + 176px)!important; text-align:center; }
+.sg .tl-h,.sg .tl-l time{ display:none!important; }
+.sg .tl-b{ min-height:34px!important; margin-top:0!important; align-items:center; }
+.sg .tl-l{ justify-content:center; font-size:25px!important; line-height:1.2; letter-spacing:-.022em; white-space:nowrap; }
+.sg .tl-l b{ font-weight:600!important; background:linear-gradient(90deg,#1b2d52 0%,#2f63ff 55%,#6f9bff 100%); -webkit-background-clip:text; background-clip:text; color:transparent!important; text-shadow:none; filter:drop-shadow(0 6px 14px rgba(79,132,255,.28)); }
+.sg .tl::before{ content:""; position:absolute; left:50%; bottom:-14px; width:260px; height:14px; margin-left:-130px; border-radius:50%; background:radial-gradient(closest-side,rgba(79,132,255,.28),transparent); }
+"""
+css+=css2
 i=s.rindex('</style>',0,s.index('</head>'))
 s=s[:i]+css+s[i:]
 open(f,'w').write(s); print('ok',len(s))
