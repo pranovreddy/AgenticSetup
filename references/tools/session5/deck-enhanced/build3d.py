@@ -410,10 +410,10 @@ KYC_FIELDS = """const KYC = [
 
 INGEST_LAYOUT = r"""  if (S.mode === "ingest") {
     const W = r.width, H = r.height;
-    const f = Math.max(.3, Math.min(.5, (H * .965 - 479) / (1.13 * CH), (W * .92) / (4 * CW * 1.12 + CW)));
+    const f = Math.max(.3, Math.min(.56, (H * .965 - 412) / (1.13 * CH), (W * .92) / (4 * CW * 1.12 + CW)));
     const cwid = CW * f, chei = CH * f, step = Math.min(cwid * 1.12, (W * .92 - cwid) / 4), amp = chei * .13;
-    const by = H * .035 + chei + amp + 168, sgEl = $("#sg");
-    if (sgEl) { sgEl.style.setProperty("--by", `${by}px`); sgEl.style.setProperty("--tt", `${H - 174}px`); sgEl.style.setProperty("--tw", `${Math.min(1060, W * .8)}px`); }
+    const by = H * .035 + chei + amp + 206, sgEl = $("#sg");
+    if (sgEl) sgEl.style.setProperty("--by", `${by}px`);
     window.__ringOut = 1;
     all.forEach((el, i) => {
       const t = (i - 2) / 2;
@@ -568,27 +568,24 @@ body.v3c .deck{ inset:30px 0 0!important; } body.v3c.ph-review .deck{ inset:30px
 .sg-pod::before,.sg-pod::after{ content:""; position:absolute; border-radius:50%; border:1px solid rgba(120,150,210,.38); }
 .sg-pod::before{ inset:8px 36px; } .sg-pod::after{ inset:-10px -30px; border-color:rgba(120,150,210,.22); }
 .sg.is-in .sg-pod{ opacity:1; transform:none; }
-.sg-say{ position:absolute; right:calc(50% + 210px); top:calc(var(--by) - 34px); width:min(340px,30%); text-align:right; display:flex; flex-direction:column; gap:9px; align-items:flex-end; }
+.sg-say{ position:absolute; left:50%; width:560px; margin-left:-280px; top:calc(var(--by) + 124px); text-align:center; display:flex; flex-direction:column; gap:9px; align-items:center; }
 .sg-say em{ font:600 11px/1.3 var(--mono); letter-spacing:.15em; text-transform:uppercase; color:#6f7d99; font-style:normal; }
-.sg-say b{ font-size:23px; line-height:1.2; font-weight:600; letter-spacing:-.02em; color:var(--ink); }
-.sg-log{ position:absolute; left:calc(50% + 210px); top:calc(var(--by) - 44px); width:min(340px,30%); display:flex; flex-direction:column; gap:9px; }
-.sg-lg{ display:flex; align-items:center; gap:9px; font-size:13px; white-space:nowrap; } .sg-lg u{ flex:none; width:18px; height:18px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; text-decoration:none; } .sg-lg u svg{ width:10px; height:10px; }
-.sg-lg b{ font-weight:600; color:var(--ink); } .sg-lg i{ font-style:normal; color:#7a879f; }
-.sg-tray{ position:absolute; left:50%; top:var(--tt); width:var(--tw); height:152px; margin-left:calc(var(--tw) / -2); border-radius:30px; background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(238,243,252,.8)); box-shadow:0 0 0 1px rgba(170,185,215,.65) inset,0 1px 0 #fff inset,0 34px 54px -28px rgba(30,60,140,.5); backdrop-filter:blur(8px); opacity:0; transform:translateY(34px); transition:opacity .9s var(--ease),transform 1.1s var(--ease); }
-.sg.is-in .sg-tray{ opacity:1; transform:none; }
-.sg-trayh{ display:flex; justify-content:space-between; align-items:center; padding:13px 26px 0; font:600 10.5px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:#6f7d99; } .sg-trayh i{ font-style:normal; color:#93a0b8; }
-.sg-slots{ display:grid; grid-template-columns:repeat(6,1fr); padding:8px 8px 0; }
-.sg-src{ position:relative; display:flex; flex-direction:column; align-items:center; text-align:center; padding:6px 6px 0; opacity:0; transform:translateY(16px) scale(.94); filter:blur(5px); transition:opacity .7s var(--ease),transform .8s var(--ease),filter .7s var(--ease); }
-.sg-src+.sg-src::before{ content:""; position:absolute; left:0; top:14px; bottom:10px; width:1px; background:linear-gradient(180deg,transparent,rgba(170,185,215,.5),transparent); }
-.sg-src.is-on{ opacity:1; transform:none; filter:none; }
-.sg-ic{ position:relative; width:56px; height:56px; border-radius:18px; display:grid; place-items:center; color:#33425f; background:linear-gradient(180deg,#fff,#f1f4fb); box-shadow:0 0 0 1px rgba(170,185,215,.7) inset,0 12px 22px -14px rgba(30,50,110,.5); transition:transform .5s var(--ease),box-shadow .5s,color .4s; }
-.sg-ic svg{ width:25px; height:25px; }
-.sg-ic u{ position:absolute; right:-6px; bottom:-6px; width:22px; height:22px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; transform:scale(0); transition:transform .45s var(--ease); box-shadow:0 0 0 3px #fff; text-decoration:none; } .sg-ic u svg{ width:11px; height:11px; }
-.sg-src b{ margin-top:9px; font:600 13px/1.2 var(--font); color:var(--ink); letter-spacing:-.01em; }
-.sg-src em{ margin-top:3px; font:500 11px/1.2 var(--font); color:#7a879f; font-style:normal; }
-.sg-src.is-active .sg-ic{ transform:translateY(-5px) scale(1.08); color:#2f63ff; box-shadow:0 0 0 1.5px rgba(79,132,255,.85) inset,0 0 0 6px rgba(79,132,255,.14),0 18px 30px -12px rgba(47,99,255,.6); }
-.sg-src.is-active .sg-ic::before{ content:""; position:absolute; left:50%; bottom:100%; width:2px; height:34px; margin-left:-1px; background:linear-gradient(0deg,rgba(79,132,255,.9),rgba(79,132,255,0)); animation:beam 1s ease-in-out infinite; }
-.sg-src.is-done .sg-ic u{ transform:scale(1); } .sg-src.is-done b,.sg-src.is-done em{ opacity:.7; }
+.sg-say b{ font-size:24px; line-height:1.2; font-weight:600; letter-spacing:-.02em; color:var(--ink); }
+.sg-srcs{ position:absolute; inset:0; }
+.sg-src{ position:absolute; height:78px; margin-top:-39px; display:flex; align-items:center; gap:14px; padding:0 18px 0 14px; border-radius:22px; background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(240,244,252,.84)); box-shadow:0 0 0 1px rgba(170,185,215,.7) inset,0 22px 36px -22px rgba(30,60,140,.5); backdrop-filter:blur(8px); opacity:0; transition:opacity .7s var(--ease),transform .8s var(--ease),box-shadow .5s; }
+.sg-src.is-l{ transform:translateX(-26px); } .sg-src.is-r{ transform:translateX(26px); }
+.sg-src.is-on{ opacity:1; transform:none; }
+.sg-src span{ display:flex; flex-direction:column; min-width:0; } .sg-src b{ font:600 14.5px/1.2 var(--font); color:var(--ink); letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .sg-src em{ margin-top:4px; font:500 12px/1.2 var(--font); color:#7a879f; font-style:normal; white-space:nowrap; }
+.sg-src s{ position:absolute; top:50%; width:11px; height:11px; margin-top:-5.5px; border-radius:50%; background:#4f84ff; box-shadow:0 0 0 4px rgba(79,132,255,.18),0 0 14px rgba(79,132,255,.8); }
+.sg-src.is-l s{ right:-5.5px; } .sg-src.is-r s{ left:-5.5px; }
+.sg-ic{ position:relative; flex:none; width:48px; height:48px; border-radius:15px; display:grid; place-items:center; color:#33425f; background:linear-gradient(180deg,#fff,#eef2fa); box-shadow:0 0 0 1px rgba(170,185,215,.7) inset; transition:color .4s,box-shadow .5s; }
+.sg-ic svg{ width:23px; height:23px; }
+.sg-ic u{ position:absolute; right:-6px; bottom:-6px; width:20px; height:20px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; transform:scale(0); transition:transform .45s var(--ease); box-shadow:0 0 0 3px #fff; text-decoration:none; } .sg-ic u svg{ width:10px; height:10px; }
+.sg-src.is-active{ box-shadow:0 0 0 1.5px rgba(79,132,255,.85) inset,0 0 0 7px rgba(79,132,255,.12),0 24px 40px -20px rgba(47,99,255,.6); }
+.sg-src.is-active .sg-ic{ color:#2f63ff; box-shadow:0 0 0 1.5px rgba(79,132,255,.7) inset; }
+.sg-src.is-done .sg-ic u{ transform:scale(1); }
+.sg-rb .sg-glow{ transition:opacity .5s,stroke-width .5s; } .sg-rb.is-hot .sg-glow{ opacity:.26; stroke-width:15; } .sg-rb.is-hot .sg-th{ stroke-width:2.4; } .sg-rb.is-hot .sg-st{ opacity:1; }
+.sg-end{ fill:#4f84ff; filter:drop-shadow(0 0 6px rgba(79,132,255,.9)); }
 .mini .ig-pr{ display:none; width:64%; height:9px; border-radius:9px; background:rgba(120,150,210,.2); overflow:hidden; margin-top:2px; }
 .mini .ig-pr i{ display:block; height:100%; width:100%; transform-origin:left; transform:scaleX(0); transition:transform .9s var(--ease); background:linear-gradient(90deg,#78aaff,#2f63ff); border-radius:9px; box-shadow:0 0 12px rgba(79,132,255,.7); }
 body.mode-ingest .mini .ig-pr{ display:block; }
@@ -745,14 +742,13 @@ async function analyseAll(run) {
   cs.forEach((el, i) => { S.cards[i].st = "analysing"; S.cards[i].step = 0; el.classList.add("is-analysing"); igEnsure(el); setStatus(i); $("[data-mini]", el).textContent = "Waiting for sources"; $(".ig-pr i", el).style.transform = "scaleX(0)"; });
   const old = $("#sg"); if (old) old.remove();
   stage.insertAdjacentHTML("beforeend", `<div class="sg" id="sg"><span class="sg-beam"></span><svg class="sg-svg" data-svg></svg>
-    <div class="sg-say" data-say><em data-kick>Collecting sources</em><b data-line2>Getting ready</b></div><div class="sg-log" data-log></div>
     <div class="sg-pod" data-pod></div><div class="fx-orb sg-orb" data-orb><canvas></canvas><span class="fx-core">${AI_MARK}</span></div>
-    <div class="sg-tray" data-tray><div class="sg-trayh"><span>Sources</span><i>${IG_SRC.length} inputs</i></div><div class="sg-slots" data-srcs></div></div></div>`);
+    <div class="sg-say" data-say><em data-kick>Collecting sources</em><b data-line2>Getting ready</b></div><div class="sg-srcs" data-srcs></div></div>`);
   head("Onboarding Agent · working", "5 steps", "Preparing your setup", "Reading your sources", true);
   setMode("ingest");
   await W(560); if (run !== S.runId) return;
   layout();
-  const sg = $("#sg"), svg = $("[data-svg]", sg), orb = $("[data-orb]", sg), pod = $("[data-pod]", sg), srcBox = $("[data-srcs]", sg), say = $("[data-say]", sg), kick = $("[data-kick]", sg), line2 = $("[data-line2]", sg), log = $("[data-log]", sg);
+  const sg = $("#sg"), svg = $("[data-svg]", sg), orb = $("[data-orb]", sg), pod = $("[data-pod]", sg), srcBox = $("[data-srcs]", sg), say = $("[data-say]", sg), kick = $("[data-kick]", sg), line2 = $("[data-line2]", sg);
   const ok = () => run === S.runId && sg.isConnected;
   const speed = { v: .7 };
   fxSphere($("canvas", orb), speed, () => sg.isConnected, { near: "#3a66e8", far: "#a9bff4" });
@@ -771,32 +767,40 @@ async function analyseAll(run) {
   };
   const N = IG_SRC.length, got = [0, 0, 0, 0, 0];
   if (RM) { STEPS.forEach((_, i) => finishCard(i)); speak("Ready for review", "All five steps are prepared"); sg.classList.add("is-in"); await W(0); sg.remove(); unlock(run); return; }
-  const addLog = (title, from) => {
-    const row = document.createElement("div"); row.className = "sg-lg"; row.innerHTML = `<u>${IC.check}</u><b>${esc(title)}</b><i>from ${esc(from)}</i>`; log.appendChild(row);
-    row.animate([{ opacity: 0, transform: "translateX(-10px)" }, { opacity: 1, transform: "none" }], { duration: 480, easing: "cubic-bezier(.16,1,.3,1)", fill: "both" });
-    while (log.children.length > 5) log.firstChild.remove();
-    [...log.children].forEach((c, j, arr) => { c.style.opacity = String(.35 + .65 * ((j + 1) / arr.length)); });
-  };
   /* geometry from the live layout */
   const st0 = stage.getBoundingClientRect();
   const rel = (el) => { const r = el.getBoundingClientRect(); return { x: r.left - st0.left, y: r.top - st0.top, w: r.width, h: r.height }; };
   svg.setAttribute("viewBox", `0 0 ${st0.width} ${st0.height}`); svg.setAttribute("width", st0.width); svg.setAttribute("height", st0.height);
   const ob = rel(orb), ox = ob.x + ob.w / 2, oy = ob.y + ob.h / 2, pb = rel(pod), px = pb.x + pb.w / 2, py = pb.y + pb.h / 2;
+  /* sources: three on each side of the agent, always connected */
+  const cardW = Math.min(268, Math.max(200, ox - 70 - 150 - 24)), rowGap = 96;
   const items = IG_SRC.map((src, k) => {
-    const el = document.createElement("div"); el.className = "sg-src";
+    const left = k < 3, row = k % 3, y = oy + (row - 1) * rowGap + (row === 1 ? 0 : (row === 0 ? -6 : 6));
+    const x = left ? ox - 70 - 150 - cardW : ox + 70 + 150;
+    const el = document.createElement("div"); el.className = `sg-src ${left ? "is-l" : "is-r"}`;
+    el.style.left = `${x}px`; el.style.top = `${y}px`; el.style.width = `${cardW}px`;
     const f = src.feeds.length;
-    el.innerHTML = `<i class="sg-ic">${FX_ICO[src.ico]}<u>${IC.check}</u></i><b>${esc(src.name)}</b><em>${esc(src.sub || `Feeds ${f} step${f > 1 ? "s" : ""}`)}</em>`;
+    el.innerHTML = `<i class="sg-ic">${FX_ICO[src.ico]}<u>${IC.check}</u></i><span><b>${esc(src.name)}</b><em>${esc(src.sub || `Feeds ${f} step${f > 1 ? "s" : ""}`)}</em></span><s></s>`;
     srcBox.appendChild(el);
-    return { src, el };
+    return { src, el, left, y, ex: left ? x + cardW : x };
   });
   const svgNS = "http://www.w3.org/2000/svg";
-  const mk = (cls, d) => { const p = document.createElementNS(svgNS, "path"); p.setAttribute("d", d); p.setAttribute("class", cls); svg.appendChild(p); return p; };
   const curve = (x1, y1, x2, y2, bend = .5, b2 = bend) => { const dy = y2 - y1; return `M${x1} ${y1} C ${x1} ${y1 + dy * bend}, ${x2} ${y2 - dy * b2}, ${x2} ${y2}`; };
-  /* faint circuit lines that are always there, and a stage-set of arcs behind the cards */
-  const slotTop = (it) => { const r = rel($(".sg-ic", it.el)); return [r.x + r.w / 2, r.y + 2]; };
+  const hcurve = (x1, y1, x2, y2) => { const dx = x2 - x1; return `M${x1} ${y1} C ${x1 + dx * .55} ${y1}, ${x2 - dx * .42} ${y2}, ${x2} ${y2}`; };
+  const mk = (cls, d, parent = svg) => { const p = document.createElementNS(svgNS, "path"); p.setAttribute("d", d); p.setAttribute("class", cls); parent.appendChild(p); return p; };
   const cardBot = (i) => { const r = rel(cs[i]); return [r.x + r.w / 2, r.y + r.h - 4]; };
-  [1, 2].forEach((n) => { const R = Math.max(120, oy - rel(cs[2]).y - rel(cs[2]).h * .55) + n * 70; const a = mk("sg-arc", `M${ox - R} ${oy - 20} A ${R} ${R} 0 0 1 ${ox + R} ${oy - 20}`); a.style.opacity = 0; a.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1400, delay: 300 + n * 200, fill: "forwards" }); });
-  const guideIn = items.map((it) => { const [x, y] = slotTop(it); const d = curve(x, y, ox, oy + 66, .9, .3); const p = mk("sg-gd", d); p.style.opacity = 0; return p; });
+  /* arcs behind the cards */
+  [1, 2].forEach((n) => { const cr = rel(cs[2]); const R = Math.max(120, oy - cr.y - cr.h * .55) + n * 70; const a2 = mk("sg-arc", `M${ox - R} ${oy - 20} A ${R} ${R} 0 0 1 ${ox + R} ${oy - 20}`); a2.style.opacity = 0; a2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1400, delay: 300 + n * 200, fill: "forwards" }); });
+  /* ribbons from every source into the agent: glow, fine strands, an end dot */
+  const ribbons = items.map((it) => {
+    const g = document.createElementNS(svgNS, "g"); g.setAttribute("class", "sg-rb"); svg.appendChild(g);
+    const sgn = it.left ? 1 : -1, tx = ox - sgn * 66, ty = oy + (it.y - oy) * .34;
+    const ds = [0, -7, 7, 14].map((o, j) => hcurve(it.ex, it.y + (j ? o * .6 : 0), tx, ty + o * .55));
+    mk("sg-glow", ds[0], g); const strands = ds.slice(0, 3).map((d, j) => mk(j ? "sg-st" : "sg-th", d, g));
+    [...g.children].forEach((p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+    const dot = document.createElementNS(svgNS, "circle"); dot.setAttribute("cx", it.ex); dot.setAttribute("cy", it.y); dot.setAttribute("r", 4.2); dot.setAttribute("class", "sg-end"); dot.style.opacity = 0; g.appendChild(dot);
+    return { g, ds };
+  });
   const guideOut = STEPS.map((_, i) => { const [x, y] = cardBot(i); const d = curve(ox, oy - 68, x, y, .92, .3); const p = mk("sg-gd", d); p.style.opacity = 0; return p; });
   const bundle = (x1, y1, x2, y2, dur, bb = [.5, .5]) => {
     const g = document.createElementNS(svgNS, "g"); svg.appendChild(g);
@@ -823,26 +827,30 @@ async function analyseAll(run) {
     const h = document.createElement("i"); h.className = "sg-hit"; h.style.left = `${x}px`; h.style.top = `${y}px`; sg.appendChild(h);
     h.animate([{ transform: "translate(-50%,-50%) scale(.4)", opacity: .9 }, { transform: "translate(-50%,-50%) scale(1.7)", opacity: 0 }], { duration: 800, easing: "cubic-bezier(.16,1,.3,1)" }).onfinish = () => h.remove();
   };
-  /* act 1: the agent arrives on its podium, the tray fills with sources */
-  sg.classList.add("is-in"); speak("Collecting sources", "Getting ready");
-  await sleep(900); if (!ok()) return;
-  items.forEach((it, k) => setTimeout(() => ok() && it.el.classList.add("is-on"), k * 130));
-  guideIn.forEach((p, k) => p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 250 + k * 90, fill: "forwards" }));
-  guideOut.forEach((p, k) => p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 500 + k * 90, fill: "forwards" }));
-  await sleep(N * 130 + 800); if (!ok()) return;
+  /* act 1: the agent arrives, the sources appear around it and connect */
+  sg.classList.add("is-in"); speak("Collecting sources", "Connecting to your sources");
+  await sleep(800); if (!ok()) return;
+  items.forEach((it, k) => setTimeout(() => ok() && it.el.classList.add("is-on"), k * 120));
+  ribbons.forEach((r, k) => [...r.g.children].forEach((p) => { if (p.tagName === "circle") { p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 700 + k * 110, fill: "forwards" }); return; } p.animate([{ strokeDashoffset: p.style.strokeDasharray, opacity: 0 }, { opacity: 1, offset: .2 }, { strokeDashoffset: 0, opacity: 1 }], { duration: 1100, delay: 300 + k * 110, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }); }));
+  guideOut.forEach((p, k) => p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 700 + k * 90, fill: "forwards" }));
+  await sleep(1500); if (!ok()) return;
+  /* connected the whole time: a steady trickle of data from every source into the agent */
+  const hot = new Set();
+  const flow = setInterval(() => {
+    if (!ok()) { clearInterval(flow); return; }
+    const k = Math.floor(Math.random() * N); if (!hot.has(k) && Math.random() < .55) return;
+    comets([ribbons[k].ds[1 + Math.floor(Math.random() * 2)]], 1, 1100, 0);
+  }, 230);
   /* act 2: the agent reads each source, then sends what it learned up to the cards it feeds */
   const beat = async (k) => {
     const it = items[k], src = it.src; if (!ok()) return;
     speak(`Source ${k + 1} of ${N} · Feeds ${src.feeds.length} step${src.feeds.length > 1 ? "s" : ""}`, `Reading ${src.name}`);
-    it.el.classList.add("is-active");
+    it.el.classList.add("is-active"); ribbons[k].g.classList.add("is-hot"); hot.add(k);
     src.feeds.forEach((i) => setCard(i, `Reading ${src.name}`, .72 * (got[i] / IG_NEED[i]) + .03));
-    const [sx, sy] = slotTop(it), b1 = bundle(sx, sy, ox, oy + 66, 560, [.9, .3]);
-    await sleep(340); if (!ok()) return;
-    comets(b1.ds, 9, 760, 80);
-    guideIn[k].style.opacity = 0;
-    await sleep(900); if (!ok()) return;
+    comets(ribbons[k].ds, 10, 900, 70);
+    await sleep(1050); if (!ok()) return;
     pulse(); orb.style.setProperty("--e", (k + 1) / N);
-    it.el.classList.remove("is-active"); it.el.classList.add("is-done"); unbundle(b1, 200); guideIn[k].style.opacity = 1;
+    it.el.classList.remove("is-active"); it.el.classList.add("is-done"); ribbons[k].g.classList.remove("is-hot"); hot.delete(k);
     const outs = src.feeds.map((i) => { const [cx2, cy2] = cardBot(i); return { i, cx2, cy2, b: bundle(ox, oy - 68, cx2, cy2, 620, [.92, .3]) }; });
     await sleep(320); if (!ok()) return;
     outs.forEach(({ b }) => comets(b.ds, 7, 760, 90));
@@ -850,12 +858,12 @@ async function analyseAll(run) {
     outs.forEach(({ i, cx2, cy2, b }) => {
       got[i]++; cs[i].classList.add("is-hit"); setTimeout(() => cs[i].classList.remove("is-hit"), 900); landing(cx2, cy2);
       setCard(i, got[i] >= IG_NEED[i] ? "Sources read" : `Read ${got[i]} of ${IG_NEED[i]} sources`, .72 * (got[i] / IG_NEED[i]));
-      addLog(STEPS[i].title, src.name); unbundle(b, 120);
+      unbundle(b, 120);
     });
   };
-  await Promise.all(items.map((_, k) => sleep(k * 1600).then(() => ok() && beat(k)))); if (!ok()) return; await sleep(200);
+  await Promise.all(items.map((_, k) => sleep(k * 1700).then(() => ok() && beat(k)))); if (!ok()) return; await sleep(200);
   /* act 3: the agent puts it all together for every card at once */
-  speed.v = 3; sg.classList.add("is-proc");
+  speed.v = 3; sg.classList.add("is-proc"); items.forEach((it, k) => { ribbons[k].g.classList.add("is-hot"); hot.add(k); });
   speak("Processing", "Putting your five steps together");
   const outs = STEPS.map((_, i) => { const [x, y] = cardBot(i); return { x, y, b: bundle(ox, oy - 68, x, y, 700, [.92, .3]) }; });
   await sleep(560); if (!ok()) return;
@@ -864,6 +872,7 @@ async function analyseAll(run) {
   await sleep(2100); if (!ok()) return;
   outs.forEach(({ b, x, y }) => { unbundle(b); landing(x, y); });
   /* act 4: ready */
+  clearInterval(flow); items.forEach((it, k) => ribbons[k].g.classList.remove("is-hot"));
   STEPS.forEach((_, i) => setTimeout(() => ok() && finishCard(i), i * 160));
   speak("Ready for review", "All five steps are prepared");
   await sleep(4 * 160 + 1200); if (!ok()) return;
