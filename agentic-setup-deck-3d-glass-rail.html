@@ -790,6 +790,36 @@ body.v3b:not(.mode-overview) .card:not(.is-focus) .cf-mid{ display:none; }
 body.v3b.mode-overview .cf-v{ display:none!important; }
 .card.is-far .cf-v{ opacity:.8; }
 
+/* ---------- v9: 3D card arc around the agent, lit arch of sources, live telemetry ---------- */
+.sg .sg-src,.sg-say,.sg-log,.sg-tray,.sg-cn,.sg-ln,.sg-lane,.sg-gd{ display:none!important; }
+.sg .sg-orb{ width:210px; height:210px; margin:-105px 0 0 -105px; } .sg .fx-core{ inset:62px; }
+.sg-pod{ width:340px!important; margin-left:-170px!important; }
+.sg-pod{ top:calc(var(--by) + 84px)!important; }
+.tl{ position:absolute; left:50%; top:10px; width:min(620px,56%); margin-left:calc(min(620px,56%) / -2); padding:12px 18px 10px; border-radius:22px; background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(238,243,252,.78)); box-shadow:0 0 0 1px rgba(170,185,215,.7) inset,0 24px 40px -26px rgba(30,60,140,.5); backdrop-filter:blur(8px); opacity:0; transform:translateY(-10px); transition:opacity .8s var(--ease),transform .9s var(--ease); }
+.sg.is-in .tl{ opacity:1; transform:none; }
+.tl-h{ display:flex; align-items:center; gap:8px; font:600 10.5px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#6f7d99; } .tl-h i{ width:8px; height:8px; border-radius:50%; background:#2f63ff; box-shadow:0 0 0 4px rgba(47,99,255,.18),0 0 12px rgba(47,99,255,.8); animation:beam 1.2s ease-in-out infinite; } .tl-h span{ margin-left:auto; color:#2f63ff; }
+.tl-b{ margin-top:8px; display:flex; flex-direction:column; gap:5px; min-height:70px; justify-content:flex-end; }
+.tl-l{ display:flex; gap:12px; align-items:baseline; font-size:13px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .tl-l time{ flex:none; font:500 11px/1 var(--mono); color:#8b98b3; } .tl-l b{ font-weight:500; color:#4d5b78; overflow:hidden; text-overflow:ellipsis; } .tl-l.is-s b{ color:var(--ink); font-weight:600; }
+.s3-bandg{ fill:none; stroke:rgba(79,132,255,.35); stroke-width:84; stroke-linecap:round; filter:blur(20px); }
+.s3-band{ fill:none; stroke:url(#ga); stroke-width:78; stroke-linecap:round; filter:drop-shadow(0 20px 22px rgba(30,60,160,.28)); }
+.s3-fill{ fill:none; stroke:url(#gb); stroke-width:78; stroke-linecap:round; opacity:.2; }
+.s3-edge{ fill:none; stroke:rgba(255,255,255,.95); stroke-width:92; stroke-linecap:round; opacity:.0; }
+.s3-src{ position:absolute; width:140px; margin-left:-70px; margin-top:-34px; display:flex; flex-direction:column; align-items:center; gap:9px; opacity:0; transform:translateY(18px) scale(.9); transition:opacity .7s var(--ease),transform .8s var(--ease); }
+.s3-src.is-on{ opacity:1; transform:none; }
+.s3-src b{ font:600 12.5px/1.2 var(--font); color:#4d5b78; text-align:center; white-space:nowrap; transition:color .4s; }
+.s3-ic{ position:relative; width:68px; height:68px; border-radius:50%; display:grid; place-items:center; color:#2f63ff; background:radial-gradient(circle at 32% 24%,#fff 0,#e7efff 74%); box-shadow:0 0 0 1px rgba(79,132,255,.28) inset,0 0 0 7px rgba(79,132,255,.08),0 18px 28px -14px rgba(47,99,255,.7); transition:transform .5s var(--ease),box-shadow .5s,color .4s; }
+.s3-ic svg{ width:28px; height:28px; }
+.s3-ic u{ position:absolute; right:-2px; bottom:-2px; width:21px; height:21px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; transform:scale(0); transition:transform .45s var(--ease); box-shadow:0 0 0 3px #fff; text-decoration:none; } .s3-ic u svg{ width:11px; height:11px; }
+.s3-src.is-active .s3-ic,.s3-src.is-feed .s3-ic{ transform:scale(1.12); box-shadow:0 0 0 1.5px #2f63ff inset,0 0 0 11px rgba(79,132,255,.15),0 0 34px rgba(79,132,255,.6),0 22px 32px -14px rgba(47,99,255,.8); }
+.s3-src.is-active .s3-ic::before{ content:""; position:absolute; inset:-8px; border-radius:50%; border:2px solid transparent; border-top-color:#2f63ff; animation:fxspin .9s linear infinite; }
+.s3-src.is-active b,.s3-src.is-feed b,.s3-src.is-done b{ color:var(--ink); } .s3-src.is-done .s3-ic u{ transform:scale(1); }
+.s3-dot{ position:absolute; left:0; top:0; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; background:radial-gradient(circle,#fff 0,#6f9bff 52%,rgba(79,132,255,0)); box-shadow:0 0 20px 6px rgba(79,132,255,.6); offset-rotate:0deg; opacity:0; }
+.sg-svg{ z-index:1; } .sg-srcs{ z-index:2; } .sg-orb{ z-index:3; }
+/* cards in the arc: soft depth and a light gradient, ready state glows */
+body.mode-ingest .card.is-proc .card-in{ box-shadow:0 0 0 2px rgba(79,132,255,.8),0 0 60px rgba(79,132,255,.55),0 40px 60px -30px rgba(30,70,170,.7)!important; }
+body.mode-ingest .card.is-ready .m-s{ color:#15803d; font-weight:600; }
+body.mode-ingest .card .mini{ backface-visibility:hidden; }
+
 /* calmer palette: blue first, a hint of colour only in small details */
 .sg .sg-ic{ background:radial-gradient(circle at 32% 26%,#fff 0,color-mix(in srgb,var(--sc) 10%,#fff) 74%); }
 body.mode-ingest .card-in{ background:linear-gradient(180deg,#fff 45%,color-mix(in srgb,var(--ac) 7%,#fff) 100%)!important; }
@@ -1488,21 +1518,18 @@ function layout() {
     return;
   }
   if (S.mode === "ingest") {
-    const W = r.width, H = r.height;
-    const f = Math.max(.3, Math.min(.58, (H * .965 - 422) / (1.16 * CH), (W * .9) / (4 * CW * .98 + CW)));
-    const cwid = CW * f, chei = CH * f, step = Math.min(cwid * .98, (W * .9 - cwid) / 4), amp = chei * .16;
-    const by = H * .035 + chei + amp + 184, sgEl = $("#sg");
-    if (sgEl) sgEl.style.setProperty("--by", `${by}px`);
+    const W = r.width, H = r.height, f = Math.max(.3, Math.min(.5, (H * .32) / CH, (W * .15) / CW * 1.4));
+    const R = Math.min(W * .35, 480), Rz = 210, yc = H * .36 - H / 2;
     window.__ringOut = 1;
     all.forEach((el, i) => {
-      const t = (i - 2) / 2;
+      const th = (i - 2) * 31, rad = th * Math.PI / 180;
       size(el, CW, CH);
       el.style.transitionDelay = `${Math.abs(i - 2) * 80}ms`;
-      const y = H * .035 + chei / 2 + (1 - t * t) * amp - H / 2;
-      el.style.transform = `translate3d(${(i - 2) * step}px, ${y}px, ${(1 - Math.abs(t)) * -30}px) rotateY(${-t * 22}deg) rotateZ(${t * 9}deg) scale(${f})`;
+      el.style.transform = `translate3d(${R * Math.sin(rad)}px, ${yc - (1 - Math.cos(rad)) * 70}px, ${-Rz * Math.cos(rad) + 40}px) rotateY(${-th * .9}deg) rotateZ(0deg) scale(${f})`;
       el.style.setProperty("--o", 1); el.style.setProperty("--rz", "0deg"); el.style.opacity = 1; el.style.zIndex = 10 - Math.abs(i - 2); el.classList.remove("is-far", "is-focus", "is-right");
       el.classList.toggle("is-clickable", false);
     });
+    const sgEl = $("#sg"); if (sgEl) sgEl.style.setProperty("--by", `${H * .6}px`);
     return;
   }
   if (S.mode === "ring") {
@@ -2373,14 +2400,15 @@ function fxSphere(cv, speed, ok, pal) {
 
 /* ---------- one scene for all five steps (Rail): cards on an arc above, the agent on its podium, all sources in one tray ---------- */
 const IG_SRC = [
-  { k: "dlt", name: "DLT registration", ico: "db", ac: "#2f63ff", feeds: [0, 1, 3, 4] },
-  { k: "gstin", name: "GSTIN", ico: "doc", ac: "#4f84ff", feeds: [0] },
-  { k: "mca", name: "MCA", ico: "doc", ac: "#2563eb", feeds: [0] },
-  { k: "web", name: "Company website", ico: "globe", ac: "#3b82f6", feeds: [0] },
-  { k: "rates", name: "Partner rate cards", ico: "tag", ac: "#5b7cf7", feeds: [2], sub: "4 partners" },
-  { k: "tpl", name: "DLT templates", ico: "doc", ac: "#1d4ed8", feeds: [4], sub: "100 templates" },
+  { k: "dlt", name: "DLT registration", ico: "db", feeds: [0, 1, 3, 4], tl: ["Opening DLT registration for HDFC Bank Limited", "Found 6 people, 3 brands and 100 templates"] },
+  { k: "gstin", name: "GSTIN", ico: "doc", feeds: [0], tl: ["Checking GSTIN 27AAACH2702H1ZK", "Matched PAN and registered address"] },
+  { k: "mca", name: "MCA", ico: "doc", feeds: [0], tl: ["Reading the MCA company master", "Matched CIN and entity type"] },
+  { k: "web", name: "Company website", ico: "globe", feeds: [0], tl: ["Visiting hdfcbank.com", "Fetched the logo and website URL"] },
+  { k: "rates", name: "Partner rate cards", ico: "tag", feeds: [2], tl: ["Reading rate cards from 4 partners", "Compared rates for each phase"] },
+  { k: "tpl", name: "DLT templates", ico: "doc", feeds: [4], tl: ["Scanning 100 DLT templates", "Matched templates to lines of business"] },
 ];
 const IG_NEED = [4, 1, 1, 1, 2];
+const IG_CARD_TL = ["Drafting your business profile from 4 sources", "Matching a role to each of 6 people", "Choosing Karix and Value First, splitting volume by phase", "Grouping headers into 3 brands and 7 lines of business", "Mapping 98 of 100 templates to a line of business"];
 function igEnsure(el, i) {
   const m = $(".mini", el); if (!m) return;
   if (!$(".ig-pr", m)) m.insertAdjacentHTML("beforeend", '<div class="ig-pr"><i></i></div>');
@@ -2388,138 +2416,115 @@ function igEnsure(el, i) {
   m.insertAdjacentHTML("beforeend", `<div class="ig-dots">${Array.from({ length: IG_NEED[i] }, () => "<i></i>").join("")}</div>`);
 }
 async function analyseAll(run) {
-  S.phase = "analyse"; S.active = 0;
+  S.phase = "analyse"; S.active = 0; window.__igActive = -1;
   const cs = cards();
-  cs.forEach((el, i) => { S.cards[i].st = "analysing"; S.cards[i].step = 0; el.classList.add("is-analysing"); igEnsure(el, i); setStatus(i); $("[data-mini]", el).textContent = "Waiting for sources"; $(".ig-pr i", el).style.transform = "scaleX(0)"; });
+  cs.forEach((el, i) => { S.cards[i].st = "analysing"; S.cards[i].step = 0; el.classList.add("is-analysing"); igEnsure(el, i); setStatus(i); $("[data-mini]", el).textContent = "Waiting"; $(".ig-pr i", el).style.transform = "scaleX(0)"; });
   const old = $("#sg"); if (old) old.remove();
-  stage.insertAdjacentHTML("beforeend", `<div class="sg" id="sg"><span class="sg-beam"></span><svg class="sg-svg" data-svg></svg>
-    <div class="sg-pod" data-pod></div><div class="fx-orb sg-orb" data-orb><span class="sg-r4"></span><span class="sg-r3"></span><span class="sg-r2"></span><span class="sg-r1"></span><canvas></canvas><span class="fx-core">${AI_MARK}</span></div>
-    <div class="sg-say" data-say><em data-kick>Collecting sources</em><b data-line2>Getting ready</b></div><div class="sg-srcs" data-srcs></div></div>`);
+  stage.insertAdjacentHTML("beforeend", `<div class="sg" id="sg"><span class="sg-beam"></span>
+    <div class="tl" data-tlbox><div class="tl-h"><i></i><b>Agent telemetry</b><span>live</span></div><div class="tl-b" data-tl></div></div>
+    <svg class="sg-svg" data-svg></svg><div class="sg-pod" data-pod></div>
+    <div class="fx-orb sg-orb" data-orb><span class="sg-r4"></span><span class="sg-r3"></span><span class="sg-r2"></span><span class="sg-r1"></span><canvas></canvas><span class="fx-core">${AI_MARK}</span></div>
+    <div class="sg-srcs" data-srcs></div></div>`);
   head("Onboarding Agent · working", "5 steps", "Preparing your setup", "Reading your sources", true);
   setMode("ingest");
   await W(560); if (run !== S.runId) return;
   layout();
-  await W(1500); if (run !== S.runId) return;
-  const sg = $("#sg"), svg = $("[data-svg]", sg), orb = $("[data-orb]", sg), pod = $("[data-pod]", sg), srcBox = $("[data-srcs]", sg), say = $("[data-say]", sg), kick = $("[data-kick]", sg), line2 = $("[data-line2]", sg);
+  await W(1300); if (run !== S.runId) return;
+  const sg = $("#sg"), svg = $("[data-svg]", sg), orb = $("[data-orb]", sg), pod = $("[data-pod]", sg), srcBox = $("[data-srcs]", sg), tlb = $("[data-tl]", sg);
   const ok = () => run === S.runId && sg.isConnected;
   const speed = { v: .7 };
   fxSphere($("canvas", orb), speed, () => sg.isConnected, { near: "#3a66e8", far: "#a9bff4" });
-  const speak = (k, t) => {
-    if (kick.textContent === k && line2.textContent === t) return;
-    if (RM) { kick.textContent = k; line2.textContent = t; return; }
-    say.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(-6px)" }], { duration: 200, fill: "forwards" }).onfinish = () => {
-      kick.textContent = k; line2.textContent = t;
-      say.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 420, easing: "cubic-bezier(.16,1,.3,1)", fill: "forwards" });
-    };
+  const tele = (text, strong) => {
+    const t = new Date(), hh = (n) => String(n).padStart(2, "0"), row = document.createElement("div");
+    row.className = "tl-l" + (strong ? " is-s" : ""); row.innerHTML = `<time>${hh(t.getHours())}:${hh(t.getMinutes())}:${hh(t.getSeconds())}</time><b>${esc(text)}</b>`;
+    tlb.appendChild(row);
+    if (!RM) row.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "none" }], { duration: 380, easing: "cubic-bezier(.16,1,.3,1)" });
+    while (tlb.children.length > 3) tlb.firstChild.remove();
+    [...tlb.children].forEach((c, j, arr) => { c.style.opacity = String(.28 + .72 * ((j + 1) / arr.length)); });
   };
   const dotsOf = (i) => $$(".ig-dots i", cs[i]);
-  const setCard = (i, text, p, nDots) => {
-    const el = cs[i]; $("[data-mini]", el).textContent = text; $(".ig-pr i", el).style.transform = `scaleX(${p})`;
-    if (nDots != null) dotsOf(i).forEach((d, j) => d.classList.toggle("on", j < nDots));
-  };
-  const finishCard = (i) => {
-    S.cards[i].st = "ready"; S.cards[i].at = now(); setStatus(i); renderAnalyse(i);
-    $(".ig-pr i", cs[i]).style.transform = "scaleX(1)"; dotsOf(i).forEach((d) => d.classList.add("on")); cs[i].classList.add("is-done-flash"); setTimeout(() => cs[i].classList.remove("is-done-flash"), 1100);
-  };
+  const setCard = (i, text, nDots) => { const el = cs[i]; $("[data-mini]", el).textContent = text; if (nDots != null) dotsOf(i).forEach((d, j) => d.classList.toggle("on", j < nDots)); };
+  const finishCard = (i) => { S.cards[i].st = "ready"; S.cards[i].at = now(); setStatus(i); renderAnalyse(i); dotsOf(i).forEach((d) => d.classList.add("on")); cs[i].classList.add("is-done-flash"); setTimeout(() => cs[i].classList.remove("is-done-flash"), 1100); };
   const N = IG_SRC.length, got = [0, 0, 0, 0, 0];
-  if (RM) { STEPS.forEach((_, i) => finishCard(i)); speak("Ready for review", "All five steps are prepared"); sg.classList.add("is-in"); await W(0); sg.remove(); unlock(run); return; }
+  if (RM) { STEPS.forEach((_, i) => finishCard(i)); tele("All five steps are prepared", true); sg.classList.add("is-in"); await W(0); sg.remove(); unlock(run); return; }
   /* geometry from the live layout */
   const st0 = stage.getBoundingClientRect();
   const rel = (el) => { const r = el.getBoundingClientRect(); return { x: r.left - st0.left, y: r.top - st0.top, w: r.width, h: r.height }; };
   svg.setAttribute("viewBox", `0 0 ${st0.width} ${st0.height}`); svg.setAttribute("width", st0.width); svg.setAttribute("height", st0.height);
   const ob = rel(orb), ox = ob.x + ob.w / 2, oy = ob.y + ob.h / 2, pb = rel(pod), px = pb.x + pb.w / 2, py = pb.y + pb.h / 2;
-  /* six source nodes in a tight arc around the agent; they stay where they are */
-  const RIM = 91, NR = 38, offs = [[-440, 0], [-305, 0], [-170, 0]];
-  const items = IG_SRC.map((src, k) => {
-    const left = k < 3, row = k % 3, dx = offs[row][0], dy = offs[row][1];
-    const x = ox + (left ? dx : -dx), y = oy + dy;
-    const el = document.createElement("div"); el.className = `sg-src ${left ? "is-l" : "is-r"}`;
-    el.style.left = `${x}px`; el.style.top = `${y}px`; el.style.setProperty("--sc", src.ac);
-    el.innerHTML = `<i class="sg-ic">${FX_ICO[src.ico]}<u>${IC.check}</u></i><b>${esc(src.name)}</b>`;
-    srcBox.appendChild(el);
-    return { src, el, left, x, y, row };
-  });
   const svgNS = "http://www.w3.org/2000/svg";
-  const mk = (cls, d, parent = svg) => { const p = document.createElementNS(svgNS, "path"); p.setAttribute("d", d); p.setAttribute("class", cls); parent.appendChild(p); return p; };
-  const curve = (x1, y1, x2, y2, bend = .5, b2 = bend) => { const dy = y2 - y1; return `M${x1} ${y1} C ${x1} ${y1 + dy * bend}, ${x2} ${y2 - dy * b2}, ${x2} ${y2}`; };
-  const hcurve = (x1, y1, x2, y2) => { const dx = x2 - x1; return `M${x1} ${y1} C ${x1 + dx * .6} ${y1}, ${x2 - dx * .45} ${y2}, ${x2} ${y2}`; };
-  const cardBot = (i) => { const r = rel(cs[i]); return [r.x + r.w / 2, r.y + r.h - 3]; };
-  /* faint arcs behind the cards */
-  [1, 2].forEach((n) => { const cr = rel(cs[2]); const R = Math.max(120, oy - cr.y - cr.h * .55) + n * 70; const a2 = mk("sg-arc", `M${ox - R} ${oy - 20} A ${R} ${R} 0 0 1 ${ox + R} ${oy - 20}`); a2.style.opacity = 0; a2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1400, delay: 300 + n * 200, fill: "forwards" }); });
-  /* connections: one clean curve per link with a port at each end; light travels along them as short pulses */
-  const link = (d, x1, y1, x2, y2, startPort = true) => {
-    const g = document.createElementNS(svgNS, "g"); g.setAttribute("class", "sg-cn"); svg.appendChild(g);
-    const base = mk("sg-cb", d, g), L = base.getTotalLength();
-    base.style.strokeDasharray = L; base.style.strokeDashoffset = L; base.style.opacity = 0;
-    (startPort ? [[x1, y1], [x2, y2]] : [[x2, y2]]).forEach(([cx, cy]) => { const c = document.createElementNS(svgNS, "circle"); c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", 3.6); c.setAttribute("class", "sg-port"); c.style.opacity = 0; g.appendChild(c); });
-    return { g, base, d, L };
-  };
-  const reveal = (c, delay) => { c.base.animate([{ strokeDashoffset: c.L, opacity: 0 }, { opacity: 1, offset: .2 }, { strokeDashoffset: 0, opacity: 1 }], { duration: 1000, delay, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }); [...c.g.querySelectorAll("circle")].forEach((p) => p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, delay: delay + 600, fill: "forwards" })); };
-  const fire = (c, n = 2, dur = 1000, gap = 260) => {
-    for (let j = 0; j < n; j++) {
-      const p = mk("sg-pl", c.d, c.g); p.style.strokeDasharray = `26 ${c.L + 40}`;
-      p.animate([{ strokeDashoffset: 26, opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 1, offset: .88 }, { strokeDashoffset: -c.L, opacity: 0 }], { duration: dur, delay: j * gap, easing: "cubic-bezier(.45,.05,.55,.95)", fill: "both" }).onfinish = () => p.remove();
-    }
-  };
-  const srcLinks = items.map((it) => {
-    const sgn = it.left ? 1 : -1, ang = 0;
-    const x1 = it.x + sgn * NR, rx = ox - sgn * RIM * Math.cos(ang), ry = oy + RIM * Math.sin(ang);
-    return link(hcurve(x1, it.y, rx, ry), x1, it.y, rx, ry);
+  const mk = (cls, d, parent = svg) => { const p = document.createElementNS(svgNS, "path"); p.setAttribute("d", d); if (cls) p.setAttribute("class", cls); parent.appendChild(p); return p; };
+  /* the arch: a lit band the sources sit on */
+  const rx = Math.min(500, st0.width * .345), ry = Math.min(105, st0.height * .12), baseY = oy + Math.min(236, st0.height * .27), A = 60;
+  const pt = (t) => { const a = (-A + 2 * A * t) * Math.PI / 180; return [ox + rx * Math.sin(a) / Math.sin(A * Math.PI / 180), baseY - ry * (1 - Math.cos(a)) / (1 - Math.cos(A * Math.PI / 180))]; };
+  const dPath = Array.from({ length: 41 }, (_, k) => { const [x, y] = pt(k / 40); return (k ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1); }).join(" ");
+  const defs = document.createElementNS(svgNS, "defs"); defs.innerHTML = '<linearGradient id="ga" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".18" stop-color="#fff" stop-opacity=".96"/><stop offset=".5" stop-color="#e8f0ff" stop-opacity="1"/><stop offset=".82" stop-color="#fff" stop-opacity=".96"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><linearGradient id="gb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7aa5ff"/><stop offset="1" stop-color="#2f63ff"/></linearGradient>'; svg.appendChild(defs);
+  const glowBand = mk("s3-bandg", dPath), band = mk("s3-band", dPath), fill = mk("s3-fill", dPath), edge = mk("s3-edge", dPath);
+  const L = band.getTotalLength(); [fill].forEach((p) => { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+  [glowBand, band, edge].forEach((p, k) => { p.style.opacity = 0; p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1100, delay: 200 + k * 120, fill: "forwards" }); });
+  const items = IG_SRC.map((src, k) => {
+    const [x, y] = pt((k + .5) / N), el = document.createElement("div"); el.className = "s3-src";
+    el.style.left = `${x}px`; el.style.top = `${y}px`;
+    el.innerHTML = `<i class="s3-ic">${FX_ICO[src.ico]}<u>${IC.check}</u></i><b>${esc(src.name)}</b>`;
+    srcBox.appendChild(el); return { src, el, x, y };
   });
-  const cardLinks = STEPS.map((_, i) => { const [x, y] = cardBot(i); return link(curve(ox, oy - 78, x, y, .9, .3), ox, oy - 78, x, y, false); });
-  const hotOn = (c) => c.g.classList.add("is-hot"), hotOff = (c) => c.g.classList.remove("is-hot");
+  const comet = (x1, y1, x2, y2, dur = 800, lift = 90) => {
+    const mx = (x1 + x2) / 2, my = Math.min(y1, y2) - lift, c = document.createElement("i"); c.className = "s3-dot";
+    c.style.offsetPath = `path('M${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}')`; sg.appendChild(c);
+    c.animate([{ offsetDistance: "0%", opacity: 0, transform: "scale(.5)" }, { opacity: 1, transform: "scale(1)", offset: .18 }, { offsetDistance: "100%", opacity: 1, transform: "scale(.8)", offset: .92 }, { offsetDistance: "100%", opacity: 0, transform: "scale(.3)" }], { duration: dur, easing: "cubic-bezier(.45,.05,.4,1)", fill: "both" }).onfinish = () => c.remove();
+  };
   const pulse = () => {
-    orb.animate([{ transform: "scale(1)" }, { transform: "scale(1.1)" }, { transform: "scale(1)" }], { duration: 560, easing: "cubic-bezier(.16,1,.3,1)" });
+    orb.animate([{ transform: "scale(1)" }, { transform: "scale(1.09)" }, { transform: "scale(1)" }], { duration: 520, easing: "cubic-bezier(.16,1,.3,1)" });
     const rp = document.createElement("i"); rp.className = "sg-rip"; rp.style.left = `${ox}px`; rp.style.top = `${oy}px`; sg.appendChild(rp);
     rp.animate([{ transform: "translate(-50%,-50%) scale(.5)", opacity: .7 }, { transform: "translate(-50%,-50%) scale(2.2)", opacity: 0 }], { duration: 1000, easing: "cubic-bezier(.16,1,.3,1)" }).onfinish = () => rp.remove();
     const pr = document.createElement("i"); pr.className = "sg-prip"; pr.style.left = `${px}px`; pr.style.top = `${py}px`; sg.appendChild(pr);
     pr.animate([{ transform: "translate(-50%,-50%) scale(.7)", opacity: .75 }, { transform: "translate(-50%,-50%) scale(1.55)", opacity: 0 }], { duration: 1100, easing: "cubic-bezier(.16,1,.3,1)" }).onfinish = () => pr.remove();
   };
-  const landing = (x, y) => {
-    const h = document.createElement("i"); h.className = "sg-hit"; h.style.left = `${x}px`; h.style.top = `${y}px`; sg.appendChild(h);
-    h.animate([{ transform: "translate(-50%,-50%) scale(.4)", opacity: .9 }, { transform: "translate(-50%,-50%) scale(1.7)", opacity: 0 }], { duration: 800, easing: "cubic-bezier(.16,1,.3,1)" }).onfinish = () => h.remove();
-  };
-  /* act 1: the agent arrives, the sources appear around it and connect */
-  sg.classList.add("is-in"); speak("Collecting sources", "Connecting to your sources");
-  await sleep(800); if (!ok()) return;
-  items.forEach((it, k) => setTimeout(() => ok() && it.el.classList.add("is-on"), k * 110));
-  srcLinks.forEach((c, k) => reveal(c, 350 + k * 110));
-  cardLinks.forEach((c, k) => reveal(c, 800 + k * 90));
-  await sleep(1700); if (!ok()) return;
-  /* connected the whole time: a slow trickle of light from every source into the agent */
-  const flow = setInterval(() => { if (!ok()) { clearInterval(flow); return; } if (Math.random() < .6) fire(srcLinks[Math.floor(Math.random() * N)], 1, 1800, 0); }, 420);
-  /* act 2: the agent reads each source in turn, then sends what it learned up to the cards it feeds */
-  const beat = async (k) => {
-    const it = items[k], src = it.src, c = srcLinks[k]; if (!ok()) return;
-    speak(`Source ${k + 1} of ${N} · Feeds ${src.feeds.length} step${src.feeds.length > 1 ? "s" : ""}`, `Reading ${src.name}`);
-    it.el.classList.add("is-active"); hotOn(c);
-    src.feeds.forEach((i) => setCard(i, `Reading ${src.name}`, .72 * (got[i] / IG_NEED[i]) + .03));
-    fire(c, 4, 900, 210);
-    await sleep(1150); if (!ok()) return;
+  /* act 1 */
+  sg.classList.add("is-in"); tele("Agent online · connecting to your sources", true);
+  await sleep(900); if (!ok()) return;
+  items.forEach((it, k) => setTimeout(() => ok() && it.el.classList.add("is-on"), k * 120));
+  await sleep(N * 120 + 500); if (!ok()) return;
+  /* act 2: read every source in turn along the arch */
+  for (let k = 0; k < N; k++) {
+    const it = items[k], src = it.src; if (!ok()) return;
+    it.el.classList.add("is-active"); tele(src.tl[0]);
+    await sleep(420); if (!ok()) return;
+    comet(it.x, it.y - 30, ox, oy + 70, 820, 80);
+    await sleep(520); if (!ok()) return;
+    tele(src.tl[1], true);
+    await sleep(380); if (!ok()) return;
     pulse(); orb.style.setProperty("--e", (k + 1) / N);
-    it.el.classList.remove("is-active"); it.el.classList.add("is-done"); hotOff(c);
-    const outs = src.feeds.map((i) => ({ i, c: cardLinks[i] }));
-    outs.forEach(({ c: cc }) => { hotOn(cc); fire(cc, 3, 950, 200); });
-    await sleep(1000); if (!ok()) return;
-    outs.forEach(({ i, c: cc }) => {
-      got[i]++; cs[i].classList.add("is-hit"); setTimeout(() => cs[i].classList.remove("is-hit"), 900); const [lx, ly] = cardBot(i); landing(lx, ly);
-      setCard(i, got[i] >= IG_NEED[i] ? "Sources read" : `Read ${got[i]} of ${IG_NEED[i]} sources`, .72 * (got[i] / IG_NEED[i]), got[i]); hotOff(cc);
-    });
-  };
-  await Promise.all(items.map((_, k) => sleep(k * 1750).then(() => ok() && beat(k)))); if (!ok()) return; await sleep(200);
-  /* act 3: the agent puts it all together for every card at once */
-  speed.v = 3; sg.classList.add("is-proc"); srcLinks.forEach(hotOn);
-  speak("Processing", "Putting your five steps together");
-  cardLinks.forEach((c) => { hotOn(c); fire(c, 4, 1000, 380); });
-  STEPS.forEach((_, i) => setTimeout(() => ok() && setCard(i, "Processing", .97, IG_NEED[i]), i * 110));
-  await sleep(2400); if (!ok()) return;
-  cardLinks.forEach((c, i) => { hotOff(c); const [lx, ly] = cardBot(i); landing(lx, ly); });
-  /* act 4: ready */
-  clearInterval(flow); srcLinks.forEach(hotOff);
-  STEPS.forEach((_, i) => setTimeout(() => ok() && finishCard(i), i * 160));
-  speak("Ready for review", "All five steps are prepared");
-  await sleep(4 * 160 + 1200); if (!ok()) return;
-  sg.classList.remove("is-in"); setTimeout(() => sg.remove(), 800); speed.v = 1;
+    it.el.classList.remove("is-active"); it.el.classList.add("is-done");
+    fill.animate([{ strokeDashoffset: getComputedStyle(fill).strokeDashoffset }, { strokeDashoffset: L * (1 - (k + 1) / N) }], { duration: 600, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" });
+    src.feeds.forEach((i) => { got[i]++; dotsOf(i).forEach((d, j) => d.classList.toggle("on", j < got[i])); setCard(i, got[i] >= IG_NEED[i] ? "Sources read" : `Read ${got[i]} of ${IG_NEED[i]}`); });
+    await sleep(240);
+  }
+  /* act 3: the cards turn to face the agent one by one and are processed */
+  speed.v = 2.4;
+  for (let i = 0; i < 5; i++) {
+    if (!ok()) return;
+    window.__igActive = i; const el = cs[i];
+    tele(IG_CARD_TL[i], true); setCard(i, "Processing");
+    const feeders = items.filter((it) => it.src.feeds.includes(i));
+    feeders.forEach((it) => it.el.classList.add("is-feed"));
+    el.classList.add("is-proc");
+    const lift = el.animate([{ rotate: "y 0deg", translate: "0 0 0px" }, { rotate: "y 360deg", translate: "0 6px 150px" }], { duration: 1100, easing: "cubic-bezier(.45,.05,.2,1)", fill: "forwards" });
+    await sleep(700); if (!ok()) return;
+    feeders.forEach((it) => comet(it.x, it.y - 30, ox, oy + 70, 700, 70)); pulse();
+    await sleep(520); if (!ok()) return;
+    const r = rel(el); comet(ox, oy - 70, r.x + r.w / 2, r.y + r.h * .8, 700, 40);
+    await sleep(600); if (!ok()) return;
+    finishCard(i); el.classList.remove("is-proc"); el.classList.add("is-ready");
+    feeders.forEach((it) => it.el.classList.remove("is-feed"));
+    lift.finished.then(() => el.animate([{ rotate: "y 360deg", translate: "0 6px 150px" }, { rotate: "y 360deg", translate: "0 0 0px" }], { duration: 650, easing: "cubic-bezier(.3,.6,.3,1)", fill: "forwards" }));
+    await sleep(520);
+  }
+  window.__igActive = -1;
+  tele("All five steps are prepared", true); speed.v = 1;
+  await sleep(1300); if (!ok()) return;
+  sg.classList.remove("is-in"); setTimeout(() => sg.remove(), 800);
+  cs.forEach((el) => el.getAnimations().forEach((an) => an.cancel()));
   unlock(run);
 }
 analyse = analyseAll;
