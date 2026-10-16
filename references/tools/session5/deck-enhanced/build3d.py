@@ -531,6 +531,12 @@ UNLOCK_JS = """async function unlock(run) {
 if (!window.__ringBound) { window.__ringBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#ringGo") || S.phase !== "unlock") return; $("#ringc").classList.remove("on"); $("#ringcta").classList.remove("on"); startReview(); }); }
 """
 RAIL_C_CSS = r'''
+/* calmer palette: blue first, a hint of colour only in small details */
+.sg .sg-ic{ background:radial-gradient(circle at 32% 26%,#fff 0,color-mix(in srgb,var(--sc) 10%,#fff) 74%); }
+body.mode-ingest .card-in{ background:linear-gradient(180deg,#fff 45%,color-mix(in srgb,var(--ac) 7%,#fff) 100%)!important; }
+.sg-say{ top:calc(var(--by) + 176px)!important; }
+.sg .sg-src{ width:124px; } .sg .sg-src b{ white-space:normal; max-width:116px; }
+
 .sg .sg-ic{ width:76px; height:76px; } .sg .sg-ic svg{ width:30px; height:30px; }
 .sg .sg-src{ margin-top:-38px; gap:8px; }
 .sg-say{ top:calc(var(--by) + 206px)!important; }
@@ -555,7 +561,7 @@ RAIL_C_CSS = r'''
 .sg-ln,.sg-lane{ display:none; }
 .sg-gd{ display:none; }
 /* cards: accent colour, bigger icon, source dots */
-.card[data-i="0"]{ --ac:#3b6bf5; } .card[data-i="1"]{ --ac:#8b5cf6; } .card[data-i="2"]{ --ac:#f59e0b; } .card[data-i="3"]{ --ac:#10b981; } .card[data-i="4"]{ --ac:#ec4899; }
+.card[data-i="0"]{ --ac:#2f63ff; } .card[data-i="1"]{ --ac:#4f84ff; } .card[data-i="2"]{ --ac:#3b6bf0; } .card[data-i="3"]{ --ac:#5b8def; } .card[data-i="4"]{ --ac:#2a56d6; }
 body.mode-ingest .card-in{ background:linear-gradient(180deg,#fff 38%,color-mix(in srgb,var(--ac) 11%,#fff) 100%)!important; box-shadow:0 0 0 1px color-mix(in srgb,var(--ac) 18%,#fff) inset,0 30px 50px -28px color-mix(in srgb,var(--ac) 55%,#1e3a8a)!important; }
 body.mode-ingest .mini::before{ content:""; position:absolute; top:0; left:22%; right:22%; height:6px; border-radius:0 0 8px 8px; background:var(--ac); box-shadow:0 6px 22px color-mix(in srgb,var(--ac) 70%,transparent); }
 body.mode-ingest .mini .m-ic{ width:124px; height:124px; border-radius:38px; background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 22%,#fff),color-mix(in srgb,var(--ac) 8%,#fff)); color:var(--ac); box-shadow:0 0 0 1px color-mix(in srgb,var(--ac) 24%,#fff) inset,0 18px 30px -18px var(--ac); }
@@ -765,12 +771,12 @@ function fxSphere(cv, speed, ok, pal) {
 
 /* ---------- one scene for all five steps (Rail): cards on an arc above, the agent on its podium, all sources in one tray ---------- */
 const IG_SRC = [
-  { k: "dlt", name: "DLT registration", ico: "db", ac: "#6366f1", feeds: [0, 1, 3, 4] },
-  { k: "gstin", name: "GSTIN", ico: "doc", ac: "#f59e0b", feeds: [0] },
-  { k: "mca", name: "MCA", ico: "doc", ac: "#10b981", feeds: [0] },
-  { k: "web", name: "Company website", ico: "globe", ac: "#0ea5e9", feeds: [0] },
-  { k: "rates", name: "Partner rate cards", ico: "tag", ac: "#8b5cf6", feeds: [2], sub: "4 partners" },
-  { k: "tpl", name: "DLT templates", ico: "doc", ac: "#ec4899", feeds: [4], sub: "100 templates" },
+  { k: "dlt", name: "DLT registration", ico: "db", ac: "#2f63ff", feeds: [0, 1, 3, 4] },
+  { k: "gstin", name: "GSTIN", ico: "doc", ac: "#4f84ff", feeds: [0] },
+  { k: "mca", name: "MCA", ico: "doc", ac: "#2563eb", feeds: [0] },
+  { k: "web", name: "Company website", ico: "globe", ac: "#3b82f6", feeds: [0] },
+  { k: "rates", name: "Partner rate cards", ico: "tag", ac: "#5b7cf7", feeds: [2], sub: "4 partners" },
+  { k: "tpl", name: "DLT templates", ico: "doc", ac: "#1d4ed8", feeds: [4], sub: "100 templates" },
 ];
 const IG_NEED = [4, 1, 1, 1, 2];
 function igEnsure(el, i) {
@@ -821,7 +827,7 @@ async function analyseAll(run) {
   svg.setAttribute("viewBox", `0 0 ${st0.width} ${st0.height}`); svg.setAttribute("width", st0.width); svg.setAttribute("height", st0.height);
   const ob = rel(orb), ox = ob.x + ob.w / 2, oy = ob.y + ob.h / 2, pb = rel(pod), px = pb.x + pb.w / 2, py = pb.y + pb.h / 2;
   /* six source nodes in a tight arc around the agent; they stay where they are */
-  const RIM = 91, NR = 38, offs = [[-190, -114], [-262, 0], [-190, 114]];
+  const RIM = 91, NR = 38, offs = [[-440, 0], [-305, 0], [-170, 0]];
   const items = IG_SRC.map((src, k) => {
     const left = k < 3, row = k % 3, dx = offs[row][0], dy = offs[row][1];
     const x = ox + (left ? dx : -dx), y = oy + dy;
@@ -854,7 +860,7 @@ async function analyseAll(run) {
     }
   };
   const srcLinks = items.map((it) => {
-    const sgn = it.left ? 1 : -1, ang = (it.row === 0 ? -36 : it.row === 2 ? 36 : 0) * Math.PI / 180;
+    const sgn = it.left ? 1 : -1, ang = 0;
     const x1 = it.x + sgn * NR, rx = ox - sgn * RIM * Math.cos(ang), ry = oy + RIM * Math.sin(ang);
     return link(hcurve(x1, it.y, rx, ry), x1, it.y, rx, ry);
   });
