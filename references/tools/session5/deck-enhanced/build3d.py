@@ -2,13 +2,46 @@ import re
 base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
+/* ---------- KYC layout in the profile card: logo, starred labels, selects, filling ---------- */
+.kyc-top{ display:flex; align-items:flex-start; gap:18px; margin-bottom:10px; }
+.kyc-lg{ display:flex; flex-direction:column; gap:6px; } .kyc-lab{ font-size:11.5px; color:var(--muted); }
+.kyc-logo{ position:relative; width:92px; height:80px; border-radius:14px; background:#fff; box-shadow:0 0 0 1px var(--line-2) inset; display:grid; place-items:center; overflow:hidden; }
+.kyc-logo img{ position:absolute; inset:6px; width:calc(100% - 12px); height:calc(100% - 12px); object-fit:contain; opacity:0; transform:scale(.92); transition:opacity .5s var(--ease),transform .6s var(--ease); }
+.kyc-logo .kl-ph{ color:#b5bdd0; } .kyc-logo .kl-ph svg{ width:26px; height:26px; }
+.kyc-logo.is-in img{ opacity:1; transform:none; } .kyc-logo.is-in .kl-ph{ display:none; }
+.kyc-logo.is-shimmer::after{ content:""; position:absolute; inset:0; background:linear-gradient(100deg,transparent 20%,rgba(59,110,255,.22) 50%,transparent 80%); background-size:200% 100%; animation:skel 1.1s linear infinite; }
+.kyc-logo .kl-edit{ position:absolute; right:4px; bottom:4px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 0 0 1px var(--line-2),0 4px 8px -4px rgba(37,99,235,.5); color:var(--blue); display:none; place-items:center; } .kyc-logo.is-in .kl-ph + img + .kl-edit,.kyc-logo.is-in .kl-edit{ display:grid; } .kl-edit svg{ width:12px; height:12px; }
+.kyc-tt{ min-width:0; } .kyc-tt .r-h{ margin:0 0 3px; font-size:20px; } .kyc-tt .r-p{ margin:0; }
+.pf label em{ color:#e0364f; font-style:normal; }
+.pin-w{ position:relative; } .pin-w .pin{ height:40px; padding-right:30px; font-size:13.5px; }
+.pf.is-sel .pin-w .chev{ position:absolute; right:10px; top:50%; width:16px; height:16px; margin-top:-8px; color:#8a96b3; pointer-events:none; }
+.pf.is-filling .pin{ box-shadow:0 0 0 3px rgba(51,102,240,.16),0 8px 18px -10px rgba(51,102,240,.5); }
+.pf.is-filled .pin{ animation:kycpop .6s var(--ease); }
+@keyframes kycpop{ 0%{ background:#e6efff } 100%{ background:#FAFBFF } }
+.pform{ gap:12px 16px; }
+.check span{ display:flex; flex-direction:column; } .check small{ color:var(--muted); font-size:11.5px; line-height:1.35; }
+
+/* crisp focused card: no pre-rasterised layer, no depth lift, no filters */
+.card{ will-change:auto!important; }
+.card.is-focus,.card.is-focus .card-in{ filter:none!important; -webkit-backdrop-filter:none!important; backdrop-filter:none!important; }
+body.v3b .card.is-focus .card-in{ transform:none; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+
 /* ---------- processing: blob centred on its own, telemetry inside the card ---------- */
-.deck-head{ min-height:132px; align-items:center; }
+.deck-head{ min-height:132px; align-items:center; transition:min-height .4s var(--ease); } body.is-working .deck-head{ min-height:96px; align-items:flex-start; padding-top:0; }
 body.is-working .ah{ flex-direction:column; align-items:center; justify-content:center; }
 body.is-working .ah-t{ display:none; }
-body.is-working .ah .blob{ width:96px!important; height:96px!important; margin:0; }
+body.is-working .ah .blob{ width:88px!important; height:88px!important; margin:0; }
+body.is-working .ah,body.v3c.is-working .ah{ flex-direction:column; align-items:center; justify-content:flex-start; position:relative; }
 body.is-working .ah::before{ left:50%!important; top:50%!important; transform:translate(-50%,-50%)!important; width:420px; height:170px; background:radial-gradient(closest-side,rgba(59,110,255,.28),rgba(59,110,255,0)); }
-body.is-working .ah::after{ content:""; position:absolute; left:50%; bottom:-18px; width:2px; height:26px; transform:translateX(-50%); background:linear-gradient(180deg,rgba(59,110,255,.55),rgba(59,110,255,0)); animation:beam 1.6s ease-in-out infinite; }
+
+.beam{ position:absolute; left:50%; width:2px; margin-left:-1px; border-radius:2px; background:linear-gradient(180deg,rgba(59,110,255,.55),rgba(59,110,255,.12)); opacity:0; transition:opacity .4s; pointer-events:none; z-index:2; }
+body.is-working .beam{ opacity:1; }
+.beam::after{ content:""; position:absolute; left:-3px; top:-16px; width:8px; height:16px; border-radius:8px; background:radial-gradient(closest-side,#fff,rgba(59,110,255,.95) 55%,rgba(59,110,255,0)); animation:beamflow 1.15s cubic-bezier(.4,0,.6,1) infinite; }
+.beam::before{ content:""; position:absolute; left:50%; bottom:-5px; width:34px; height:10px; margin-left:-17px; border-radius:50%; border:2px solid rgba(59,110,255,.55); animation:beamland 1.15s ease-out infinite; }
+@keyframes beamflow{ 0%{ top:-16px; opacity:0 } 15%{ opacity:1 } 85%{ opacity:1 } 100%{ top:100%; opacity:0 } }
+@keyframes beamland{ 0%,55%{ transform:scale(.4); opacity:0 } 70%{ opacity:.9 } 100%{ transform:scale(1.5); opacity:0 } }
+body.is-working .card.is-focus .card-in{ animation:cardwork 2.3s ease-in-out infinite; }
+@keyframes cardwork{ 0%,100%{ box-shadow:0 0 0 1.5px #fff inset,0 0 0 1px rgba(150,180,230,.5),0 50px 90px -34px rgba(30,70,170,.55),0 -6px 26px -6px rgba(59,110,255,.0) } 50%{ box-shadow:0 0 0 1.5px #fff inset,0 0 0 1.5px rgba(80,125,245,.7),0 50px 90px -34px rgba(30,70,170,.55),0 -10px 34px -6px rgba(59,110,255,.45) } }
 @keyframes beam{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
 .tele{ position:absolute; left:76px; right:20px; top:60px; z-index:3; font-size:13px; line-height:1.3; color:var(--blue-d); display:flex; align-items:center; gap:8px; min-height:18px; }
 .tele::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--blue); box-shadow:0 0 0 4px rgba(59,110,255,.18); animation:beam 1.4s ease-in-out infinite; flex:none; }
@@ -334,8 +367,45 @@ setInterval(hudSync, 250); hudSync();
   new MutationObserver(() => { if (!raf) raf = requestAnimationFrame(sync); }).observe(n, { childList: true, subtree: true, characterData: true });
   new MutationObserver(() => { if (!raf) raf = requestAnimationFrame(sync); }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
   stage.addEventListener("transitionend", () => { if (!raf) raf = requestAnimationFrame(sync); });
+
+  /* beam between the blob and the focused card, and a relayout whenever the header height changes */
+  let wasWorking = null;
+  const beamSync = () => {
+    const ah = $(".ah"), blob = $("#headBlob"); if (!ah || !blob) return;
+    let b = $("#beam"); if (!b) { b = document.createElement("i"); b.id = "beam"; b.className = "beam"; ah.appendChild(b); }
+    const w = document.body.classList.contains("is-working");
+    if (w !== wasWorking) { wasWorking = w; setTimeout(() => window.dispatchEvent(new Event("resize")), 450); }
+    const card = $(".card.is-focus", stage); if (!w || !card) return;
+    const ar = ah.getBoundingClientRect(), br = blob.getBoundingClientRect(), cr = card.getBoundingClientRect();
+    const top = br.bottom - 14 - ar.top, h = Math.max(0, cr.top - (br.bottom - 14));
+    b.style.top = `${top}px`; b.style.height = `${h}px`;
+  };
+  setInterval(beamSync, 150);
 })();
 '''
+
+
+KYC_JS_FILL_OLD = """  for (const row of $$(".pf", el)) {
+    if (run !== S.runId || !row.isConnected) return;
+    const f = PROFILE.find((x) => x.k === row.dataset.k), inp = $(".pin", row);"""
+KYC_JS_FILL_NEW = """  const lg = $("[data-logo]", el);
+  if (lg && !RM) { lg.classList.add("is-shimmer"); await sleep(750); if (run !== S.runId) return; }
+  if (lg) { lg.classList.remove("is-shimmer"); lg.classList.add("is-in"); }
+  if (S.active === 0) narrate("Fetching your enterprise logo from your website", "", true);
+  if (!RM) await sleep(500);
+  for (const row of $$(".pf", el)) {
+    if (run !== S.runId || !row.isConnected) return;
+    const f = KYC.find((x) => x.k === row.dataset.k), inp = $(".pin", row);"""
+KYC_FIELDS = """const KYC = [
+  { k: "name", label: "Legal Entity Name", src: "MCA", v: () => PROFILE.find((x) => x.k === "name").v },
+  { k: "type", label: "Entity Type", src: "MCA", sel: 1, v: () => "Public Limited" },
+  { k: "addr", label: "Registered Address", src: "GSTIN", wide: true, v: () => PROFILE.find((x) => x.k === "addr").v },
+  { k: "pan", label: "Business PAN/TAN", src: "GSTIN", v: () => PROFILE.find((x) => x.k === "pan").v },
+  { k: "web", label: "Website URL", src: "Website", v: () => "https://" + PROFILE.find((x) => x.k === "web").v.replace(/^https?:\\/\\//, "") },
+  { k: "ind", label: "Primary Industry", src: "DLT", sel: 1, v: () => "Banking & Financial Services" },
+  { k: "sub", label: "Sub Industry", src: "DLT", sel: 1, v: () => "Scheduled Commercial Bank" },
+];
+"""
 
 def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
     s = base
@@ -371,6 +441,32 @@ def make(name, bodycls, extra_css, env, hud_html, hud_js, lay, title):
         s = s.replace(o, 'pre = ""')
     if 'rail' in name:
         s = s.replace('AW = 760, AH = 530, RH = 570, RH_PROFILE = 620', 'AW = 800, AH = 560, RH = 610, RH_PROFILE = 660')
+    if 'glass' in name or 'rail' in name:
+        logo = open('/tmp/hdfc_logo.b64').read()
+        # fields
+        a = s.index('const ROLES = [')
+        s = s[:a] + KYC_FIELDS.replace('v: () =>', 'v0: () =>') .replace('v0: () =>','v: () =>') + s[a:]
+        # fillProfile uses KYC values (functions)
+        assert KYC_JS_FILL_OLD in s
+        s = s.replace(KYC_JS_FILL_OLD, KYC_JS_FILL_NEW)
+        s = s.replace('await typeIntoField(inp, f.v, Math.min(1150, 260 + f.v.length * 26));', 'await typeIntoField(inp, f.v(), Math.min(1150, 260 + f.v().length * 26));')
+        # card body
+        a = s.index('    const show = ["name", "pan", "cin", "gstin", "type", "web", "addr"]')
+        b = s.index('    foot = `${deepBtn}<span class="more">+3 more fields in Details</span>')
+        newbody = (
+          '    const done = S.profileFilled;\n'
+          '    body = `<div class="kyc-top"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo${done ? " is-in" : ""}" data-logo><span class="kl-ph">${IC.build}</span><img alt="Enterprise logo" src="' + logo + '"><i class="kl-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></i></div></div>'
+          '<div class="kyc-tt"><h3 class="r-h">Business Profile</h3><p class="r-p" data-pstat>${done ? "All 7 fields and your logo are filled. Check them, then submit." : "Pulling your details from DLT, GSTIN, MCA and your website…"}</p></div></div>\n'
+          '      <div class="pform">${KYC.map((f) => `<div class="pf${f.wide ? " wide" : ""}${f.sel ? " is-sel" : ""} ${done ? "is-filled" : "is-waiting"}" data-k="${f.k}"><label for="pc-${f.k}">${esc(f.label)} <em>*</em><span class="src-tag">${esc(f.src)}</span></label><div class="pin-w"><input class="pin" id="pc-${f.k}" readonly tabindex="-1" value="${done ? esc(f.v()) : ""}">${f.sel ? `<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>` : ""}</div></div>`).join("")}</div>\n'
+          '      <label class="check"><input type="checkbox" id="pAuth" data-act="pauth" ${S.profileAuth ? "checked" : ""} ${done ? "" : "disabled"}><span><b>I\'m authorised to submit this KYC, and it\'s accurate.</b><small>The company accepts responsibility for any false or misleading information.</small></span></label>\n'
+          '      ${whatIDid(i)}`;\n'
+        )
+        s = s[:a] + newbody + s[b:]
+        s = s.replace('<span class="more">+3 more fields in Details</span>', '<span class="more">Edit anything in Details</span>')
+        s = s.replace('Filled all 10 fields from 4 sources', 'Filled your logo and all 7 fields from 4 sources')
+        s = s.replace('mini: "10 fields filled"', 'mini: "7 fields filled"')
+        s = s.replace('All 10 fields are filled. Check them, then submit for approval.', 'All 7 fields and your logo are filled. Check them, then submit.')
+        s = s.replace('<span>10 of 10 filled</span>', '<span>${PROFILE.length} of ${PROFILE.length} filled</span>')
     o = 'function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview"); layout(); }'
     assert o in s
     s = s.replace(o, 'function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview" || m === "ring"); document.body.classList.toggle("mode-ring", m === "ring"); layout(); }')
@@ -447,7 +543,7 @@ setInterval(railSync, 250); railSync();
 make('agentic-setup-deck-3d-stage.html', 'v3a', A_CSS, ENV_A, RAIL_HTML, HUD_A,
      layout_js(36, 14, 150, '[1, .68, .54, .44, .38]', '[1, .78, .42, .18, .06]', 70, 90, '-12 * f'), 'DigiConsent Agent Deck 3D Stage')
 make('agentic-setup-deck-3d-glass.html', 'v3b', B_CSS, ENV_B, CAP_HTML, HUD_B,
-     faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 40, 150, '-30 * f')), 'DigiConsent Agent Deck 3D Glass')
+     faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 0, 150, '-30 * f')), 'DigiConsent Agent Deck 3D Glass')
 
 make('agentic-setup-deck-3d-glass-rail.html', 'v3b v3c', B_CSS + RAIL_C_CSS, ENV_B, CAP_HTML + RAIL_C_HTML, HUD_B + RAIL_C_JS,
-     faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 40, 128, '-26 * f')), 'DigiConsent Agent Deck 3D Glass Rail')
+     faces_fix(layout_js(56, -118, 110, '[1, .7, .6, .52, .46]', '[1, .62, .38, .2, .08]', 0, 128, '-26 * f')), 'DigiConsent Agent Deck 3D Glass Rail')
