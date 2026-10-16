@@ -2,6 +2,8 @@ import re
 base = open('/home/user/AgenticSetup/agentic-setup-deck-enhanced.html').read()
 
 SHARED_CSS = r'''
+/* less top space */
+.gate{ inset:24px 0 0!important; } .deck{ inset:30px 0 0!important; } .gate-head{ padding-top:20px!important; }
 /* gate: no box around the policies, content sits on the page */
 .gate-card{ height:100%!important; width:min(1200px,100%)!important; background:transparent!important; border:0!important; box-shadow:none!important; }
 .gate-head{ border-bottom:1px solid rgba(160,185,230,.45); }

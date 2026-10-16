@@ -307,3 +307,4 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Ready screen now mirrors the finale layout: centred blob + kicker/title/subtitle header, card row beneath, Start review under the cards.
 - 3D decks: the Review and accept gate has no card box (transparent, hairline dividers only).
 - 3D decks: the accept gate fills the available height (about 1200px wide).
+- 3D decks: top space trimmed (gate inset 24px, deck inset 30px).
