@@ -341,3 +341,22 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Cards variant: confirmation BEFORE the agent starts. After the cover, the five steps show as closed cards with a left panel (title, one line, the five steps with what the agent will do, 'Start AI setup'). Click starts processing; after processing the existing 'ready for review' panel asks to confirm review. build_v4.py execs p8.py (kept beside it).
 
 - Cards variant: closed cards start on step 1 (not GTM); removed the 'Five steps, prepared at once' intro step: the cover fades straight to the Start AI setup screen (comments cee57bf2 + user message).
+
+### 8f.12 Glass Rail line: everything done to date, and the LATEST file is `agentic-setup-deck-3d-glass-rail-blue.html`
+
+**Latest file = Blue.** Only the Glass Rail line is edited (Glass `…-3d-glass.html` and Stage `…-3d-stage.html` stay untouched). Build chain (scripts in `references/tools/session5/deck-enhanced/`, the working copies live in `/tmp/bd/`): `build3d.py` → Rail; `build_v2.py` + `build_v3.py` → Tether; `build_v4.py` (+ `p8.py`, exec'd by it) → Cards; `build_v5.py` → **Blue**. Publishing rewrites every html on disk with a leading skeleton; builders must `_unwrap()` their source first, otherwise added CSS lands in the skeleton `<style>` which the host drops (this caused the "preview differs from the browser" bug). Verify by `Artifact read` of the published copy and rendering that saved file.
+
+Variants (artifacts): Rail (Js3PyS4zJaaMTiU5PXwmbi), Tether (83555wbQW9XYN1GPyVWchg), Cards (Y2Ms9ZAtD6c8pEatMmfcvi), Blue (new, see git log).
+
+What the Rail line does, in order of the flow:
+1. Agreements gate → cover (blob, three typed lines) → the cover fades straight to the **Start screen**. (The old "Five steps, prepared at once" intro step was removed.)
+2. **Start screen (Cards/Blue):** five closed cards at the right (front card = step 1), left panel: kicker, "Your agent will prepare five steps", one line, the five steps with what the agent does for each, button **Start AI setup**. Nothing runs until the click. Prototype menu has "Ready for review" to jump straight to the next screen.
+3. **Processing (Cards/Blue):** one card at a time, each with the product's loader scene in an iframe, sped up (timers, WAAPI durations and tween divisor divided by 1.7, scene cap 7.6 s; about 9-10 s per card, ~50 s total). The "STEP n OF 5" label sits at the right of each card header; status chips and the old top pill are removed. Telemetry (current action) is mirrored from the active card.
+4. **Ready screen:** all five cards closed again, left panel "Your five steps are ready for review" + **Review them** (no step list, by request). Clicking Review (or a closed card) flips Business profile open and starts review.
+5. Review: card flip animation, open card, steps unlock in order, KYC profile fill, deep review pages, finale.
+
+Rail-line features accumulated earlier: 3D card arc with per-card spin, sources on a lit arch, live telemetry from a MutationObserver, steps pill / header changes, KYC profile layout with logo and fill animation, closes-in pill, avatar progress ring, focus/overview/ring/ingest layout modes (CSS 3D, WAAPI `rotate`/`translate`, SVG offset-path comets).
+
+**Blue variant (latest):** copy of Cards with (a) closed cards restyled like the reference card the owner supplied: dark navy glass, round blue gradient icon disc, white title, grey description, ghost pill chips, blue/violet glow in the bottom-right; (b) while processing, the agent block at the top is a dark glass card in the same style (blue disc with the agent mark, pulsing rings, drifting conic glow, step kicker, shimmering live telemetry line, five progress segments). In-card telemetry line is hidden because the top card carries it. Open (review) cards stay light for readability.
+
+Open items: small windows (<760 px high hide the step list on both panels; top agent card shrinks under 700 px); reduced motion for several variants untested; closed-card queued state in Cards is grey-blue, in Blue it is navy; artifact watch limit (10 per session) means comment notifications for newer artifacts do not wake the session.
