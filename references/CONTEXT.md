@@ -362,3 +362,5 @@ Rail-line features accumulated earlier: 3D card arc with per-card spin, sources 
 Open items: small windows (<760 px high hide the step list on both panels; top agent card shrinks under 700 px); reduced motion for several variants untested; closed-card queued state in Cards is grey-blue, in Blue it is navy; artifact watch limit (10 per session) means comment notifications for newer artifacts do not wake the session.
 
 - Blue: removed the step list from the Start panel (comment 8a824c7d); panel is kicker, title, line, Start AI setup.
+
+- Blue: replaced the separate top agent card with a top band (gradient wash from the top with drifting glows, agent disc, live telemetry). In review the band shows 'What the agent did' + 'Action needed' for the active step and a minimal stepper (replaces the bottom rail; clickable for unlocked steps). Comment c517a00e; its text was garbled so this is an interpretation.
