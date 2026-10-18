@@ -54,6 +54,15 @@ function tbSync() {
 }
 ''' + s[b:]
 
+# 2. layout: cards move right of the left panel and the fan is compacted
+def _rp(a, b):
+    global s
+    assert s.count(a) == 1, a[:70]
+    s = s.replace(a, b)
+_rp('const AN = S.phase === "analyse", TH = 56, GAP = -118 + (AN ? 92 : 0), ZS = 110,', 'const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .28) : 0, TH = 56, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110,')
+_rp('(r.width - (AN ? 250 : 48)) / aw)', '(r.width - LP - (AN ? 250 : 48) - (TB ? (AN ? 40 : 330) : 0)) / aw)')
+_rp('translate3d(${dir * x * f + (document.body.classList.contains("all-closed")', 'translate3d(${dir * x * f + LP / 2 + (document.body.classList.contains("all-closed")')
+
 css = r'''
 /* ---- agent variant: dark hero at the top where the agent talks to the user, step pills, glowing screen edge ---- */
 .tband{ left:0!important; top:0!important; width:100%!important; transform:none!important; z-index:35!important; }
@@ -89,6 +98,20 @@ body.agent-on .edge{ opacity:1; }
 @media (max-height:760px){ .h-t{ font-size:23px; } .h-hi{ display:none; } .hero-in{ padding-top:14px; } .h-steps{ margin-top:8px; } .hero-bg{ height:150px; } .h-steps button{ height:26px; font-size:11.5px; } }
 @media (max-width:1000px){ .hero-in{ padding-left:100px; padding-right:24px; } .h-steps button span{ display:none; } .h-steps button.cur span{ display:inline; } }
 @media (prefers-reduced-motion:reduce){ .edge::before{ animation:none; } }
+'''
+css += r'''
+/* ---- agent variant, left panel: the hero moves to the left, cards sit to its right ---- */
+.tband{ left:0!important; top:0!important; bottom:0!important; width:min(400px,28vw)!important; }
+.hero-in{ padding-right:56px!important; }
+.hero-bg{ height:auto!important; inset:0; -webkit-mask-image:linear-gradient(90deg,#000 0,#000 80%,transparent 100%)!important; mask-image:linear-gradient(90deg,#000 0,#000 80%,transparent 100%)!important;
+  background:radial-gradient(90% 60% at 0% 100%,rgba(120,90,255,.35),transparent 70%),radial-gradient(70% 50% at 100% 50%,rgba(96,120,255,.45),transparent 70%),linear-gradient(90deg,#060a1a 0%,#0b1432 48%,#17296d 100%)!important; }
+.hero-bg::after{ -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 85%)!important; mask-image:linear-gradient(90deg,transparent 0,#000 85%)!important; }
+.hero-in{ position:absolute!important; left:0; right:0; top:50%; transform:translateY(-50%); padding:0 28px 0 44px!important; align-items:flex-start!important; text-align:left!important; }
+.h-t{ white-space:normal!important; max-width:100%!important; font-size:28px; overflow:visible!important; margin-top:6px; }
+.h-s{ white-space:normal!important; max-width:100%!important; overflow:visible!important; margin-top:10px; }
+.h-steps{ flex-direction:column; align-items:flex-start!important; gap:7px!important; margin-top:22px!important; }
+@media (max-height:760px){ .h-t{ font-size:22px!important; } .h-hi{ display:none; } .hero-in{ padding-top:0!important; } .h-steps{ margin-top:14px!important; } .h-steps button{ height:26px; } }
+@media (max-width:1000px){ .hero-in{ padding-left:96px!important; } .h-steps button span,.h-steps button.cur span{ display:inline!important; } .h-t{ font-size:22px!important; } }
 '''
 i = s.index('</style>', s.index('<html lang'))
 s = s[:i] + css + s[i:]
