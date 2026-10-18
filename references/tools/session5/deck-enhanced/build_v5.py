@@ -18,11 +18,11 @@ rep("""function procCap(t) {
   if (!c) { document.body.insertAdjacentHTML("beforeend", '<div class="pcap" id="pcap"><i></i><span></span></div>'); c = $("#pcap"); void c.offsetWidth; c.classList.add("on"); }
   $("span", c).textContent = t;
 }""", r"""const TB_ACT = {
-  profile: "Check the details, tick the authorisation and submit for approval",
-  team: "Choose who to invite and send the invites",
-  gtm: "Check the partner choice and volume split, then confirm",
-  brands: "Check the brands and lines of business, then confirm",
-  templates: "Check the template mapping, then confirm",
+  profile: "Check the details and submit",
+  team: "Choose who to invite",
+  gtm: "Confirm the partners and split",
+  brands: "Confirm brands and LOBs",
+  templates: "Confirm the template mapping",
 };
 function tband() {
   let c = $("#tband");
@@ -54,8 +54,8 @@ function tbSync() {
   const sig = [ph, i, cd.st, locked, filling, S.cards.map((x) => x.st).join()].join("|");
   if (sig === tbSig) return; tbSig = sig;
   c.classList.toggle("rev", rev);
-  $(".tb-k", c).textContent = `Step ${i + 1} of 5 · ${s.title}`;
-  if (rev) setAtTele(filling ? "Typing in what I found on DLT, GSTIN, MCA and your website" : locked ? "Locked for now" : cd.st === "done" ? "Reviewed" : "Your review");
+  $(".tb-k", c).textContent = s.title;
+  if (rev) setAtTele(filling ? "Typing in what I found on DLT, GSTIN, MCA and your website" : locked ? did : cd.st === "done" ? "Reviewed. Nothing more to do here." : `${did}. ${act}.`);
   $("#tbDid").textContent = did; $("#tbAct").textContent = act;
   $$("#tbSteps button").forEach((b, k) => { const x = S.cards[k], lk = rev && x.st === "review" && isLocked(k);
     b.className = (k === i ? "cur " : "") + (x.st === "done" ? "done " : "") + (x.st === "analysing" ? "work " : "") + (lk || (!rev && x.st === "queued") ? "lock " : ""); });
@@ -100,10 +100,11 @@ css = r'''
 .tb-r{ position:absolute; inset:0; border-radius:50%; border:1.5px solid rgba(110,165,255,.55); animation:atring 2.4s ease-out infinite; } .tb-r.r2{ animation-delay:1.2s; }
 @keyframes atring{ from{ transform:scale(1); opacity:.9; } to{ transform:scale(2); opacity:0; } }
 .tb-tx{ display:flex; flex-direction:column; gap:4px; min-width:0; flex:1; }
-.tb-k{ font:600 10.5px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#8fb3ff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.tb-t{ font-size:16px; font-weight:560; letter-spacing:-.01em; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:linear-gradient(90deg,#fff 0 38%,#9cc2ff 50%,#fff 62% 100%); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 1.8s linear infinite; }
+.tb-k{ font-size:16px; font-weight:620; letter-spacing:-.012em; line-height:1.2; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tb-t{ font-size:13.5px; font-weight:500; letter-spacing:-.003em; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:linear-gradient(90deg,#fff 0 38%,#9cc2ff 50%,#fff 62% 100%); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 1.8s linear infinite; }
 .tb-t.swap{ animation:swapIn .45s var(--ease),shimmer 1.8s linear infinite; }
-.tband.rev .tb-t{ display:none; }
+.tband.rev .tb-t{ animation:none; background:none; -webkit-text-fill-color:#aebbdc; color:#aebbdc; }
+.tband .tb-two{ display:none!important; }
 .tb-two{ display:none; gap:36px; padding:10px 4px 0 54px; border-top:1px solid rgba(255,255,255,.08); }
 .tband.rev .tb-two{ display:flex; }
 .tb-two > div{ display:flex; flex-direction:column; gap:5px; min-width:0; flex:1; }
@@ -120,7 +121,7 @@ css = r'''
 .tb-steps button:not(:last-child)::after{ content:""; width:10px; height:1px; margin-left:1px; background:rgba(255,255,255,.22); }
 .rail3c{ display:none!important; }
 body.has-tband .deck-head{ visibility:hidden; }
-@media (max-height:760px){ .tb-two{ display:none!important; } .tband.rev .tb-t{ display:block; font-size:15px; } .tband{ top:8px; } .tb-in{ padding:8px 14px 8px 10px; } .tb-ic{ width:34px; height:34px; } }
+@media (max-height:760px){ .tb-two{ display:none!important; } .tband.rev .tb-t{ font-size:13px; } .tband{ top:8px; } .tb-in{ padding:8px 14px 8px 10px; } .tb-ic{ width:34px; height:34px; } }
 @media (max-width:1000px){ .tband{ width:calc(100% - 190px); left:calc(50% + 40px); } }
 '''
 i = s.index('</style>', s.index('<html lang'))

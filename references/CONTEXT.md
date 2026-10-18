@@ -366,3 +366,5 @@ Open items: small windows (<760 px high hide the step list on both panels; top a
 - Blue: replaced the separate top agent card with a top band (gradient wash from the top with drifting glows, agent disc, live telemetry). In review the band shows 'What the agent did' + 'Action needed' for the active step and a minimal stepper (replaces the bottom rail; clickable for unlocked steps). Comment c517a00e; its text was garbled so this is an interpretation.
 
 - Blue: top band changed from a gradient wash to a solid dark panel (telemetry, 'what the agent did', 'action needed' and the minimal dot stepper all inside it, stepper on the right of the first row); comment afe0d894 said the gradient took too much attention.
+
+- Blue: top panel now shows the step NAME with one line of text under it (telemetry while processing; 'what the agent did. action needed.' in review); 'Step x of y' removed; the two-column did/action block dropped (comment 543894d5).
