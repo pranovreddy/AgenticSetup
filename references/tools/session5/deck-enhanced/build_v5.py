@@ -46,6 +46,11 @@ new MutationObserver(() => {
   const el = $(".card.is-analysing .tele"); if (el && el.textContent.trim()) setAtTele(el.textContent.trim());
 }).observe(document.body, { childList: true, subtree: true, characterData: true });''')
 
+# 3. no step list on the Start panel (comment request)
+_n = len(re.findall(r'\n\s*<ul class="rdl-l">\$\{STEPS\.map\(\(s\) => `<li><span>\$\{IC\[s\.key\]\}</span><b>\$\{esc\(s\.title\)\}</b><em>\$\{esc\(PRE\[s\.key\] \|\| ""\)\}</em></li>`\)\.join\(""\)\}</ul>', s))
+assert _n == 1, _n
+s = re.sub(r'\n\s*<ul class="rdl-l">\$\{STEPS\.map\(\(s\) => `<li><span>\$\{IC\[s\.key\]\}</span><b>\$\{esc\(s\.title\)\}</b><em>\$\{esc\(PRE\[s\.key\] \|\| ""\)\}</em></li>`\)\.join\(""\)\}</ul>', '', s)
+
 # 2. CSS: dark glass cards (reference), top agent card
 css = r'''
 /* ---- blue variant: dark navy glass cards, agent card on top while processing ---- */

@@ -360,3 +360,5 @@ Rail-line features accumulated earlier: 3D card arc with per-card spin, sources 
 **Blue variant (latest):** copy of Cards with (a) closed cards restyled like the reference card the owner supplied: dark navy glass, round blue gradient icon disc, white title, grey description, ghost pill chips, blue/violet glow in the bottom-right; (b) while processing, the agent block at the top is a dark glass card in the same style (blue disc with the agent mark, pulsing rings, drifting conic glow, step kicker, shimmering live telemetry line, five progress segments). In-card telemetry line is hidden because the top card carries it. Open (review) cards stay light for readability.
 
 Open items: small windows (<760 px high hide the step list on both panels; top agent card shrinks under 700 px); reduced motion for several variants untested; closed-card queued state in Cards is grey-blue, in Blue it is navy; artifact watch limit (10 per session) means comment notifications for newer artifacts do not wake the session.
+
+- Blue: removed the step list from the Start panel (comment 8a824c7d); panel is kicker, title, line, Start AI setup.
