@@ -337,3 +337,5 @@ In both, the step in process is the large, forward, fully lit card and the other
 - Cards variant: removed the step list from the ready-for-review left panel (comment request); panel is now kicker, title, line and Review button.
 
 - Cards variant: STEP n OF 5 label moved to the right of every card header; status chip and the top 'Preparing step' pill removed; in-card telemetry shimmers as processing (comment 19abfb88).
+
+- Cards variant: confirmation BEFORE the agent starts. After the cover, the five steps show as closed cards with a left panel (title, one line, the five steps with what the agent will do, 'Start AI setup'). Click starts processing; after processing the existing 'ready for review' panel asks to confirm review. build_v4.py execs p8.py (kept beside it).

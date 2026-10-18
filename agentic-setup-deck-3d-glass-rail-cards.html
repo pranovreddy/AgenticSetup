@@ -1019,6 +1019,7 @@ body.deck-on .rail3c{ opacity:1; pointer-events:auto; }
 .rc:hover .lab,.rc:focus-visible .lab{ opacity:1; transform:translate(0,-50%); }
 
 /* ---- cards variant: per-card processing, closed cards with a left title ---- */
+.rdl-pre .rdl-l li em{ color:var(--muted); font-weight:500; }
 /* step label on the right of every card, no status chip / top pill, telemetry shimmers as processing */
 .c-head .c-n{ position:absolute; right:20px; top:19px; }
 .c-head .status{ display:none!important; } .c-head .c-title{ margin-top:0; }
@@ -1026,7 +1027,7 @@ body.deck-on .rail3c{ opacity:1; pointer-events:auto; }
 .card.is-analysing .tele,.card.is-analysing .tele b{ color:transparent!important; background:linear-gradient(90deg,#2b3a57 0 40%,#2563eb 50%,#2b3a57 60% 100%); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; animation:shimmer 1.6s linear infinite; }
 body.v3b.all-closed .card.is-focus .card-in{ transform:rotateY(180deg); }
 body.v3b.all-closed .card.is-focus .cardf{ transform:rotateY(360deg); }
-body.all-closed .deck-head{ min-height:0!important; height:0!important; padding:0!important; } body.all-closed .ah,body:has(#readyL.on) .ah{ display:none!important; } body:has(#readyL.on) .deck-head{ min-height:0!important; height:0!important; padding:0!important; }
+body.all-closed .deck-head{ min-height:0!important; height:0!important; padding:0!important; } body.all-closed .ah,body:has(#readyL.on) .ah,body:has(#preL.on) .ah{ display:none!important; } body:has(#readyL.on) .deck-head,body:has(#preL.on) .deck-head{ min-height:0!important; height:0!important; padding:0!important; }
 body.v3c.all-closed .stage,body.v3c.all-closed .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
 .cf-res{ margin:-2px 0 14px; font-size:15px; opacity:.92; letter-spacing:-.005em; }
 .pcap{ position:fixed; left:50%; top:20px; z-index:45; transform:translate(-50%,-10px); opacity:0; display:flex; align-items:center; gap:10px; height:42px; padding:0 20px 0 16px; border-radius:99px; background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(240,244,252,.84)); box-shadow:0 0 0 1px rgba(170,185,215,.7) inset,0 20px 34px -22px rgba(30,60,140,.5); font-size:14px; font-weight:600; color:var(--ink); letter-spacing:-.01em; transition:opacity .5s var(--ease),transform .6s var(--ease); }
@@ -1675,7 +1676,27 @@ function ripple(host, n = 1, gap = 320) {
 }
 
 /* ---------- Phases ---------- */
-async function analyse(run) {
+const PRE = { profile: "Fills your business details", team: "Suggests who to invite", gtm: "Picks your SMS partners", brands: "Sets up brands and LOBs", templates: "Maps your DLT templates" };
+function preStart(run) {
+  S.phase = "pre"; S.preRun = run;
+  if (!$("#preL")) stage.insertAdjacentHTML("beforeend", `<div class="rdl rdl-pre" id="preL"><span class="rdl-k"><i></i>5 steps</span><h2>Your agent will prepare five steps</h2><p>It reads your trusted sources and fills each step in. Nothing goes live until you review and approve it.</p>
+    <ul class="rdl-l">${STEPS.map((s) => `<li><span>${IC[s.key]}</span><b>${esc(s.title)}</b><em>${esc(PRE[s.key] || "")}</em></li>`).join("")}</ul>
+    <button class="rdl-go" id="preGo" type="button">Start AI setup<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
+  head("Onboarding Agent", "", "Five steps, prepared at once", "", false);
+  document.body.classList.add("all-closed");
+  S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
+  S.cards.forEach((c) => { c.st = "queued"; });
+  S.active = 2; layout(); faceSig = ""; faces();
+  setTimeout(() => { const r = $("#preL"); if (r) { r.classList.add("on"); const g = $("#preGo"); if (g) g.focus({ preventScroll: true }); } }, RM ? 0 : 500);
+}
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#preGo") || S.phase !== "pre") return;
+  const r = $("#preL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600);
+  document.body.classList.remove("all-closed");
+  const run = S.preRun; analyse(run, true);
+});
+async function analyse(run, go) {
+  if (!go) return preStart(run);
   S.phase = "analyse"; S.active = 0; setMode("focus"); procCap("Your agent is preparing all five steps");
   for (let i = 0; i < STEPS.length; i++) {
     if (run !== S.runId) return;
@@ -1719,7 +1740,7 @@ async function unlock(run) {
 }
 if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) || S.phase !== "unlock") return; const r = $("#readyL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600); document.body.classList.remove("all-closed"); startReview(); }); }
 function startReview() {
-  document.body.classList.remove("all-closed"); { const r0 = document.getElementById("readyL"); if (r0) { r0.classList.remove("on"); setTimeout(() => r0.remove(), 600); } }
+  document.body.classList.remove("all-closed"); { const q0 = document.getElementById("preL"); if (q0) q0.remove(); } { const r0 = document.getElementById("readyL"); if (r0) { r0.classList.remove("on"); setTimeout(() => r0.remove(), 600); } }
   S.phase = "review"; S.reviewStart = Date.now();
   cards().forEach((el, i) => { el.classList.remove("is-analysing"); el.classList.add("is-review"); if (S.cards[i].st === "ready") S.cards[i].st = "review"; renderReview(i); setStatus(i); });
   S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
@@ -2261,7 +2282,7 @@ function toast(msg) { const t = $("#toast"); t.innerHTML = `${IC.check}${esc(msg
 $("#protoBtn").addEventListener("click", () => { $("#protoMenu").hidden = !$("#protoMenu").hidden; });
 $("#protoMenu").addEventListener("click", (e) => { const j = e.target.closest("[data-jump]"); if (!j) return; $("#protoMenu").hidden = true; jump(j.dataset.jump); });
 function resetAll() {
-  document.body.classList.remove("all-closed"); { const r0 = document.getElementById("readyL"); if (r0) r0.remove(); const pc = document.getElementById("pcap"); if (pc) pc.remove(); }
+  document.body.classList.remove("all-closed"); { const q0 = document.getElementById("preL"); if (q0) q0.remove(); } { const r0 = document.getElementById("readyL"); if (r0) r0.remove(); const pc = document.getElementById("pcap"); if (pc) pc.remove(); }
   S.runId++; S.cards = STEPS.map(() => ({ st: "queued", at: null, step: 0 })); S.active = 0; S.profileAuth = false; S.gtmTerms = false; S.reviewStart = 0; S.profileFilled = false; S.profileFilling = false; clearInterval(S.clockT);
   document.body.classList.remove("phase-finale", "is-working");
   $("#boot").hidden = true; $("#bootBlob").getAnimations().forEach((a) => a.cancel());

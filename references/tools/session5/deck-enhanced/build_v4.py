@@ -67,6 +67,7 @@ rep('<div class="cf-mid"><h3>${esc(s.title)}</h3><span class="cf-st','<div class
 
 css=r'''
 /* ---- cards variant: per-card processing, closed cards with a left title ---- */
+.rdl-pre .rdl-l li em{ color:var(--muted); font-weight:500; }
 /* step label on the right of every card, no status chip / top pill, telemetry shimmers as processing */
 .c-head .c-n{ position:absolute; right:20px; top:19px; }
 .c-head .status{ display:none!important; } .c-head .c-title{ margin-top:0; }
@@ -74,7 +75,7 @@ css=r'''
 .card.is-analysing .tele,.card.is-analysing .tele b{ color:transparent!important; background:linear-gradient(90deg,#2b3a57 0 40%,#2563eb 50%,#2b3a57 60% 100%); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; animation:shimmer 1.6s linear infinite; }
 body.v3b.all-closed .card.is-focus .card-in{ transform:rotateY(180deg); }
 body.v3b.all-closed .card.is-focus .cardf{ transform:rotateY(360deg); }
-body.all-closed .deck-head{ min-height:0!important; height:0!important; padding:0!important; } body.all-closed .ah,body:has(#readyL.on) .ah{ display:none!important; } body:has(#readyL.on) .deck-head{ min-height:0!important; height:0!important; padding:0!important; }
+body.all-closed .deck-head{ min-height:0!important; height:0!important; padding:0!important; } body.all-closed .ah,body:has(#readyL.on) .ah,body:has(#preL.on) .ah{ display:none!important; } body:has(#readyL.on) .deck-head,body:has(#preL.on) .deck-head{ min-height:0!important; height:0!important; padding:0!important; }
 body.v3c.all-closed .stage,body.v3c.all-closed .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
 .cf-res{ margin:-2px 0 14px; font-size:15px; opacity:.92; letter-spacing:-.005em; }
 .pcap{ position:fixed; left:50%; top:20px; z-index:45; transform:translate(-50%,-10px); opacity:0; display:flex; align-items:center; gap:10px; height:42px; padding:0 20px 0 16px; border-radius:99px; background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(240,244,252,.84)); box-shadow:0 0 0 1px rgba(170,185,215,.7) inset,0 20px 34px -22px rgba(30,60,140,.5); font-size:14px; font-weight:600; color:var(--ink); letter-spacing:-.01em; transition:opacity .5s var(--ease),transform .6s var(--ease); }
@@ -100,6 +101,7 @@ rep('    <button data-jump="review">Review cards</button>','    <button data-jum
 rep('  if (where === "analyse") {\n','  if (where === "ready") {\n    STEPS.forEach((s, i) => { S.cards[i].st = "ready"; renderAnalyse(i); });\n    S.phase = "analyse"; setMode("overview"); const run = S.runId;\n    setTimeout(() => run === S.runId && unlock(run), 200); return;\n  }\n  if (where === "analyse") {\n')
 rep('if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#rdlGo") ||','if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) ||')
 
+exec(open('/tmp/bd/p8.py').read())  # copy: references/tools/session5/deck-enhanced/p8.py
 i=s.rindex('</style>',0,s.index('</head>'))
 s=s[:i]+css+s[i:]
 s=s.replace('<title>DigiConsent Agent Deck 3D Glass Rail</title>','<title>DigiConsent Agent Deck 3D Glass Rail Cards</title>')
