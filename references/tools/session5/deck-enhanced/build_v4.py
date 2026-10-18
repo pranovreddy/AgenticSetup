@@ -67,6 +67,11 @@ rep('<div class="cf-mid"><h3>${esc(s.title)}</h3><span class="cf-st','<div class
 
 css=r'''
 /* ---- cards variant: per-card processing, closed cards with a left title ---- */
+/* step label on the right of every card, no status chip / top pill, telemetry shimmers as processing */
+.c-head .c-n{ position:absolute; right:20px; top:19px; }
+.c-head .status{ display:none!important; } .c-head .c-title{ margin-top:0; }
+.pcap{ display:none!important; }
+.card.is-analysing .tele,.card.is-analysing .tele b{ color:transparent!important; background:linear-gradient(90deg,#2b3a57 0 40%,#2563eb 50%,#2b3a57 60% 100%); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; animation:shimmer 1.6s linear infinite; }
 body.v3b.all-closed .card.is-focus .card-in{ transform:rotateY(180deg); }
 body.v3b.all-closed .card.is-focus .cardf{ transform:rotateY(360deg); }
 body.all-closed .deck-head{ min-height:0!important; height:0!important; padding:0!important; } body.all-closed .ah,body:has(#readyL.on) .ah{ display:none!important; } body:has(#readyL.on) .deck-head{ min-height:0!important; height:0!important; padding:0!important; }
