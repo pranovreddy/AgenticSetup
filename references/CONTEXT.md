@@ -375,3 +375,5 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - Agent: hero text and step pills are now centre-aligned over the card (comment aee2608a).
 
 - Agent: the hero moved to a left panel (dark gradient fading right, headline, one line, step pills stacked vertically); cards shift right of the panel and the fan is compacted (extra negative gap, width fit accounts for panel + fan). Panel width min(400px, 28vw).
+
+- Agent: left panel softened (mid-blue gradient instead of near-black, lighter text and pills) per comment ce42342b.
