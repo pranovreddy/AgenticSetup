@@ -364,3 +364,5 @@ Open items: small windows (<760 px high hide the step list on both panels; top a
 - Blue: removed the step list from the Start panel (comment 8a824c7d); panel is kicker, title, line, Start AI setup.
 
 - Blue: replaced the separate top agent card with a top band (gradient wash from the top with drifting glows, agent disc, live telemetry). In review the band shows 'What the agent did' + 'Action needed' for the active step and a minimal stepper (replaces the bottom rail; clickable for unlocked steps). Comment c517a00e; its text was garbled so this is an interpretation.
+
+- Blue: top band changed from a gradient wash to a solid dark panel (telemetry, 'what the agent did', 'action needed' and the minimal dot stepper all inside it, stepper on the right of the first row); comment afe0d894 said the gradient took too much attention.
