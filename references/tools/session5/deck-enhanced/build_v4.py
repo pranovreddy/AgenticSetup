@@ -51,7 +51,7 @@ async function unlock(run) {
   document.body.classList.add("all-closed");
   S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
   cards().forEach((el) => el.classList.remove("is-analysing", "is-done-flash"));
-  S.active = 2; layout(); faceSig = ""; faces();
+  S.active = 0; layout(); faceSig = ""; faces();
   setTimeout(() => { const r = $("#readyL"); if (r) { r.classList.add("on"); $("#rdlGo").focus({ preventScroll: true }); } }, RM ? 0 : 700);
 }
 if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#rdlGo") || S.phase !== "unlock") return; const r = $("#readyL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600); document.body.classList.remove("all-closed"); startReview(); }); }
@@ -101,7 +101,7 @@ rep('    <button data-jump="review">Review cards</button>','    <button data-jum
 rep('  if (where === "analyse") {\n','  if (where === "ready") {\n    STEPS.forEach((s, i) => { S.cards[i].st = "ready"; renderAnalyse(i); });\n    S.phase = "analyse"; setMode("overview"); const run = S.runId;\n    setTimeout(() => run === S.runId && unlock(run), 200); return;\n  }\n  if (where === "analyse") {\n')
 rep('if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!e.target.closest("#rdlGo") ||','if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) ||')
 
-exec(open('/tmp/bd/p8.py').read())  # copy: references/tools/session5/deck-enhanced/p8.py
+exec(open('/tmp/bd/p8.py').read())
 i=s.rindex('</style>',0,s.index('</head>'))
 s=s[:i]+css+s[i:]
 s=s.replace('<title>DigiConsent Agent Deck 3D Glass Rail</title>','<title>DigiConsent Agent Deck 3D Glass Rail Cards</title>')

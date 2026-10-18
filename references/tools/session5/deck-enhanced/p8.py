@@ -8,7 +8,7 @@ function preStart(run) {
   document.body.classList.add("all-closed");
   S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
   S.cards.forEach((c) => { c.st = "queued"; });
-  S.active = 2; layout(); faceSig = ""; faces();
+  S.active = 0; layout(); faceSig = ""; faces();
   setTimeout(() => { const r = $("#preL"); if (r) { r.classList.add("on"); const g = $("#preGo"); if (g) g.focus({ preventScroll: true }); } }, RM ? 0 : 500);
 }
 document.addEventListener("click", (e) => {
@@ -22,3 +22,19 @@ async function analyse(run, go) {
   S.phase = "analyse";"""
 rep('async function analyse(run) {\n  S.phase = "analyse";', JS)
 rep('document.body.classList.remove("all-closed"); { const r0 = document.getElementById("readyL");', 'document.body.classList.remove("all-closed"); { const q0 = document.getElementById("preL"); if (q0) q0.remove(); } { const r0 = document.getElementById("readyL");', 0)
+
+# 9. no separate "five steps, prepared at once" intro: the cover goes straight to the Start screen
+_a = s.index('  /* dock: the cover blob flies')
+_b = s.index('  analyse(run);\n}\nasync function typeInto')
+s = s[:_a] + """  boot.classList.add("is-docking");
+  document.body.classList.add("deck-on");
+  S.phase = "intro";
+  if (!RM) await boot.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, fill: "forwards" }).finished;
+  if (run !== S.runId) return;
+  boot.hidden = true; boot.getAnimations().forEach((a) => a.cancel());
+  $("#bootText").textContent = ""; $("#bootBar").style.width = "0";
+""" + s[_b:]
+rep('window.__deck = { jump,', 'window.__deck = { opening, jump,')
+rep('''    S.phase = "intro"; setMode("overview"); const run = S.runId;
+    head("Onboarding Agent", "", "Five steps, prepared at once", "I'll work through all five now. Nothing goes live until you accept it.", false);
+    setTimeout(() => run === S.runId && analyse(run), 1200); return;''', '''    S.phase = "intro"; const run = S.runId; analyse(run); return;''')

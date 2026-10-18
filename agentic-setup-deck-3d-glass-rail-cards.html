@@ -1382,21 +1382,13 @@ async function opening() {
     $("#bootBar").style.width = `${((n + 1) / lines.length) * 100}%`;
     await W(650); if (run !== S.runId) return;
   }
-  /* dock: the cover blob flies to the header blob's place */
   boot.classList.add("is-docking");
-  const hb = $("#headBlob"); hb.style.opacity = 0;
   document.body.classList.add("deck-on");
-  S.phase = "intro"; setMode("overview");
-  head("Onboarding Agent", "", "Five steps, prepared at once", "I'll work through all five now. Nothing goes live until you accept it.", false);
-  await W(60);
-  const a = bb.getBoundingClientRect(), b = hb.getBoundingClientRect();
-  const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2), k = b.width / a.width;
-  if (!RM) await bb.animate([{ transform: "none" }, { transform: `translate(${dx}px, ${dy}px) scale(${k})` }], { duration: 900, easing: "cubic-bezier(.65,0,.35,1)", fill: "forwards" }).finished;
+  S.phase = "intro";
+  if (!RM) await boot.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, fill: "forwards" }).finished;
   if (run !== S.runId) return;
-  hb.style.opacity = 1; boot.hidden = true;
+  boot.hidden = true; boot.getAnimations().forEach((a) => a.cancel());
   $("#bootText").textContent = ""; $("#bootBar").style.width = "0";
-  cards().forEach((el, i) => { if (!RM) el.animate([{ opacity: 0, translate: "0 60px" }, { opacity: 1, translate: "0 0" }], { duration: 800, delay: i * 90, easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards" }); });
-  await W(2000); if (run !== S.runId) return;
   analyse(run);
 }
 async function typeInto(el, text, run) {
@@ -1686,7 +1678,7 @@ function preStart(run) {
   document.body.classList.add("all-closed");
   S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
   S.cards.forEach((c) => { c.st = "queued"; });
-  S.active = 2; layout(); faceSig = ""; faces();
+  S.active = 0; layout(); faceSig = ""; faces();
   setTimeout(() => { const r = $("#preL"); if (r) { r.classList.add("on"); const g = $("#preGo"); if (g) g.focus({ preventScroll: true }); } }, RM ? 0 : 500);
 }
 document.addEventListener("click", (e) => {
@@ -1735,7 +1727,7 @@ async function unlock(run) {
   document.body.classList.add("all-closed");
   S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
   cards().forEach((el) => el.classList.remove("is-analysing", "is-done-flash"));
-  S.active = 2; layout(); faceSig = ""; faces();
+  S.active = 0; layout(); faceSig = ""; faces();
   setTimeout(() => { const r = $("#readyL"); if (r) { r.classList.add("on"); $("#rdlGo").focus({ preventScroll: true }); } }, RM ? 0 : 700);
 }
 if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) || S.phase !== "unlock") return; const r = $("#readyL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600); document.body.classList.remove("all-closed"); startReview(); }); }
@@ -2304,9 +2296,7 @@ function jump(where) {
     setTimeout(() => run === S.runId && unlock(run), 200); return;
   }
   if (where === "analyse") {
-    S.phase = "intro"; setMode("overview"); const run = S.runId;
-    head("Onboarding Agent", "", "Five steps, prepared at once", "I'll work through all five now. Nothing goes live until you accept it.", false);
-    setTimeout(() => run === S.runId && analyse(run), 1200); return;
+    S.phase = "intro"; const run = S.runId; analyse(run); return;
   }
   STEPS.forEach((s, i) => { S.cards[i].st = "ready"; renderAnalyse(i); });
   startReview();
@@ -2316,7 +2306,7 @@ function jump(where) {
     finale();
   }
 }
-window.__deck = { jump, S, focusCard, openDeep, refreshLocks, renderReview, setStatus, firstOpen };
+window.__deck = { opening, jump, S, focusCard, openDeep, refreshLocks, renderReview, setStatus, firstOpen };
 
 
 /* ---------- Log out and the closes-in pill ---------- */
