@@ -477,3 +477,10 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.38 Direction chosen: C2 (Open surface). Processing screen options
 - User picked C2 (blue console on the left, open surface on the right). Three agent-processing options mocked up in the C2 shell (`references/design-directions/processing-options.html`, `build_p.py`, PNGs `png/processing-P*.png`): P1 Lanes board (the style the user attached), P2 Tabs carry the progress, P3 Pipeline (sources, agent, five steps joined by lines). Next: user picks one, then build C2 and the chosen processing screen into the prototype and test at short heights.
+
+### 8f.39 C2P2: new prototype file `agentic-setup-C2P2.html`
+- Direction chosen: C2 (blue agent console left, open white surface right) with P2 processing (tabs carry the progress). Built as a new standalone file; the cards deck is unchanged.
+- Flow: start (queued list + Start AI analysis) > processing (five tabs fill in turn, the focused step shows its sources, the form or list filling in live, tabs show the result line when ready, GTM and Templates amber) > ready > review (one step at a time, later steps locked, finished tabs clickable) > finished.
+- Review screens: profile form with authorise checkbox and operator-check wait, team table with ticks and roles, brands as a hierarchy tree with removable LOBs, GTM partners with two-partner rule and phase split, templates list with LOB filters. Needs-you note and What I did / What happens next live in the console.
+- Short windows (height under 700 or width under 980): the console collapses to a top bar, the surface scrolls, the footer stays pinned. Jump menu bottom left ("Prototype"); URL hashes `#proc #ready #r0..#r4 #final` jump directly.
+- Builder parts in `references/tools/session5/deck-enhanced/c2p2/` (head + body, logo is injected from the rail logo).
