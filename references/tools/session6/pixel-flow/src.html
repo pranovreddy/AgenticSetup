@@ -223,6 +223,9 @@ select.inp{height:36px;padding:0 8px}
 .lneed.amb:before{background:#e9a23b}
 .lneed b{color:var(--s-ink);margin-right:4px}
 .lneed.amb b{color:var(--s-amber)}
+.lpts{list-style:none;counter-reset:p;margin:16px 0 0;padding:0;display:grid;gap:12px;font-size:14.5px;line-height:1.5;color:var(--s-ink)}
+.lpts li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:4px}
+.lpts li:before{content:counter(p);font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);margin-top:1px}
 .lavs{display:flex;gap:8px;margin-top:18px}
 .lavs span{width:36px;height:36px;border-radius:50%;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center;font-size:12.5px;font-weight:600;transition:opacity .3s}
 .lavs span.off{opacity:.3}
@@ -729,14 +732,11 @@ var STEPLINE=function(i){return "Step "+(i+1)+" of 5 · "+STEPS[i].title};
 
 /* 1 · agreements: summary first, the full text is in the sheet; accept only after reading to the end */
 function gate(d){
-  F.mode="gate"; F.doc=d; show("agree");
-  var doc=DOCS[d];
-  say({kick:"Before we begin · agreement "+(d+1)+" of 2", line:doc.name, sub:"Here is what it says, in short",
-    extra:'<ol class="pts">'+doc.summary.map(function(s){return '<li>'+esc(s)+'</li>'}).join("")+'</ol>'+
-      '<div class="note">This summary is only a guide. What you accept is the full text of the document.</div>'+
-      '<div class="acts"><button class="btn" data-a="read">Read and accept'+I("arrow")+'</button></div>',
+  F.mode="gate"; F.doc=d; F.readEnd=false; show("agree");
+  say({kick:"", line:"", sub:"", extra:"",
     status:[d?"One agreement left":"Two agreements to accept","still"],
     prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:DOCS.map(function(x,i){return F.accepted[i]?"dn":i===d?"on":""})}});
+  later(function(){showCard()},REDUCE?0:260);
 }
 
 /* 2 · the setup plan */
@@ -821,11 +821,26 @@ function cardSummary(i){
   return h;
 }
 var CARD={on:false,big:false};
+function docCard(){
+  var d=DOCS[F.doc], kick="Before we begin · agreement "+(F.doc+1)+" of 2";
+  if(CARD.big) return {kick:kick,title:d.name,tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',
+    body:'<div class="doc">'+d.sections.map(function(s){return '<h4>'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div>',
+    l:'<span class="ls">'+(F.readEnd?'You have reached the end.':'Scroll to the end to accept.')+'</span>',
+    r:'<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>'};
+  return {kick:kick,title:d.name,tog:'',
+    body:'<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ol>'+
+      '<div class="lneed"><span>This summary is only a guide. What you accept is the full text of the document.</span></div>',
+    l:'', r:'<button class="btn" data-a="details">Read and accept'+I("arrow")+'</button>'};
+}
 function cardHTML(){
+  if(F.mode==="gate") return cardWrap(docCard());
   var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else p={title:heading(i),tog:'',body:cardSummary(i),l:'<button class="btn ghost" data-a="details">'+I("max")+'See details</button>'+(st.k==="team"?' <button class="btn ghost" data-a="later">Do it later</button>':''),r:primary(i)};
-  return '<div class="cd-in"><div class="cd-hd"><div><small>'+kick+'</small><h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div><div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div></div>';
+  p.kick=kick; return cardWrap(p);
+}
+function cardWrap(p){
+  return '<div class="cd-in"><div class="cd-hd"><div><small>'+p.kick+'</small><h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div><div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div></div>';
 }
 function placeCard(){
   var c=$("card"), r;
@@ -839,7 +854,7 @@ function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; c.classList.r
   requestAnimationFrame(function(){c.classList.add("on")})}
 function hideCard(){CARD.on=false; $("card").classList.remove("on")}
 function expandCard(){var c=$("card"); if(CARD.big) return; c.classList.add("swap");
-  later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd) bd.scrollTop=0; later(function(){c.classList.remove("swap")},280)},170)}
+  later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd) bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
   later(function(){CARD.big=false; c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
 /* finishing a step: the card comes back to its summary size, then gives way to the agent */
@@ -921,6 +936,8 @@ function detailParts(i){
 }
 function checkEnd(){var b=$("shBody"); if(SHEET==="doc"&&!F.readEnd&&b.scrollTop+b.clientHeight>=b.scrollHeight-24){F.readEnd=true; renderSheet()}}
 $("shBody").addEventListener("scroll",checkEnd);
+function checkCardEnd(){var bd=$("card").querySelector(".cd-bd"); if(F.mode==="gate"&&CARD.big&&!F.readEnd&&bd&&bd.scrollTop+bd.clientHeight>=bd.scrollHeight-24){F.readEnd=true; renderCard()}}
+$("card").addEventListener("scroll",checkCardEnd,true);
 
 /* ======================= events ======================= */
 document.addEventListener("click",function(e){
@@ -928,9 +945,10 @@ document.addEventListener("click",function(e){
   var a=el.dataset.a, i=+el.dataset.i;
   if(a==="close") closeSheet();
   else if(a==="read") openSheet("doc");
-  else if(a==="accdoc"){if(!F.readEnd) return; F.accepted[F.doc]=true; closeSheet();
-    if(F.doc===0) later(function(){gate(1)},250);
-    else{F.mode="pass"; show("pass"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: your setup plan",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}}
+  else if(a==="accdoc"){if(!F.readEnd) return; F.accepted[F.doc]=true;
+    finishStep(function(){
+    if(F.doc===0) gate(1);
+    else{F.mode="pass"; show("pass"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: your setup plan",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}})}
   else if(a==="start") proc(0);
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
