@@ -1472,7 +1472,10 @@ body.agent-on .h-s{ background:linear-gradient(90deg,#5b6474 0 40%,#2c47b2 50%,#
 .hero-in > *{ grid-column:1 / -1; }
 .hero-in > #heroBlob{ display:none!important; }
 .hero-in > .h-lab{ grid-column:1 / -1; margin:0 0 18px; display:inline-flex; align-items:center; gap:8px; padding:5px 11px 5px 9px; border-radius:99px; background:rgba(255,255,255,.7); border:1px solid rgba(99,128,255,.2); font:600 11px/1 var(--font); letter-spacing:.06em; text-transform:uppercase; color:#2c47b2; }
-.h-lab .h-orb{ width:18px; height:18px; border-radius:50%; flex:none; background:radial-gradient(circle,#fff 0 30%,transparent 33%),radial-gradient(circle at 35% 30%,#8cc0ff,#3f6ef6 60%,#2154d8); box-shadow:0 0 0 3px rgba(63,110,246,.14); }
+.h-lab{ padding-left:5px!important; }
+.h-lab .h-orb{ position:relative; width:26px; height:26px; flex:none; display:grid; place-items:center; }
+.h-lab .h-orb canvas{ position:absolute; inset:0; width:100%; height:100%; }
+.h-lab .h-orb i{ position:relative; width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 35% 28%,#8cc0ff,#3f6ef6 55%,#2154d8); box-shadow:0 0 0 2.5px #fff,0 2px 6px rgba(37,99,235,.4); }
 .hero-in::before{ display:none!important; }
 .hero-in > .h-t{ margin-top:0!important; }
 /* focus card is always crisp: no backdrop blur, a plain veil on locked steps, a roomier business-details form */
@@ -2288,7 +2291,8 @@ function ringPaint() {
     el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3));
     size(el, cw, ch);
     /* the circle is seen from slightly above: depth moves a card up or down, the card itself stays upright */
-    el.style.transform = `translate3d(${R * sa * f + g.LPa / 2}px, ${g.cy + R * ca * f * Math.sin(tl)}px, ${R * ca * f * Math.cos(tl)}px) rotateY(${face}deg) rotateZ(0deg) scale(${f})`;
+    const zz = R * ca * f * Math.cos(tl), ps = 1500 / (1500 - zz);
+    el.style.transform = `translate3d(${R * sa * f + g.LPa / 2 / ps}px, ${g.cy + R * ca * f * Math.sin(tl)}px, ${zz}px) rotateY(${face}deg) rotateZ(0deg) scale(${f})`;
     el.style.setProperty("--o", ca < 0 ? .86 : 1); el.style.opacity = 1; el.style.zIndex = 20 + Math.round(ca * 10);
     el.classList.remove("is-far", "is-right", "is-clickable");
     if (Math.abs(d) < pd) { pd = Math.abs(d); prim = i; }
@@ -2856,10 +2860,18 @@ function tband() {
   let c = $("#tband");
   if (!c) {
     document.body.insertAdjacentHTML("beforeend", `<div class="tband" id="tband"><div class="hero-bg"></div><div class="hero-in">
-      <div class="hb" id="heroBlob" style="width:84px;height:84px"><canvas aria-hidden="true"></canvas><span class="mark">${HB_MARK}${IC.check.replace("<svg", '<svg class="m-check"')}</span></div><span class="h-lab"><b class="h-orb"></b>Agent summary</span>
+      <div class="hb" id="heroBlob" style="width:84px;height:84px"><canvas aria-hidden="true"></canvas><span class="mark">${HB_MARK}${IC.check.replace("<svg", '<svg class="m-check"')}</span></div><span class="h-lab"><b class="h-orb"><canvas width="52" height="52"></canvas><i></i></b>Agent summary</span>
       <h2 class="h-t" id="hTitle"></h2><p class="h-s" id="atTele"></p><ul class="h-tasks" id="hTasks" aria-label="What the agent is doing"></ul><div class="h-acc" id="hAcc"></div></div>
       <nav class="h-steps" id="tbSteps" aria-label="Setup steps">${STEPS.map((s, i) => `<button type="button" data-i="${i}" aria-label="${esc(s.title)}"><i class="si"><b class="ck">${IC.check}</b></i><span>${esc(s.title)}</span></button>`).join("")}</nav></div><div class="edge" id="edge"></div>`);
     c = $("#tband");
+    { /* static particle sphere for the Agent summary chip */
+      const cv = $(".h-orb canvas", c), cx = cv.getContext("2d"), n = 90, ga = Math.PI * (3 - Math.sqrt(5));
+      for (let k = 0; k < n; k++) {
+        const y = 1 - (k / (n - 1)) * 2, rr = Math.sqrt(1 - y * y), th = k * ga, x = Math.cos(th) * rr, z = Math.sin(th) * rr;
+        cx.fillStyle = `rgba(63,110,246,${(0.35 + 0.5 * (z + 1) / 2).toFixed(2)})`;
+        cx.beginPath(); cx.arc(26 + x * 23, 26 + y * 23, 1.1 + (z + 1) * 0.5, 0, 6.283); cx.fill();
+      }
+    }
     AgentBlobs.mount(c); AgentBlobs.state("think"); hbKind = "think"; $("#heroBlob").dataset.state = "think";
     $("#hAcc").addEventListener("click", (e) => {
       const h = e.target.closest(".acc-h"); if (!h) return;

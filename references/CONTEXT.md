@@ -424,3 +424,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.22 Cards (user file) — agent summary chip
 - Left panel: the big agent blob is removed; an "Agent summary" chip with a small static blob on its left sits above the title.
+
+### 8f.23 Cards (user file) — chip blob, centred active card
+- The "Agent summary" chip shows a small static particle-sphere blob (canvas drawn once) with the core in the middle.
+- Ring: the front card is now exactly centred in the space right of the left panel (the panel offset is divided by the perspective factor, which had pushed it right).
