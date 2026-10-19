@@ -1033,7 +1033,7 @@ function appHTML(){
   var st=[["Upload & Submit","closes "+fmtD(close),1],["Consent Notification",fmtD(d(1),1),0],["Consent Based Scrubbing",fmtD(d(11),1),0]];
   return '<aside class="nav"><div class="lg"><img src="'+LOGO+'" alt="">DigiConsent</div>'+NAV.map(function(sec,si){return '<div class="nsec" data-sec="'+si+'"><h6>'+sec[0]+'</h6>'+sec[1].map(function(it){return '<button class="nit'+(it[1]==="Migration"?' on':'')+'">'+I(it[0])+it[1]+'</button>'}).join("")+'</div>'}).join("")+
     '<div class="me"><div class="av">RM</div><div><div class="rn">Ravi Menon</div><div class="rm">HDFC Bank Limited</div></div></div></aside>'+
-    '<div class="main"><div class="topb"><span>Operate / Migration</span><span class="cl">'+I("clock")+'Closes in 30 days</span></div><div class="pg">'+
+    '<div class="main"><div class="pg">'+
     '<h2>Consent Migration</h2><p>Migrate your legacy consent records into DigiConsent, validated, verified and notified to users in one guided flow.</p>'+
     '<div class="stages">'+st.map(function(x,k){return (k?'<span class="sep">'+I("arrow")+'</span>':'')+'<div class="stg'+(x[2]?' on':'')+'"><i>'+(k+1)+'</i><div><b>'+x[0]+'</b><span>'+x[1]+'</span></div></div>'}).join("")+'</div>'+
     '<div class="mempty"><div class="ic">'+I("upload")+'</div><h3>No consents uploaded yet</h3><p>Upload a CSV with consent records to migrate them into DigiConsent. AI will help validate and resolve errors automatically.</p><button class="btn upl" data-a="upload">'+I("upload")+'New Upload</button></div>'+
