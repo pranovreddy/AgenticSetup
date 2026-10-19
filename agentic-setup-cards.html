@@ -1840,6 +1840,22 @@ body.dk-1 .cf-art svg,body.dk-2 .cf-art svg,body.dk-3 .cf-art svg,body.dk-4 .cf-
 /* done: the green check sits to the right of the step name */
 .cardf .cf-mid.cf-mid-done{ flex-direction:row!important; align-items:center!important; justify-content:space-between; }
 .cardf .cf-mid-done h3{ margin:0!important; }
+/* finished page: fits any window, scrolls only when it really has to */
+body.phase-finale .deck{ overflow-y:auto; overflow-x:hidden; }
+body.phase-finale .fin-pack{ min-height:100%; justify-content:center; gap:clamp(8px,2.2vh,22px); }
+@media (max-height:760px){
+  body.phase-finale .ah-ok{ width:48px!important; height:48px!important; margin-bottom:0!important; } body.phase-finale .ah-ok svg{ width:24px!important; height:24px!important; }
+  body.phase-finale .ah h1{ font-size:24px!important; margin-top:6px!important; }
+  body.phase-finale .narr{ font-size:13px; }
+  body.phase-finale .finale{ padding:12px 16px 14px; } .clock div{ min-width:56px; padding:6px 6px; } .clock b{ font-size:20px; } .clock{ margin-bottom:6px; }
+  #elapsed{ display:none; }
+}
+@media (max-width:700px){ body.phase-finale .ah h1{ font-size:22px!important; } body.phase-finale .stage{ min-height:0; } .clock div{ min-width:52px; } }
+/* card icons: no tile, a soft white line glyph straight on the card */
+.cf-art svg .igtile{ display:none; }
+.cf-art svg g{ stroke:#fff!important; opacity:.5; stroke-width:6!important; }
+.cf-art svg{ max-width:260px!important; width:78%!important; }
+body.dk-6 .cf-art svg{ --igs:#fff; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2095,7 +2111,7 @@ function cfArt(key, i) {
     gtm: `<rect x="80" y="128" width="20" height="34" rx="5"/><rect x="110" y="106" width="20" height="56" rx="5"/><rect x="140" y="82" width="20" height="80" rx="5"/>`,
     templates: `<path d="M94 70H133L168 105V170H94Z"/><path d="M133 70V105H168"/><path d="M108 130H154M108 148H154M108 164H130"/>`,
   };
-  return `<svg viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect x="40" y="40" width="160" height="160" rx="44" style="fill:var(--igt,#fff)"/><g ${S}>${g[key] || g.profile}</g></svg>`;
+  return `<svg viewBox="0 0 240 240" fill="none" aria-hidden="true"><rect class="igtile" x="40" y="40" width="160" height="160" rx="44"/><g ${S}>${g[key] || g.profile}</g></svg>`;
 }
 /* ---------- The agent blob (ported from the product: sphereCanvas + agent-core + mark) ---------- */
 const AI_MARK = `<svg class="ai-mark" viewBox="0 0 26 26" aria-hidden="true" fill="#fff">
@@ -2572,8 +2588,9 @@ function layout() {
     if (fin) {
       /* Scale from the viewport — pack (header + stage + CTA) is flex-centered as one unit. */
       const vw = Math.min(r.width || window.innerWidth, window.innerWidth);
-      f = Math.min(0.8, vw / (5 * CW * so + 4 * g + 100));
-      f = Math.max(f, 0.5) * 1.2; /* +20% card size */
+      const vh = window.innerHeight, pack = vh < 760 ? 300 : 430;   /* header and countdown panel take this much height */
+      f = Math.min(0.96, (vw / (5 * CW * so + 4 * g + 100)) * 1.2, Math.max(120, vh - pack) / (CH * so));
+      f = Math.max(f, 0.16);
       cardH = CH * so * f;
       pitch = (CW * so + g) * f;
       stage.style.setProperty("--fin-stage", `${Math.round(cardH + 16)}px`);
@@ -3912,7 +3929,7 @@ function faceHTML(i) {
 
 let faceSig = "";
 function faces() {
-  const sig = "art4|" + S.cards.map((c, i) => c.st + (c.st === "review" && isLocked(i))).join();
+  const sig = "art5|" + S.cards.map((c, i) => c.st + (c.st === "review" && isLocked(i))).join();
   if (sig === faceSig && $$(".cardf").length === 5 && $(".cardf .cf-art")) return; faceSig = sig;
   cards().forEach((el, i) => {
     let f = $(".cardf", el); if (!f) { f = document.createElement("div"); f.className = "cardf"; el.appendChild(f); }

@@ -512,3 +512,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.47 Cards (user file) — team search and role filter; Done check beside the step name
 - Team review card: search box plus role chips with counts (All, Regulatory / Legal, Business Admin, Super Admin) above a richer user list (name, job title, email, department, role). Filters update the list in place without losing focus. The Details page keeps its search and now has the same role chips (and searches department too). Helpers: `teamMatch`, `roleChips`, `cardTeamRows`, `refreshTeamCard`.
 - Dark card, finished state: the green check is on the right of the step name (it had dropped below it).
+
+### 8f.48 Cards (user file) — responsive finished page; icons directly on the card
+- Finished page: card row size now follows both width and height (`layout()` finale branch), the pack scrolls only if needed, and short windows (under 760px high) shrink the header, tick and countdown. Checked at 1440x900, 1280x640, 1024x700, 768x900 and 390x844.
+- Card icons: the white tile is gone; a thin white line glyph at 50% opacity sits directly on the card (`.igtile` hidden). Glyphs match the steps: ID card, people, layers, bars, document.
