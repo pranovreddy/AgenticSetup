@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent Pixel Field</title>
+<style>
+:root{
+  --deep:#0b37c9; --ink:#ffffff; --navy:#0a2a8f; --muted:rgba(10,42,143,.55);
+}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--deep);
+  font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+canvas#px{position:fixed;inset:0;width:100%;height:100%;display:block}
+
+.brand{position:fixed;top:24px;left:28px;z-index:3;display:flex;align-items:center;gap:10px;
+  font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand img{width:20px;height:auto;filter:brightness(0) invert(1)}
+.status{position:fixed;top:22px;right:28px;z-index:3;display:flex;align-items:center;gap:8px;
+  font-size:13px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(6px)}
+.status i{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgba(255,255,255,.7);
+  animation:ping 1.6s infinite}
+.status.done i{animation:none;background:#7cf0b4}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}100%{box-shadow:0 0 0 9px rgba(255,255,255,0)}}
+
+.stage{position:fixed;left:50%;top:46%;transform:translate(-50%,-50%);z-index:2;
+  width:min(940px,90vw);text-align:center;pointer-events:none;
+  text-shadow:0 2px 28px rgba(4,24,120,.55)}
+.kick{font-size:14px;opacity:.78;letter-spacing:.01em;margin-bottom:14px;min-height:1.2em}
+.line{font-size:clamp(28px,3.4vw,50px);font-weight:600;letter-spacing:-.035em;line-height:1.06;min-height:1.06em}
+.sub{font-size:clamp(15px,1.4vw,19px);opacity:.9;margin-top:16px;line-height:1.4;min-height:1.4em}
+.sub .ok{display:inline-flex;width:18px;height:18px;border-radius:50%;background:#fff;color:var(--deep);
+  align-items:center;justify-content:center;vertical-align:-3px;margin-right:8px;box-shadow:none}
+.sub .ok svg{width:11px;height:11px}
+
+/* word-by-word text swap */
+.w{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(.35em);
+  transition:opacity .55s ease var(--d),filter .55s ease var(--d),transform .7s cubic-bezier(.2,.8,.2,1) var(--d)}
+.in .w{opacity:1;filter:blur(0);transform:none}
+.out .w{opacity:0;filter:blur(8px);transform:translateY(-.25em);transition-duration:.22s;transition-delay:0s}
+
+/* bottom: source progress, sits on the light end of the gradient */
+.prog{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);z-index:3;display:flex;gap:26px;
+  font-size:13px;color:var(--muted);white-space:nowrap}
+.prog span{display:flex;align-items:center;gap:7px;transition:color .4s}
+.prog b{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.35;transition:all .4s}
+.prog .on{color:var(--navy)}
+.prog .on b{opacity:1;box-shadow:0 0 0 4px rgba(11,55,201,.15)}
+.prog .dn{color:var(--navy)}
+.prog .dn b{opacity:1;background:var(--deep)}
+
+.ctl{position:fixed;right:24px;bottom:28px;z-index:3;display:flex;gap:6px}
+.ctl button{font:inherit;font-size:13px;color:var(--navy);background:rgba(255,255,255,.7);
+  border:1px solid rgba(10,42,143,.15);border-radius:8px;height:32px;padding:0 12px;cursor:pointer}
+.ctl button:hover{background:#fff}
+
+@media (max-width:820px){.prog{gap:14px;font-size:12px}.prog .lbl{display:none}.ctl{bottom:70px}}
+</style>
+</head>
+<body>
+<canvas id="px" aria-hidden="true"></canvas>
+
+<div class="brand"><img alt="" src="__LOGO__">DigiConsent</div>
+<div class="status" id="status"><i></i><span id="statusTxt">Onboarding Agent is working</span></div>
+
+<main class="stage" aria-live="polite">
+  <div class="kick" id="kick"></div>
+  <div class="line" id="line"></div>
+  <div class="sub" id="sub"></div>
+</main>
+
+<nav class="prog" id="prog" aria-label="Sources"></nav>
+<div class="ctl"><button id="pause">Pause</button><button id="replay">Replay</button></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- script: step 1, Business profile ---------------- */
+var KICK = "Onboarding Agent · Business profile · step 1 of 5";
+var SCENES = [
+  {id:"intro", dur:3.4, line:"Preparing your business profile",
+   sub:"Reading four sources: DLT, GSTIN, MCA and your website", prog:-1},
+  {id:"dlt",   dur:4.4, line:"Checking DLT registration",
+   sub:"Reading the registered entity and address", done:"Registered address found", prog:0},
+  {id:"gstin", dur:4.4, line:"Checking GSTIN",
+   sub:"Matching your PAN against the GST registry", done:"PAN AAACH2702H matched", prog:1},
+  {id:"mca",   dur:4.4, line:"Checking MCA",
+   sub:"Confirming the legal entity and its type", done:"HDFC Bank Limited, Public Limited", prog:2},
+  {id:"web",   dur:4.4, line:"Looking up your company website",
+   sub:"Reading hdfcbank.com for your industry", done:"Banking & Financial Services", prog:3},
+  {id:"form",  dur:6.0, line:"Filling in your business profile", sub:"0 of 7 fields filled", prog:4},
+  {id:"done",  dur:Infinity, line:"Your business profile is ready",
+   sub:"Filled all 7 fields from 4 sources. Next, you check it and submit.", prog:5}
+];
+var PROG = ["DLT registration","GSTIN","MCA","Website","Business profile"];
+var FORM_ORDER = [0,4,1,5,2,6,3];   // alternate left and right columns
+var FILL_T0 = .5, FILL_STEP = .7, FILL_DUR = .55;
+
+var REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------------- helpers ---------------- */
+function hash(i){var x=Math.sin(i*12.9898+78.233)*43758.5453;return x-Math.floor(x)}
+function clamp(x,a,b){return x<a?a:x>b?b:x}
+function ease(x){x=clamp(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
+function $(id){return document.getElementById(id)}
+
+/* ---------------- canvas + grid ---------------- */
+var cv=$("px"), ctx=cv.getContext("2d");
+var ofA=document.createElement("canvas"), oA=ofA.getContext("2d",{willReadFrequently:true});
+var ofB=document.createElement("canvas"), oB=ofB.getContext("2d",{willReadFrequently:true});
+var W,H,dpr,cell,cols,rows,N;
+var ambR,val,spd,hole,tint,dist,maxDist,tgt;
+var sprites=[], glow;
+var L={};          // layout in cell units: cols, rows, cx, cy, tw, th
+var TINTS=6, SIZES=9;
+
+function makeSprites(){
+  var px=Math.ceil(cell*dpr); sprites=[];
+  for(var t=0;t<TINTS;t++){
+    var k=t/(TINTS-1), r=Math.round(255+(64-255)*k), g=Math.round(255+(112-255)*k), b=Math.round(255+(236-255)*k);
+    var row=[];
+    for(var s=0;s<SIZES;s++){
+      var c=document.createElement("canvas"); c.width=c.height=px; var x=c.getContext("2d");
+      var f=.36+s*(.5/(SIZES-1)), a=px*f, o=(px-a)/2;
+      x.strokeStyle="rgb("+r+","+g+","+b+")"; x.lineCap="round"; x.lineJoin="round";
+      x.lineWidth=Math.max(1,px*(.1+.05*s/(SIZES-1)));
+      x.beginPath(); x.moveTo(o,o+a); x.lineTo(o+a,o);            // shaft
+      x.moveTo(o+a*.38,o); x.lineTo(o+a,o); x.lineTo(o+a,o+a*.62); // head
+      x.stroke(); row.push(c);
+    }
+    sprites.push(row);
+  }
+  var gs=Math.ceil(cell*dpr*3); glow=document.createElement("canvas"); glow.width=glow.height=gs;
+  var gx=glow.getContext("2d"), gr=gx.createRadialGradient(gs/2,gs/2,0,gs/2,gs/2,gs/2);
+  gr.addColorStop(0,"rgba(190,215,255,.9)"); gr.addColorStop(1,"rgba(190,215,255,0)");
+  gx.fillStyle=gr; gx.fillRect(0,0,gs,gs);
+}
+
+function resize(){
+  dpr=Math.min(2,window.devicePixelRatio||1); W=innerWidth; H=innerHeight;
+  cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+  cell=clamp(Math.round(Math.min(W/92,H/56)),11,18);
+  cols=Math.ceil(W/cell)+1; rows=Math.ceil(H/cell)+1; N=cols*rows;
+  ofA.width=ofB.width=cols; ofA.height=ofB.height=rows;
+  ambR=new Float32Array(N); val=new Float32Array(N); spd=new Float32Array(N);
+  hole=new Float32Array(N); tint=new Uint8Array(N); dist=new Float32Array(N); tgt=new Float32Array(N);
+  for(var i=0;i<N;i++){ambR[i]=hash(i*3.1); spd[i]=5+hash(i*7.7)*9;}
+  makeSprites(); measure();
+}
+
+/* where the text sits, in cells; pixels dim behind it so it stays readable */
+function measure(){
+  function box(el){var g=document.createRange(); g.selectNodeContents(el); var b=g.getBoundingClientRect(); return b.width?b:el.getBoundingClientRect()}
+  var r=box($("line")), s=box($("sub")), k=box($("kick"));
+  var x0=Math.min(r.left,s.left,k.left), x1=Math.max(r.right,s.right,k.right);
+  var y0=k.top, y1=s.bottom;
+  if(x1-x0<40){x0=W*.3;x1=W*.7}
+  L={cols:cols,rows:rows,cx:(x0+x1)/2/cell,cy:(y0+y1)/2/cell,tw:(x1-x0)/cell,th:(y1-y0)/cell};
+  maxDist=0;
+  for(var y=0;y<rows;y++)for(var x=0;x<cols;x++){
+    var i=y*cols+x, px=x*cell+cell/2, py=y*cell+cell/2;
+    var dx=Math.max(x0-px,0,px-x1), dy=Math.max(y0-py,0,py-y1), d=Math.sqrt(dx*dx+dy*dy)/cell;
+    hole[i]=.22+.78*clamp((d-.4)/2.2,0,1);
+    var ly=py/H; tint[i]=Math.round(clamp((ly-.66)/.3,0,1)*(TINTS-1));
+    var ex=x-L.cx, ey=y-L.cy; dist[i]=Math.sqrt(ex*ex+ey*ey); if(dist[i]>maxDist)maxDist=dist[i];
+  }
+}
+
+/* ---------------- pixel scenes (drawn at one canvas pixel per cell) ---------------- */
+function A(c,a){c.strokeStyle=c.fillStyle="rgba(255,255,255,"+clamp(a,0,1)+")"}
+
+var DRAW={
+  intro:function(c,t){ // rings pulse out from the agent, four sources orbit
+    c.lineWidth=1.4;
+    for(var k=0;k<4;k++){var r=((t*9+k*12)%48)+6; A(c,1.1*(1-r/52)); c.beginPath(); c.arc(L.cx,L.cy,r,0,7); c.stroke();}
+    var R=Math.min(L.rows*.4,L.cols*.3);
+    for(var j=0;j<4;j++){var a=t*.5+j*Math.PI/2, x=L.cx+Math.cos(a)*R*1.35, y=L.cy+Math.sin(a)*R;
+      A(c,1); c.fillRect(Math.round(x)-1,Math.round(y)-1,3,3);
+      for(var q=1;q<9;q++){var b=a-q*.05; A(c,.5-q*.055); c.fillRect(Math.round(L.cx+Math.cos(b)*R*1.35),Math.round(L.cy+Math.sin(b)*R),1,1)}}
+  },
+  dlt:function(c,t){ // a registration record is read top to bottom
+    var ph=ease(t/3.3), h=L.rows*.84, w=Math.min(L.cols*.62,h*1.5), x0=Math.round(L.cx-w/2), y0=Math.round(L.cy-h/2), f=5;
+    w=Math.round(w); h=Math.round(h);
+    c.lineWidth=1; A(c,.9); c.beginPath();
+    c.moveTo(x0+.5,y0+.5); c.lineTo(x0+w-f+.5,y0+.5); c.lineTo(x0+w+.5,y0+f+.5); c.lineTo(x0+w+.5,y0+h+.5); c.lineTo(x0+.5,y0+h+.5); c.closePath(); c.stroke();
+    c.beginPath(); c.moveTo(x0+w-f+.5,y0+.5); c.lineTo(x0+w-f+.5,y0+f+.5); c.lineTo(x0+w+.5,y0+f+.5); c.stroke();
+    A(c,.95); c.fillRect(x0+3,y0+3,Math.round(w*.3),2);
+    var sy=y0+ph*h, n=0;
+    for(var y=y0+8;y<y0+h-2;y+=3){
+      var gap=Math.round(w*(.22+.1*hash(n+40))), len=Math.round((w-6)*(.5+.45*hash(n)));
+      var lit=y<sy; A(c,lit?.85:.22); c.fillRect(x0+3,y,Math.min(gap-2,len),1);
+      if(len>gap){A(c,lit?.95:.18); c.fillRect(x0+3+gap,y,len-gap,1)}
+      n++;
+    }
+    var g=c.createLinearGradient(0,sy-6,0,sy); g.addColorStop(0,"rgba(255,255,255,0)"); g.addColorStop(1,"rgba(255,255,255,.4)");
+    if(ph<1){c.fillStyle=g; c.fillRect(x0+1,sy-6,w-1,6); A(c,1); c.fillRect(x0-2,Math.round(sy),w+5,1)}
+  },
+  gstin:function(c,t){ // two barcode bands scanned left to right
+    var ph=ease(t/3.3), x0=Math.round(L.cols*.08), x1=Math.round(L.cols*.92), sx=x0+ph*(x1-x0);
+    var bands=[[.1,.3],[.7,.9]];
+    for(var b=0;b<2;b++){var ya=Math.round(L.rows*bands[b][0]), yb=Math.round(L.rows*bands[b][1]), x=x0, n=b*97;
+      while(x<x1){var bw=1+Math.floor(hash(n)*3), gp=1+Math.floor(hash(n+.5)*2), hh=hash(n+9)<.15?2:0;
+        A(c,x<sx?.95:.24); c.fillRect(x,ya-hh,bw,yb-ya+hh*2); x+=bw+gp; n++}}
+    if(ph<1){var g=c.createLinearGradient(sx-8,0,sx,0); g.addColorStop(0,"rgba(255,255,255,0)"); g.addColorStop(1,"rgba(255,255,255,.35)");
+      c.fillStyle=g; c.fillRect(sx-8,L.rows*.06,8,L.rows*.88); A(c,1); c.fillRect(Math.round(sx),Math.round(L.rows*.05),1,Math.round(L.rows*.9))}
+  },
+  mca:function(c,t){ // registry pulse: a trace sweeps across, above and below
+    var P=[[0,0],[6,0],[7.5,-1.6],[9,0],[11,0],[11.8,1.4],[13,-9],[14.2,4],[15.2,0],[17.5,-2.2],[19.5,0],[24,0]], per=24;
+    var x0=L.cols*.04, x1=L.cols*.96, span=x1-x0, head=x0+((t*16)%(span+18));
+    [[.25,1,0],[.75,-1,9]].forEach(function(bd){
+      var yb=L.rows*bd[0];
+      function Y(x){var u=((x-x0+bd[2])%per+per)%per;for(var k=1;k<P.length;k++)if(u<=P[k][0]){var a=P[k-1],b=P[k],m=(u-a[0])/(b[0]-a[0]);return yb+bd[1]*(a[1]+(b[1]-a[1])*m)}return yb}
+      c.lineWidth=1;
+      for(var x=x0;x<x1;x+=.5){var back=head-x, a=back<0?.42:back<30?1-back/34:.42;
+        A(c,Math.max(.42,a)); c.beginPath(); c.moveTo(x,Y(x)); c.lineTo(x+.5,Y(x+.5)); c.stroke()}
+      if(head<x1){A(c,1); c.fillRect(Math.round(head)-1,Math.round(Y(head))-1,3,3)}
+    });
+  },
+  web:function(c,t){ // a globe turns around the text
+    var R=Math.min(L.rows*.45,L.cols*.32), cx=L.cx, cy=L.cy; c.lineWidth=1;
+    A(c,.95); c.beginPath(); c.arc(cx,cy,R,0,7); c.stroke();
+    for(var k=0;k<6;k++){var a=t*.55+k*Math.PI/6, cs=Math.cos(a); A(c,.25+.55*Math.abs(Math.sin(a)));
+      c.beginPath(); c.ellipse(cx,cy,Math.max(.1,R*Math.abs(cs)),R,0,0,7); c.stroke()}
+    [-60,-30,0,30,60].forEach(function(d){var r=d*Math.PI/180, y=cy+R*Math.sin(r), hw=R*Math.cos(r); A(c,.45);
+      c.beginPath(); c.moveTo(cx-hw,y); c.lineTo(cx+hw,y); c.stroke()});
+    for(var q=0;q<14;q++){var b=t*1.3-q*.05, x=cx+Math.cos(b)*R*1.25, y=cy+Math.sin(b)*R*.42-Math.cos(b)*R*.25;
+      A(c,q?.6-q*.04:1); var s=q?1:3; c.fillRect(Math.round(x)-(s>>1),Math.round(y)-(s>>1),s,s)}
+  },
+  form:function(c,t){ // seven fields fill in, left and right of the text
+    var colW=Math.round(L.cols*.2), xs=[Math.round(L.cols*.04),Math.round(L.cols*.96-colW)];
+    var gapL=L.rows*.78/4, gapR=L.rows*.78/3, top=L.rows*.07, fh=3;
+    for(var i=0;i<7;i++){
+      var left=i<4, x=xs[left?0:1], y=Math.round(left?top+i*gapL+gapL*.25:top+(i-4)*gapR+gapR*.3);
+      var ord=FORM_ORDER.indexOf(i), f=clamp((t-FILL_T0-ord*FILL_STEP)/FILL_DUR,0,1), len=.55+.4*hash(i+3);
+      A(c,.5); c.fillRect(x,y,Math.round(4+hash(i)*6),1);
+      c.lineWidth=1; A(c,f>0?.75:.35); c.strokeRect(x+.5,y+2.5,colW,fh+1);
+      if(f>0){var fw=Math.round((colW-2)*len*f); A(c,.95); c.fillRect(x+2,y+4,fw,fh-1);
+        if(f<1){A(c,1); c.fillRect(x+2+fw,y+3,1,fh+1)}
+        else{A(c,1); c.fillRect(x+colW+2,y+4,2,2)}}
+    }
+  },
+  done:function(c,t){ // a ring closes around the result, then rings out
+    var R=Math.max(L.tw*.55+2,Math.min(L.rows*.4,L.cols*.3)), p=ease(t/1.3);
+    c.lineWidth=1; A(c,1); c.beginPath(); c.arc(L.cx,L.cy,R,-Math.PI/2,-Math.PI/2+p*Math.PI*2); c.stroke();
+    if(p<1){var a=-Math.PI/2+p*Math.PI*2; c.fillRect(Math.round(L.cx+Math.cos(a)*R)-1,Math.round(L.cy+Math.sin(a)*R)-1,3,3)}
+    for(var k=0;k<4;k++){var a2=-Math.PI/4+k*Math.PI/2, on=p>(k+1)/4.2; A(c,on?1:.3);
+      c.fillRect(Math.round(L.cx+Math.cos(a2)*R)-1,Math.round(L.cy+Math.sin(a2)*R)-1,3,3)}
+    if(t>1.3&&!REDUCE){for(var j=0;j<3;j++){var e=(t-1.3-j*.35); if(e<0)continue; e=e%3.2; var r=R+e*18;
+      A(c,.7*(1-e/3.2)); c.beginPath(); c.arc(L.cx,L.cy,r,0,7); c.stroke()}}
+  }
+};
+
+function paint(o,ctx2,scene,t){
+  ctx2.globalAlpha=1; ctx2.fillStyle="#000"; ctx2.fillRect(0,0,cols,rows);
+  if(REDUCE&&scene.dur!==Infinity) t=scene.dur;
+  DRAW[scene.id](ctx2,t);
+  return ctx2.getImageData(0,0,cols,rows).data;
+}
+
+/* ---------------- timeline ---------------- */
+var clock=0,last=performance.now(),paused=false,cur=-1,prev=-1,changeAt=0,subState="";
+var STARTS=[];(function(){var s=0;SCENES.forEach(function(x){STARTS.push(s);s+=x.dur})})();
+function sceneAt(t){for(var i=SCENES.length-1;i>=0;i--)if(t>=STARTS[i])return i;return 0}
+
+function setText(el,html,words){
+  var go=function(){
+    el.classList.remove("out","in");
+    if(words){var n=0; el.innerHTML=html.split(" ").map(function(w){return '<span class="w" style="--d:'+(n++*45)+'ms">'+w+'</span>'}).join(" ")}
+    else el.innerHTML='<span class="w" style="--d:0ms">'+html+'</span>';
+    void el.offsetWidth; el.classList.add("in"); measure();
+  };
+  if(el.innerHTML&&!REDUCE){el.classList.add("out"); setTimeout(go,220)} else go();
+}
+var OK='<span class="ok"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.3 2.2 4.7-5"/></svg></span>';
+
+function drawProg(p){
+  $("prog").innerHTML=PROG.map(function(l,i){var c=i<p?"dn":i===p?"on":"";return '<span class="'+c+'"><b></b><span class="lbl">'+l+'</span></span>'}).join("");
+}
+
+function onScene(i){
+  var s=SCENES[i]; prev=cur; cur=i; changeAt=clock; subState="";
+  if(!$("kick").textContent) $("kick").textContent=KICK;
+  setText($("line"),s.line,true); setText($("sub"),s.sub,false); drawProg(s.prog);
+  var done=s.id==="done"; $("status").classList.toggle("done",done);
+  $("statusTxt").textContent=done?"Ready for your review":"Onboarding Agent is working";
+}
+
+function updateSub(lt){
+  var s=SCENES[cur];
+  if(s.done&&lt>s.dur*.72&&subState!=="done"){subState="done"; setText($("sub"),OK+s.done,false)}
+  if(s.id==="form"){var n=0; for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) n++;
+    var txt=n===7?OK+"7 of 7 fields filled":n+" of 7 fields filled";
+    if(subState!==txt){subState=txt; $("sub").innerHTML='<span class="w" style="--d:0ms">'+txt+'</span>'; $("sub").classList.add("in")}}
+}
+
+/* ---------------- render ---------------- */
+var GRAD;
+function background(){
+  var g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#0a33c2"); g.addColorStop(.42,"#2a62e6"); g.addColorStop(.7,"#6f98f0");
+  g.addColorStop(.88,"#d4e1fc"); g.addColorStop(1,"#f6f9ff");
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  var cx=L.cx*cell, cy=L.cy*cell, r=Math.max(W,H)*.32, rg=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+  rg.addColorStop(0,"rgba(8,38,170,.55)"); rg.addColorStop(1,"rgba(8,38,170,0)");
+  ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+}
+
+function frame(now){
+  var dt=Math.min(.05,(now-last)/1000); last=now;
+  if(!paused) clock+=dt;
+  var i=sceneAt(clock); if(i!==cur) onScene(i);
+  var lt=clock-STARTS[cur]; updateSub(lt);
+
+  var dNew=paint(ofA,oA,SCENES[cur],lt), dOld=null, el=clock-changeAt, TW=REDUCE?0:.9;
+  if(prev>=0&&el<TW+.2) dOld=paint(ofB,oB,SCENES[prev],clock-STARTS[prev]);
+
+  ctx.setTransform(dpr,0,0,dpr,0,0); background();
+  ctx.setTransform(1,0,0,1,0,0);
+  var ps=Math.ceil(cell*dpr), gs=glow.width, k=Math.min(1,dt), wave=REDUCE?0:1, tt=clock;
+  for(var y=0;y<rows;y++)for(var x=0;x<cols;x++){
+    var j=y*cols+x, delay=dist[j]/maxDist*TW, v4=j*4, target, front=0;
+    if(dOld&&el<delay) target=dOld[v4]/255;
+    else{target=dNew[v4]/255; if(dOld){var e=(el-delay)/.08; front=Math.exp(-e*e)*.55}}
+    target=target*hole[j]+front;
+    val[j]+=(target-val[j])*Math.min(1,k*spd[j]);
+    var v=clamp(val[j],0,1);
+    var amb=(.13+.11*ambR[j]+wave*(.08*Math.sin((x-y)*.21-tt*1.5)+.05*Math.sin(x*.06+y*.04+tt*.4)))*hole[j];
+    var a=amb*(1-v)+v*(.86+.14*hash(j+Math.floor(tt*6)));
+    if(a<.025) continue;
+    ctx.globalAlpha=a;
+    ctx.drawImage(sprites[tint[j]][Math.min(SIZES-1,Math.floor(v*SIZES))],Math.round(x*cell*dpr),Math.round(y*cell*dpr));
+  }
+  ctx.globalCompositeOperation="lighter";
+  for(var j2=0;j2<N;j2++){var vv=val[j2]; if(vv<.45||tint[j2]>2) continue;
+    ctx.globalAlpha=(vv-.45)*.22; var gx=(j2%cols)*cell*dpr+ps/2-gs/2, gy=Math.floor(j2/cols)*cell*dpr+ps/2-gs/2; ctx.drawImage(glow,gx,gy)}
+  ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
+  requestAnimationFrame(frame);
+}
+
+/* ---------------- controls ---------------- */
+$("pause").onclick=function(){paused=!paused; this.textContent=paused?"Play":"Pause"};
+$("replay").onclick=function(){clock=0; cur=-1; prev=-1; paused=false; $("pause").textContent="Pause"};
+addEventListener("keydown",function(e){if(e.code==="Space"){e.preventDefault();$("pause").click()}});
+addEventListener("resize",resize);
+
+var m=/t=([\d.]+)/.exec(location.hash); if(m) clock=parseFloat(m[1]);
+resize(); requestAnimationFrame(function(n){last=n; frame(n)});
+})();
+</script>
+</body>
+</html>
