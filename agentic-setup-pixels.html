@@ -244,9 +244,8 @@ select.inp{height:36px;padding:0 8px}
 .cd-ft{flex:none;padding:16px 36px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--s-line)}
 .card.big .cd-hd,.card.big .cd-bd,.card.big .cd-ft{padding-left:max(28px,calc((100% - 960px)/2));padding-right:max(28px,calc((100% - 960px)/2))}
 .cd-tog{flex:none}
-.asum{position:fixed;z-index:8;border-radius:18px 18px 0 0;padding:11px 18px 13px;box-sizing:border-box;opacity:0;pointer-events:none;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18'%3E%3Cpath d='M4 5l5 4-5 4z' fill='%231d3fbf' fill-opacity='.07'/%3E%3C/svg%3E"),
-    radial-gradient(90% 180% at 0% 0%,rgba(255,255,255,.75) 0%,rgba(255,255,255,0) 60%),
+.asum{position:fixed;z-index:7;border-radius:18px 18px 0 0;padding:11px 18px 35px;box-sizing:border-box;opacity:0;pointer-events:none;
+  background:radial-gradient(90% 180% at 0% 0%,rgba(255,255,255,.75) 0%,rgba(255,255,255,0) 60%),
     linear-gradient(100deg,#bcd6ff 0%,#d9e8ff 45%,#e9e2ff 100%);
   box-shadow:0 0 0 1px rgba(255,255,255,.7),0 -8px 40px rgba(120,170,255,.45);overflow:hidden;transform:translateY(10px);
   transition:opacity .45s ease,transform .6s cubic-bezier(.2,.8,.2,1),top .6s cubic-bezier(.2,.8,.2,1),left .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1)}
@@ -256,8 +255,7 @@ select.inp{height:36px;padding:0 8px}
 @keyframes asheen{0%{background-position:120% 0}55%,100%{background-position:-60% 0}}
 .asum>*{position:relative;z-index:1}
 @media (prefers-reduced-motion: reduce){.asum:after{animation:none;display:none}}
-.card.withsum{border-radius:0 0 20px 20px}
-.card.withsum.big{border-radius:0}
+
 .ahd{display:flex;align-items:center;gap:7px;color:#2a47c9;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:3px}
 .ahd img{width:13px;height:auto}
 .abd{padding:0}
@@ -1053,11 +1051,11 @@ function placeCard(){
   if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
   else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
-    if(aOn){A0.style.width=w+"px"; setSum(subline(F.active)); aH=A0.offsetHeight}
-    var top=aOn?Math.max(aH+20,(H-h)/2+aH/2-14):Math.max(64,(H-h)/2-18); if(aOn) h=Math.min(h,H-top-88);
+    if(aOn){A0.style.width=(w-24)+"px"; setSum(subline(F.active)); aH=A0.offsetHeight}
+    var top=aOn?Math.max(aH-2,(H-h)/2+(aH-22)/2-14):Math.max(64,(H-h)/2-18); if(aOn) h=Math.min(h,H-top-88);
     r={l:x0+(av-w)/2,t:top,w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
-  A0.classList.toggle("on",aOn); c.classList.toggle("withsum",aOn); if(aOn){A0.style.top=(r.t-aH)+"px"; A0.style.left=r.l+"px"}
+  A0.classList.toggle("on",aOn); if(aOn){A0.style.top=(r.t-aH+22)+"px"; A0.style.left=(r.l+12)+"px"}
   placeStatus();
 }
 function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
