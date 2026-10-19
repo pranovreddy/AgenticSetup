@@ -1767,6 +1767,9 @@ body.dk-6 .cf-art svg{ --ig2:#e4f1ff; --igo:.3; --igs:#fff; --igg:#bfe0ff; filte
 .cardf .cf-mid-done{ order:2; }
 .h-lab .h-orb img{ width:20px; height:20px; object-fit:contain; display:block; }
 .h-lab .h-orb{ width:22px; height:22px; }
+/* subtext that needs the user's attention is amber */
+.cardf .cf-res.attn{ color:#ffc857!important; display:inline-flex; align-items:center; gap:8px; }
+.cardf .cf-res.attn::before{ content:""; width:9px; height:9px; border-radius:50%; background:#ffc857; box-shadow:0 0 0 4px rgba(255,200,87,.25); flex:none; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2183,10 +2186,10 @@ const STEPS = [
     sources: ["DLT registrations"], result: "Drafted 3 brands and 7 lines of business", mini: "3 brands · 7 LOBs", lower: "brands and LOBs" },
   { key: "gtm", loader: "gtm", title: "GTM partners",
     checks: [["Reading partner requests", "Read partner requests"], ["Comparing rates for each phase", "Compared rates for each phase"], ["Choosing the best combination", "Chose the best combination"], ["Setting allocation across phases", "Set allocation across phases"], ["Preparing the summary", "Prepared the summary"]],
-    sources: ["Rate cards from 4 partners"], result: "Chose Karix and Value First, with volume split by phase", mini: "2 of 4 chosen", lower: "GTM partners" },
+    sources: ["Rate cards from 4 partners"], result: "Chose Karix and Value First, with volume split by phase", mini: "2 of 4 chosen", attn: true, lower: "GTM partners" },
   { key: "templates", loader: "match", title: "Templates",
     checks: [["Reading your templates", "Read your templates"], ["Suggesting a line of business for each", "Suggested a line of business for each"], ["Marking how confident each suggestion is", "Marked how confident each suggestion is"]],
-    sources: ["Your 100 DLT templates"], result: "Suggested a line of business for 98 of 100 templates", mini: "98 of 100 mapped", lower: "templates" },
+    sources: ["Your 100 DLT templates"], result: "Suggested a line of business for 98 of 100 templates", mini: "98 of 100 mapped", attn: true, lower: "templates" },
 ];
 /* Content box of each scene in its 720x360 stage, without the status pill (OP_BOX_NOCHIP in the previous build). */
 const LD_BOX = { kyc: [120, 3, 710, 328], team: [6, 0, 601, 270], brand: [40, 10, 712, 292], match: [8, -12, 613, 350], gtm: [14, 0, 712, 270] };
@@ -3316,8 +3319,7 @@ function doneFace(i) {
   if (c.st === "later") { cls = "later"; h = "Team invites saved for later"; p = "You can invite people any time from User and Roles. Nothing is blocked."; }
   else if (k === "profile") {
     if (c.st === "inreview") return `<div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div>
-      <div class="cap"><div class="cap-row"><span class="sp"></span><span class="t run" data-vline>Checking your business details</span><span class="n" data-vn>1 of 2</span></div><div class="segs"><i class="cur"></i><i></i></div></div>
-      <p class="kv-note">Submitted for approval. Your team step opens as soon as it's approved.</p>`;
+      <div class="cap"><div class="cap-row"><span class="sp"></span><span class="t run" data-vline>Checking your business details</span><span class="n" data-vn>1 of 2</span></div><div class="segs"><i class="cur"></i><i></i></div></div>`;
     h = "Business profile approved"; p = `Approved by 4 of 4 telecom operators · ${c.at}`;
   }
   else if (k === "team") { h = `${PEOPLE.filter((x) => x.on).length} invites sent`; p = `Sent by Ravi Menon · ${c.at}`; }
@@ -3797,7 +3799,7 @@ function faceHTML(i) {
   return { cls, html: `<div class="cf-v"><b>${esc(s.title)}</b></div>
     <div class="cf-top">${st}</div>
     ${titleRow}
-    <div class="cf-bot"><span class="cf-res${c.st === "analysing" ? " cf-live" : ""}">${c.st === "analysing" ? esc(s.checks[Math.max(0, (c.step || 1) - 1)][0]) : res}</span></div>
+    <div class="cf-bot"><span class="cf-res${c.st === "analysing" ? " cf-live" : ""}${s.attn && (c.st === "ready" || c.st === "review") ? " attn" : ""}">${c.st === "analysing" ? esc(s.checks[Math.max(0, (c.step || 1) - 1)][0]) : res}</span></div>
     <div class="cf-art" aria-hidden="true">${cfArt(s.key, i)}</div>` };
 }
 

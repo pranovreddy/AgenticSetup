@@ -457,3 +457,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.32 Cards (user file) — active line always centred
 - Left panel task list: blank rows before and after the list, so the active line always sits in the middle row, including the first and last step (previously the last step slid to the bottom row).
+
+### 8f.33 Cards (user file) — amber attention subtext; note line removed
+- Dark card subtext turns amber (with a dot) when the step has something for the user to act on: GTM partners and Templates while ready or in review (`attn: true` on those steps).
+- Removed the "Submitted for approval. Your team step opens as soon as it's approved." line under the profile check animation.
