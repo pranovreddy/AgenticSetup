@@ -408,8 +408,8 @@ var BASE=JSON.stringify({P:PROFILE,E:PEOPLE,B:BRANDS,G:PARTNERS,T:TPLS});
 var SRC=["DLT","GSTIN","MCA","Website","Rate cards"];
 var STEPN=STEPS.map(function(s){return s.title});
 var SCENES = [
-  {id:"intro", dur:3.4, kick:"Onboarding Agent", line:"Preparing your five setup steps",
-   sub:"I read each source once, then build every step from it", grp:"src", prog:-1, dur2:0},
+  {id:"intro", dur:3.4, kick:"Onboarding Agent", line:"Getting things ready for you",
+   sub:"I'll read each of your records once and use them for everything", grp:"src", prog:-1, dur2:0},
   {id:"sources", dur:6.2, kick:"Reading sources · each one once", line:"Scanning your five sources",
    subs:["DLT registration","GSTIN","MCA","Company website","Partner rate cards"], subPre:"Now scanning: ",
    done:"5 sources read. Every step is built from these.", grp:"src", prog:0, progSubs:true},
@@ -859,9 +859,9 @@ function gate(d){
 /* 2 · the setup plan */
 function plan(){
   F.mode="plan"; show("plan");
-  say({kick:"Your setup plan", line:"Five steps, then migration", sub:"Each step is prepared for you first. You check the summary, then accept or submit.",
-    extra:'<div class="three"><span>'+I("spark")+'The work is done for you</span><span>'+I("user")+'You review each step</span><span>'+I("lock")+'Nothing is submitted without you</span></div>'+
-      '<div class="acts"><button class="btn" data-a="start">Start AI analysis'+I("arrow")+'</button></div>',
+  say({kick:"What happens next", line:"Leave the paperwork to me", sub:"I'll look up your company's records, fill in the details and get your account ready to move your consents. Then I'll show you what I found, and you just tell me if it looks right.",
+    extra:'<div class="three"><span>'+I("spark")+'I do the work</span><span>'+I("user")+'You check it</span><span>'+I("lock")+'Nothing is sent without your OK</span></div>'+
+      '<div class="acts"><button class="btn" data-a="start">Let\'s begin'+I("arrow")+'</button></div>',
     status:["Ready to start","still"], prog:{label:"Steps",items:STEPN,states:[]}});
 }
 
@@ -887,7 +887,7 @@ function procTick(){
 }
 function ready(){
   F.mode="ready"; show("done");
-  say({kick:"Onboarding Agent", line:"Your five steps are ready", sub:"I've done the groundwork. Check each summary and decide.",
+  say({kick:"Onboarding Agent", line:"All done. Have a look?", sub:"I've filled everything in. Go through it one part at a time and confirm what looks right.",
     extra:'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>'+
       '<div class="acts"><button class="btn" data-a="go0">Review your business profile'+I("arrow")+'</button></div>',
     status:["Ready for your review","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
@@ -1126,7 +1126,7 @@ document.addEventListener("click",function(e){
   else if(a==="accdoc"){if(!F.readEnd) return; F.accepted[F.doc]=true;
     finishStep(function(){
     if(F.doc===0) gate(1);
-    else{F.mode="pass"; show("pass"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: your setup plan",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}})}
+    else{F.mode="pass"; show("pass"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: what happens now",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}})}
   else if(a==="start") proc(0);
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
