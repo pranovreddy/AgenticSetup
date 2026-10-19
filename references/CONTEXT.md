@@ -523,3 +523,4 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - Update (owner comment): the setup plan screen ("Leave the paperwork to me") sits on the plain field; the pixel line of five steps leading to migration is no longer shown (scene "plan" unused).
 - Update (owner comment): the Agent summary panel is attached to the top of the review card (no gap; panel has square bottom corners, the card square top corners).
 - Update (owner screenshot): top left is a vertical glass pill (same style as the other pills) with the DigiConsent logo in a light circle and an "RM" profile circle (Ravi Menon, HDFC Bank Limited) below; replaces the "DigiConsent" wordmark; hidden on the product page (its own nav shows logo and user).
+- Update (owner comment): the Agent summary text sits directly on the gradient (no white inner box), in white; gradient deepened (#2f4fd0 to #a65fc4) so white text reads across it.
