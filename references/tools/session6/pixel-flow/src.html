@@ -128,8 +128,6 @@ svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .sh-x{width:36px;height:36px;border-radius:8px;border:1px solid #dfe5ef;background:#fff;cursor:pointer;color:var(--s-ink);display:grid;place-items:center}
 .sh-bd{flex:1;overflow:auto;padding:6px 28px 28px}
 .sh-ft{padding:14px 28px;border-top:1px solid var(--s-line);display:flex;justify-content:space-between;align-items:center;gap:14px}
-.sheet .btn{background:var(--s-blue);color:#fff;box-shadow:none}
-.sheet .btn.ghost{background:#fff;color:var(--s-ink);border:1px solid #d9e0ec}
 .sheet .btn:disabled{opacity:.4}
 .sheet .ls{color:var(--s-muted);font-size:13.5px}
 .sheet .cbx{border-color:#b8c3d6}
@@ -183,7 +181,53 @@ select.inp{height:36px;padding:0 8px}
 .stat{display:flex;gap:34px;margin-top:20px}
 .stat b{display:block;font-size:26px;letter-spacing:-.02em}.stat span{font-size:13px;color:var(--s-muted)}
 
-@media (max-width:820px){.prog{gap:14px;font-size:12px}.prog .lbl{display:none}.facts>div{grid-template-columns:110px auto}.facts em{display:none}.fgrid{grid-template-columns:1fr}}
+.sheet .btn,.card .btn{background:var(--s-blue);color:#fff;box-shadow:none}
+.sheet .btn.ghost,.card .btn.ghost{background:#fff;color:var(--s-ink);border:1px solid #d9e0ec}
+.card .btn:disabled{opacity:.4}
+.card .ls{color:var(--s-muted);font-size:13.5px}
+.card .cbx{border-color:#b8c3d6}
+.card .cbx.on{background:var(--s-blue);border-color:var(--s-blue);color:#fff}
+.card .auth{margin:16px 0 0;max-width:none;font-size:13.5px}
+.card .cd-ft .auth{margin:0;max-width:440px}
+.card .auth small{color:var(--s-muted);opacity:1}
+
+/* review: one white card in the middle of the field; it grows to full page for details */
+.card{position:fixed;left:50%;top:50%;width:0;height:0;z-index:8;background:#fff;color:var(--s-ink);border-radius:20px;overflow:hidden;
+  box-shadow:0 30px 90px rgba(4,20,100,.38);opacity:0;transform:translateY(26px) scale(.97);pointer-events:none;
+  transition:opacity .45s ease,transform .6s cubic-bezier(.2,.8,.2,1),left .6s cubic-bezier(.2,.8,.2,1),top .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1),height .6s cubic-bezier(.2,.8,.2,1),border-radius .6s}
+.card.on{opacity:1;transform:none;pointer-events:auto}
+.card.big{border-radius:0}
+.card.noanim{transition:none!important}
+#cardM{position:fixed;left:-9999px;top:0;height:auto!important;visibility:hidden;opacity:1;transform:none;transition:none}
+.cd-in{display:flex;flex-direction:column;height:100%;transition:opacity .18s ease}
+.card.swap .cd-in{opacity:0}
+.cd-hd{padding:24px 28px 4px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex:none}
+.cd-hd small{color:var(--s-muted);font-size:13px;display:flex;align-items:center;gap:8px}
+.cd-hd h2{margin:8px 0 0;font-size:24px;line-height:1.2;letter-spacing:-.025em;font-weight:650}
+.card.big .cd-hd{border-bottom:1px solid var(--s-line);padding-bottom:16px}
+.cd-bd{flex:1;min-height:0;overflow:auto;padding:4px 28px 22px}
+.cd-ft{flex:none;padding:14px 28px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--s-line)}
+.card.big .cd-hd,.card.big .cd-bd,.card.big .cd-ft{padding-left:max(28px,calc((100% - 960px)/2));padding-right:max(28px,calc((100% - 960px)/2))}
+.cd-tog{flex:none}
+.cd-agent{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--s-blue);background:var(--s-soft);padding:5px 10px 5px 8px;border-radius:999px;margin-top:10px}
+.cd-agent img{width:13px;height:auto}
+.cd-sum{font-size:15px;line-height:1.55;color:var(--s-ink2);margin:10px 0 0}
+.lfacts{margin-top:16px;border-top:1px solid var(--s-line)}
+.lfacts>div{display:grid;grid-template-columns:130px 1fr auto;gap:14px;padding:10px 0;border-bottom:1px solid var(--s-line);font-size:14px;align-items:baseline}
+.lfacts span{color:var(--s-muted)}
+.lfacts b{font-weight:600}
+.lfacts em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
+.lmore{font-size:13px;color:var(--s-muted);margin-top:8px}
+.lneed{display:flex;gap:10px;margin-top:16px;font-size:14px;line-height:1.5;color:var(--s-ink2)}
+.lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
+.lneed.amb:before{background:#e9a23b}
+.lneed b{color:var(--s-ink);margin-right:4px}
+.lneed.amb b{color:var(--s-amber)}
+.lavs{display:flex;gap:8px;margin-top:18px}
+.lavs span{width:36px;height:36px;border-radius:50%;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center;font-size:12.5px;font-weight:600;transition:opacity .3s}
+.lavs span.off{opacity:.3}
+
+@media (max-width:820px){.lfacts>div{grid-template-columns:110px 1fr}.lfacts em{display:none}.prog{gap:14px;font-size:12px}.prog .lbl{display:none}.facts>div{grid-template-columns:110px auto}.facts em{display:none}.fgrid{grid-template-columns:1fr}}
 @media (max-height:760px){.stage{top:45%}.pts{font-size:15px;gap:8px}.facts{gap:6px;margin-top:18px}.acts{margin-top:20px}}
 </style>
 </head>
@@ -197,6 +241,8 @@ select.inp{height:36px;padding:0 8px}
 <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12.5 9 5 9-5"/><path d="m3 17 9 5 9-5" opacity=".6"/></symbol>
 <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></symbol>
 <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></symbol>
+<symbol id="i-max" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></symbol>
+<symbol id="i-min" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M3 21l7-7M21 3l-7 7"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
 </defs></svg>
 
@@ -219,6 +265,8 @@ select.inp{height:36px;padding:0 8px}
   <div class="sh-bd" id="shBody"></div>
   <div class="sh-ft" id="shFoot"></div>
 </aside>
+<section class="card" id="card" aria-label="Step review"></section>
+<div class="card on" id="cardM" aria-hidden="true"></div>
 <div class="proto"><div class="pm" id="pm"></div><button id="pmb" type="button">Prototype</button></div>
 <script>
 (function(){
@@ -255,17 +303,10 @@ var SRC=["DLT","GSTIN","MCA","Website","Rate cards"];
 var STEPN=STEPS.map(function(s){return s.title});
 var SCENES = [
   {id:"intro", dur:3.4, kick:"Onboarding Agent", line:"Preparing your five setup steps",
-   sub:"I read each source once, then build every step from it", grp:"src", prog:-1},
-  {id:"dlt",   dur:4.2, kick:"Reading sources · 1 of 5", line:"Reading your DLT registration",
-   sub:"Entity, address, headers, people on record and templates", done:"Read once, used by four steps", grp:"src", prog:0},
-  {id:"gstin", dur:3.8, kick:"Reading sources · 2 of 5", line:"Checking GSTIN",
-   sub:"Matching your PAN against the GST registry", done:"PAN AAACH2702H matched", grp:"src", prog:1},
-  {id:"mca",   dur:3.8, kick:"Reading sources · 3 of 5", line:"Checking MCA",
-   sub:"Confirming the legal entity and its type", done:"HDFC Bank Limited, Public Limited", grp:"src", prog:2},
-  {id:"web",   dur:3.8, kick:"Reading sources · 4 of 5", line:"Looking up your company website",
-   sub:"Reading hdfcbank.com for your industry", done:"Banking & Financial Services", grp:"src", prog:3},
-  {id:"rates", dur:3.8, kick:"Reading sources · 5 of 5", line:"Reading partner rate cards",
-   sub:"Rates from 4 partners across three phases", done:"4 rate cards read", grp:"src", prog:4},
+   sub:"I read each source once, then build every step from it", grp:"src", prog:-1, dur2:0},
+  {id:"sources", dur:6.2, kick:"Reading sources · each one once", line:"Scanning your five sources",
+   subs:["DLT registration","GSTIN","MCA","Company website","Partner rate cards"], subPre:"Now scanning: ",
+   done:"5 sources read. Every step is built from these.", grp:"src", prog:0, progSubs:true},
   {id:"form",  dur:6.2, kick:"Step 1 of 5 · Business profile · from DLT, GSTIN, MCA and website", line:"Filling in your business profile",
    sub:"0 of 7 fields filled", grp:"step", prog:0},
   {id:"team",  dur:6.0, kick:"Step 2 of 5 · Team · from DLT", line:"Finding your team",
@@ -525,6 +566,22 @@ var DRAW={
 
 /* scenes for the rest of the journey */
 Object.assign(DRAW,{
+  sources:function(c,t){
+    var n=5, y=Math.round(L.rows*.2), step=.9, x0=L.cols*.14, x1=L.cols*.86;
+    function glyph(k,x,a){A(c,a); c.lineWidth=1;
+      if(k===0){c.strokeRect(x-3.5,y-5.5,8,11); for(var q=0;q<3;q++) c.fillRect(x-2,y-2+q*2.5,5,1)}                 // DLT record
+      if(k===1){for(var q2=0;q2<6;q2++) c.fillRect(x-5+q2*2,y-5,q2%2?1:1+(q2%3>0?1:0),10)}                              // GSTIN barcode
+      if(k===2){c.beginPath(); c.moveTo(x-6,y); c.lineTo(x-2,y); c.lineTo(x-.5,y-5); c.lineTo(x+1.5,y+4); c.lineTo(x+3,y); c.lineTo(x+6,y); c.stroke()} // MCA pulse
+      if(k===3){c.beginPath(); c.arc(x,y,5,0,7); c.stroke(); c.beginPath(); c.ellipse(x,y,2,5,0,0,7); c.stroke(); c.fillRect(x-5,y,10,1)}   // website globe
+      if(k===4){c.strokeRect(x-6.5,y-4.5,13,9); c.fillRect(x-4,y-2,4,1); c.fillRect(x+1,y+1,4,2)}                         // rate card
+    }
+    for(var k=0;k<n;k++){var x=x0+(x1-x0)*k/(n-1), s0=.15+k*step, p=clamp((t-s0)/.8,0,1), on=t>=s0&&t<s0+.85, done=t>=s0+.8;
+      var a=done?.9:on?1:.32*ease(t/.4+.2);
+      glyph(k,x,a);
+      if(on){A(c,.95); c.fillRect(Math.round(x-8+p*16),y-8,1,16); A(c,.5); c.strokeRect(x-9.5,y-9.5,19,19)}
+      if(done){A(c,1); c.beginPath(); c.moveTo(x-2,y+10); c.lineTo(x-.5,y+11.5); c.lineTo(x+2.5,y+8.5); c.stroke()}
+      var f=ease((t-4.7-k*.06)/.9); if(f>0){A(c,.6); c.beginPath(); c.moveTo(x,y+13); c.lineTo(x+(L.cx-x)*f,y+13+(L.cy-4-y-13)*f); c.stroke()}}
+  },
   agree:function(c,t){ // two agreements, left and right; the one being read is lit, key clauses marked
     var w=Math.round(L.cols*.19), h=Math.round(L.rows*.64), y0=Math.round(L.rows*.15), xs=[Math.round(L.cols*.05),Math.round(L.cols*.95-w)];
     for(var d=0;d<2;d++){var x0=xs[d], act=F.doc===d&&!F.accepted[d], acc=F.accepted[d], base=act?1:acc?.75:.35;
@@ -582,7 +639,7 @@ function paint(ctx2,id,t){
 
 /* scene player: show(id, at) switches the picture; the change spreads out from the text */
 var clock=0,last=performance.now(),paused=false;
-var SC={id:"agree",t0:0}, PREV=null, changeAt=-9;
+var SC={id:"agree",t0:0}, PREV=null, changeAt=-9, GAIN=1;
 function show(id,at){if(SC.id===id&&at==null) return; PREV={id:SC.id,t0:SC.t0}; SC={id:id,t0:clock-(at||0)}; changeAt=clock}
 
 function background(){
@@ -599,6 +656,7 @@ function frame(now){
   var dt=Math.min(.05,(now-last)/1000); last=now;
   if(!paused) clock+=dt;
   if(F.mode==="proc") procTick();
+  GAIN+=((CARD.on?.6:1)-GAIN)*Math.min(1,dt*3);
 
   var dNew=paint(oA,SC.id,clock-SC.t0), dOld=null, el=clock-changeAt, TW=REDUCE?0:.9;
   if(PREV&&el<TW+.2) dOld=paint(oB,PREV.id,clock-PREV.t0);
@@ -610,7 +668,7 @@ function frame(now){
     var j=y*cols+x, delay=dist[j]/maxDist*TW, v4=j*4, target, front=0;
     if(dOld&&el<delay) target=dOld[v4]/255;
     else{target=dNew[v4]/255; if(dOld){var e=(el-delay)/.08; front=Math.exp(-e*e)*.55}}
-    target=target*hole[j]+front;
+    target=target*hole[j]*GAIN+front;
     val[j]+=(target-val[j])*Math.min(1,k*spd[j]);
     var v=clamp(val[j],0,1);
     var amb=(.13+.11*ambR[j]+wave*(.08*Math.sin((x-y)*.21-tt*1.5)+.05*Math.sin(x*.06+y*.04+tt*.4)))*hole[j];
@@ -699,12 +757,13 @@ function procTick(){
   if(i!==F.procI){F.procI=i;
     if(s.id==="done"){ready(); return}
     show(s.id,lt); F.subState=s.subs?"s0":"";
-    say({kick:s.kick,line:s.line,sub:s.sub||s.subs[0],extra:"",status:["Onboarding Agent is working"],
+    say({kick:s.kick,line:s.line,sub:s.sub||((s.subPre||"")+s.subs[0]),extra:"",status:["Onboarding Agent is working"],
       prog:{label:s.grp==="src"?"Sources":"Steps",items:s.grp==="src"?SRC:STEPN,states:states(5,s.prog,s.prog)}});
     return}
   if(s.subs){var span=s.dur*.75,n=s.subs.length;
-    if(lt<span){var k0=Math.min(n-1,Math.floor(lt/(span/n))); if(F.subState!=="s"+k0){F.subState="s"+k0; say({sub:s.subs[k0]})}}}
-  if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:OK+s.done})}
+    if(lt<span){var k0=Math.min(n-1,Math.floor(lt/(span/n))); if(F.subState!=="s"+k0){F.subState="s"+k0; say({sub:(s.subPre||"")+s.subs[k0]});
+      if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(5,k0,k0)})}}}
+  if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:OK+s.done}); if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(5,-1,5)})}
   if(s.id==="form"){var c=0; for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
     var txt=c===7?OK+"7 of 7 fields filled":c+" of 7 fields filled";
     if(F.subState!==txt){F.subState=txt; said.sub=txt; $("sub").innerHTML='<span class="w" style="--d:0ms">'+txt+'</span>'; $("sub").classList.add("in")}}
@@ -717,12 +776,13 @@ function ready(){
     status:["Ready for your review","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
 }
 
-/* 4 · review: the agent's summary in the middle, decision buttons, details in the sheet */
-function review(i,quiet){
+/* 4 · review: a white card in the middle of the field holds the summary and the decision;
+   See details grows it to full page, Show summary or finishing the step brings it back */
+function review(i){
   F.mode="review"; F.active=i; var st=STEPS[i], sc=STEP_SCENE[st.k];
-  if(!quiet) show(sc[0],sc[1]);
-  say({kick:STEPLINE(i)+(st.attn?'<span class="att">Needs a look</span>':''), line:heading(i), sub:subline(i), extra:summaryExtra(i),
-    status:["Needs you",st.attn?"attn":"still"], prog:{label:"Steps",items:STEPN,states:states(5,i,i)}},quiet);
+  show(sc[0],sc[1]);
+  say({kick:"",line:"",sub:"",extra:"",status:["Needs you",st.attn?"attn":"still"], prog:{label:"Steps",items:STEPN,states:states(5,i,i)}});
+  later(function(){showCard()},REDUCE?0:260);
 }
 function heading(i){var k=STEPS[i].k;
   if(k==="brands") return BRANDS.length+" brands and "+lobCount()+" lines of business";
@@ -732,8 +792,9 @@ function subline(i){var k=STEPS[i].k, u=unmapped();
   if(k==="templates") return "Matched by reading each message. "+(u?u+" still need"+(u===1?"s":"")+" a line of business.":"You set the rest yourself.");
   return STEPS[i].rs}
 function facts(rows){return '<div class="facts">'+rows.map(function(r){return '<div><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b>'+(r[2]?'<em>'+esc(r[2])+'</em>':'<i></i>')+'</div>'}).join("")+'</div>'}
+function lfacts(rows){return '<div class="lfacts">'+rows.map(function(r){return '<div><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b>'+(r[2]?'<em>'+esc(r[2])+'</em>':'<i></i>')+'</div>'}).join("")+'</div>'}
 function needLine(st){var t=st.need; if(st.k==="templates"){var u=unmapped(); t=u?u+" template"+(u===1?" has":"s have")+" no line of business yet. They do not hold up migration.":"Every template now has a line of business."}
-  return '<div class="need'+(st.attn?' amb':'')+'"><b>'+(st.attn?'Needs a look':'Needs you')+'</b>'+esc(t)+'</div>'}
+  return '<div class="lneed'+(st.attn?' amb':'')+'"><span><b>'+(st.attn?'Needs a look.':'Needs you.')+'</b>'+esc(t)+'</span></div>'}
 function onPeople(){return PEOPLE.filter(function(p){return p.on})}
 function lobCount(){return BRANDS.reduce(function(a,b){return a+b.lobs.length},0)}
 function picked(){return PARTNERS.filter(function(p){return p.pick})}
@@ -747,21 +808,47 @@ function primary(i){
   if(k==="gtm") return '<button class="btn" data-a="gtm"'+(picked().length===2?'':' disabled')+'>Accept partners</button>';
   return '<button class="btn" data-a="tpl">Confirm mapping</button>';
 }
-function summaryExtra(i){
-  var st=STEPS[i], h="";
-  if(st.k==="profile") h=facts([["Legal entity",PROFILE[0][1],"MCA"],["Entity type",PROFILE[1][1],"MCA"],["Business PAN",PROFILE[3][1],"GSTIN"],["Industry",PROFILE[5][1],"Website"]])+
-    '<div class="more">and 3 more fields, including your registered address</div>'+authRow();
+function cardSummary(i){
+  var st=STEPS[i], h='<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">'+esc(subline(i))+'</p>';
+  if(st.k==="profile") h+=lfacts([["Legal entity",PROFILE[0][1],"MCA"],["Entity type",PROFILE[1][1],"MCA"],["Business PAN",PROFILE[3][1],"GSTIN"],["Industry",PROFILE[5][1],"Website"]])+
+    '<div class="lmore">and 3 more fields, including your registered address</div>'+authRow();
   if(st.k==="team"){var cnt={}; onPeople().forEach(function(p){cnt[ROLES[p.role]]=(cnt[ROLES[p.role]]||0)+1});
-    h='<div class="avs">'+PEOPLE.map(function(p){return '<span class="'+(p.on?'':'off')+'" title="'+esc(p.name)+'">'+p.i+'</span>'}).join("")+'</div>'+
-      '<div class="more">'+(Object.keys(cnt).map(function(r){return cnt[r]+' '+r}).join(" · ")||"Nobody selected")+'</div>'+needLine(st)}
-  if(st.k==="brands") h=facts(BRANDS.map(function(b){return [b.name,b.lobs.join(", ")||"No lines of business"]}))+needLine(st);
-  if(st.k==="gtm"){var pk=picked(); h=(pk.length===2?facts(PH.map(function(p,k){return [p,pk[0].name+" "+ALLOC[k]+"% · "+pk[1].name+" "+(100-ALLOC[k])+"%"]})):'<div class="more">Choose exactly two partners in the details.</div>')+needLine(st)}
-  if(st.k==="templates"){var u=unmapped(); h=facts([["Suggested",(100-u)+" templates have a line of business"],["Top lines",TLOBS.slice(0,3).map(function(l){return l[0]+" "+l[1]}).join(" · ")],["Need a look",u?u+" without a line of business":"None"]])+needLine(st)}
-  var later=st.k==="team"?'<button class="btn link" data-a="later">Do it later</button>':'';
-  return h+'<div class="acts">'+primary(i)+'<button class="btn ghost" data-a="details">See details</button>'+later+'</div>';
+    h+='<div class="lavs">'+PEOPLE.map(function(p){return '<span class="'+(p.on?'':'off')+'" title="'+esc(p.name)+'">'+p.i+'</span>'}).join("")+'</div>'+
+      '<div class="lmore">'+(Object.keys(cnt).map(function(r){return cnt[r]+' '+r}).join(" · ")||"Nobody selected")+'</div>'+needLine(st)}
+  if(st.k==="brands") h+=lfacts(BRANDS.map(function(b){return [b.name,b.lobs.join(", ")||"No lines of business"]}))+needLine(st);
+  if(st.k==="gtm"){var pk=picked(); h+=(pk.length===2?lfacts(PH.map(function(p,k){return [p,pk[0].name+" "+ALLOC[k]+"% · "+pk[1].name+" "+(100-ALLOC[k])+"%"]})):'<div class="lmore">Choose exactly two partners in the details.</div>')+needLine(st)}
+  if(st.k==="templates"){var u=unmapped(); h+=lfacts([["Suggested",(100-u)+" templates have a line of business"],["Top lines",TLOBS.slice(0,3).map(function(l){return l[0]+" "+l[1]}).join(" · ")],["Need a look",u?u+" without a line of business":"None"]])+needLine(st)}
+  return h;
 }
-function refresh(){ // after a change in the details: summary text and sheet follow, pixels read the data live
-  if(F.mode==="review"){said.extra=null; review(F.active,true)}
+var CARD={on:false,big:false};
+function cardHTML(){
+  var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
+  if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
+  else p={title:heading(i),tog:'',body:cardSummary(i),l:'<button class="btn ghost" data-a="details">'+I("max")+'See details</button>'+(st.k==="team"?' <button class="btn ghost" data-a="later">Do it later</button>':''),r:primary(i)};
+  return '<div class="cd-in"><div class="cd-hd"><div><small>'+kick+'</small><h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div><div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div></div>';
+}
+function placeCard(){
+  var c=$("card"), r;
+  if(CARD.big) r={l:0,t:0,w:W,h:H};
+  else{var w=Math.min(660,W-32), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-130); m.innerHTML="";
+    r={l:(W-w)/2,t:Math.max(64,(H-h)/2-18),w:w,h:h}}
+  c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
+}
+function renderCard(){var c=$("card"), bd=c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0; c.innerHTML=cardHTML(); bd=c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard()}
+function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
+  requestAnimationFrame(function(){c.classList.add("on")})}
+function hideCard(){CARD.on=false; $("card").classList.remove("on")}
+function expandCard(){var c=$("card"); if(CARD.big) return; c.classList.add("swap");
+  later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd) bd.scrollTop=0; later(function(){c.classList.remove("swap")},280)},170)}
+function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
+  later(function(){CARD.big=false; c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
+/* finishing a step: the card comes back to its summary size, then gives way to the agent */
+function finishStep(fn){
+  if(CARD.big){collapseCard(); later(function(){hideCard(); later(fn,380)},800)}
+  else{hideCard(); later(fn,380)}
+}
+function refresh(){ // after a change in the details: the card follows, and the pixels read the data live
+  if(F.mode==="review"&&CARD.on) renderCard();
   if($("sheet").classList.contains("on")) renderSheet();
 }
 
@@ -801,7 +888,7 @@ function final(){
 var SHEET=null;
 function openSheet(kind){SHEET=kind; F.readEnd=false; renderSheet(); $("shBody").scrollTop=0; $("sheet").classList.add("on"); $("sheet").setAttribute("aria-hidden","false"); $("scrim").classList.add("on"); if(kind==="doc") later(checkEnd,600)}
 function closeSheet(){SHEET=null; $("sheet").classList.remove("on"); $("sheet").setAttribute("aria-hidden","true"); $("scrim").classList.remove("on")}
-function foot(l,r){$("shFoot").innerHTML='<div>'+(l||'')+'</div><div style="display:flex;gap:10px">'+(r||'')+'</div>'}
+function sheetFoot(l,r){$("shFoot").innerHTML='<div>'+(l||'')+'</div><div style="display:flex;gap:10px">'+(r||'')+'</div>'}
 function fd(l,v,tag,wide,id){return '<div class="fd'+(wide?" w2":"")+'"><label>'+esc(l)+(tag?'<em>'+esc(tag)+'</em>':'')+'</label><input class="inp" value="'+esc(v)+'" data-f="'+id+'"></div>'}
 function renderSheet(){
   var b=$("shBody"), top=b.scrollTop, h="";
@@ -809,10 +896,11 @@ function renderSheet(){
     $("shKick").innerHTML="Agreement "+(F.doc+1)+" of 2"; $("shTitle").textContent=d.name;
     h='<div class="sh-sum"><b>In short.</b> '+d.summary.map(esc).join(" ")+'</div><div class="doc">'+d.sections.map(function(s){return '<h4>'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div>';
     b.innerHTML=h; b.scrollTop=top;
-    foot('<span class="ls">'+(F.readEnd?'You have reached the end.':'Scroll to the end to accept.')+'</span>','<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>');
-    return}
-  var i=F.active, st=STEPS[i];
-  $("shKick").innerHTML=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''); $("shTitle").textContent=st.k==="profile"?"Business profile details":st.title;
+    sheetFoot('<span class="ls">'+(F.readEnd?'You have reached the end.':'Scroll to the end to accept.')+'</span>','<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>');
+  }
+}
+function detailParts(i){
+  var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
   if(st.k==="profile"){h='<div class="lslot"><div class="lbox">HDFC</div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
     foot(authRow(),primary(i))}
   if(st.k==="team"){var cols="30px 1fr 170px 170px";
@@ -829,7 +917,7 @@ function renderSheet(){
       '<div class="chips"><button class="fc'+(F.lobf==="all"?' on':'')+'" data-a="lobf" data-v="all">All</button>'+TLOBS.map(function(l){return '<button class="fc'+(F.lobf===l[0]?' on':'')+'" data-a="lobf" data-v="'+l[0]+'">'+l[0]+' · '+l[1]+'</button>'}).join("")+'<button class="fc'+(F.lobf==="un"?' on':'')+'" data-a="lobf" data-v="un">Needed a look · 2</button></div>'+
       rows.map(function(x){var t=x[0],k=x[1];return '<div class="row" style="grid-template-columns:'+c3+'"><b style="font:600 12.5px/1.3 ui-monospace,Menlo,monospace">'+t[0]+'</b><span style="color:var(--s-ink2);font-size:14px">'+esc(t[1])+'</span>'+(t[3]==="u"?'<select class="inp" data-c="tlob" data-i="'+k+'"><option value="">Choose a line</option>'+TLOBS.map(function(l){return '<option'+(l[0]===t[2]?' selected':'')+'>'+l[0]+'</option>'}).join("")+'</select>':'<span>'+esc(t[2])+'</span>')+'<span class="cf '+(t[3]==="u"&&t[2]?'m':t[3])+'">'+(t[3]==="u"?(t[2]?'Set by you':'Unmapped'):({h:'High',m:'Check'})[t[3]])+'</span></div>'}).join("");
     foot('<span class="ls">Showing '+rows.length+' of 9 sample templates</span>',primary(i))}
-  b.innerHTML=h; b.scrollTop=top;
+  return {h:h,l:ft[0],r:ft[1]};
 }
 function checkEnd(){var b=$("shBody"); if(SHEET==="doc"&&!F.readEnd&&b.scrollTop+b.clientHeight>=b.scrollHeight-24){F.readEnd=true; renderSheet()}}
 $("shBody").addEventListener("scroll",checkEnd);
@@ -845,18 +933,19 @@ document.addEventListener("click",function(e){
     else{F.mode="pass"; show("pass"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: your setup plan",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}}
   else if(a==="start") proc(0);
   else if(a==="go0") review(0);
-  else if(a==="details") openSheet("step");
+  else if(a==="details") expandCard();
+  else if(a==="collapse") collapseCard();
   else if(a==="auth"){F.auth=!F.auth; refresh()}
-  else if(a==="submit"){if(F.auth) verify()}
+  else if(a==="submit"){if(F.auth) finishStep(verify)}
   else if(a==="ptog"){PEOPLE[i].on=!PEOPLE[i].on; refresh()}
-  else if(a==="invites"){F.teamLater=false; complete(1,"Invites sent")}
-  else if(a==="later"){F.teamLater=true; complete(1,"Team saved for later")}
+  else if(a==="invites"){F.teamLater=false; finishStep(function(){complete(1,"Invites sent")})}
+  else if(a==="later"){F.teamLater=true; finishStep(function(){complete(1,"Team saved for later")})}
   else if(a==="rmlob"){BRANDS[+el.dataset.b].lobs.splice(+el.dataset.l,1); refresh()}
-  else if(a==="brands") complete(2,"Brands and LOBs set up");
+  else if(a==="brands") finishStep(function(){complete(2,"Brands and LOBs set up")});
   else if(a==="ptn"){var n=picked().length; if(PARTNERS[i].pick||n<2){PARTNERS[i].pick=!PARTNERS[i].pick} else toast("Untick one partner first"); refresh()}
-  else if(a==="gtm") complete(3,"Partners confirmed");
-  else if(a==="lobf"){F.lobf=el.dataset.v; renderSheet()}
-  else if(a==="tpl") complete(4,"Templates mapped");
+  else if(a==="gtm") finishStep(function(){complete(3,"Partners confirmed")});
+  else if(a==="lobf"){F.lobf=el.dataset.v; refresh()}
+  else if(a==="tpl") finishStep(function(){complete(4,"Templates mapped")});
   else if(a==="mig") toast("Opening Consent Migration…");
 });
 document.addEventListener("change",function(e){var el=e.target, i=+el.dataset.i;
@@ -866,15 +955,15 @@ document.addEventListener("change",function(e){var el=e.target, i=+el.dataset.i;
   if(el.dataset.f!=null){PROFILE[+el.dataset.f][1]=el.value; refresh()}
 });
 addEventListener("keydown",function(e){
-  if(e.key==="Escape") closeSheet();
+  if(e.key==="Escape"){if(CARD.big) collapseCard(); else closeSheet()}
   if(e.code==="Space"&&!/INPUT|SELECT|BUTTON/.test(document.activeElement.tagName)){e.preventDefault(); paused=!paused}
 });
-addEventListener("resize",function(){resize()});
+addEventListener("resize",function(){resize(); if(CARD.on) placeCard()});
 
 /* ======================= prototype jumps ======================= */
 function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); resetData(); F.auth=false; F.teamLater=false; F.lobf="all";
+  clearLater(); closeSheet(); hideCard(); CARD.big=false; $("card").classList.remove("big","swap"); resetData(); F.auth=false; F.teamLater=false; F.lobf="all";
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
