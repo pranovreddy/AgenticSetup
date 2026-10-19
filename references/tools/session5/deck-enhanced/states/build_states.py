@@ -7,5 +7,8 @@ css = (here / "states.css").read_text(); js = (here / "states.js").read_text()
 assert h.count("window.__deck = { opening,") == 1
 h = h.replace("window.__deck = { opening,", js + "\nwindow.__deck = { uxState, opening,", 1)
 h = h.replace('<script>document.body.classList.add("dk-6","lt-1");</script>', f"<style id=\"ux-states\">{css}</style>\n" + '<script>document.body.classList.add("dk-6","lt-1");</script>', 1)
+old = 'document.body.classList.contains("arc-mode") ? 1.5 : 1.1);'
+assert h.count(old) == 1
+h = h.replace(old, 'ld.classList.contains("kv") ? 2 : document.body.classList.contains("arc-mode") ? 1.5 : 1.1);')
 (root / "agentic-setup-cards-states.html").write_text(h)
 print("ok", len(h))

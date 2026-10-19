@@ -601,3 +601,5 @@ Focus card height lowered again, from 80vh to 70vh (8f.62).
 8f.73 Part 2 states in the prototype: `agentic-setup-cards-states.html`, built from the UX copy by `references/tools/session5/deck-enhanced/states/build_states.py` (states.js, states.css). Eight-status chip on the centre card, side cards and rail; finished faces (done with who and when, in review, needs attention, do it later); nothing found, couldn't prepare (first, after two tries, busy), no-rate-card lock, partly prepared; Details notice bar, read-only, late suggestion, Save dialogs per step; busy, error, unknown-result, offline, load failures; finale window states; gate states; Signed agreements; concurrent edits. Every state can be forced from the Prototype menu (`__deck.uxState(name)`). Not wired: the 'Do it yourself' path on Business profile only blanks the fields. The preparation tiles are patched on the analysis card only.
 
 Centre-card 'Ready' chip removed in the states prototype (other statuses keep their chip).
+
+States prototype: the Business profile verification animation is about 1.7x larger (scene scale cap 2 for .kv, body height 620px).
