@@ -2370,7 +2370,12 @@ function layout() {
       el.style.transform = `translate3d(${X0 + k * 84 * f}px, ${-4 * f}px, ${-k * 70}px) rotateY(${k ? -10 : 0}deg) rotateZ(0deg) scale(${f * .78 * (1 - k * .06)})`;
       el.style.setProperty("--o", [1, .92, .8, .66, .52][Math.min(k, 4)]);
     } else
-    el.style.transform = `translate3d(${dir * x * f + LP / 2}px, ${-4 * f}px, ${z}px) rotateY(${-dir * TH}deg) rotateZ(0deg) scale(${SC[a] * f})`;
+    {
+      /* review: finished steps tuck behind the front card as a narrow peek, so they never run under the left-hand text */
+      const peek = TB && !AN && dir < 0;
+      const cx = peek ? -(aw * f / 2) + (proj(i, a) * f) - 34 * a * f + 4 : dir * x * f;
+      el.style.transform = `translate3d(${cx + LP / 2}px, ${-4 * f}px, ${z}px) rotateY(${-dir * TH}deg) rotateZ(0deg) scale(${SC[a] * f})`;
+    }
     if (!document.body.classList.contains("all-closed")) el.style.setProperty("--o", OP[a]); el.style.opacity = 1; el.style.zIndex = 20 - a;
     el.classList.toggle("is-focus", off === 0);
     el.classList.toggle("is-far", a >= 2); el.classList.toggle("is-right", off > 0);

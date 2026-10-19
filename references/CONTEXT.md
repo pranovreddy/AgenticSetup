@@ -400,3 +400,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.15 Cards (user file) — finished state
 - `agentic-setup-cards.html` finale: larger gradient success check that pops in, draws its tick and pulses rings; confetti burst (skipped for reduced motion); green-rimmed step cards; the migration-window countdown sits in a frosted panel with a live dot and a glowing button.
+
+### 8f.16 Cards (user file) — review stack no longer overlaps the left text
+- In review (`has-tband`), finished steps now tuck behind the front card as a narrow peek (about 34px per step) instead of spreading left under the title and message. The left text keeps its full width.
