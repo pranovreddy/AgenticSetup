@@ -549,3 +549,10 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.57 Cards (user file) — finished page header on two lines
 - Finished page: the green tick sits on the left, with the title and the subtitle as two left-aligned lines beside it (grid on `.ah-t`), instead of a centred stack.
+
+### 8f.58 Cards (user file) — edited states, unsaved-changes dialog, grey skipped steps, loader corners
+- Back to cards from a step's Details page now asks to Save changes / Discard changes / Keep editing when something was edited (snapshot on open, `restoreSnap`). Esc does the same.
+- Edited steps look different on the card: amber banner with a summary of what changed and "Undo all", an "Edited" (or "Custom split" for GTM) tag, "New"/"Added" tags and green outlines on new brands, lines of business and people, and "· edited" on the dark face.
+- Skipped (saved for later) steps show grey on the finished page, "Skipped for now" on the face, and the header reads "You can start migration" with a line naming what is saved for later.
+- Team and Templates: "Do it later" now sits beside the primary button on the right.
+- AI processing: the moving corner brackets around the animation are hidden (`.reticle`, `.kbay > i` in the loader doc).
