@@ -288,6 +288,26 @@ select.inp{height:36px;padding:0 8px}
 .srch input{border:0;outline:0;font:14px Inter,sans-serif;color:var(--s-ink);width:100%;background:none}
 .srch:focus-within{border-color:var(--s-blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .empty{padding:28px 0;color:var(--s-muted);font-size:14px;display:flex;gap:12px;align-items:center}
+.thero{margin-top:16px;padding:16px 18px;border:1px solid var(--s-line);border-radius:14px;background:#fbfcff}
+.thead{display:flex;gap:14px;align-items:center}
+.thead b{display:block;font-size:15.5px}.thead span{display:block;font-size:13.5px;color:var(--s-muted);margin-top:2px}
+.tring{position:relative;width:52px;height:52px;flex:none}
+.tring svg{width:52px;height:52px;transform:rotate(-90deg)}
+.tring circle{fill:none;stroke:#e6ecf7;stroke-width:3.5}
+.tring circle.on{stroke:var(--s-blue);stroke-linecap:round}
+.tring b{position:absolute;inset:0;display:grid;place-items:center;font-size:12.5px}
+.tbar2{display:flex;gap:3px;height:8px;margin:14px 0 10px}
+.tbar2 i{border-radius:4px}
+.hi{--c:#2563eb}.rv{--c:#e9a23b}.un{--c:#cfd6e4}
+.tbar2 i,.tmeter i{background:var(--c)}
+.tkey{display:flex;gap:18px;font-size:13px;color:var(--s-muted)}
+.tkey span{display:flex;align-items:center;gap:6px}.tkey i{width:8px;height:8px;border-radius:50%;background:var(--c)}.tkey b{color:var(--s-ink)}
+.tlh{display:flex;align-items:baseline;gap:10px;margin:18px 0 4px;font-weight:600;font-size:14.5px}
+.tlh em{font-style:normal;font-weight:400;font-size:12.5px;color:var(--s-muted)}
+.trow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(80px,1fr) auto;gap:16px;align-items:center;padding:10px 0;border-bottom:1px solid var(--s-line)}
+.twho{display:flex;gap:10px;align-items:center}.twho b{display:block;font-size:14px}.twho small{font-size:12px;color:var(--s-muted)}
+.tmeter{display:flex;gap:2px;height:6px}.tmeter i{border-radius:3px}
+.tnums{display:flex;gap:14px;font-size:12.5px;color:var(--s-muted);white-space:nowrap}.tnums b{color:var(--s-ink);font-size:13.5px}.tnums .rv b{color:var(--s-amber)}
 .lpts{list-style:none;counter-reset:p;margin:16px 0 0;padding:0;display:grid;gap:12px;font-size:15px;line-height:1.5;color:var(--s-ink)}
 .lpts li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:4px}
 .lpts li:before{content:counter(p);font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);margin-top:1px}
@@ -445,6 +465,8 @@ var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance
 var BRANDS=[{name:"HDFC Bank",hdr:"HDFCBK",logo:["HDFC","BANK","#004c8f"],lobs:["Credit Cards","Personal Loan","Home Loan"]},{name:"HDFC Life",hdr:"HDFCLI",logo:["HDFC","LIFE","#1b4f9c"],lobs:["Term Insurance","Savings Plans"]},{name:"HDFC ERGO",hdr:"HDFCER",logo:["HDFC","ERGO","#d7262b"],lobs:["Motor Insurance","Health Insurance"]}];
 var PARTNERS=[{name:"Karix",pick:true,r:[.75,1.2,.6],why:"Lowest rates on migration and refresh."},{name:"Value First",pick:true,r:[.8,1.2,.7],why:"Ties on acquisition at ₹1.20, with stronger enterprise SLA cover."},{name:"Tata",pick:false,r:[.82,1.28,.68],why:"Close on refresh, higher on migration and acquisition."},{name:"Route Mobile",pick:false,r:[.88,1.35,.72],why:"Above the chosen pair on every phase."}];
 var PH=["Migration","Acquisition","Refresh"], ALLOC=[60,50,65];
+/* per line of business: brand and how many of its suggestions need a second look */
+var TLOB_META={"Credit Cards":["HDFC Bank",6],"Personal Loan":["HDFC Bank",5],"Home Loan":["HDFC Bank",4],"Term Insurance":["HDFC Life",3],"Health Insurance":["HDFC ERGO",4],"Motor Insurance":["HDFC ERGO",2],"Savings Plans":["HDFC Life",2]};
 var TLOBS=[["Credit Cards",22],["Personal Loan",18],["Home Loan",14],["Term Insurance",12],["Health Insurance",12],["Motor Insurance",11],["Savings Plans",9]];
 var TPLS=[["CC_REWARDS_WKND","Earn 5X reward points on dining this weekend with your HDFC Bank Credit Card.","Credit Cards","h"],["CC_EMI_CONVERT","Convert purchases above ₹5,000 into easy EMIs at low interest.","Credit Cards","m"],["PL_PREAPPROVED","You are pre-approved for a Personal Loan up to ₹10 lakh.","Personal Loan","h"],["PL_BT_OFFER","Transfer your existing loan to HDFC Bank and save on interest.","Personal Loan","m"],["HL_TOPUP","Get a top-up on your Home Loan at attractive rates.","Home Loan","h"],["LIFE_TERM_1CR","Secure ₹1 crore cover for your family from ₹490 a month.","Term Insurance","h"],["ERGO_HEALTH_FAM","Cover your whole family with Optima Secure. Cashless at 13,000+ hospitals.","Health Insurance","m"],["GEN_SERVICE_ALERT","Your service request has been updated. Open the app to view.","","u"],["GEN_THANKS","Thank you for banking with us. We value your feedback.","","u"]];
 var BASE=JSON.stringify({P:PROFILE,E:PEOPLE,B:BRANDS,G:PARTNERS,T:TPLS});
@@ -972,6 +994,20 @@ function primary(i){
   if(k==="gtm") return '<button class="btn" data-a="gtm"'+(picked().length===2?'':' disabled')+'>Accept partners</button>';
   return '<button class="btn" data-a="tpl">Confirm mapping</button>';
 }
+function tplSummary(){
+  var un=unmapped(), extra=2-un, rows=TLOBS.map(function(l){var m=TLOB_META[l[0]]; return {name:l[0],brand:m[0],total:l[1],review:m[1]}});
+  // templates the user mapped themselves count as suggested and sure
+  var mapped=100-un, review=rows.reduce(function(a,r){return a+r.review},0), sure=mapped-review, pct=Math.round(mapped);
+  var ring='<span class="tring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" pathLength="100"/><circle class="on" cx="18" cy="18" r="15.5" pathLength="100" style="stroke-dasharray:'+pct+' 100"/></svg><b>'+pct+'%</b></span>';
+  var seg=function(n,c){return n?'<i class="'+c+'" style="flex:'+n+'"></i>':''};
+  return '<section class="thero"><div class="thead">'+ring+'<div><b>Suggestion confidence</b><span>'+(un?un+' '+(un===1?'has':'have')+' no suggestion yet and need'+(un===1?'s':'')+' mapping in review.':'Every template has a line of business now.')+'</span></div></div>'+
+    '<div class="tbar2">'+seg(sure,"hi")+seg(review,"rv")+seg(un,"un")+'</div>'+
+    '<div class="tkey"><span class="hi"><i></i><b>'+sure+'</b> high confidence</span><span class="rv"><i></i><b>'+review+'</b> need review</span><span class="un"><i></i><b>'+un+'</b> unmapped</span></div></section>'+
+    '<p class="tlh">Lines of business<em>Most review needed first</em></p><div class="tlist">'+rows.sort(function(a,b){return b.review-a.review||b.total-a.total}).map(function(r){
+      return '<div class="trow"><span class="twho"><span class="av">'+esc(r.name.split(" ").map(function(w){return w[0]}).join("").slice(0,2))+'</span><span><b>'+esc(r.name)+'</b><small>'+esc(r.brand)+'</small></span></span>'+
+        '<span class="tmeter"><i class="hi" style="flex:'+(r.total-r.review)+'"></i><i class="rv" style="flex:'+r.review+'"></i></span>'+
+        '<span class="tnums"><span><b>'+r.total+'</b> suggested</span><span class="rv"><b>'+r.review+'</b> need review</span></span></div>'}).join("")+'</div>';
+}
 function cardSummary(i){
   var st=STEPS[i], h='';
   if(st.k==="profile") h+=lfacts([["Legal entity",PROFILE[0][1],"MCA"],["Entity type",PROFILE[1][1],"MCA"],["Business PAN",PROFILE[3][1],"GSTIN"],["Industry",PROFILE[5][1],"Website"]])+
@@ -981,7 +1017,7 @@ function cardSummary(i){
       '<div class="lmore">'+(Object.keys(cnt).map(function(r){return cnt[r]+' '+r}).join(" · ")||"Nobody selected")+'</div>'+needLine(st)}
   if(st.k==="brands") h+=lfacts(BRANDS.map(function(b){return [b.name,b.lobs.join(", ")||"No lines of business"]}))+needLine(st);
   if(st.k==="gtm"){var pk=picked(); h+=(pk.length===2?lfacts(PH.map(function(p,k){return [p,pk[0].name+" "+ALLOC[k]+"% · "+pk[1].name+" "+(100-ALLOC[k])+"%"]})):'<div class="lmore">Choose exactly two partners in the details.</div>')+needLine(st)}
-  if(st.k==="templates"){var u=unmapped(); h+=lfacts([["Suggested",(100-u)+" templates have a line of business"],["Top lines",TLOBS.slice(0,3).map(function(l){return l[0]+" "+l[1]}).join(" · ")],["Need a look",u?u+" without a line of business":"None"]])+needLine(st)}
+  if(st.k==="templates") h+=tplSummary()+needLine(st);
   return h;
 }
 var CARD={on:false,big:false};
