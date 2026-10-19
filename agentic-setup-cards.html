@@ -1816,7 +1816,7 @@ body.stack-mode .card.is-pill{ opacity:1!important; }
 body.stack-mode .card{ transition:transform .9s cubic-bezier(.22,1,.36,1),width .9s cubic-bezier(.22,1,.36,1),height .9s cubic-bezier(.22,1,.36,1),margin .9s cubic-bezier(.22,1,.36,1)!important; }
 body.stack-mode .card.is-pill .card-in{ box-shadow:none!important }
 /* stack mode: a wide open card that plays the original landscape scenes */
-body.stack-mode.arc-mode .card .ld{ height:350px!important; margin:0 4px; }
+body.stack-mode.arc-mode .card .ld{ height:400px!important; margin:0 4px; }
 body.stack-mode.arc-mode .card .ld:not(.kv) .ld-crop iframe{ width:720px; height:360px; }
 body.stack-mode.arc-mode .card .cap{ margin:14px 40px 0; }
 body.stack-mode.arc-mode .card .c-head{ padding:22px 34px 8px; }
@@ -2430,7 +2430,7 @@ function fitScene(ld, box) {
   const crop = $(".ld-crop", ld), fr = $("iframe", ld);
   const [x0, y0, x1, y1] = box, bw = x1 - x0, bh = y1 - y0;
   const sk = document.body.classList.contains("stack-mode");
-  const W0 = sk ? 772 : (ld.clientWidth || AW - 40), H0 = sk ? 350 : (ld.clientHeight || 300);
+  const W0 = sk ? 892 : (ld.clientWidth || AW - 40), H0 = sk ? 400 : (ld.clientHeight || 300);
   const s = Math.min((W0 - (document.body.classList.contains("arc-mode") ? 8 : 24)) / bw, (H0 - 20) / bh, document.body.classList.contains("arc-mode") ? 1.5 : 1.1);
   crop.style.width = `${bw * s}px`; crop.style.height = `${bh * s}px`;
   crop.style.marginLeft = `${(-bw * s) / 2}px`; crop.style.marginTop = `${(-bh * s) / 2}px`;
@@ -2511,7 +2511,7 @@ function ringPaint() {
 /* Processing: the open step is one tall card; upcoming steps wait above it as pills, finished ones settle below it. */
 function stackPaint() {
   const r = stage.getBoundingClientRect(), all = cards();
-  const LPa = Math.min(400, r.width * .28), cw = 780, ch = 540, P = 52, STEP = 20, GAP = 10;
+  const LPa = Math.min(400, r.width * .28), cw = 900, ch = 590, P = 52, STEP = 18, GAP = 8;
   const Ht = ch + 2 * (GAP + P + 3 * STEP);
   const f = Math.max(.34, Math.min(1, (r.height - 24) / Ht, (r.width - LPa - 40) / (cw + 20)));
   const act = S.active, cy = -(Ht * f) / 2 + (GAP + P + 3 * STEP + ch / 2) * f;
@@ -2525,7 +2525,7 @@ function stackPaint() {
     el.style.setProperty("--flip", "0deg"); el.style.setProperty("--cc", pill ? 0 : 1); el.style.setProperty("--o", 1);
     let w = cw, h = ch, y = cy, s = f, z = 40;
     if (pill) {
-      w = cw - 70 - (a - 1) * 56; h = P;
+      w = cw - 80 - (a - 1) * 64; h = P;
       const off = (ch / 2 + GAP + P / 2 + (a - 1) * STEP) * f;
       y = cy + (k < 0 ? 1 : -1) * off * (k < 0 ? 1 : 1);
       s = f * (1 - (a - 1) * .05); z = 40 - a;

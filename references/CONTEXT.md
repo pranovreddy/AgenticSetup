@@ -496,3 +496,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.42 Cards (user file) — wider stack card, original landscape animations
 - The open card in the processing stack is now 780x540 (pills follow its width) and plays the original landscape loader scenes again (`LOADER_DOC` with `LD_BOX`), not the portrait ones. Portrait doc `LOADER_DOC_P` is no longer used during processing.
+
+### 8f.43 Cards (user file) — bigger open card in the processing stack
+- Open card 900x590 (was 780x540), scene area 400px high, pills tightened (gap 8, step 18). Still fits 1440x900 without scaling down.
