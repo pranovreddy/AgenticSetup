@@ -1470,9 +1470,9 @@ body.agent-on .h-s{ background:linear-gradient(90deg,#5b6474 0 40%,#2c47b2 50%,#
 /* left panel: the agent sits in a row with its label instead of floating above the title */
 .hero-in{ display:grid!important; grid-template-columns:auto 1fr; align-items:center!important; column-gap:12px; justify-items:start; }
 .hero-in > *{ grid-column:1 / -1; }
-.hero-in > #heroBlob{ grid-column:1; width:58px!important; height:58px!important; margin:0 0 18px -6px!important; }
-.hero-in > .h-lab{ grid-column:2; margin:0 0 18px; display:inline-flex; align-items:center; gap:8px; padding:5px 11px 5px 9px; border-radius:99px; background:rgba(255,255,255,.7); border:1px solid rgba(99,128,255,.2); font:600 11px/1 var(--font); letter-spacing:.06em; text-transform:uppercase; color:#2c47b2; }
-.h-lab i{ width:7px; height:7px; border-radius:50%; background:#3f6ef6; animation:finDot 1.8s infinite; }
+.hero-in > #heroBlob{ display:none!important; }
+.hero-in > .h-lab{ grid-column:1 / -1; margin:0 0 18px; display:inline-flex; align-items:center; gap:8px; padding:5px 11px 5px 9px; border-radius:99px; background:rgba(255,255,255,.7); border:1px solid rgba(99,128,255,.2); font:600 11px/1 var(--font); letter-spacing:.06em; text-transform:uppercase; color:#2c47b2; }
+.h-lab .h-orb{ width:18px; height:18px; border-radius:50%; flex:none; background:radial-gradient(circle,#fff 0 30%,transparent 33%),radial-gradient(circle at 35% 30%,#8cc0ff,#3f6ef6 60%,#2154d8); box-shadow:0 0 0 3px rgba(63,110,246,.14); }
 .hero-in::before{ display:none!important; }
 .hero-in > .h-t{ margin-top:0!important; }
 /* focus card is always crisp: no backdrop blur, a plain veil on locked steps, a roomier business-details form */
@@ -2856,7 +2856,7 @@ function tband() {
   let c = $("#tband");
   if (!c) {
     document.body.insertAdjacentHTML("beforeend", `<div class="tband" id="tband"><div class="hero-bg"></div><div class="hero-in">
-      <div class="hb" id="heroBlob" style="width:84px;height:84px"><canvas aria-hidden="true"></canvas><span class="mark">${HB_MARK}${IC.check.replace("<svg", '<svg class="m-check"')}</span></div><span class="h-lab"><i></i>DigiConsent agent</span>
+      <div class="hb" id="heroBlob" style="width:84px;height:84px"><canvas aria-hidden="true"></canvas><span class="mark">${HB_MARK}${IC.check.replace("<svg", '<svg class="m-check"')}</span></div><span class="h-lab"><b class="h-orb"></b>Agent summary</span>
       <h2 class="h-t" id="hTitle"></h2><p class="h-s" id="atTele"></p><ul class="h-tasks" id="hTasks" aria-label="What the agent is doing"></ul><div class="h-acc" id="hAcc"></div></div>
       <nav class="h-steps" id="tbSteps" aria-label="Setup steps">${STEPS.map((s, i) => `<button type="button" data-i="${i}" aria-label="${esc(s.title)}"><i class="si"><b class="ck">${IC.check}</b></i><span>${esc(s.title)}</span></button>`).join("")}</nav></div><div class="edge" id="edge"></div>`);
     c = $("#tband");

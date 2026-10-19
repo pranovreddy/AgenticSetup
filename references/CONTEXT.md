@@ -421,3 +421,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.21 Cards (user file) — Brands animation uses placeholders
 - Brands and LOBs scene (portrait doc): no invented names. "Your enterprise", brand names, "Brand" caption and "Product line n" are now skeleton bars and empty pills (builder: `portrait.py`).
+
+### 8f.22 Cards (user file) — agent summary chip
+- Left panel: the big agent blob is removed; an "Agent summary" chip with a small static blob on its left sits above the title.
