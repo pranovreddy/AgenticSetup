@@ -242,6 +242,11 @@ select.inp{height:36px;padding:0 8px}
 .card.isdoc .cd-bd{overflow:hidden;padding-bottom:0}
 .card.big .dgrid{max-width:1100px;margin:0 auto}
 @media (max-width:820px){.dgrid{grid-template-columns:1fr;grid-template-rows:auto 1fr}.dsum{border-right:0;border-bottom:1px solid var(--s-line);max-height:38vh;padding-right:0}.dtext{padding-left:0}}
+.tbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0 4px}
+.srch{display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid #d9e0ec;border-radius:8px;color:var(--s-muted);flex:0 1 260px}
+.srch input{border:0;outline:0;font:14px Inter,sans-serif;color:var(--s-ink);width:100%;background:none}
+.srch:focus-within{border-color:var(--s-blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.empty{padding:28px 0;color:var(--s-muted);font-size:14px;display:flex;gap:12px;align-items:center}
 .lpts{list-style:none;counter-reset:p;margin:16px 0 0;padding:0;display:grid;gap:12px;font-size:15px;line-height:1.5;color:var(--s-ink)}
 .lpts li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:4px}
 .lpts li:before{content:counter(p);font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);margin-top:1px}
@@ -265,6 +270,7 @@ select.inp{height:36px;padding:0 8px}
 <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></symbol>
 <symbol id="i-max" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></symbol>
 <symbol id="i-min" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M3 21l7-7M21 3l-7 7"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
 </defs></svg>
 
@@ -312,7 +318,7 @@ var STEPS=[
 var PROFILE=[["Legal Entity Name","HDFC Bank Limited","MCA"],["Entity Type","Public Limited","MCA"],["Registered Address","HDFC Bank House, Senapati Bapat Marg, Lower Parel, Mumbai 400013","DLT"],["Business PAN/TAN","AAACH2702H","GSTIN"],["Website URL","https://www.hdfcbank.com","Website"],["Primary Industry","Banking & Financial Services","Website"],["Sub Industry","Scheduled Commercial Bank","Website"]];
 var ROLES=["Regulatory / Legal","Business Admin","Super Admin","Viewer"];
 var DEPTS=["Legal & Compliance","Risk & Audit","Marketing","Technology","Finance Operations","Operations"];
-var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance",0],["MI","Meera Iyer","meera.iyer@hdfc.com","Legal & Compliance",0],["AM","Arjun Menon","arjun.menon@hdfc.com","Risk & Audit",0],["SP","Sanjay Prabhu","sanjay.prabhu@hdfc.com","Marketing",1],["KR","Kavya Reddy","kavya.reddy@hdfc.com","Marketing",1],["DN","Divya Nair","divya.nair@hdfc.com","Technology",2]].map(function(p){return {i:p[0],name:p[1],email:p[2],dept:p[3],role:p[4],on:true}});
+var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance",0],["MI","Meera Iyer","meera.iyer@hdfc.com","Legal & Compliance",0],["AM","Arjun Menon","arjun.menon@hdfc.com","Risk & Audit",0],["SP","Sanjay Prabhu","sanjay.prabhu@hdfc.com","Marketing",1],["KR","Kavya Reddy","kavya.reddy@hdfc.com","Marketing",1],["DN","Divya Nair","divya.nair@hdfc.com","Technology",2]].map(function(p,k){return {i:p[0],name:p[1],email:p[2],dept:p[3],role:p[4],on:true,mob:["+91 98201 44120","+91 98330 21675","+91 99200 58314","+91 98670 30942","+91 97690 11823","+91 98192 76450"][k]}});
 var BRANDS=[{name:"HDFC Bank",hdr:"HDFCBK",lobs:["Credit Cards","Personal Loan","Home Loan"]},{name:"HDFC Life",hdr:"HDFCLI",lobs:["Term Insurance","Savings Plans"]},{name:"HDFC ERGO",hdr:"HDFCER",lobs:["Motor Insurance","Health Insurance"]}];
 var PARTNERS=[{name:"Karix",pick:true,r:[.75,1.2,.6],why:"Lowest rates on migration and refresh."},{name:"Value First",pick:true,r:[.8,1.2,.7],why:"Ties on acquisition at ₹1.20, with stronger enterprise SLA cover."},{name:"Tata",pick:false,r:[.82,1.28,.68],why:"Close on refresh, higher on migration and acquisition."},{name:"Route Mobile",pick:false,r:[.88,1.35,.72],why:"Above the chosen pair on every phase."}];
 var PH=["Migration","Acquisition","Refresh"], ALLOC=[60,50,65];
@@ -597,6 +603,7 @@ var DRAW={
 
 /* scenes for the rest of the journey */
 Object.assign(DRAW,{
+  blank:function(){},
   sources:function(c,t){
     var n=5, y=Math.round(L.rows*.2), step=.9, x0=L.cols*.14, x1=L.cols*.86;
     function glyph(k,x,a){A(c,a); c.lineWidth=1;
@@ -757,7 +764,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");clearTi
 
 /* ======================= flow ======================= */
 var F={mode:"gate",doc:0,accepted:[false,false],readEnd:false,status:["review","locked","locked","locked","locked"],
-  active:0,auth:false,teamLater:false,lobf:"all",procT0:0,procI:-1,subState:""};
+  active:0,auth:false,teamLater:false,lobf:"all",tq:"",tf:-1,procT0:0,procI:-1,subState:""};
 var STEPLINE=function(i){return "Step "+(i+1)+" of 5 · "+STEPS[i].title};
 
 /* 1 · agreements: summary first, the full text is in the sheet; accept only after reading to the end */
@@ -809,8 +816,8 @@ function ready(){
 /* 4 · review: a white card in the middle of the field holds the summary and the decision;
    See details grows it to full page, Show summary or finishing the step brings it back */
 function review(i){
-  F.mode="review"; F.active=i; var st=STEPS[i], sc=STEP_SCENE[st.k];
-  show(sc[0],sc[1]);
+  F.mode="review"; F.active=i; var st=STEPS[i];
+  show("blank");
   say({kick:"",line:"",sub:"",extra:"",status:["Needs you",st.attn?"attn":"still"], prog:{label:"Steps",items:STEPN,states:states(5,i,i)}});
   later(function(){showCard()},REDUCE?0:260);
 }
@@ -865,7 +872,7 @@ function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
   var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
-  else if(st.k==="profile"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
+  else if(st.k==="profile"||st.k==="team"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
     p={title:heading(i),tog:'',body:'<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">'+esc(subline(i))+'</p>'+d0.h,l:d0.l,r:d0.r}}
   else p={title:heading(i),tog:'',body:cardSummary(i),l:'<button class="btn ghost" data-a="details">'+I("max")+'See details</button>'+(st.k==="team"?' <button class="btn ghost" data-a="later">Do it later</button>':''),r:primary(i)};
   p.kick=kick; return cardWrap(p);
@@ -877,7 +884,7 @@ function placeCard(){
   var c=$("card"), r;
   if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,W-48), h=Math.min(H-140,700); r={l:(W-w)/2,t:Math.max(60,(H-h)/2-14),w:w,h:h}}
-  else{var w=Math.min(820,W-32), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-130); m.innerHTML="";
+  else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,W-32), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-130); m.innerHTML="";
     r={l:(W-w)/2,t:Math.max(64,(H-h)/2-18),w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
   placeStatus();
@@ -948,13 +955,23 @@ function renderSheet(){
     sheetFoot('<span class="ls">'+(F.readEnd?'You have reached the end.':'Scroll to the end to accept.')+'</span>','<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>');
   }
 }
+var TCOLS="30px minmax(0,1.5fr) 140px 170px 170px";
+function teamRows(){
+  var q=F.tq.trim().toLowerCase(), rows=PEOPLE.map(function(x,k){return [x,k]}).filter(function(r){var x=r[0];
+    return (F.tf<0||x.role===F.tf)&&(!q||(x.name+" "+x.email).toLowerCase().indexOf(q)>=0)});
+  return '<div class="row hd" style="grid-template-columns:'+TCOLS+'"><span></span><span>User</span><span>Mobile</span><span>Department</span><span>Role</span></div>'+
+    (rows.length?rows.map(function(r){var x=r[0],k=r[1];return '<div class="row" style="grid-template-columns:'+TCOLS+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center;min-width:0"><div class="av">'+x.i+'</div><div style="min-width:0"><div class="rn">'+esc(x.name)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis">'+esc(x.email)+'</div></div></div><span class="rm" style="font-size:13.5px">'+esc(x.mob)+'</span><select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select></div>'}).join("")
+     :'<div class="empty">No people match your search. <button class="btn ghost" data-a="tclear">Clear search</button></div>');
+}
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
   if(st.k==="profile"){h='<div class="lslot"><div class="lbox">HDFC</div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
     foot(authRow(),primary(i))}
-  if(st.k==="team"){var cols="30px 1fr 170px 170px";
-    h='<div class="row hd" style="grid-template-columns:'+cols+'"><span></span><span>User</span><span>Department</span><span>Role</span></div>'+PEOPLE.map(function(x,k){return '<div class="row" style="grid-template-columns:'+cols+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center"><div class="av">'+x.i+'</div><div><div class="rn">'+esc(x.name)+'</div><div class="rm">'+esc(x.email)+'</div></div></div><select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(r){return '<option'+(r===x.dept?' selected':'')+'>'+r+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(r,q){return '<option value="'+q+'"'+(q===x.role?' selected':'')+'>'+r+'</option>'}).join("")+'</select></div>'}).join("");
-    foot('<button class="btn ghost" data-a="later">Do it later</button>',primary(i))}
+  if(st.k==="team"){
+    h='<div class="tbar"><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label><div class="chips" style="margin:0">'+
+      [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
+        return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div></div><div id="teamRows">'+teamRows()+'</div>';
+    foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>',primary(i))}
   if(st.k==="brands"){h='<div class="root"><div class="tile">'+I("build")+'</div><div><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="tile" style="width:34px;height:34px">'+I("layers")+'</span><div><small>Brand</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
     foot('<span class="ls">Confirm as drafted and it is set up straight away.</span>',primary(i))}
   if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
@@ -996,10 +1013,14 @@ document.addEventListener("click",function(e){
   else if(a==="brands") finishStep(function(){complete(2,"Brands and LOBs set up")});
   else if(a==="ptn"){var n=picked().length; if(PARTNERS[i].pick||n<2){PARTNERS[i].pick=!PARTNERS[i].pick} else toast("Untick one partner first"); refresh()}
   else if(a==="gtm") finishStep(function(){complete(3,"Partners confirmed")});
+  else if(a==="tf"){F.tf=+el.dataset.v; refresh()}
+  else if(a==="tclear"){F.tq=""; F.tf=-1; refresh()}
   else if(a==="lobf"){F.lobf=el.dataset.v; refresh()}
   else if(a==="tpl") finishStep(function(){complete(4,"Templates mapped")});
   else if(a==="mig") toast("Opening Consent Migration…");
 });
+document.addEventListener("input",function(e){var el=e.target; // search filters the rows only, so the box keeps focus
+  if(el.dataset.c==="tq"){F.tq=el.value; var r=$("teamRows"); if(r) r.innerHTML=teamRows()}});
 document.addEventListener("change",function(e){var el=e.target, i=+el.dataset.i;
   if(el.dataset.c==="role"){PEOPLE[i].role=+el.value; refresh()}
   if(el.dataset.c==="dept"){PEOPLE[i].dept=el.value}
@@ -1015,7 +1036,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard()});
 /* ======================= prototype jumps ======================= */
 function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); hideCard(); CARD.big=false; $("card").classList.remove("big","swap"); resetData(); F.auth=false; F.teamLater=false; F.lobf="all";
+  clearLater(); closeSheet(); hideCard(); CARD.big=false; $("card").classList.remove("big","swap"); resetData(); F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
