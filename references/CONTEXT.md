@@ -441,3 +441,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.27 Cards (user file) — glassy minimal icons
 - `cfArt` v3: a frosted-glass tile (translucent fill, soft highlight, gradient rim) with a thin 6px line glyph and a coloured glow behind it; replaces the solid blue tile. Skin variables: `--ig2` (glow/tint), `--igg` (glyph glow), `--igs` (glyph stroke), `--igo` (tint strength).
+
+### 8f.28 Cards (user file) — Azure dark style
+- Added dark style 6 "Azure": bright sky-blue frosted glass with a soft light bloom and glass icon tiles (user asked for the dark card face in blue). Switcher now lists six dark styles.
