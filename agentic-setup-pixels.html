@@ -792,7 +792,7 @@ function paint(ctx2,id,t){
 
 /* scene player: show(id, at) switches the picture; the change spreads out from the text */
 var clock=0,last=performance.now(),paused=false;
-var SC={id:"agree",t0:0}, PREV=null, changeAt=-9, GAIN=1;
+var SC={id:"blank",t0:0}, PREV=null, changeAt=-9, GAIN=1;
 function show(id,at){if(SC.id===id&&at==null) return; PREV={id:SC.id,t0:SC.t0}; SC={id:id,t0:clock-(at||0)}; changeAt=clock}
 
 function background(){
@@ -884,7 +884,7 @@ var STEPLINE=function(i){return "Step "+(i+1)+" of 5 · "+STEPS[i].title};
 
 /* 1 · agreements: summary first, the full text is in the sheet; accept only after reading to the end */
 function gate(d){
-  F.mode="gate"; F.doc=d; F.readEnd=false; show("agree");
+  F.mode="gate"; F.doc=d; F.readEnd=false; show("blank");
   say({kick:"", line:"", sub:"", extra:"",
     status:[d?"One agreement left":"Two agreements to accept","still"],
     prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:DOCS.map(function(x,i){return F.accepted[i]?"dn":i===d?"on":""})}});
@@ -1167,7 +1167,7 @@ document.addEventListener("click",function(e){
   else if(a==="accdoc"){if(!F.readEnd) return; F.accepted[F.doc]=true;
     finishStep(function(){
     if(F.doc===0) gate(1);
-    else{F.mode="pass"; show("pass"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: what happens now",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}})}
+    else{F.mode="pass"; show("blank"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: what happens now",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}})}
   else if(a==="start") proc(0);
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
