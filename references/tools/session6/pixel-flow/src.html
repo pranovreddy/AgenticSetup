@@ -194,6 +194,7 @@ select.inp{height:36px;padding:0 8px}
 .bn small{display:block;font-size:11.5px;color:var(--s-muted)}
 .mono{font:600 12px ui-monospace,Menlo,monospace;color:var(--s-muted);background:#f3f6fb;padding:3px 8px;border-radius:6px;margin-left:6px}
 .lobs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px 54px}
+.lbox img{width:72%;height:auto;display:block}
 .lbox.ent{width:48px;height:48px;border-radius:12px;font-size:13px;flex:none}
 .blogo{width:44px;height:44px;border-radius:11px;background:var(--c);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;flex:none;box-shadow:0 4px 10px rgba(15,27,61,.12)}
 .blogo b{font-size:11px;font-weight:800;letter-spacing:-.01em}.blogo i{font-style:normal;font-size:7.5px;font-weight:700;letter-spacing:.08em;margin-top:2px;opacity:.9}
@@ -398,7 +399,7 @@ select.inp{height:36px;padding:0 8px}
 <script>
 (function(){
 "use strict";
-var LOGO="__LOGO__";
+var LOGO="__LOGO__", HDFC_LOGO="__HDFC__";
 var DOCS=__DOCS__;
 
 /* ======================= data (from the C2P2 prototype and the copy document) ======================= */
@@ -1112,14 +1113,14 @@ function teamRows(){
 }
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
-  if(st.k==="profile"){h='<div class="lslot"><div class="lbox">HDFC</div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
+  if(st.k==="profile"){h='<div class="lslot"><div class="lbox"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
     foot(authRow(),primary(i))}
   if(st.k==="team"){
     h='<div class="tbar"><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label><div class="chips" style="margin:0">'+
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
         return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div></div><div id="teamRows">'+teamRows()+'</div>';
     foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>',primary(i))}
-  if(st.k==="brands"){h='<div class="root"><div class="lbox ent">HDFC</div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><small>Brand · logo from website</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
+  if(st.k==="brands"){h='<div class="root"><div class="lbox ent"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><small>Brand · logo from website</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
     foot('<span class="ls">'+BRANDS.length+' brands · '+lobCount()+' lines of business</span>',primary(i))}
   if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
     h='<div class="row hd" style="grid-template-columns:'+c2+'"><span></span><span>Partner</span>'+PH.map(function(x){return '<span>'+x+'</span>'}).join("")+'<span>Why</span></div>'+PARTNERS.map(function(x,k){return '<div class="row" style="grid-template-columns:'+c2+';opacity:'+(x.pick?1:.7)+'"><span class="ck'+(x.pick?' on':'')+'" data-a="ptn" data-i="'+k+'">'+(x.pick?I("check"):'')+'</span><b>'+esc(x.name)+'</b>'+x.r.map(function(r){return '<span>₹'+r.toFixed(2)+'</span>'}).join("")+'<span class="rm">'+esc(x.why)+'</span></div>'}).join("")+
