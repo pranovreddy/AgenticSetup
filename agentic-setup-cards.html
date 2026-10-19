@@ -1834,7 +1834,7 @@ body.dk-1 .cf-art svg,body.dk-2 .cf-art svg,body.dk-3 .cf-art svg,body.dk-4 .cf-
 .rchips .fchip{ height:30px; display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600 }
 .rchips .fchip i{ font-style:normal; font-size:11px; padding:1px 6px; border-radius:99px; background:rgba(11,18,32,.07); color:var(--muted) } .rchips .fchip.on i{ background:rgba(255,255,255,.22); color:#fff }
 .tools .rchips{ margin-top:10px }
-.ctw{ max-height:300px; overflow:auto }
+.ctw{ overflow:visible }
 .ctbl .who b{ font-size:14px } .ctbl .who small{ font-size:12px } .ctbl td,.ctbl th{ font-size:13.5px }
 .ctbl .empty{ padding:18px 4px; color:var(--muted); font-size:13.5px }
 /* done: the green check sits to the right of the step name */
@@ -1876,6 +1876,8 @@ body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .car
 .card [data-review] .r-body{ padding-top:22px!important; }
 .card [data-review] .r-h{ margin-top:0; }
 .card [data-review] .kyc-top{ margin-top:6px; }
+/* team list shows every person; the card body scrolls if it must */
+.card [data-review] .r-body{ overflow-y:auto; }
 /* search and filters on one line */
 .ctools{ flex-direction:row!important; align-items:center; gap:12px!important; flex-wrap:nowrap; }
 .ctools .srch{ flex:0 0 260px; width:260px; }
@@ -1904,6 +1906,14 @@ body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .car
 .lobsum-r .bar{ height:8px; border-radius:6px; background:#e9eefb; overflow:hidden; } .lobsum-r .bar i{ display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,#7ea1ff,#2563eb); }
 .lobsum-r b{ text-align:right; font-variant-numeric:tabular-nums; }
 .lobsum-r.un .bar i{ background:#f5b544; } .lobsum-r.un .ln,.lobsum-r.un b{ color:#a55a05; }
+/* brands review: more air */
+.btree{ margin-top:14px!important; }
+.btree > li{ padding-bottom:26px!important; }
+.btree .bnode{ gap:14px; }
+.btree .blobs{ gap:10px; margin-top:14px; }
+.btree .blobs .lob{ padding:8px 14px; }
+.htree > li:after{ top:19px; }
+.ctbl .who small{ margin-top:2px }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2619,7 +2629,7 @@ const CW = 372, CH = 548, AW = 920, AH = 600, RH = 700, RH_PROFILE = 760;
 function dims(i) {
   if (document.body.classList.contains("all-closed")) return [CW + 40, CH + 30];
   if (S.mode === "focus" && S.phase === "analyse") return i === S.active ? [AW, AH] : [CW, AH];
-  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_PROFILE : RH];
+  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_PROFILE : STEPS[i].key === "team" ? 800 : RH];
   return [CW, CH];
 }
 function size(el, w, h) {
@@ -3409,7 +3419,7 @@ function renderReviewBase(i) {
   if (k === "profile" && c.st === "inreview" && $(".kv iframe", box)) return;
   if (c.st === "done" || c.st === "later" || c.st === "inreview") { box.innerHTML = doneFace(i); return; }
   let body = "", foot = "";
-  const deepBtn = `<button class="btn" data-act="deep" data-i="${i}">${IC.expand}Details</button>`;
+  const deepBtn = `<button class="btn" data-act="deep" data-i="${i}">${IC.expand}View and edit</button>`;
   if (k === "profile") {
     const done = S.profileFilled;
     body = `<div class="kyc-top"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo${done ? " is-in" : ""}" data-logo><span class="kl-ph">${IC.build}</span><img alt="Enterprise logo" src="data:image/png;base64,/9j/2wBDAAgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNH/2wBDAQgICAgJCAkKCgkNDgwODRMREBARExwUFhQWFBwrGx8bGx8bKyYuJSMlLiZENS8vNUROQj5CTl9VVV93cXecnNH/wgARCAA4ADYDASIAAhEBAxEB/8QAGwAAAwADAQEAAAAAAAAAAAAAAAYHBAUIAwL/xAAbAQACAwEBAQAAAAAAAAAAAAAEBgIDBQABB//aAAwDAQACEAMQAAAAuENtsaznLHf27EIAjv3cIKCydEAa/wA4wE5mkgbJsYn0bM3FGo33s5crOnQgFmAvwumz2ljdWuP7OcGKdZHrRsdGC+GIyRqgtj4AT89wO50AHn//xAA3EAACAQMDAAUKAwkAAAAAAAABAgMEBQYAERIQExQxMgcWFyEjVXSTo7IlNEEiNTZDU3ODksL/2gAIAQEAAT8Ar5ngt1bNG2zx08jqe/YqpI15+5V7x+mmvP3KfeP001cMgu8OE0Nyjqtqp2j5vxX9SdefuU+8fppqLO8oeWNTcPUWH8tOi6/ui5fCTfYdeT1EfIQHUEdml1XVllt3V9tnpKfnvwMvFd9tHJsVMQjN3t/H+4uqKaz19O81JJTToGK8ogrDfWTqqZZXqoAAql6KqE1NFU04YKZYXTc/pyG2sawqWy3MVhuEcw6p04hCPFryveCx/wCfo8lX8NVHxz/YNXfAZq+8VNwFzhQSSh+HAnouTfhNx+Fl+w68nbsciG7H8tLryh4tdr4LWKBIj1Jl583CeLXoxyv+jTfPGsFslwsdlmpK5EEpqmkHB+Y2IGspdxltxAY/mh0XFvwm4/CzfYdY3exZLkKwwGb2Tpx5cfFr0oxe5j87VXlnZ8apbx2LdZWT2XPu5a9KMXuc/O1criLpe5q4RdX106tw3326Mrv72egpwtEKrtkppihfh411FC8rFUwh9wWBBrivgfq/u0qhhAfMsjrkLpyuHH9le9m38I0mRV1yoZrImIl4aF1Dxds2ZDqGaGdKN4sLlYVUcskG1a/tFh8ZGnkWnheqfC3SKEcnc1x2X1B/+hrFche+2SG4GnWAySSKUDcvAdtZXaK6801vSilhSSnqhNvKTt6hpbPnRcvJW2qYkk+1DPsTJ1w/1bu15s5u8kTS3C2zItO1OYpOZjdHO55Ltq34tmVunrZ6aqtKtVOrONjxBTu4gDS4/nKRwRpW2pBAhSEqpUoDH1R2IXVXYM5rIaqGeutbxVPIyps2zEqq793eOGsQt9RY7DBb6mSNpEllYlCSNnOv/8QAJREAAgICAQMDBQAAAAAAAAAAAQIDEQAEEgUhMRAUIiNRYWJy/9oACAECAQE/ANwyGaBEkZeX2yLS2uL/AFZG5LQNHtmzFs64UtsOflVdx6TtGNiAMlsT2N1WdP2ddNSJXlUML7E/nOsyQmZ2K81MvajXpPobU5iliKDjdFmAxNHqdSc3iPx7fJexyTpXVJaWR4jR8clx1ZGZW8g0cTYdFC0pA8WM95LRHFKP657uS74R3/OO5dmc+SbOf//EACgRAAICAQMCBAcAAAAAAAAAAAECAwQFABEhBhMQEkFRFCIjMUKxwf/aAAgBAwEBPwDpxKa43KWbFOKcw7EBwNW85i5nrFMRBF25Q7gFfnA/E8aw93EZaWaIYWvH5Yi4bZW/nhiobb4jLPFaEcSr9SPyBvPx7+mrMMrTMVQkca6SguSSyrXs9hxXJYlA+43HHPhhMxjaVW7Wuxyus+wIQemrVzpdnq/DU7CgSgyht+U9QOdU8/0rQaSSrUtI7IVJ+/7OgQQCNFATvuddpfc67Y9zoAAADX//2Q=="><i class="kl-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></i></div></div></div>
@@ -3434,7 +3444,7 @@ function renderReviewBase(i) {
     body = `<h3 class="r-h">${BRANDS.length} brands and ${lobs} lines of business</h3>
       <p class="r-p">Drafted from your DLT headers. Confirm as drafted and they're set up straight away. Any change goes for review.</p>
       <div class="ent2 cent"><div class="ent2-h"><span class="eic">${IC.build}</span><div><b>HDFC Bank Limited</b><br><span class="sm">${BRANDS.length} brands · ${lobs} lines of business</span></div><span class="pill">Enterprise</span></div>
-      <ul class="htree btree">${BRANDS.map((b, k) => `<li class="hb-brand"><div class="bnode"><span class="bmark t${k % 4}">${esc(b.name.split(" ").map((w) => w[0]).slice(0, 2).join(""))}</span><div class="bmeta"><b>${esc(b.name)}</b><small>Sender ID ${esc(b.hdr)} · ${b.lobs.length} lines of business</small></div></div>
+      <ul class="htree btree">${BRANDS.map((b, k) => `<li class="hb-brand"><div class="bnode"><span class="bmark t${k % 4}">${esc(b.name.split(" ").map((w) => w[0]).slice(0, 2).join(""))}</span><div class="bmeta"><b>${esc(b.name)}</b><small>${b.lobs.length} lines of business</small></div></div>
         <div class="blobs">${b.lobs.map((l) => `<span class="lob">${esc(l)}</span>`).join("")}</div></li>`).join("")}</ul></div>
       ${whatIDid(i)}`;
     foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}">${brandsChanged() ? "Send for review" : "Confirm brands"}</button>`;
@@ -3449,9 +3459,8 @@ function renderReviewBase(i) {
       ${PARTNERS.map((p) => `<tr class="${p.picked ? "pick" : "off"}"><td><div class="who"><span class="mk ${p.tone}">${p.mark}</span><div><b>${esc(p.name)}${p.picked ? `<span class="chosen">Chosen</span>` : ""}</b><small>${esc(p.why)}</small></div></div></td>
         ${PHASES.map((ph) => `<td class="num${p.rates[ph.k] === best[ph.k] ? " bestc" : ""}">₹${p.rates[ph.k].toFixed(2)}${p.picked ? `<small>${allocPct(p, ph.k, sel)}%</small>` : ""}</td>`).join("")}</tr>`).join("")}
       </tbody></table></div>
-      <label class="check"><input type="checkbox" id="gTerms" data-act="gterms" ${S.gtmTerms ? "checked" : ""}>I accept the rate card terms of ${sel.map((p) => esc(p.name)).join(" and ")}.</label>
       ${whatIDid(i)}`;
-    foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${S.gtmTerms ? "" : "disabled"}>Confirm partners</button>`;
+    foot = `<label class="check"><input type="checkbox" id="gTerms" data-act="gterms" ${S.gtmTerms ? "checked" : ""}>I accept the rate card terms of ${sel.map((p) => esc(p.name)).join(" and ")}.</label>${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${S.gtmTerms ? "" : "disabled"}>Confirm partners</button>`;
   }
   if (k === "templates") {
     const lock = false, changed = TPLS.some((t) => t.lob !== t.lob0);
@@ -3463,7 +3472,7 @@ function renderReviewBase(i) {
       ${TPL_LOBS.map((l) => `<div class="lobsum-r"><span class="ln">${esc(l.lob)}</span><div class="bar"><i style="width:${Math.round(l.n / 22 * 100)}%"></i></div><b>${l.n}</b></div>`).join("")}
       <div class="lobsum-r un"><span class="ln">Not mapped</span><div class="bar"><i style="width:${Math.round(2 / 22 * 100)}%"></i></div><b>2</b></div></div>
       ${whatIDid(i)}`;
-    foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${lock ? "disabled" : ""}>${changed ? "Send for review" : "Confirm mapping"}</button>`;
+    foot = `<button class="btn btn-t" data-act="later" data-i="${i}">Do it later</button>${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${lock ? "disabled" : ""}>${changed ? "Send for review" : "Confirm mapping"}</button>`;
     if (lock) body += `<div class="lock-face">${IC.lock}<b>Opens when brands and LOBs are set up</b><span>Templates are mapped to your lines of business, so they wait for that step.</span></div>`;
   }
   box.innerHTML = `<div class="r-body">${body}</div><div class="r-foot">${foot}</div>`;
@@ -3471,7 +3480,8 @@ function renderReviewBase(i) {
 function doneFace(i) {
   const c = S.cards[i], k = STEPS[i].key;
   let cls = "", h = "", p = "";
-  if (c.st === "later") { cls = "later"; h = "Team invites saved for later"; p = "You can invite people any time from User and Roles. Nothing is blocked."; }
+  if (c.st === "later" && k === "team") { cls = "later"; h = "Team invites saved for later"; p = "You can invite people any time from User and Roles. Nothing is blocked."; }
+  else if (c.st === "later" && k === "templates") { cls = "later"; h = "Template mapping saved for later"; p = "You can map templates any time from Templates. Nothing is blocked."; }
   else if (k === "profile") {
     if (c.st === "inreview") return `<div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div>
       <div class="cap"><div class="cap-row"><span class="sp"></span><span class="t run" data-vline>Checking your business details</span><span class="n" data-vn>1 of 2</span></div><div class="segs"><i class="cur"></i><i></i></div></div>`;
@@ -3495,7 +3505,7 @@ const brandsReady = () => S.cards[KI("brands")].st === "done";
 function decide(i, kind) {
   const k = STEPS[i].key, c = S.cards[i], el = card(i);
   c.at = now();
-  if (kind === "later") { c.st = "later"; toast("Team saved for later"); }
+  if (kind === "later") { c.st = "later"; toast(`${STEPS[i].title} saved for later`); }
   else if (k === "profile") {
     c.st = "inreview"; c.step = 1; tbSig = ""; toast("Business profile submitted");
     setTimeout(verifyProfile, 60);
@@ -3693,7 +3703,7 @@ const roleChips = (role, dact) => `<div class="rchips"><button class="fchip${rol
 function cardTeamRows() {
   const q = (S.cardTeamQ || "").trim().toLowerCase(), role = S.cardTeamRole || "all";
   const rows = PEOPLE.filter((p) => teamMatch(p, q, role));
-  return rows.map((p) => `<tr class="${p.on ? "" : "off"}"><td><div class="who"><span class="av t${p.t}">${p.i}</span><div><b>${esc(p.name)}</b><small>${esc(p.title || "")}</small><small class="mono">${esc(p.email)}</small></div></div></td><td>${esc(p.dept)}</td><td><span class="rolep">${esc(p.role)}</span></td></tr>`).join("") || `<tr><td colspan="3"><div class="empty">No one matches. Clear the search or pick another role.</div></td></tr>`;
+  return rows.map((p) => `<tr class="${p.on ? "" : "off"}"><td><div class="who"><span class="av t${p.t}">${p.i}</span><div><b>${esc(p.name)}</b><small>${esc(p.title || "")}</small></div></div></td><td>${esc(p.dept)}</td><td><span class="rolep">${esc(p.role)}</span></td></tr>`).join("") || `<tr><td colspan="3"><div class="empty">No one matches. Clear the search or pick another role.</div></td></tr>`;
 }
 function refreshTeamCard() {
   const el = card(KI("team")); if (!el) return;
@@ -3749,7 +3759,7 @@ function brandsBody(closed) {
   const dis = closed ? "disabled" : "", ch = brandsChanged(), lobs = BRANDS.reduce((a, b) => a + b.lobs.length, 0);
   return `<div class="banner ${ch ? "warn" : ""}">${IC.info}<span>${ch ? "You changed the draft, so it goes for review before it's set up. Templates wait until it's approved." : "Confirm the draft as it is and it's set up straight away, with no review."}</span></div>
     <div class="ent2"><div class="ent2-h"><span class="eic">${IC.build}</span><div><b>HDFC Bank Limited</b><br><span class="sm">${BRANDS.length} brands · ${lobs} lines of business</span></div><span class="pill">Enterprise</span></div>
-    <div class="bgrid">${BRANDS.map((b, bi) => `<div class="bcard"><div class="bcard-h"><span class="bic">${IC.brands}</span><div style="min-width:0;flex:1"><small>Brand</small><input class="bname" data-bn="${bi}" value="${esc(b.name)}" aria-label="Brand name" ${dis}></div><span class="mono" style="color:var(--faint)">${esc(b.hdr)}</span></div>
+    <div class="bgrid">${BRANDS.map((b, bi) => `<div class="bcard"><div class="bcard-h"><span class="bic">${IC.brands}</span><div style="min-width:0;flex:1"><small>Brand</small><input class="bname" data-bn="${bi}" value="${esc(b.name)}" aria-label="Brand name" ${dis}></div></div>
       ${b.lobs.map((l, li) => `<div class="lobrow"><input class="inp" aria-label="Line of business" data-lob="${bi}:${li}" value="${esc(l)}" ${dis}>${closed ? "" : `<button class="x" data-dact="rmlob" data-b="${bi}" data-l="${li}" aria-label="Remove ${esc(l)}">${IC.x}</button>`}</div>`).join("")}
       ${closed ? "" : `<button class="addlob" data-dact="addlob" data-b="${bi}">+ Add line of business</button>`}</div>`).join("")}
       ${closed ? "" : `<button class="addbrand" data-dact="addbrand">${PLUS}Add brand</button>`}</div></div>`;

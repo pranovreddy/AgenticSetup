@@ -533,3 +533,10 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.53 Cards (user file) — templates review shows summary only
 - Templates review card: summary stats plus a count per line of business (bars, plus Not mapped); the template-by-template list was removed from the card. The full list, filters and edits are in Details.
+
+### 8f.54 Cards (user file) — five review tweaks
+- Team card: the list is no longer cropped (card is 800 high for Team, one line per person: name and job title, department, role; the card body scrolls if it ever needs to).
+- Brands card: more spacing between brands and chips; sender ID removed from the card and from Details.
+- GTM: the "I accept the rate card terms" tick moved into the bottom bar, beside the buttons.
+- The "Details" button is now "View and edit" on every review card.
+- Templates: "Do it later" beside Confirm mapping; saving for later marks the step as later and does not block the finish.
