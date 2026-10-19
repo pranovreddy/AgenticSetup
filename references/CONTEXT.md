@@ -519,3 +519,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.49 Cards (user file) — blue side cards, bigger focus card in review
 - Review: the cards beside the focus card (locked, done, upcoming) stay brand blue (no grey, no desaturating filter, 92% opacity). The focus card is 1000 wide (was 920) and the side margin is smaller, so it scales to about 1.03x on a 1440 window.
+
+### 8f.50 Cards (user file) — larger mini face; no box inside the box
+- The mini card face (icon, name, result) is larger (icon tile 132px, name 36px, result 22px).
+- Review card panes: inner panels (team list, brands enterprise block, brand rows, GTM and templates panels) lose their own border, background and shadow so content sits straight on the white card, separated by hairlines only.

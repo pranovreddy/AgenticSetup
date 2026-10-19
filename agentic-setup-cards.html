@@ -1860,6 +1860,18 @@ body.dk-6 .cf-art svg{ --igs:#fff; }
 body.dk-6 .cardf.s-locked{ filter:none!important; color:#fff!important; }
 body.dk-6 .cardf.s-locked .cf-art{ opacity:.9; filter:none; }
 body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .card:not(.is-focus){ opacity:.92!important; }
+/* mini card face (icon, name, result): larger */
+.mini .m-ic{ width:132px; height:132px; border-radius:38px; }
+.mini .m-ic svg{ width:64px; height:64px; }
+.mini .m-badge{ width:42px; height:42px; right:-10px; bottom:-10px; } .mini .m-badge svg{ width:21px; height:21px; }
+.mini .m-t{ font-size:36px; } .mini .m-s{ font-size:22px; }
+/* review cards: no box inside the box. Panels lose their own border, background and shadow. */
+.card [data-review] .panel,.card [data-review] .cpanel,.card [data-review] .ent2,.card [data-review] .ent2.cent{ border:0!important; background:transparent!important; box-shadow:none!important; border-radius:0!important; padding-left:0!important; padding-right:0!important; }
+.card [data-review] .panel-h{ padding-left:0!important; padding-right:0!important; background:transparent!important; border-bottom:1px solid var(--line)!important; }
+.card [data-review] .ctools{ padding-left:0!important; padding-right:0!important; }
+.card [data-review] .ctbl thead th{ background:transparent!important; }
+.card [data-review] .ctbl th:first-child,.card [data-review] .ctbl td:first-child{ padding-left:0; }
+.card [data-review] .cbrand{ border:0!important; background:transparent!important; padding-left:0!important; padding-right:0!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
