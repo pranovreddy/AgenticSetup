@@ -1671,7 +1671,6 @@ body.dk-1 .cardf::before{ background:conic-gradient(from 200deg,#7c5cff,#19d3c5,
 body.dk-1 .cf-top .cf-st{ background:rgba(255,255,255,.08)!important; box-shadow:0 0 0 1px rgba(255,255,255,.18) inset!important; backdrop-filter:blur(8px); }
 body.dk-1 .cf-mid h3{ letter-spacing:-.025em; }
 body.dk-1 .cf-res{ color:rgba(235,238,255,.72)!important; }
-body.dk-1 .cf-art svg{ filter:hue-rotate(35deg) saturate(1.25) drop-shadow(0 0 22px rgba(124,92,255,.55)) drop-shadow(0 18px 24px rgba(0,0,0,.4)); }
 
 /* DARK 2 · Editorial: flat midnight ink, hairline grid, outlined step number, mono glyph */
 body.dk-2 .cardf,body.dk-2 .cardf.s-queued,body.dk-2 .cardf.s-locked,body.dk-2 .cardf.s-done{
@@ -1683,7 +1682,6 @@ body.dk-2 .card:nth-of-type(2) .cardf::after{ content:"02"; } body.dk-2 .card:nt
 body.dk-2 .cf-mid h3{ font-size:32px; font-weight:700; letter-spacing:-.035em; }
 body.dk-2 .cf-res{ font:500 14px/1.4 var(--mono)!important; letter-spacing:.02em; color:#ffb547!important; }
 body.dk-2 .cf-top .cf-st{ background:transparent!important; border-radius:6px; box-shadow:0 0 0 1px rgba(255,255,255,.25) inset!important; font:600 11px/1 var(--mono); text-transform:uppercase; letter-spacing:.08em; height:26px; }
-body.dk-2 .cf-art svg{ filter:grayscale(1) brightness(1.5) contrast(.85); opacity:.9; }
 
 /* DARK 3 · Neon: teal-black glass, dot matrix, cyan rim light and corner brackets */
 body.dk-3 .cardf,body.dk-3 .cardf.s-queued,body.dk-3 .cardf.s-locked,body.dk-3 .cardf.s-done{
@@ -1693,7 +1691,6 @@ body.dk-3 .cardf::before{ background:linear-gradient(#5cf2ff,#5cf2ff) left top/1
 body.dk-3 .cf-mid h3{ font-weight:600; letter-spacing:.005em; text-shadow:0 0 18px rgba(0,229,255,.45); }
 body.dk-3 .cf-res{ color:#7ff3ff!important; }
 body.dk-3 .cf-top .cf-st{ background:rgba(0,229,255,.1)!important; color:#aef7ff; box-shadow:0 0 0 1px rgba(0,229,255,.5) inset,0 0 16px -4px rgba(0,229,255,.6)!important; }
-body.dk-3 .cf-art svg{ filter:hue-rotate(-28deg) saturate(1.5) drop-shadow(0 0 20px rgba(0,229,255,.6)); }
 
 /* DARK 4 · Brand: saturated blue-to-indigo gradient with a glossy top light, white pill */
 body.dk-4 .cardf,body.dk-4 .cardf.s-queued,body.dk-4 .cardf.s-locked,body.dk-4 .cardf.s-done{
@@ -1704,7 +1701,6 @@ body.dk-4 .cf-top .cf-st{ background:#fff!important; color:#1d2fb8!important; bo
 body.dk-4 .cf-top .cf-st svg{ color:#1d2fb8!important; } body.dk-4 .cf-top .cf-st i{ background:#1d2fb8!important; }
 body.dk-4 .cf-mid h3{ font-size:32px; font-weight:750; letter-spacing:-.03em; }
 body.dk-4 .cf-res{ color:rgba(255,255,255,.86)!important; }
-body.dk-4 .cf-art svg{ filter:brightness(1.25) saturate(.9) drop-shadow(0 0 26px rgba(255,255,255,.55)) drop-shadow(0 20px 26px rgba(10,16,100,.45)); }
 
 /* DARK 5 · Graphite: brushed charcoal metal with a gold accent */
 body.dk-5 .cardf,body.dk-5 .cardf.s-queued,body.dk-5 .cardf.s-locked,body.dk-5 .cardf.s-done{
@@ -1715,7 +1711,6 @@ body.dk-5 .cf-top .cf-st{ background:rgba(240,190,90,.12)!important; color:#f3d7
 body.dk-5 .cf-top .cf-st i{ background:#f0be5a!important; }
 body.dk-5 .cf-mid h3{ font-weight:600; color:#fbf6ea; text-shadow:0 1px 0 rgba(0,0,0,.6),0 -1px 0 rgba(255,255,255,.12); }
 body.dk-5 .cf-res{ color:#e8c985!important; font-variant-numeric:tabular-nums; }
-body.dk-5 .cf-art svg{ filter:sepia(.75) saturate(2.1) hue-rotate(-12deg) brightness(1.05) drop-shadow(0 16px 22px rgba(0,0,0,.5)); }
 
 /* ---- LIGHT faces ---- */
 /* LIGHT 1 · Porcelain: clean white, soft lift, gradient icon tile */
@@ -1747,6 +1742,16 @@ body.lt-5 .card .card-in,body.lt-5 .card.is-focus .card-in{ background:#fff!impo
 body.lt-5 .card .c-head{ background:linear-gradient(120deg,#2342cf,#4f7bff); color:#fff; margin-bottom:16px; padding-bottom:18px!important; }
 body.lt-5 .card .c-ic{ background:rgba(255,255,255,.2)!important; color:#fff!important; box-shadow:0 0 0 1px rgba(255,255,255,.35) inset; }
 body.lt-5 .card .c-title{ color:#fff; font-weight:650; } body.lt-5 .card .c-n{ color:rgba(255,255,255,.75)!important; }
+/* ---- card artwork colours per skin (glass tile + glyph) ---- */
+.cf-art svg{ filter:drop-shadow(0 18px 26px rgba(10,20,80,.35)) !important; max-width:230px!important; width:68%!important; }
+body.dk-1 .cf-art svg{ --ig1:#9a7bff; --ig2:#19c7c0; --igr:rgba(255,255,255,.45); filter:drop-shadow(0 0 26px rgba(124,92,255,.5)) drop-shadow(0 18px 24px rgba(0,0,0,.4))!important; }
+body.dk-2 .cf-art svg{ --igo:0; --igs:#ffb547; --igr:rgba(255,255,255,.3); --igshine:none; filter:none!important; }
+body.dk-3 .cf-art svg{ --ig1:#0b3a47; --ig2:#06222c; --igs:#5cf2ff; --igr:rgba(0,229,255,.7); --igshine:none; filter:drop-shadow(0 0 24px rgba(0,229,255,.55))!important; }
+body.dk-4 .cf-art svg{ --ig1:#ffffff; --ig2:#cfdcff; --igs:#2a3fd6; --igr:rgba(255,255,255,.9); filter:drop-shadow(0 20px 26px rgba(10,16,110,.5))!important; }
+body.dk-5 .cf-art svg{ --ig1:#f6dc9a; --ig2:#b8863a; --igs:#2a1d08; --igr:rgba(255,240,200,.7); filter:drop-shadow(0 18px 24px rgba(0,0,0,.55))!important; }
+/* header icon tile: gradient tile with a white glyph, same family as the card artwork */
+.card .c-ic{ width:42px; height:42px; border-radius:13px; background:linear-gradient(145deg,#6f98ff,#3558e0); color:#fff; box-shadow:0 8px 16px -8px rgba(40,70,220,.7),0 1px 0 rgba(255,255,255,.5) inset; }
+.card .c-ic svg{ width:21px; height:21px; stroke-width:2; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2010,6 +2015,34 @@ function cfArt(key, i) {
   return arts[key] || arts.profile;
 }
 
+
+/* ---------- Card artwork v2: one glass tile per step with a crisp, consistent glyph. Colours come from CSS variables so every skin can restyle it. ---------- */
+function cfArt(key, i) {
+  const u = `g${i}`;
+  const defs = `<defs>
+    <linearGradient id="${u}t" x1="0" y1="0" x2=".7" y2="1"><stop offset="0" style="stop-color:var(--ig1,#8fb3ff)"/><stop offset="1" style="stop-color:var(--ig2,#3558e0)"/></linearGradient>
+    <linearGradient id="${u}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="${u}g" cx=".5" cy=".5" r=".5"><stop offset="0" style="stop-color:var(--ig2,#3558e0)" stop-opacity=".55"/><stop offset="1" style="stop-color:var(--ig2,#3558e0)" stop-opacity="0"/></radialGradient>
+    <filter id="${u}b" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>`;
+  const S = `fill="none" stroke="var(--igs,#fff)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"`;
+  const glyphs = {
+    profile: `<rect x="72" y="92" width="96" height="66" rx="13" ${S}/><circle cx="101" cy="117" r="9.5" ${S}/><path d="M122 112H150M122 130H144" ${S}/>`,
+    team: `<circle cx="106" cy="103" r="17" ${S}/><path d="M76 160c0-19 13-30 30-30s30 11 30 30" ${S}/><circle cx="152" cy="109" r="12.5" ${S} opacity=".75"/><path d="M148 133c15-1 24 9 25 25" ${S} opacity=".75"/>`,
+    brands: `<path d="M120 74 168 98 120 122 72 98Z" ${S}/><path d="M72 120 120 144 168 120" ${S}/><path d="M72 142 120 166 168 142" ${S} opacity=".7"/>`,
+    gtm: `<rect x="80" y="126" width="20" height="36" rx="6" ${S}/><rect x="110" y="104" width="20" height="58" rx="6" ${S}/><rect x="140" y="82" width="20" height="80" rx="6" ${S}/>`,
+    templates: `<path d="M92 68H134L168 102V172H92Z" ${S}/><path d="M134 68V102H168" ${S}/><path d="M108 128H152M108 146H152M108 162H130" ${S}/>`,
+  };
+  return `<svg viewBox="0 0 240 240" fill="none" aria-hidden="true">${defs}
+    <ellipse cx="120" cy="218" rx="62" ry="9" fill="#000" opacity=".28" filter="url(#${u}b)"/>
+    <circle cx="120" cy="120" r="108" fill="url(#${u}g)"/>
+    <rect x="40" y="40" width="160" height="160" rx="50" fill="url(#${u}t)" style="opacity:var(--igo,1)"/>
+    <rect x="40" y="40" width="160" height="160" rx="50" fill="url(#${u}h)"/>
+    <rect x="41.5" y="41.5" width="157" height="157" rx="48.5" fill="none" stroke="var(--igr,rgba(255,255,255,.55))" stroke-width="3"/>
+    <path d="M70 52H170" stroke="#fff" stroke-opacity=".55" stroke-width="4" stroke-linecap="round" style="display:var(--igshine,block)"/>
+    ${glyphs[key] || glyphs.profile}
+  </svg>`;
+}
 /* ---------- The agent blob (ported from the product: sphereCanvas + agent-core + mark) ---------- */
 const AI_MARK = `<svg class="ai-mark" viewBox="0 0 26 26" aria-hidden="true" fill="#fff">
   <path opacity=".95" transform="translate(13 3.094)" d="M0 0L4.952 3.714L0 7.429Z"/>
@@ -3774,7 +3807,7 @@ function faceHTML(i) {
 
 let faceSig = "";
 function faces() {
-  const sig = "art1|" + S.cards.map((c, i) => c.st + (c.st === "review" && isLocked(i))).join();
+  const sig = "art2|" + S.cards.map((c, i) => c.st + (c.st === "review" && isLocked(i))).join();
   if (sig === faceSig && $$(".cardf").length === 5 && $(".cardf .cf-art")) return; faceSig = sig;
   cards().forEach((el, i) => {
     let f = $(".cardf", el); if (!f) { f = document.createElement("div"); f.className = "cardf"; el.appendChild(f); }

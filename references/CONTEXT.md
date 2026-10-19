@@ -434,3 +434,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.25 Cards (user file) — card style switcher (5 dark, 5 light)
 - A switcher at the top centre picks the dark face (Now, Aurora, Editorial, Neon, Brand, Graphite) and the light face (Now, Porcelain, Tinted, Neo-ink, Frost, Spine). It sets `body.dk-N` / `body.lt-N` and remembers the choice in localStorage. "Now" is the previous look. All skins are CSS overrides at the end of the main stylesheet ("CARD SKINS" block).
+
+### 8f.26 Cards (user file) — new card icons
+- `cfArt` redrawn: each step has one glass tile with a crisp white line glyph (ID card, people, layers, bars, document) instead of the stacked 3D shapes. Tile and glyph colours are CSS variables (`--ig1`, `--ig2`, `--igs`, `--igr`, `--igo`) set per dark skin, so each style gets matching icons (violet-teal, amber outline, cyan neon, white, gold).
+- The light card header icon is now a gradient tile with a white glyph.
