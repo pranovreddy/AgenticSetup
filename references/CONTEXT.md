@@ -448,3 +448,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.29 Cards (user file) — brand blue default, text at the bottom
 - Dark style 6 renamed "Brand blue" and retuned to the product blue (#2563eb); it is now the default dark face (the previous indigo style is "Indigo", slot 4). Stored choices still win.
 - Dark face layout: status pill on top, icon in the middle, title and result at the bottom (flex order on `.cf-*`).
+
+### 8f.30 Cards (user file) — styles locked
+- The style switcher is removed. The look is fixed to dark "Brand blue" (`dk-6`) and light "Porcelain" (`lt-1`), set on `body` by a one-line script. The other skin CSS stays in the stylesheet unused.

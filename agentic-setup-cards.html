@@ -1810,26 +1810,7 @@ body.dk-6 .cf-art svg{ --ig2:#e4f1ff; --igo:.3; --igs:#fff; --igg:#bfe0ff; filte
   <div class="boot-bar"><i id="bootBar"></i></div>
 </div>
 
-<div class="skinsw" id="skinSw" role="group" aria-label="Card style"></div>
-<script>
-(function(){
-  var D=["Now","Aurora","Editorial","Neon","Indigo","Graphite","Brand blue"],L=["Now","Porcelain","Tinted","Neo-ink","Frost","Spine"],st={dk:0,lt:0};
-  try{var s=JSON.parse(localStorage.getItem("cardSkin")||"{}");st.dk=("dk" in s)?(+s.dk||0):6;st.lt=+s.lt||0;}catch(e){}
-  var box=document.getElementById("skinSw");
-  function apply(){
-    var b=document.body;for(var k=1;k<=6;k++){b.classList.remove("dk-"+k,"lt-"+k);}
-    if(st.dk)b.classList.add("dk-"+st.dk);if(st.lt)b.classList.add("lt-"+st.lt);
-    try{localStorage.setItem("cardSkin",JSON.stringify(st));}catch(e){}
-    render();
-  }
-  function grp(label,key,names){
-    return '<div class="grp"><span class="lab">'+label+'</span>'+names.map(function(n,i){return '<button type="button" data-k="'+key+'" data-i="'+i+'" title="'+n+'" class="'+(st[key]===i?"on":"")+'">'+(i?i:"Now")+'</button>';}).join("")+'<span class="nm">'+names[st[key]]+'</span></div>';
-  }
-  function render(){box.innerHTML=grp("Dark","dk",D)+'<span class="sep"></span>'+grp("Light","lt",L);}
-  box.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;st[t.dataset.k]=+t.dataset.i;apply();});
-  apply();
-})();
-</script>
+<script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
   <div class="fin-pack" id="finPack">
     <div class="deck-head">
