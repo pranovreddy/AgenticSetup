@@ -1547,6 +1547,25 @@ body.agent-on.has-tband .card.is-focus .card-in{ box-shadow:0 0 0 1.5px rgba(104
 .cbrand-h small{ display:block; font-size:10.5px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em; } .cbrand-h b{ font-size:13px; }
 .cbrand-h .mono{ margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--faint); }
 .clobs{ display:flex; flex-wrap:wrap; gap:5px; }
+
+/* ---- AI processing: the five cards form a curved glass wall; the scene plays above it ---- */
+body.v3b.arc-mode .card .card-in{ transform:rotateY(180deg)!important; }
+body.v3b.arc-mode .card .cardf{ transform:rotateY(360deg)!important; }
+body.v3b.arc-mode .cf-mid{ display:flex!important; flex-direction:column; align-items:flex-start; }
+body.v3b.arc-mode .cf-v{ display:none!important; }
+body.v3b.arc-mode .card .cf-bot,body.v3b.arc-mode .card .cf-mid{ opacity:1!important; }
+body.arc-mode .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
+.cf-live{ white-space:normal!important; font-size:19px!important; line-height:1.3!important; color:#fff!important; }
+.cf-live::after{ content:""; display:inline-block; width:18px; height:4px; margin-left:6px; vertical-align:middle; border-radius:4px; background:radial-gradient(circle,#9cc2ff 0 1.6px,transparent 2px) 0 50%/6px 4px repeat-x; animation:beam 1.1s ease-in-out infinite; }
+body.arc-mode .card.is-analysing .cardf{ box-shadow:0 0 0 1.5px rgba(140,185,255,.8) inset,0 0 60px -6px rgba(90,140,255,.75),0 28px 54px -22px rgba(4,14,44,.7); }
+.topld{ position:fixed; top:18px; left:calc((100vw + min(400px,28vw)) / 2); transform:translate(-50%,-14px); width:min(680px,calc(100vw - min(400px,28vw) - 72px)); height:232px; z-index:34; border-radius:24px; overflow:hidden; background:#fff; opacity:0; pointer-events:none; transition:opacity .7s var(--ease),transform .8s var(--ease);
+  box-shadow:0 0 0 1px rgba(160,185,235,.55),0 30px 60px -34px rgba(30,60,170,.5),0 0 90px -34px rgba(90,140,255,.5); }
+.topld.on{ opacity:1; transform:translate(-50%,0); }
+.topld .ld{ position:absolute; inset:0; height:auto; margin:0; border-radius:inherit; }
+@media (max-height:760px){ .topld{ height:190px; top:10px; } }
+
+/* a hidden agent column must never catch clicks (it sat over the Start and Review buttons after a jump) */
+.tband:not(.on),.tband:not(.on) *{ pointer-events:none!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2083,8 +2102,7 @@ function renderAnalyse(i) {
   if (c.st === "queued") {
     box.innerHTML = `<p class="q-note">${IC.clock}Queued. The agent will:</p><ul class="plan">${s.checks.map((x) => `<li><i></i>${esc(x[0])}</li>`).join("")}</ul>`;
   } else if (c.st === "analysing") {
-    box.innerHTML = `<div class="ld"><div class="ld-crop"><iframe title="${esc(s.title)}: the agent at work" tabindex="-1" aria-hidden="true"></iframe></div></div>
-      <div class="cap"><div class="cap-row"><span class="sp"></span><span class="t run" data-line>${esc(s.checks[0][0])}</span><span class="n" data-n>1 of ${s.checks.length}</span></div>
+    box.innerHTML = `<div class="cap"><div class="cap-row"><span class="sp"></span><span class="t run" data-line>${esc(s.checks[0][0])}</span><span class="n" data-n>1 of ${s.checks.length}</span></div>
       <div class="segs">${s.checks.map(() => "<i></i>").join("")}</div></div>`;
   } else if ($("[data-fx]", box)) {
     $("[data-fx]", box).classList.add("is-done");
@@ -2105,6 +2123,7 @@ function capStep(i, n) {
   n = Math.max(1, Math.min(n, s.checks.length));
   if (S.cards[i].step === n && $("[data-line]", el)?.textContent === s.checks[n - 1][0]) return;
   S.cards[i].step = n;
+  const lv = $(".cf-live", el); if (lv) lv.textContent = s.checks[n - 1][0];
   const line = $("[data-line]", el); if (!line) return;
   line.textContent = s.checks[n - 1][0]; line.classList.remove("swap"); void line.offsetWidth; line.classList.add("swap");
   $("[data-n]", el).textContent = `${n} of ${s.checks.length}`;
@@ -2144,7 +2163,16 @@ function runScene(ld, id, box, run, onStep, extra, limit = 18000) {
     fr.srcdoc = loaderDoc(id, extra);
   });
 }
-const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600);
+/* The product scene plays in a strip above the card arc, not inside the cards. */
+function topLd() {
+  let t = $("#topLd");
+  if (!t) { document.body.insertAdjacentHTML("beforeend", '<div class="topld" id="topLd" aria-hidden="true"><div class="ld"><div class="ld-crop"><iframe title="The agent at work" tabindex="-1"></iframe></div></div></div>'); t = $("#topLd"); }
+  return t;
+}
+function topLdShow(on) { const t = topLd(); void t.offsetWidth; t.classList.toggle("on", !!on); if (!on) { const fr = $("iframe", t); if (fr) fr.removeAttribute("srcdoc"); } }
+function topLdReset() { const ld = $(".ld", topLd()); ld.getAnimations().forEach((a) => a.cancel()); const fr = $("iframe", ld); fr.srcdoc = ""; if (!RM) ld.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 520, easing: "cubic-bezier(.16,1,.3,1)" }); return ld; }
+function arcOff() { document.body.classList.remove("arc-mode"); const t = $("#topLd"); if (t) topLdShow(false); }
+const playLoader = (i, run) => runScene(topLdReset(), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600);
 
 /* ---------- Layout ---------- */
 const CW = 372, CH = 548, AW = 920, AH = 600, RH = 700, RH_PROFILE = 760;
@@ -2223,6 +2251,24 @@ function layout() {
     return;
   }
   if (window.__ringOut) { window.__ringOut = 0; all.forEach((el, i) => { el.style.transitionDelay = `${Math.abs(i - S.active) * 80}ms`; }); setTimeout(() => all.forEach((el) => { el.style.transitionDelay = ""; }), 1600); }
+  if (document.body.classList.contains("arc-mode") && S.phase === "analyse" && !document.body.classList.contains("all-closed")) {
+    const LPa = document.body.classList.contains("has-tband") ? Math.min(400, r.width * .28) : 0;
+    const cw = 372, ch = 548, dA = 17, topH = 262, rad2 = (d) => d * Math.PI / 180;
+    const availW = r.width - LPa - 96, availH = r.height - topH - 30;
+    const R0 = cw / (2 * Math.sin(rad2(dA / 2))) * 1.03;
+    const span = 2 * R0 * Math.sin(rad2(2 * dA)) + cw * Math.cos(rad2(2 * dA));
+    const fa = Math.max(.3, Math.min(.85, availH / ch, availW / span * 1.08));
+    const cyy = topH + availH / 2 - r.height / 2 + 6;
+    all.forEach((el, i) => {
+      const th = (i - 2) * dA, act = i === S.active, rd = rad2(th);
+      size(el, cw, ch);
+      const x = R0 * Math.sin(rd) * fa * .94 + LPa / 2, z = -R0 * (1 - Math.cos(rd)) * fa * .8 + (act ? 90 : 0);
+      el.style.transform = `translate3d(${x}px, ${cyy - (act ? 14 : 0)}px, ${z}px) rotateY(${th}deg) rotateZ(0deg) scale(${fa * (act ? 1.07 : 1)})`;
+      el.style.setProperty("--o", 1); el.style.opacity = 1; el.style.zIndex = act ? 30 : 20 - Math.abs(i - 2);
+      el.classList.remove("is-focus", "is-far", "is-right"); el.classList.remove("is-clickable");
+    });
+    return;
+  }
   const [aw, ah] = dims(S.active);
   const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .28) : 0, TH = 56, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
   let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah, (r.width - LP - (AN ? 220 : 32) - (TB ? (AN ? 32 : 88) : 0)) / aw));
@@ -2236,7 +2282,7 @@ function layout() {
     if (document.body.classList.contains("all-closed")) {
       /* start / ready screens: the other steps fan out to the right behind the front card, so it reads as a deck of five */
       const X0 = LP / 2 + Math.max(r.width * .16, 170) - 120 * f, k = Math.max(0, off);
-      el.style.transform = `translate3d(${X0 + k * 84 * f}px, ${-4 * f}px, ${-k * 70}px) rotateY(${k ? -10 : 0}deg) rotateZ(0deg) scale(${f * (1 - k * .06)})`;
+      el.style.transform = `translate3d(${X0 + k * 84 * f}px, ${-4 * f}px, ${-k * 70}px) rotateY(${k ? -10 : 0}deg) rotateZ(0deg) scale(${f * .78 * (1 - k * .06)})`;
       el.style.setProperty("--o", [1, .92, .8, .66, .52][Math.min(k, 4)]);
     } else
     el.style.transform = `translate3d(${dir * x * f + LP / 2}px, ${-4 * f}px, ${z}px) rotateY(${-dir * TH}deg) rotateZ(0deg) scale(${SC[a] * f})`;
@@ -2307,6 +2353,7 @@ function ripple(host, n = 1, gap = 320) {
 /* ---------- Phases ---------- */
 const PRE = { profile: "Fills your business details", team: "Suggests who to invite", gtm: "Picks your SMS partners", brands: "Sets up brands and LOBs", templates: "Maps your DLT templates" };
 function preStart(run) {
+  arcOff();
   S.phase = "pre"; S.preRun = run;
   if (!$("#preL")) stage.insertAdjacentHTML("beforeend", `<div class="rdl rdl-pre" id="preL"><span class="rdl-k"><i></i>5 steps</span><h2>Your agent will prepare five steps</h2><p>It reads your trusted sources and fills each step in. Nothing goes live until you review and approve it.</p>
     <button class="rdl-go" id="preGo" type="button">Start AI setup<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
@@ -2325,7 +2372,7 @@ document.addEventListener("click", (e) => {
 });
 async function analyse(run, go) {
   if (!go) return preStart(run);
-  S.phase = "analyse"; S.active = 0; setMode("focus"); procCap("Your agent is preparing all five steps");
+  S.phase = "analyse"; S.active = 0; document.body.classList.add("arc-mode"); setMode("focus"); topLdShow(true); procCap("Your agent is preparing all five steps");
   for (let i = 0; i < STEPS.length; i++) {
     if (run !== S.runId) return;
     const s = STEPS[i], el = card(i);
@@ -2339,7 +2386,7 @@ async function analyse(run, go) {
     capStep(i, s.checks.length); $$(".segs i", el).forEach((x) => { x.classList.add("on"); x.classList.remove("cur"); });
     await W(400); if (run !== S.runId) return;
     el.classList.remove("is-analysing"); el.classList.add("is-done-flash");
-    const ld = $(".ld", el); if (ld && !RM) await ld.animate([{ opacity: 1, filter: "blur(0)" }, { opacity: 0, filter: "blur(6px)" }], { duration: 380, fill: "forwards" }).finished;
+    const ld = $("#topLd .ld"); if (ld && !RM) await ld.animate([{ opacity: 1, filter: "blur(0)" }, { opacity: 0, filter: "blur(6px)" }], { duration: 380, fill: "forwards" }).finished;
     S.cards[i].st = "ready"; renderAnalyse(i); setStatus(i);
     const v = $(".res-a .v", el); if (v) typeText(v, s.result);
     materialize($(".res-a", el), 0);
@@ -2792,7 +2839,7 @@ function procCap() { tbSync(); }
 /* telemetry of the card being worked on is mirrored into the top band */
 /* (the per-step task list under the subtext now carries the live check detail) */
 async function unlock(run) {
-  S.phase = "unlock"; procCap(null);
+  S.phase = "unlock"; arcOff(); procCap(null);
   if (!$("#readyL")) stage.insertAdjacentHTML("beforeend", `<div class="rdl" id="readyL"><span class="rdl-k"><i></i>5 of 5 prepared</span><h2>Your five steps are ready for review</h2><p>The agent has done the groundwork. Open each step, check it and approve.</p>
     <button class="rdl-go" id="rdlGo" type="button">Review them<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
   head("Setup ready", "5 of 5", "Your five steps are ready for review", "", false);
@@ -2804,6 +2851,7 @@ async function unlock(run) {
 }
 if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) || S.phase !== "unlock") return; const r = $("#readyL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600); document.body.classList.remove("all-closed"); startReview(); }); }
 function startReview() {
+  arcOff();
   document.body.classList.remove("all-closed"); { const q0 = document.getElementById("preL"); if (q0) q0.remove(); } { const r0 = document.getElementById("readyL"); if (r0) { r0.classList.remove("on"); setTimeout(() => r0.remove(), 600); } }
   S.phase = "review"; S.reviewStart = Date.now();
   cards().forEach((el, i) => { el.classList.remove("is-analysing"); el.classList.add("is-review"); if (S.cards[i].st === "ready") S.cards[i].st = "review"; renderReview(i); setStatus(i); });
@@ -3365,6 +3413,7 @@ function toast(msg) { const t = $("#toast"); t.innerHTML = `${IC.check}${esc(msg
 $("#protoBtn").addEventListener("click", () => { $("#protoMenu").hidden = !$("#protoMenu").hidden; });
 $("#protoMenu").addEventListener("click", (e) => { const j = e.target.closest("[data-jump]"); if (!j) return; $("#protoMenu").hidden = true; jump(j.dataset.jump); });
 function resetAll() {
+  arcOff();
   document.body.classList.remove("all-closed"); { const q0 = document.getElementById("preL"); if (q0) q0.remove(); } { const r0 = document.getElementById("readyL"); if (r0) r0.remove(); const pc = document.getElementById("pcap"); if (pc) pc.remove(); }
   S.runId++; S.cards = STEPS.map(() => ({ st: "queued", at: null, step: 0 })); S.active = 0; S.profileAuth = false; S.gtmTerms = false; S.reviewStart = 0; S.profileFilled = false; S.profileFilling = false; clearInterval(S.clockT);
   document.body.classList.remove("phase-finale", "is-working");
@@ -3452,7 +3501,7 @@ function faceHTML(i) {
   return { cls, html: `<div class="cf-v"><b>${esc(s.title)}</b></div>
     <div class="cf-top">${st}</div>
     ${titleRow}
-    <div class="cf-bot"><span class="cf-res">${res}</span></div>
+    <div class="cf-bot"><span class="cf-res${c.st === "analysing" ? " cf-live" : ""}">${c.st === "analysing" ? esc(s.checks[Math.max(0, (c.step || 1) - 1)][0]) : res}</span></div>
     <div class="cf-art" aria-hidden="true">${cfArt(s.key, i)}</div>` };
 }
 
