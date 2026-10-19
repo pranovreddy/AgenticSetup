@@ -24,12 +24,6 @@ body.phase-finale .cf-mid h3{ font-size:31px; } body.phase-finale .cf-res{ font-
 /* review: step label and the side cards on the right are readable */
 .card .c-head .c-n{ font-size:16px; } .card [data-review] input:not([type=checkbox]),.card [data-review] select,.card [data-review] textarea{ font-size:16px!important; }
 body.ph-review .cf-v{ width:90px; gap:16px; } body.ph-review .cf-v b{ font-size:34px; } body.ph-review .cf-v em{ font-size:20px; opacity:1; } body.ph-review .cf-st{ font-size:19px; height:38px; }
-/* review band on top: text left-aligned, the card gets the full width below */
-body.has-tband .tband{ left:112px!important; width:calc(100% - 140px)!important; top:0!important; bottom:auto!important; height:auto!important; transform:none!important; }
-body.has-tband .tband .hero-in{ position:relative!important; inset:auto!important; transform:none!important; height:auto!important; padding:14px 0 6px 0!important; align-items:start!important; justify-items:start; text-align:left; }
-body.has-tband .tband .h-lab{ margin:0 0 8px; }
-body.has-tband .tband .h-t{ font-size:26px!important; max-width:none; white-space:normal; } body.has-tband .tband .h-s{ font-size:15px; }
-body.has-tband .tband .h-tasks,body.has-tband .tband .tb-two,body.has-tband .tband .h-steps,body.has-tband #hAcc{ display:none!important; }
 /* skipped steps on the finished page: light blue instead of grey */
 .cardf.s-skipped,body[class*="dk-"] .cardf.s-skipped,body.dk-6 .cardf.s-skipped{ background:linear-gradient(170deg,#e3eeff,#b4cffb)!important; box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 24px 44px -26px rgba(37,99,235,.35)!important; color:#1e3a8a!important; }
 .cardf.s-skipped .cf-res,.cardf.s-skipped .cf-mid h3,.cardf.s-skipped .cf-bot{ color:#1e3a8a!important; }
@@ -64,7 +58,7 @@ sub('''  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_P
 '''  if (S.mode === "focus") {
     const base = STEPS[i].key === "profile" ? RH_PROFILE : STEPS[i].key === "team" ? 720 : RH;
     if (S.phase !== "review") return [1000, base];
-    const sr = stage.getBoundingClientRect(), LPx = 0;
+    const sr = stage.getBoundingClientRect(), LPx = document.body.classList.contains("has-tband") ? Math.min(400, sr.width * .28) : 0;
     const fw = Math.max(0.42, Math.min(1.14, (sr.width - LPx - 56 - (document.body.classList.contains("has-tband") ? 40 : 0)) / 1000));
     return [1000, Math.max(base, Math.round(innerHeight * .7 / fw))];
   }''')
@@ -75,8 +69,6 @@ sub("window.__deck = { opening,", """const MIN_FONT = 16; let fzQ = 0;
 function bumpFonts() { fzQ = 0; document.querySelectorAll(".card [data-review] *").forEach((e) => { if (e.dataset.fz || !([...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))) return; e.dataset.fz = 1; if (parseFloat(getComputedStyle(e).fontSize) < MIN_FONT) e.style.setProperty("font-size", `${MIN_FONT}px`, "important"); }); }
 new MutationObserver(() => { if (!fzQ) fzQ = requestAnimationFrame(bumpFonts); }).observe(document.getElementById("stage"), { childList: true, subtree: true, characterData: true });
 window.__deck = { opening,""")
-sub("LP = TB ? Math.min(400, r.width * .28) : 0,", "LP = 0,")
-sub("(innerWidth <= 860) ? 0 : (document.body.classList.contains(\"has-tband\") || RING.idle) ?", "(innerWidth <= 860 || (!RING.idle && document.body.classList.contains(\"has-tband\"))) ? 0 : (RING.idle) ?")
 (root / "agentic-setup-cards-ux.html").write_text(h)
 print("ok", len(h))
 

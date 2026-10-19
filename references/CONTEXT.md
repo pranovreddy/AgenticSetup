@@ -579,3 +579,5 @@ Focus card height lowered from 90vh to 80vh (8f.62).
 Focus card height lowered again, from 80vh to 70vh (8f.62).
 
 8f.63 UX copy: the review band (step title and text) sits on top, left-aligned, so the card is centred with the full width below it (`body.has-tband` rules in build_ux.py; `LP` and `LPa` are 0 during review). The 'What I did' and 'What happens next' accordions are hidden in this layout. Card height is the step's natural height +12% (room for the 16px text floor) and the scale is limited by stage height again, so it is about 67% of the window height at 900px.
+
+8f.64 UX copy: reverted the top band from 8f.63. The review text is on the left of the cards again, like before. Kept: the card is the step's natural height +20% so nothing clips at the 16px text floor.

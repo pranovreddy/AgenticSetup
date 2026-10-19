@@ -2056,12 +2056,6 @@ body.phase-finale .cf-mid h3{ font-size:31px; } body.phase-finale .cf-res{ font-
 /* review: step label and the side cards on the right are readable */
 .card .c-head .c-n{ font-size:16px; } .card [data-review] input:not([type=checkbox]),.card [data-review] select,.card [data-review] textarea{ font-size:16px!important; }
 body.ph-review .cf-v{ width:90px; gap:16px; } body.ph-review .cf-v b{ font-size:34px; } body.ph-review .cf-v em{ font-size:20px; opacity:1; } body.ph-review .cf-st{ font-size:19px; height:38px; }
-/* review band on top: text left-aligned, the card gets the full width below */
-body.has-tband .tband{ left:112px!important; width:calc(100% - 140px)!important; top:0!important; bottom:auto!important; height:auto!important; transform:none!important; }
-body.has-tband .tband .hero-in{ position:relative!important; inset:auto!important; transform:none!important; height:auto!important; padding:14px 0 6px 0!important; align-items:start!important; justify-items:start; text-align:left; }
-body.has-tband .tband .h-lab{ margin:0 0 8px; }
-body.has-tband .tband .h-t{ font-size:26px!important; max-width:none; white-space:normal; } body.has-tband .tband .h-s{ font-size:15px; }
-body.has-tband .tband .h-tasks,body.has-tband .tband .tb-two,body.has-tband .tband .h-steps,body.has-tband #hAcc{ display:none!important; }
 /* skipped steps on the finished page: light blue instead of grey */
 .cardf.s-skipped,body[class*="dk-"] .cardf.s-skipped,body.dk-6 .cardf.s-skipped{ background:linear-gradient(170deg,#e3eeff,#b4cffb)!important; box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 24px 44px -26px rgba(37,99,235,.35)!important; color:#1e3a8a!important; }
 .cardf.s-skipped .cf-res,.cardf.s-skipped .cf-mid h3,.cardf.s-skipped .cf-bot{ color:#1e3a8a!important; }
@@ -2687,7 +2681,7 @@ const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, STAC
 const RING = { pos: 0, target: 0, raf: 0, idle: false }, RING_TILT = 0;
 function ringGeom() {
   const r = stage.getBoundingClientRect();
-  const LPa = (innerWidth <= 860 || (!RING.idle && document.body.classList.contains("has-tband"))) ? 0 : (RING.idle) ? Math.min(400, r.width * (r.width < 1180 ? .36 : .28)) : 0;
+  const LPa = (innerWidth <= 860) ? 0 : (document.body.classList.contains("has-tband") || RING.idle) ? Math.min(400, r.width * (r.width < 1180 ? .36 : .28)) : 0;
   const idle = RING.idle, cw = idle ? 440 : 450, ch = idle ? 560 : 650, gap = idle ? 4 : 26, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
   const availH = r.height - 36, availW = r.width - LPa - 70;
   const f = Math.max(.3, Math.min(.8, (availH - 10) / ((R * .85 + ch * .9 + 60) * 1.2), availW / ((R * 1.9 + cw * .35 + 30) * 1.12))) * (idle ? .86 : 1);
@@ -2760,7 +2754,7 @@ function dims(i) {
   if (S.mode === "focus") {
     const base = STEPS[i].key === "profile" ? RH_PROFILE : STEPS[i].key === "team" ? 720 : RH;
     if (S.phase !== "review") return [1000, base];
-    const sr = stage.getBoundingClientRect(), LPx = 0;
+    const sr = stage.getBoundingClientRect(), LPx = document.body.classList.contains("has-tband") ? Math.min(400, sr.width * .28) : 0;
     const fw = Math.max(0.42, Math.min(1.14, (sr.width - LPx - 56 - (document.body.classList.contains("has-tband") ? 40 : 0)) / 1000));
     return [1000, Math.max(base, Math.round(innerHeight * .7 / fw))];
   }
@@ -2841,7 +2835,7 @@ function layout() {
     return;
   }
   const [aw, ah] = dims(S.active);
-  const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = 0, TH = 56, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
+  const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .28) : 0, TH = 56, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
   let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
