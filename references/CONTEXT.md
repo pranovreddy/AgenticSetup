@@ -499,3 +499,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.43 Cards (user file) — bigger open card in the processing stack
 - Open card 900x590 (was 780x540), scene area 400px high, pills tightened (gap 8, step 18). Still fits 1440x900 without scaling down.
+
+### 8f.44 Cards (user file) — back to the 3D ring with the vertical animations
+- User asked to go back to the 3D circle with the vertical (portrait) animations. A switch `STACK_ON = false` now selects the ring + portrait scenes (`LOADER_DOC_P`, `LD_BOX_P`) for processing. Setting it to `true` brings back the card stack with wide landscape scenes. Both code paths are kept.

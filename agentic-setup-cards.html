@@ -2243,6 +2243,7 @@ const STEPS = [
 ];
 /* Content box of each scene in its 720x360 stage, without the status pill (OP_BOX_NOCHIP in the previous build). */
 const LD_BOX = { kyc: [120, 3, 710, 328], team: [6, 0, 601, 270], brand: [40, 10, 712, 292], match: [8, -12, 613, 350], gtm: [14, 0, 712, 270] };
+const STACK_ON = false;   /* true: processing uses the card stack (open card plus pills) with the landscape scenes; false: the 3D ring with the tall scenes */
 const LD_BOX_P = [0, 0, 360, 410];   /* portrait scenes for the ring's tall white card */
 
 /* ---------- State ---------- */
@@ -2477,7 +2478,7 @@ function ringIdleStart() {
   RING.raf = requestAnimationFrame(tick);
 }
 function arcOff() { RING.idle = false; document.body.classList.remove("arc-mode", "arc-live", "arc-idle", "stack-mode"); cards().forEach((c) => c.classList.remove("is-pill")); cancelAnimationFrame(RING.raf); RING.raf = 0; cards().forEach((el) => el.classList.remove("is-prim")); const t = $("#topLd"); if (t) topLdShow(false); }
-const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600);
+const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, STACK_ON ? LD_BOX[STEPS[i].loader] : LD_BOX_P, run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600, STACK_ON ? undefined : LOADER_DOC_P);
 
 /* ---------- The 3D ring: five cards on a circle that turns to bring the next step to the front ---------- */
 const RING = { pos: 0, target: 0, raf: 0, idle: false }, RING_TILT = 0;
@@ -2626,7 +2627,7 @@ function layout() {
   }
   if (window.__ringOut) { window.__ringOut = 0; all.forEach((el, i) => { el.style.transitionDelay = `${Math.abs(i - S.active) * 80}ms`; }); setTimeout(() => all.forEach((el) => { el.style.transitionDelay = ""; }), 1600); }
   if (document.body.classList.contains("arc-mode") && ((S.phase === "analyse" && !document.body.classList.contains("all-closed")) || RING.idle)) {
-    if (RING.idle) { document.body.classList.remove("stack-mode"); cards().forEach((c) => c.classList.remove("is-pill")); if (!RING.raf) ringPaint(); } else { document.body.classList.add("stack-mode"); stackPaint(); }
+    if (RING.idle) { document.body.classList.remove("stack-mode"); cards().forEach((c) => c.classList.remove("is-pill")); if (!RING.raf) ringPaint(); } else if (STACK_ON) { document.body.classList.add("stack-mode"); stackPaint(); } else { if (RING.target !== S.active) ringTo(S.active); else if (!RING.raf) ringPaint(); }
     return;
   }
   const [aw, ah] = dims(S.active);
@@ -2658,7 +2659,7 @@ function layout() {
   });
 }
 
-addEventListener("resize", () => { layout(); $$(".ld", stage).forEach((ld) => { const i = +ld.closest(".card").dataset.i; fitScene(ld, ld.classList.contains("kv") ? KV_BOX : LD_BOX[STEPS[i].loader]); }); });
+addEventListener("resize", () => { layout(); $$(".ld", stage).forEach((ld) => { const i = +ld.closest(".card").dataset.i; fitScene(ld, ld.classList.contains("kv") ? KV_BOX : (STACK_ON ? LD_BOX[STEPS[i].loader] : LD_BOX_P)); }); });
 function setMode(m) { S.mode = m; document.body.classList.toggle("mode-overview", m === "overview" || m === "ring" || m === "ingest"); document.body.classList.toggle("mode-ring", m === "ring"); document.body.classList.toggle("mode-ingest", m === "ingest"); layout(); }
 /* A soft light follows the pointer across the card in focus. */
 stage.addEventListener("pointermove", (e) => {
@@ -2746,7 +2747,7 @@ async function analyse(run, go) {
     head("Onboarding Agent · working", `${i + 1} of 5`, "Preparing your setup", s.checks[0][0], true, s.title); procCap(`Preparing step ${i + 1} of 5 · ${s.title}`);
     layout();
     capStep(i, 1);
-    await W(i === 0 ? 700 : 1000); if (run !== S.runId) return;
+    await W(STACK_ON ? (i === 0 ? 700 : 1000) : 300); if (run !== S.runId) return;
     await playLoader(i, run); if (run !== S.runId) return;
     capStep(i, s.checks.length); $$(".segs i", el).forEach((x) => { x.classList.add("on"); x.classList.remove("cur"); });
     await W(400); if (run !== S.runId) return;
