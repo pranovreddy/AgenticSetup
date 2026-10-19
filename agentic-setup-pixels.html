@@ -543,7 +543,7 @@ function resize(){
 /* where the agent's words sit, in cells; pixels dim behind them so they stay readable */
 function placeStatus(){
   var st=$("status"), c=$("card");
-  if(typeof CARD!=="undefined"&&CARD.on){st.classList.toggle("hid",CARD.big||F.mode==="review"); var t=parseFloat(c.style.top)||0; st.style.top=Math.max(14,t-48)+"px";
+  if(typeof CARD!=="undefined"&&CARD.on){st.classList.toggle("hid",CARD.big||F.mode==="review"||F.mode==="gate"); var t=parseFloat(c.style.top)||0; st.style.top=Math.max(14,t-48)+"px";
     st.style.left=((parseFloat(c.style.left)||0)+(parseFloat(c.style.width)||0)/2)+"px"; return}
   st.classList.remove("hid"); st.style.left="50%";
   var k=$("kick"), g=document.createRange(); g.selectNodeContents(k); var b=g.getBoundingClientRect();
