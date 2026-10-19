@@ -484,3 +484,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - Review screens: profile form with authorise checkbox and operator-check wait, team table with ticks and roles, brands as a hierarchy tree with removable LOBs, GTM partners with two-partner rule and phase split, templates list with LOB filters. Needs-you note and What I did / What happens next live in the console.
 - Short windows (height under 700 or width under 980): the console collapses to a top bar, the surface scrolls, the footer stays pinned. Jump menu bottom left ("Prototype"); URL hashes `#proc #ready #r0..#r4 #final` jump directly.
 - Builder parts in `references/tools/session5/deck-enhanced/c2p2/` (head + body, logo is injected from the rail logo).
+
+### 8f.40 C2P2: the real loader animations on the right
+- The processing surface now plays the product loader scenes (same `LOADER_DOC` as the cards deck, landscape, sped up 1.7x, cropped with the cards deck's `LD_BOX` boxes) in an iframe on the right: kyc for Business profile, team, brand, gtm, match. The hand-written live fills were removed.
+- Scene step messages drive the tab bar and the console checklist; a scene ends on its own (7.6 s limit) and the next tab starts. The Brands scene uses placeholder shapes instead of "Brand A / Product line n". Reduced motion skips the scene and just advances.
