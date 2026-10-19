@@ -1876,6 +1876,26 @@ body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .car
 .card [data-review] .r-body{ padding-top:22px!important; }
 .card [data-review] .r-h{ margin-top:0; }
 .card [data-review] .kyc-top{ margin-top:6px; }
+/* search and filters on one line */
+.ctools{ flex-direction:row!important; align-items:center; gap:12px!important; flex-wrap:nowrap; }
+.ctools .srch{ flex:0 0 260px; width:260px; }
+.ctools [data-rc]{ min-width:0; flex:1; overflow-x:auto; scrollbar-width:none; } .ctools [data-rc]::-webkit-scrollbar{ display:none }
+.ctools .rchips,.tools .rchips{ flex-wrap:nowrap; margin:0; white-space:nowrap; }
+.ctools .rchips .fchip,.tools .rchips .fchip{ flex:none; }
+.tools:has(.rchips){ display:flex; align-items:center; gap:12px; flex-wrap:nowrap; }
+.tools:has(.rchips) .srch{ flex:0 0 300px; }
+.tools:has(.rchips) .rchips{ flex:1; min-width:0; overflow-x:auto; scrollbar-width:none; }
+/* brands review: enterprise root, brand nodes with their lines of business beside them */
+.btree{ margin:6px 0 0 18px!important; }
+.btree > li{ padding-bottom:14px!important; }
+.btree .bnode{ display:flex; align-items:center; gap:12px; }
+.btree .bmark{ width:38px; height:38px; border-radius:12px; display:grid; place-items:center; font:700 13px/1 var(--font); color:#fff; background:#2563eb; flex:none; }
+.btree .bmark.t1{ background:#7c5cff } .btree .bmark.t2{ background:#0ea5a4 } .btree .bmark.t3{ background:#f59e0b }
+.btree .bmeta b{ font-size:16px; display:block; } .btree .bmeta small{ font-size:12.5px; color:var(--muted); }
+.btree .blobs{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0 50px; }
+.btree .blobs .lob{ padding:6px 12px; border-radius:99px; background:#eef3ff; color:#2c47b2; font-size:13px; font-weight:600; box-shadow:none; border:0; }
+.btree .blobs .lob:before{ display:none; }
+.ctools .srch{ flex:0 0 330px!important; width:330px!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -3406,8 +3426,8 @@ function renderReviewBase(i) {
     body = `<h3 class="r-h">${BRANDS.length} brands and ${lobs} lines of business</h3>
       <p class="r-p">Drafted from your DLT headers. Confirm as drafted and they're set up straight away. Any change goes for review.</p>
       <div class="ent2 cent"><div class="ent2-h"><span class="eic">${IC.build}</span><div><b>HDFC Bank Limited</b><br><span class="sm">${BRANDS.length} brands · ${lobs} lines of business</span></div><span class="pill">Enterprise</span></div>
-      <ul class="htree">${BRANDS.map((b) => `<li class="hb-brand"><div class="cbrand"><div class="cbrand-h"><span class="bic">${IC.brands}</span><div><small>Brand</small><b>${esc(b.name)}</b></div><span class="mono">${esc(b.hdr)}</span></div></div>
-        <ul class="hlobs">${b.lobs.map((l) => `<li><span class="lob">${esc(l)}</span></li>`).join("")}</ul></li>`).join("")}</ul></div>
+      <ul class="htree btree">${BRANDS.map((b, k) => `<li class="hb-brand"><div class="bnode"><span class="bmark t${k % 4}">${esc(b.name.split(" ").map((w) => w[0]).slice(0, 2).join(""))}</span><div class="bmeta"><b>${esc(b.name)}</b><small>Sender ID ${esc(b.hdr)} · ${b.lobs.length} lines of business</small></div></div>
+        <div class="blobs">${b.lobs.map((l) => `<span class="lob">${esc(l)}</span>`).join("")}</div></li>`).join("")}</ul></div>
       ${whatIDid(i)}`;
     foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}">${brandsChanged() ? "Send for review" : "Confirm brands"}</button>`;
   }

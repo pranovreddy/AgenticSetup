@@ -526,3 +526,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.51 Cards (user file) — space under the card header bar
 - Review panes start 22px below the header bar (`.r-body` padding-top), so the title and the first content no longer touch it.
+
+### 8f.52 Cards (user file) — search and filters on one line; Brands and LOBs representation
+- Team: search box and role chips sit on one line (card and Details page); the card's search field is wider so its placeholder is not cut.
+- Brands and LOBs review card: enterprise root, then each brand as a coloured initials tile with name, sender ID and LOB count, its lines of business as chips under it, joined by tree connectors.
