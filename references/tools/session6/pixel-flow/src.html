@@ -261,7 +261,8 @@ select.inp{height:36px;padding:0 8px}
 .card.isdoc .cd-bd{overflow:hidden;padding-bottom:0}
 .card.big .dgrid{max-width:1100px;margin:0 auto}
 @media (max-width:820px){.dgrid{grid-template-columns:1fr;grid-template-rows:auto 1fr}.dsum{border-right:0;border-bottom:1px solid var(--s-line);max-height:38vh;padding-right:0}.dtext{padding-left:0}}
-.tbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0 4px}
+.tbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:18px 0 4px}
+.tbar .srch{margin-left:auto}
 .srch{display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid #d9e0ec;border-radius:8px;color:var(--s-muted);flex:0 1 260px}
 .srch input{border:0;outline:0;font:14px Inter,sans-serif;color:var(--s-ink);width:100%;background:none}
 .srch:focus-within{border-color:var(--s-blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
@@ -1116,9 +1117,9 @@ function detailParts(i){
   if(st.k==="profile"){h='<div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
     foot(authRow(),primary(i))}
   if(st.k==="team"){
-    h='<div class="tbar"><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label><div class="chips" style="margin:0">'+
+    h='<div class="tbar"><div class="chips" style="margin:0">'+
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
-        return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div></div><div id="teamRows">'+teamRows()+'</div>';
+        return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label></div><div id="teamRows">'+teamRows()+'</div>';
     foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>',primary(i))}
   if(st.k==="brands"){h='<div class="root"><div class="lbox ent"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><small>Brand · logo from website</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
     foot('<span class="ls">'+BRANDS.length+' brands · '+lobCount()+' lines of business</span>',primary(i))}
