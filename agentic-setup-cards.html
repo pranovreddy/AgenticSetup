@@ -1554,11 +1554,13 @@ body.v3b.arc-mode .card .cardf{ transform:rotateY(360deg)!important; }
 body.v3b.arc-mode .card.is-prim .card-in{ transform:rotateY(0deg)!important; background:#fff!important; }
 body.v3b.arc-mode .card.is-prim .cardf{ transform:rotateY(180deg)!important; }
 body.arc-mode.has-tband .card:not(.is-focus){ opacity:1!important; }
+body.arc-mode .card:not(.is-focus){ filter:blur(2.2px) saturate(.92)!important; }
+body.arc-mode .card.is-focus{ filter:none!important; }
 body.arc-live .card{ transition:opacity .6s var(--ease),filter .6s,width .8s var(--ease),height .8s var(--ease),margin .8s var(--ease)!important; }
 body.arc-mode .card .c-head{ padding:28px 30px 12px; } body.arc-mode .card .c-head .c-n{ right:30px; top:30px; }
 body.arc-mode .card .cap{ margin:18px 30px 0; }
 body.arc-mode .card .plan-live{ margin:16px 30px 0; gap:9px; }
-body.arc-mode .card .ld{ height:178px!important; min-height:0!important; flex:none!important; margin:4px 24px 0; border-radius:16px; box-shadow:0 0 0 1px rgba(160,185,235,.5); }
+body.arc-mode .card .ld{ height:228px!important; min-height:0!important; flex:none!important; margin:0 2px; border-radius:0; box-shadow:none!important; border:0!important; background:#fff; }
 body.arc-mode .card .cap{ margin:14px 30px 0; }
 body.arc-mode .card .plan-live li{ font-size:13px; transition:color .3s; }
 body.arc-mode .card .plan-live li:not(.ok) i svg{ display:none; }
@@ -2196,7 +2198,7 @@ const RING = { pos: 0, target: 0, raf: 0 }, RING_TILT = 0;
 function ringGeom() {
   const r = stage.getBoundingClientRect();
   const LPa = document.body.classList.contains("has-tband") ? Math.min(400, r.width * .28) : 0;
-  const cw = 340, ch = 492, gap = 30, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
+  const cw = 392, ch = 520, gap = 28, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
   const availH = r.height - 36, availW = r.width - LPa - 70;
   const f = Math.max(.3, Math.min(.8, (availH - 10) / ((R * .85 + ch * .9 + 60) * 1.2), availW / ((R * 1.9 + cw * .35 + 30) * 1.12)));
   return { r, LPa, cw, ch, R, f, cy: 22 * f + 6 };

@@ -387,3 +387,5 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - agentic-setup-cards.html: the product scene now plays INSIDE the white front card (not in the ring centre / above); cards 340x492 in the ring (comment e19fb1fc).
 
 - agentic-setup-cards.html: ring seen straight on (tilt 0) so all cards sit on one horizontal line, gap 30 (comment e1b2c0af).
+
+- agentic-setup-cards.html: scene inside the front card has no border and is larger (cards 392 wide); non-focus ring cards blurred 2.2px (comments 93af4284, fd63aba1).
