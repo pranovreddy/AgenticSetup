@@ -407,3 +407,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.17 Cards (user file) — review stack both sides, authorisation row
 - Review: upcoming steps on the right now peek behind the front card like the finished ones on the left (perspective-corrected offsets).
 - Review footer: the "I'm authorised to submit this KYC" row has no grey background.
+
+### 8f.18 Cards (user file) — left panel agent
+- The left panel's agent blob is smaller (58px) and sits in a row with a "DigiConsent agent" pill above the title, instead of floating alone over it. Applies to processing, ready and review.
