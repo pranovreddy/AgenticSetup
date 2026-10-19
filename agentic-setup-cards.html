@@ -1918,6 +1918,24 @@ body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .car
 body.phase-finale .finale{ background:transparent!important; border:0!important; box-shadow:none!important; backdrop-filter:none!important; padding:0!important; }
 body.phase-finale .ah-ok{ width:56px!important; height:56px!important; } body.phase-finale .ah-ok svg{ width:28px!important; height:28px!important; }
 body.phase-finale .ah h1{ font-size:28px!important; }
+/* review cards: larger text */
+.card [data-review] .r-h{ font-size:22px!important; line-height:1.25; }
+.card [data-review] .r-p{ font-size:15px!important; line-height:1.5; }
+.card [data-review] .panel-h b{ font-size:15.5px!important; } .card [data-review] .panel-h span{ font-size:13.5px!important; }
+.card [data-review] .ctbl th{ font-size:13px!important; } .card [data-review] .ctbl td{ font-size:15px!important; }
+.card [data-review] .ctbl .who b{ font-size:15.5px!important; } .card [data-review] .ctbl .who small{ font-size:13px!important; }
+.card [data-review] .ctbl .rolep{ font-size:13px!important; padding:4px 11px; }
+.card [data-review] .rchips .fchip{ font-size:13.5px!important; height:32px; }
+.card [data-review] .ctools .srch input{ font-size:15px!important; }
+.card [data-review] .tstats .tm b{ font-size:30px!important; } .card [data-review] .tstats .tm span{ font-size:13.5px!important; }
+.card [data-review] .lobsum-r{ font-size:15px!important; grid-template-columns:170px 1fr 40px; } .card [data-review] .lobsum-h b{ font-size:15.5px!important; } .card [data-review] .lobsum-h span{ font-size:13.5px!important; }
+.card [data-review] .btree .bmeta b{ font-size:18px!important; } .card [data-review] .btree .bmeta small{ font-size:13.5px!important; } .card [data-review] .btree .blobs .lob{ font-size:14.5px!important; }
+.card [data-review] .ent2-h b{ font-size:17px!important; } .card [data-review] .ent2-h .sm{ font-size:13.5px!important; }
+.card [data-review] .pf label{ font-size:13.5px!important; } .card [data-review] .pin{ font-size:15.5px!important; }
+.card [data-review] .kyc-lab{ font-size:13.5px!important; }
+.card .r-foot .btn{ font-size:14.5px; } .card .r-foot .check{ font-size:14px; }
+.card [data-review] .ctbl td{ padding-top:7px!important; padding-bottom:7px!important; }
+.card [data-review] .ctbl .who .av{ width:30px; height:30px; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2633,7 +2651,7 @@ const CW = 372, CH = 548, AW = 920, AH = 600, RH = 700, RH_PROFILE = 760;
 function dims(i) {
   if (document.body.classList.contains("all-closed")) return [CW + 40, CH + 30];
   if (S.mode === "focus" && S.phase === "analyse") return i === S.active ? [AW, AH] : [CW, AH];
-  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_PROFILE : STEPS[i].key === "team" ? 800 : RH];
+  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_PROFILE : STEPS[i].key === "team" ? 720 : RH];
   return [CW, CH];
 }
 function size(el, w, h) {

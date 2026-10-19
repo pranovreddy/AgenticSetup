@@ -543,3 +543,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.55 Cards (user file) — smaller finished page
 - Finished page: card row about 22% smaller, header tick and title smaller, and the countdown block has no panel behind it (no background, border, shadow or blur).
+
+### 8f.56 Cards (user file) — larger text in review cards
+- Review cards: headline 22px, description 15px, table text 15px, names 15.5px, chips and search 13.5-15px, form labels and values larger, stats and bars larger. The Team card is back to 720 high (a taller card made everything scale down); rows are tighter so all six people still fit.
