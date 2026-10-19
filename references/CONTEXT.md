@@ -563,3 +563,8 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.60 Cards (user file) — team card headline removed
 - Team review card: the "6 people to invite, each with a role" headline and description are removed; the list starts straight away. The Edited tag moved beside "Suggested users".
+
+### 8f.61 UI/UX audit copy (agentic-setup-cards-ux.html)
+A new file, built from `agentic-setup-cards.html` by `references/tools/session5/deck-enhanced/ux/build_ux.py` (the source file is untouched). Audit method: Playwright at 1440, 1024 and 390 wide on the gate, ready, review and finale screens, with a DOM check for text size, contrast, touch targets, names and overflow.
+Fixed: (1) the gate overflowed at phone width, clipping the title, tabs and Accept button, so it is now a single column with the avatar pill made horizontal; (2) the Prototype menu no longer covers the Accept button on phones; (3) the processing and review copy overlapped the card on narrow screens, so it is now a top band; (4) the "ready" copy collided with the ring at 1024, so the ring offset and copy width were adjusted, and on phones the copy sits below the ring with a full-width button; (5) faint grey text raised to at least 4.5:1; (6) a visible focus ring for keyboard users; (7) larger touch targets (Prototype button, step rail, filter chips); (8) finale card text raised from about 8px to about 11px; (9) a global reduced-motion fallback.
+Not fixed: the 3D ring and the review cards stay desktop-first (the card clips on a 390px phone, and the card body text scales with the card). The "Business profile" side-card label touches its result line while the ring turns.

@@ -1,0 +1,48 @@
+"""Builds agentic-setup-cards-ux.html from agentic-setup-cards.html: UI/UX audit fixes only, the source stays untouched."""
+import pathlib
+root = pathlib.Path(__file__).resolve().parents[5]
+h = (root / "agentic-setup-cards.html").read_text()
+
+def sub(old, new):
+    global h
+    assert h.count(old) == 1, (h.count(old), old[:60])
+    h = h.replace(old, new)
+
+CSS = r"""<style id="ux-audit">
+/* UX audit fixes. 1 contrast, 2 focus, 3 touch targets, 4 narrow screens, 5 text size, 6 reduced motion */
+:root{ --faint:#66708a; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{ outline:2px solid #2563eb; outline-offset:2px; border-radius:inherit; }
+.btn-p:focus-visible,.rdl-go:focus-visible{ outline-color:#0b1220; outline-offset:3px; }
+.proto > button{ height:36px; padding:0 16px; font-size:12.5px; color:#475066; }
+.rail3c button{ position:relative; } .rail3c button::after{ content:""; position:absolute; inset:-8px -14px; }
+.fchip,.rchips .fchip{ min-height:30px; }
+.gate{ grid-template-columns:minmax(0,1fr); } .gate-card,.gate-body,.doc-wrap,.gate-head > div{ min-width:0; }
+.tabs{ max-width:100%; overflow-x:auto; scrollbar-width:none; } .tab,.tabs button{ white-space:nowrap; min-height:40px; }
+.doc-foot span{ color:#475066; }
+.q-note,.gate-meta,.ah-k .n{ color:#5d6780; }
+body.phase-finale .cf-mid h3{ font-size:31px; } body.phase-finale .cf-res{ font-size:25px; opacity:1; }
+body.phase-finale .cf-st{ font-size:16px; height:34px; }
+@media (max-width:1180px){ .rdl{ left:92px; width:min(300px,28%); } .rdl h2{ font-size:29px; } .rdl p{ font-size:14px; } }
+@media (max-width:860px){
+  .hdr{ top:10px!important; left:10px!important; flex-direction:row!important; gap:8px!important; padding:6px!important; border-radius:30px!important; }
+  .hdr .mk{ width:40px; height:40px; } .hdr .mk img{ width:21px; } .hdr .me .usr-av{ transform:scale(.86); }
+  body.phase-gate .gate,.gate{ inset:72px 10px 10px 10px!important; padding:0!important; } .gate-card{ border-radius:16px; }
+  .gate-head{ padding:16px 16px 0; gap:8px; } .gate-head h1{ font-size:21px; } .gate-head p{ font-size:12.5px; margin-bottom:10px; }
+  .gate-sum{ max-height:26vh; padding:14px 16px; gap:10px; } .gate-sum .prose{ font-size:15px; line-height:1.55; } .gate-sum .note,.gate-meta{ display:none; }
+  .doc{ padding:14px 16px; } .doc-foot{ flex-wrap:wrap; gap:8px; padding:10px 14px; } .doc-foot .btn{ flex:1; min-height:44px; }
+  .gate-body{ grid-template-columns:minmax(0,1fr)!important; grid-template-rows:auto minmax(0,1fr)!important; } .gate-sum{ border-right:0!important; border-bottom:1px solid var(--line); }
+  .proto{ bottom:auto; top:16px; right:12px; } .proto-menu{ bottom:auto; top:42px; }
+  .tband{ width:100%!important; bottom:auto!important; height:auto!important; left:0!important; top:0!important; }
+  .tband .hero-in{ position:relative!important; inset:auto!important; transform:none!important; height:auto!important; background:linear-gradient(180deg,rgba(244,248,255,.96) 70%,rgba(244,248,255,0)); padding:76px 16px 14px 16px!important; align-items:flex-start; text-align:left; }
+  .tband .h-t{ font-size:22px!important; white-space:normal; max-width:100%; } .tband .h-s{ font-size:13.5px; }
+  .rdl,.rdl.on{ left:16px!important; right:16px; top:auto!important; bottom:84px; width:auto!important; transform:none!important; text-align:center; }
+  .rdl p{ display:none; } .rdl h2{ font-size:24px; margin:8px 0 12px; } .rdl-go{ width:100%; justify-content:center; height:52px; }
+}
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
+</style>
+"""
+sub('<script>document.body.classList.add("dk-6","lt-1");</script>', CSS + '<script>document.body.classList.add("dk-6","lt-1");</script>')
+sub("const LPa = (document.body.classList.contains(\"has-tband\") || RING.idle) ? Math.min(400, r.width * .28) : 0;",
+    "const LPa = (innerWidth <= 860) ? 0 : (document.body.classList.contains(\"has-tband\") || RING.idle) ? Math.min(400, r.width * (r.width < 1180 ? .36 : .28)) : 0;")
+(root / "agentic-setup-cards-ux.html").write_text(h)
+print("ok", len(h))
