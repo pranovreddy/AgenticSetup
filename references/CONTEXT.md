@@ -546,3 +546,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.56 Cards (user file) — larger text in review cards
 - Review cards: headline 22px, description 15px, table text 15px, names 15.5px, chips and search 13.5-15px, form labels and values larger, stats and bars larger. The Team card is back to 720 high (a taller card made everything scale down); rows are tighter so all six people still fit.
+
+### 8f.57 Cards (user file) — finished page header on two lines
+- Finished page: the green tick sits on the left, with the title and the subtitle as two left-aligned lines beside it (grid on `.ah-t`), instead of a centred stack.
