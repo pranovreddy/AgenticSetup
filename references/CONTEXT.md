@@ -585,3 +585,5 @@ Focus card height lowered again, from 80vh to 70vh (8f.62).
 8f.65 UX copy: the vertical stepper left of the review text is removed (.h-steps hidden), the enterprise logo is 1.5x (168x144), and review card heights are the natural height +15% (profile) or +12% (others). The earlier height rule based on the window height was replaced, since content height, not window height, is the limit.
 
 8f.66 UX copy: the review text block (Agent summary, heading, lists) is moved left so its edge lines up with the logo pill at x=16 (screens wider than 860px).
+
+8f.67 UX copy: left padding of the review text block raised from 16px to 40px (replaces the 8f.66 alignment).
