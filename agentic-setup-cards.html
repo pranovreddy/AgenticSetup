@@ -2192,11 +2192,11 @@ function arcOff() { document.body.classList.remove("arc-mode", "arc-live"); canc
 const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600);
 
 /* ---------- The 3D ring: five cards on a circle that turns to bring the next step to the front ---------- */
-const RING = { pos: 0, target: 0, raf: 0 }, RING_TILT = -22;
+const RING = { pos: 0, target: 0, raf: 0 }, RING_TILT = 0;
 function ringGeom() {
   const r = stage.getBoundingClientRect();
   const LPa = document.body.classList.contains("has-tband") ? Math.min(400, r.width * .28) : 0;
-  const cw = 340, ch = 492, gap = 78, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
+  const cw = 340, ch = 492, gap = 30, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
   const availH = r.height - 36, availW = r.width - LPa - 70;
   const f = Math.max(.3, Math.min(.8, (availH - 10) / ((R * .85 + ch * .9 + 60) * 1.2), availW / ((R * 1.9 + cw * .35 + 30) * 1.12)));
   return { r, LPa, cw, ch, R, f, cy: 22 * f + 6 };

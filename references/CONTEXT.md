@@ -385,3 +385,5 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - agentic-setup-cards.html: processing view is now a true 3D ring (5 cards on a circle seen slightly from above, ring turns one step per card via rAF so cards travel on the circle), product scene plays in the middle of the ring, only the front card is flipped white (live checklist / result), the rest stay dark; more padding inside cards and gaps between them (comment c89e7406).
 
 - agentic-setup-cards.html: the product scene now plays INSIDE the white front card (not in the ring centre / above); cards 340x492 in the ring (comment e19fb1fc).
+
+- agentic-setup-cards.html: ring seen straight on (tilt 0) so all cards sit on one horizontal line, gap 30 (comment e1b2c0af).
