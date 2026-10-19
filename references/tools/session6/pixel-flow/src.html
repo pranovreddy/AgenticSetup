@@ -404,7 +404,7 @@ var DOCS=__DOCS__;
 
 /* ======================= data (from the C2P2 prototype and the copy document) ======================= */
 var STEPS=[
- {k:"profile",title:"Business profile",rh:"Please review your business profile",rs:"I filled your logo and all 7 fields from 4 sources. Check the details and submit.",
+ {k:"profile",title:"Business profile",rh:"Please review your business profile",rs:"I filled in all 7 details from 4 sources. Check them and submit.",
   need:"Confirm you are authorised to submit, then send it for approval.",next:"Telecom operators check it. Team opens once it is approved."},
  {k:"team",title:"Team",rh:"Choose who to invite",rs:"I found 6 people on your DLT registration and suggested a role for each.",
   need:"Untick anyone you do not want to invite, then send the invites.",next:"They get an email invite to DigiConsent."},
@@ -1093,7 +1093,7 @@ var SHEET=null;
 function openSheet(kind){SHEET=kind; F.readEnd=false; renderSheet(); $("shBody").scrollTop=0; $("sheet").classList.add("on"); $("sheet").setAttribute("aria-hidden","false"); $("scrim").classList.add("on"); if(kind==="doc") later(checkEnd,600)}
 function closeSheet(){SHEET=null; $("sheet").classList.remove("on"); $("sheet").setAttribute("aria-hidden","true"); $("scrim").classList.remove("on")}
 function sheetFoot(l,r){$("shFoot").innerHTML='<div>'+(l||'')+'</div><div style="display:flex;gap:10px">'+(r||'')+'</div>'}
-function fd(l,v,tag,wide,id){return '<div class="fd'+(wide?" w2":"")+'"><label>'+esc(l)+(tag?'<em>'+esc(tag)+'</em>':'')+'</label><input class="inp" value="'+esc(v)+'" data-f="'+id+'"></div>'}
+function fd(l,v,tag,wide,id){return '<div class="fd'+(wide?" w2":"")+'"><label>'+esc(l)+'</label><input class="inp" value="'+esc(v)+'" data-f="'+id+'"></div>'}
 function renderSheet(){
   var b=$("shBody"), top=b.scrollTop, h="";
   if(SHEET==="doc"){var d=DOCS[F.doc];
@@ -1113,7 +1113,7 @@ function teamRows(){
 }
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
-  if(st.k==="profile"){h='<div class="lslot"><div class="lbox"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
+  if(st.k==="profile"){h='<div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
     foot(authRow(),primary(i))}
   if(st.k==="team"){
     h='<div class="tbar"><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label><div class="chips" style="margin:0">'+
