@@ -505,3 +505,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.45 Cards (user file) — AI typing back in the profile review, more top space
 - `fillProfile` types each business-profile field in turn again (logo shimmer, then field by field with the highlight, source tag popping in), instead of showing all values at once. The profile review pane has 22px more space above the logo.
+
+### 8f.46 Cards (user file) — flat card icons
+- `cfArt` v4: a flat white rounded tile with a bold brand-blue line glyph. No gradients, glow, blur or shadow (the glassy v3 was rejected). Colours via `--igt` (tile) and `--igs` (glyph).
