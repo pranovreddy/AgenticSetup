@@ -573,3 +573,5 @@ Not fixed: the 3D ring and the review cards stay desktop-first (the card clips o
 In `agentic-setup-cards-ux.html` (built by `references/tools/session5/deck-enhanced/ux/build_ux.py`): (1) the focus card in review is 90% of the viewport tall. The scale is now limited by width only, so the card gets taller instead of the text smaller (`dims()` and the `layout()` height clamp); (2) review text has a 16px floor (was 10px), applied by a MutationObserver (`bumpFonts`) to elements under `[data-review]`, plus inputs and selects, the "STEP n OF 5" label, and the side-card labels. Known: the horizontal result line on a side card still touches its vertical title while the ring turns.
 
 Skipped steps on the finished page (UX copy) are light blue (`.cardf.s-skipped`) with dark blue text, instead of grey. Note 8f.62 also covers the review text floor.
+
+Focus card height lowered from 90vh to 80vh (8f.62).
