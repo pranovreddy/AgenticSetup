@@ -179,7 +179,11 @@ select.inp{height:36px;padding:0 8px}
 .bn{display:flex;align-items:center;gap:10px}
 .bn small{display:block;font-size:11.5px;color:var(--s-muted)}
 .mono{font:600 12px ui-monospace,Menlo,monospace;color:var(--s-muted);background:#f3f6fb;padding:3px 8px;border-radius:6px;margin-left:6px}
-.lobs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px 50px}
+.lobs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px 54px}
+.lbox.ent{width:48px;height:48px;border-radius:12px;font-size:13px;flex:none}
+.blogo{width:44px;height:44px;border-radius:11px;background:var(--c);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;flex:none;box-shadow:0 4px 10px rgba(15,27,61,.12)}
+.blogo b{font-size:11px;font-weight:800;letter-spacing:-.01em}.blogo i{font-style:normal;font-size:7.5px;font-weight:700;letter-spacing:.08em;margin-top:2px;opacity:.9}
+.tree>li{margin-left:23px}.tree>li:after{top:32px}.tree>li:last-child:before{height:33px}
 .lob{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;padding:6px 6px 6px 12px;border-radius:999px;background:#f3f6fb;border:1px solid var(--s-line)}
 .lob button{width:22px;height:22px;border-radius:50%;border:0;background:none;cursor:pointer;color:var(--s-muted);display:grid;place-items:center}
 .lob button:hover{background:#e3e9f4;color:var(--s-ink)}
@@ -397,7 +401,7 @@ var PROFILE=[["Legal Entity Name","HDFC Bank Limited","MCA"],["Entity Type","Pub
 var ROLES=["Regulatory / Legal","Business Admin","Super Admin","Viewer"];
 var DEPTS=["Legal & Compliance","Risk & Audit","Marketing","Technology","Finance Operations","Operations"];
 var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance",0],["MI","Meera Iyer","meera.iyer@hdfc.com","Legal & Compliance",0],["AM","Arjun Menon","arjun.menon@hdfc.com","Risk & Audit",0],["SP","Sanjay Prabhu","sanjay.prabhu@hdfc.com","Marketing",1],["KR","Kavya Reddy","kavya.reddy@hdfc.com","Marketing",1],["DN","Divya Nair","divya.nair@hdfc.com","Technology",2]].map(function(p,k){return {i:p[0],name:p[1],email:p[2],dept:p[3],role:p[4],on:true,mob:["+91 98201 44120","+91 98330 21675","+91 99200 58314","+91 98670 30942","+91 97690 11823","+91 98192 76450"][k]}});
-var BRANDS=[{name:"HDFC Bank",hdr:"HDFCBK",lobs:["Credit Cards","Personal Loan","Home Loan"]},{name:"HDFC Life",hdr:"HDFCLI",lobs:["Term Insurance","Savings Plans"]},{name:"HDFC ERGO",hdr:"HDFCER",lobs:["Motor Insurance","Health Insurance"]}];
+var BRANDS=[{name:"HDFC Bank",hdr:"HDFCBK",logo:["HDFC","BANK","#004c8f"],lobs:["Credit Cards","Personal Loan","Home Loan"]},{name:"HDFC Life",hdr:"HDFCLI",logo:["HDFC","LIFE","#1b4f9c"],lobs:["Term Insurance","Savings Plans"]},{name:"HDFC ERGO",hdr:"HDFCER",logo:["HDFC","ERGO","#d7262b"],lobs:["Motor Insurance","Health Insurance"]}];
 var PARTNERS=[{name:"Karix",pick:true,r:[.75,1.2,.6],why:"Lowest rates on migration and refresh."},{name:"Value First",pick:true,r:[.8,1.2,.7],why:"Ties on acquisition at ₹1.20, with stronger enterprise SLA cover."},{name:"Tata",pick:false,r:[.82,1.28,.68],why:"Close on refresh, higher on migration and acquisition."},{name:"Route Mobile",pick:false,r:[.88,1.35,.72],why:"Above the chosen pair on every phase."}];
 var PH=["Migration","Acquisition","Refresh"], ALLOC=[60,50,65];
 var TLOBS=[["Credit Cards",22],["Personal Loan",18],["Home Loan",14],["Term Insurance",12],["Health Insurance",12],["Motor Insurance",11],["Savings Plans",9]];
@@ -952,8 +956,8 @@ function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
   var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
-  else if(st.k==="profile"||st.k==="team"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
-    p={title:heading(i),tog:'',body:'<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">'+esc(subline(i))+'</p>'+d0.h,l:d0.l,r:d0.r}}
+  else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
+    p={title:heading(i),tog:'',body:'<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">'+esc(subline(i))+'</p>'+d0.h+(st.k==="brands"?needLine(st):''),l:d0.l,r:d0.r}}
   else p={title:heading(i),tog:'',body:cardSummary(i),l:'<button class="btn ghost" data-a="details">'+I("max")+'See details</button>'+(st.k==="team"?' <button class="btn ghost" data-a="later">Do it later</button>':''),r:primary(i)};
   p.kick=kick; return cardWrap(p);
 }
@@ -1099,8 +1103,8 @@ function detailParts(i){
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
         return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div></div><div id="teamRows">'+teamRows()+'</div>';
     foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>',primary(i))}
-  if(st.k==="brands"){h='<div class="root"><div class="tile">'+I("build")+'</div><div><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="tile" style="width:34px;height:34px">'+I("layers")+'</span><div><small>Brand</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
-    foot('<span class="ls">Confirm as drafted and it is set up straight away.</span>',primary(i))}
+  if(st.k==="brands"){h='<div class="root"><div class="lbox ent">HDFC</div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><small>Brand · logo from website</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
+    foot('<span class="ls">'+BRANDS.length+' brands · '+lobCount()+' lines of business</span>',primary(i))}
   if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
     h='<div class="row hd" style="grid-template-columns:'+c2+'"><span></span><span>Partner</span>'+PH.map(function(x){return '<span>'+x+'</span>'}).join("")+'<span>Why</span></div>'+PARTNERS.map(function(x,k){return '<div class="row" style="grid-template-columns:'+c2+';opacity:'+(x.pick?1:.7)+'"><span class="ck'+(x.pick?' on':'')+'" data-a="ptn" data-i="'+k+'">'+(x.pick?I("check"):'')+'</span><b>'+esc(x.name)+'</b>'+x.r.map(function(r){return '<span>₹'+r.toFixed(2)+'</span>'}).join("")+'<span class="rm">'+esc(x.why)+'</span></div>'}).join("")+
       '<div class="rn" style="margin-top:26px">Volume split by phase</div>'+(pk.length===2?PH.map(function(x,k){return '<div class="row" style="grid-template-columns:110px 1fr 200px"><span>'+x+'</span><div class="spl"><i style="width:'+ALLOC[k]+'%;background:#2563eb"></i><i style="width:'+(100-ALLOC[k])+'%;background:#9bb8ff"></i></div><span class="rm">'+esc(pk[0].name)+' '+ALLOC[k]+'% · '+esc(pk[1].name)+' '+(100-ALLOC[k])+'%</span></div>'}).join(""):'<div class="sh-sum">Choose exactly two partners to see the split.</div>');
