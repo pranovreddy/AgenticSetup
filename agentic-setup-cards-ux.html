@@ -2089,22 +2089,11 @@ body.phase-finale .cf-st{ font-size:16px; height:34px; }
 }
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
 </style>
-<style id="ux-gtm">
-.pgh{ display:flex; align-items:baseline; gap:12px; margin:6px 0 4px; } .pgh b{ font-size:16px; } .pgh span{ color:var(--muted); font-size:16px; }
-.pgrid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; }
-.pcard{ border:1.5px solid var(--line-2); border-radius:16px; padding:14px 16px; background:#fff; display:flex; flex-direction:column; gap:10px; }
-.pcard.pick{ border-color:#2563eb; background:linear-gradient(180deg,#f2f6ff,#fff); box-shadow:0 12px 26px -20px rgba(37,99,235,.6); }
-.pcard.off{ opacity:.62; }
-.pc-h{ display:flex; gap:12px; align-items:flex-start; }
-.pc-h .mk{ width:44px; height:44px; border-radius:13px; font-size:20px; flex:none; display:grid; place-items:center; }
-.pc-n{ flex:1; min-width:0; } .pc-n b{ display:block; font-size:18px; font-weight:700; } .pc-n small{ display:block; color:var(--muted); line-height:1.35; margin-top:2px; }
-.pc-st{ flex:none; display:inline-flex; gap:6px; align-items:center; height:30px; padding:0 12px; border-radius:99px; font-weight:600; background:#eef1f7; color:#5b6474; } .pc-st svg{ width:14px; height:14px; }
-.pcard.pick .pc-st{ background:#2563eb; color:#fff; }
-.pc-r{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-.pc-r > div{ border-radius:12px; background:#f4f7fc; padding:8px 12px; display:flex; flex-direction:column; gap:2px; }
-.pc-r span{ color:var(--muted); } .pc-r b{ font-size:24px!important; font-weight:700; letter-spacing:-.02em; }
-.pc-v{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; } .pc-r em{ font-style:normal; font-weight:600; color:#15803d; background:#e3f6ea; border-radius:99px; padding:1px 8px; } .pc-r small{ color:#2563eb; font-weight:600; }
-.pc-r .best b{ color:#15803d; }
+<style id="ux-gtm-table">
+.card [data-review] .ctbl th{ padding:12px 14px; } .card [data-review] .ctbl td{ padding:18px 14px; }
+.card [data-review] .ctbl .who{ gap:14px; align-items:center; } .card [data-review] .ctbl .who .mk{ width:44px; height:44px; font-size:20px; }
+.card [data-review] .ctbl .who small{ margin-top:4px; line-height:1.4; } .card [data-review] .ctbl .num small{ margin-top:4px; }
+.card [data-review] .ctbl .chosen{ margin-left:10px; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -3622,8 +3611,11 @@ function renderReviewBase(i) {
     const best = {}; PHASES.forEach((ph) => (best[ph.k] = Math.min(...PARTNERS.map((p) => p.rates[ph.k]))));
     body = `${editBanner("gtm")}<h3 class="r-h">${sel.map((p) => esc(p.name)).join(" and ")}, split by phase ${editTag("gtm")}</h3>
       <p class="r-p">${PARTNERS.length} partners sent rate cards. ${two ? "These two have the lowest rates across the three phases." : "Your selection, split evenly."}</p>
-      <div class="pgh"><b>Compare partners</b><span>${sel.length} of ${PARTNERS.length} chosen · rate per message and share of volume</span></div>
-      <div class="pgrid">${PARTNERS.map((p) => `<div class="pcard ${p.picked ? "pick" : "off"}"><div class="pc-h"><span class="mk ${p.tone}">${p.mark}</span><div class="pc-n"><b>${esc(p.name)}</b><small>${esc(p.why)}</small></div><span class="pc-st">${p.picked ? IC.check + "Chosen" : "Not chosen"}</span></div><div class="pc-r">${PHASES.map((ph) => { const bst = p.rates[ph.k] === best[ph.k]; return `<div class="${bst ? "best" : ""}"><span>${ph.label}</span><div class="pc-v"><b>₹${p.rates[ph.k].toFixed(2)}</b>${bst ? `<em>Lowest</em>` : ""}</div>${p.picked ? `<small>${allocPct(p, ph.k, sel)}% share</small>` : ""}</div>`; }).join("")}</div></div>`).join("")}</div>
+      <div class="panel cpanel"><div class="panel-h"><b>Compare partners</b><span>${sel.length} of ${PARTNERS.length} chosen · rate per message, share of volume</span></div>
+      <table class="tbl ctbl"><thead><tr><th>Partner</th>${PHASES.map((ph) => `<th class="num">${ph.label}</th>`).join("")}</tr></thead><tbody>
+      ${PARTNERS.map((p) => `<tr class="${p.picked ? "pick" : "off"}"><td><div class="who"><span class="mk ${p.tone}">${p.mark}</span><div><b>${esc(p.name)}${p.picked ? `<span class="chosen">Chosen</span>` : ""}</b><small>${esc(p.why)}</small></div></div></td>
+        ${PHASES.map((ph) => `<td class="num${p.rates[ph.k] === best[ph.k] ? " bestc" : ""}">₹${p.rates[ph.k].toFixed(2)}${p.picked ? `<small>${allocPct(p, ph.k, sel)}%</small>` : ""}</td>`).join("")}</tr>`).join("")}
+      </tbody></table></div>
       ${whatIDid(i)}`;
     foot = `<label class="check"><input type="checkbox" id="gTerms" data-act="gterms" ${S.gtmTerms ? "checked" : ""}>I accept the rate card terms of ${sel.map((p) => esc(p.name)).join(" and ")}.</label>${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${S.gtmTerms ? "" : "disabled"}>Confirm partners</button>`;
   }

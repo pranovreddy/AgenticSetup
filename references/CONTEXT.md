@@ -593,3 +593,5 @@ Focus card height lowered again, from 80vh to 70vh (8f.62).
 8f.69 UX copy: text size review of all five review cards. Every visible text is now 16px or larger, one size per role: labels and body 16 (labels 600, body 400, buttons 600), brand names 18 (the enterprise name was 17), table and stat values as before. The search box (15px) is raised to 16. The Team and Business profile cards have no headline (removed earlier), Brands, GTM and Templates keep their 22px headline.
 
 8f.70 UX copy: the GTM partners review shows the four partners as cards in a 2x2 grid instead of a table. Each card has the partner mark, name, one-line reason, a Chosen / Not chosen chip, and three rate tiles (migration, acquisition, refresh) with the lowest rate in green with a 'Lowest' chip and the volume share on chosen partners. Chosen cards have a blue outline, the others are dimmed. The deep view table is unchanged.
+
+8f.71 UX copy: the GTM partner cards from 8f.70 are reverted to the table (flag GTM_CARDS=False in build_ux.py keeps the card design). Table rows have more spacing (cell padding 18px, bigger partner marks).
