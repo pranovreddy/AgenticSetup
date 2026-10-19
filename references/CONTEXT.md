@@ -525,3 +525,4 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - Update (owner screenshot): top left is a vertical glass pill (same style as the other pills) with the DigiConsent logo in a light circle and an "RM" profile circle (Ravi Menon, HDFC Bank Limited) below; replaces the "DigiConsent" wordmark; hidden on the product page (its own nav shows logo and user).
 - Update (owner comment): the Agent summary text sits directly on the gradient (no white inner box), in white; gradient deepened (#2f4fd0 to #a65fc4) so white text reads across it.
 - Update (owner comment): the status chip is hidden during the agreements (it still shows on the plan, processing, ready and finale screens).
+- Update (owner comment): Agent summary panel is now an all-blue gradient (#1638b8 to #5aa2fb) with a faint logo-triangle texture, a soft light bloom top right, a fine bright top edge and a slow light sheen every 7 s (off for reduced motion).
