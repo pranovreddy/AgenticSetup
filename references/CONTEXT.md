@@ -516,3 +516,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.48 Cards (user file) — responsive finished page; icons directly on the card
 - Finished page: card row size now follows both width and height (`layout()` finale branch), the pack scrolls only if needed, and short windows (under 760px high) shrink the header, tick and countdown. Checked at 1440x900, 1280x640, 1024x700, 768x900 and 390x844.
 - Card icons: the white tile is gone; a thin white line glyph at 50% opacity sits directly on the card (`.igtile` hidden). Glyphs match the steps: ID card, people, layers, bars, document.
+
+### 8f.49 Cards (user file) — blue side cards, bigger focus card in review
+- Review: the cards beside the focus card (locked, done, upcoming) stay brand blue (no grey, no desaturating filter, 92% opacity). The focus card is 1000 wide (was 920) and the side margin is smaller, so it scales to about 1.03x on a 1440 window.

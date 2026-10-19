@@ -1856,6 +1856,10 @@ body.phase-finale .fin-pack{ min-height:100%; justify-content:center; gap:clamp(
 .cf-art svg g{ stroke:#fff!important; opacity:.5; stroke-width:6!important; }
 .cf-art svg{ max-width:260px!important; width:78%!important; }
 body.dk-6 .cf-art svg{ --igs:#fff; }
+/* side cards stay brand blue in review (locked and done included) */
+body.dk-6 .cardf.s-locked{ filter:none!important; color:#fff!important; }
+body.dk-6 .cardf.s-locked .cf-art{ opacity:.9; filter:none; }
+body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .card:not(.is-focus){ opacity:.92!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2571,7 +2575,7 @@ const CW = 372, CH = 548, AW = 920, AH = 600, RH = 700, RH_PROFILE = 760;
 function dims(i) {
   if (document.body.classList.contains("all-closed")) return [CW + 40, CH + 30];
   if (S.mode === "focus" && S.phase === "analyse") return i === S.active ? [AW, AH] : [CW, AH];
-  if (S.mode === "focus") return [AW, STEPS[i].key === "profile" ? RH_PROFILE : RH];
+  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_PROFILE : RH];
   return [CW, CH];
 }
 function size(el, w, h) {
@@ -2650,7 +2654,7 @@ function layout() {
   }
   const [aw, ah] = dims(S.active);
   const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .28) : 0, TH = 56, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
-  let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah, (r.width - LP - (AN ? 220 : 32) - (TB ? (AN ? 32 : 88) : 0)) / aw));
+  let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah, (r.width - LP - (AN ? 220 : 32) - (TB ? (AN ? 32 : 40) : 0)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
     const off = i - S.active, a = Math.min(Math.abs(off), 4), dir = Math.sign(off);
