@@ -428,3 +428,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.23 Cards (user file) — chip blob, centred active card
 - The "Agent summary" chip shows a small static particle-sphere blob (canvas drawn once) with the core in the middle.
 - Ring: the front card is now exactly centred in the space right of the left panel (the panel offset is divided by the perspective factor, which had pushed it right).
+
+### 8f.24 Cards (user file) — Brands scene tag as icon
+- The "Enterprise" text tag in the Brands scene is now an icon-only pill.

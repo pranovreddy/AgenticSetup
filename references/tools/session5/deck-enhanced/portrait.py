@@ -93,6 +93,9 @@ rep('<span class="hn-t">${b.name}</span>','<span class="hn-t">${sk(48, \'t\')}</
 rep('<span class="hlob" data-b="${i}" data-j="${j}">${l}</span>','<span class="hlob" data-b="${i}" data-j="${j}" style="width:${52 + ((i + j) % 3) * 14}px"></span>')
 i=d.index('</style>'); d=d[:i]+".hlob{min-width:0!important;padding:0!important}.hbr-n .sk{height:8px}\n"+d[i:]
 
+rep('<em class="hent-tag">Enterprise</em>','<em class="hent-tag">${ic(\'layers\')}</em>')
+i=d.index('</style>'); d=d[:i]+".hent-tag{display:grid!important;place-items:center;width:24px;height:20px;padding:0!important}.hent-tag svg{width:12px;height:12px}\n"+d[i:]
+
 KF = '''
 #gForm .fld-box{height:22px!important}
 #gForm .fld-hd{min-height:13px!important}
