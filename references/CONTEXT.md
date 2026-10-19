@@ -560,3 +560,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.59 Cards (user file) — Go to migration: app, walkthrough, Consent Migration
 - "Go to migration" opens the app shell: full sidebar (Workspace, Operate, Analyse, Admin, Migration highlighted) and a three-step walkthrough (Workspace, Operate, Analyse and Admin) with a spotlight ring on the sidebar group and a card anchored beside it (Skip, Back, Next, dots, progress; last step "Go to Migration"). Ported in spirit from `agentic-setup-final-approach-cards.html` (`agAppTourBeats`, `AG_APP_NAV`, `agMigUnlockedMarkup`).
 - Then Consent Migration: title and copy, three stages (Upload and Submit closing in 30 days, Consent Notification, Consent Based Scrubbing), the "No consents uploaded yet" empty state with New upload, the CSV format chips, and a grey note if steps were saved for later. Other sidebar pages show a placeholder.
+
+### 8f.60 Cards (user file) — team card headline removed
+- Team review card: the "6 people to invite, each with a role" headline and description are removed; the list starts straight away. The Edited tag moved beside "Suggested users".

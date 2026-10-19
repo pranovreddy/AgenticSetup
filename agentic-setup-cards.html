@@ -3526,9 +3526,8 @@ function renderReviewBase(i) {
   }
   if (k === "team") {
     const on = PEOPLE.filter((p) => p.on);
-    body = `${editBanner("team")}<h3 class="r-h">${on.length} people to invite, each with a role ${editTag("team")}</h3>
-      <p class="r-p">Found on your DLT registration. They get an email invite to DigiConsent.</p>
-      <div class="panel cpanel"><div class="panel-h"><b>Suggested users</b><span data-cn>${PEOPLE.length} shown · ${on.length} selected</span></div>
+    body = `${editBanner("team")}
+      <div class="panel cpanel"><div class="panel-h"><b>Suggested users</b>${editTag("team")}<span data-cn>${PEOPLE.length} shown · ${on.length} selected</span></div>
       <div class="ctools"><label class="srch">${SRCH}<input data-cq aria-label="Search users" placeholder="Search by name, role or email" value="${esc(S.cardTeamQ || "")}"></label><div data-rc>${roleChips(S.cardTeamRole || "all", 'data-act="trole"')}</div></div>
       <div class="ctw"><table class="tbl ctbl"><thead><tr><th>User</th><th>Department</th><th>Role</th></tr></thead><tbody data-ctb>
       ${cardTeamRows()}
