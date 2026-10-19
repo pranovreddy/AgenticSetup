@@ -444,3 +444,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.28 Cards (user file) — Azure dark style
 - Added dark style 6 "Azure": bright sky-blue frosted glass with a soft light bloom and glass icon tiles (user asked for the dark card face in blue). Switcher now lists six dark styles.
+
+### 8f.29 Cards (user file) — brand blue default, text at the bottom
+- Dark style 6 renamed "Brand blue" and retuned to the product blue (#2563eb); it is now the default dark face (the previous indigo style is "Indigo", slot 4). Stored choices still win.
+- Dark face layout: status pill on top, icon in the middle, title and result at the bottom (flex order on `.cf-*`).
