@@ -240,11 +240,13 @@ select.inp{height:36px;padding:0 8px}
 .cd-ft{flex:none;padding:16px 36px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--s-line)}
 .card.big .cd-hd,.card.big .cd-bd,.card.big .cd-ft{padding-left:max(28px,calc((100% - 960px)/2));padding-right:max(28px,calc((100% - 960px)/2))}
 .cd-tog{flex:none}
-.asum{position:fixed;z-index:8;border-radius:20px;padding:0 6px 6px;box-sizing:border-box;opacity:0;pointer-events:none;
+.asum{position:fixed;z-index:8;border-radius:20px 20px 0 0;padding:0 6px 6px;box-sizing:border-box;opacity:0;pointer-events:none;
   background:linear-gradient(105deg,#3d55d4 0%,#6f9ef0 32%,#a9c4f5 52%,#dcb6e6 74%,#c487cf 100%);
-  box-shadow:0 22px 60px rgba(4,20,100,.32);transform:translateY(10px);
+  box-shadow:0 -6px 40px rgba(4,20,100,.18);transform:translateY(10px);
   transition:opacity .45s ease,transform .6s cubic-bezier(.2,.8,.2,1),top .6s cubic-bezier(.2,.8,.2,1),left .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1)}
 .asum.on{opacity:1;transform:none;pointer-events:auto}
+.card.withsum{border-radius:0 0 20px 20px}
+.card.withsum.big{border-radius:0}
 .ahd{height:44px;display:flex;align-items:center;gap:10px;padding:0 14px;color:#fff;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
 .ahd img{width:16px;height:auto;filter:brightness(0) invert(1)}
 .abd{background:#fff;border-radius:15px;padding:16px 20px 18px}
@@ -1005,10 +1007,10 @@ function placeCard(){
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
   else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
     if(aOn){A0.style.width=w+"px"; setSum(subline(F.active)); aH=A0.offsetHeight}
-    var top=aOn?Math.max(aH+30,(H-h)/2+aH/2-14):Math.max(64,(H-h)/2-18); if(aOn) h=Math.min(h,H-top-88);
+    var top=aOn?Math.max(aH+20,(H-h)/2+aH/2-14):Math.max(64,(H-h)/2-18); if(aOn) h=Math.min(h,H-top-88);
     r={l:x0+(av-w)/2,t:top,w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
-  A0.classList.toggle("on",aOn); if(aOn){A0.style.top=(r.t-aH-12)+"px"; A0.style.left=r.l+"px"}
+  A0.classList.toggle("on",aOn); c.classList.toggle("withsum",aOn); if(aOn){A0.style.top=(r.t-aH)+"px"; A0.style.left=r.l+"px"}
   placeStatus();
 }
 function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
