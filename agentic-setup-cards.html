@@ -1826,6 +1826,20 @@ body.stack-mode.arc-mode .card .c-head{ padding:22px 34px 8px; }
 .cf-art svg{ filter:none!important; }
 body.dk-6 .cf-art svg{ --igt:#fff; --igs:#2563eb; filter:none!important; }
 body.dk-1 .cf-art svg,body.dk-2 .cf-art svg,body.dk-3 .cf-art svg,body.dk-4 .cf-art svg,body.dk-5 .cf-art svg{ filter:none!important; }
+/* team: search and role filter */
+.ctools{ display:flex; flex-direction:column; gap:10px; padding:10px 14px 4px; }
+.ctools .srch{ display:flex; align-items:center; gap:8px; height:38px; padding:0 12px; border-radius:10px; background:#fff; box-shadow:0 0 0 1px var(--line-2) inset; } .ctools .srch svg{ width:16px; height:16px; color:var(--faint); flex:none }
+.ctools .srch input{ flex:1; border:0; outline:0; background:transparent; font:500 14px/1 var(--font); min-width:0 }
+.rchips{ display:flex; gap:6px; flex-wrap:wrap; }
+.rchips .fchip{ height:30px; display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600 }
+.rchips .fchip i{ font-style:normal; font-size:11px; padding:1px 6px; border-radius:99px; background:rgba(11,18,32,.07); color:var(--muted) } .rchips .fchip.on i{ background:rgba(255,255,255,.22); color:#fff }
+.tools .rchips{ margin-top:10px }
+.ctw{ max-height:300px; overflow:auto }
+.ctbl .who b{ font-size:14px } .ctbl .who small{ font-size:12px } .ctbl td,.ctbl th{ font-size:13.5px }
+.ctbl .empty{ padding:18px 4px; color:var(--muted); font-size:13.5px }
+/* done: the green check sits to the right of the step name */
+.cardf .cf-mid.cf-mid-done{ flex-direction:row!important; align-items:center!important; justify-content:space-between; }
+.cardf .cf-mid-done h3{ margin:0!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -3342,10 +3356,11 @@ function renderReviewBase(i) {
     const on = PEOPLE.filter((p) => p.on);
     body = `<h3 class="r-h">${on.length} people to invite, each with a role</h3>
       <p class="r-p">Found on your DLT registration. They get an email invite to DigiConsent.</p>
-      <div class="panel cpanel"><div class="panel-h"><b>Suggested users</b><span>${PEOPLE.length} found · ${on.length} selected</span></div>
-      <table class="tbl ctbl"><thead><tr><th>User</th><th>Department</th><th>Role</th></tr></thead><tbody>
-      ${PEOPLE.map((p) => `<tr class="${p.on ? "" : "off"}"><td><div class="who"><span class="av t${p.t}">${p.i}</span><div><b>${esc(p.name)}</b><small class="mono">${esc(p.email)}</small></div></div></td><td>${esc(p.dept)}</td><td><span class="rolep">${esc(p.role)}</span></td></tr>`).join("")}
-      </tbody></table></div>
+      <div class="panel cpanel"><div class="panel-h"><b>Suggested users</b><span data-cn>${PEOPLE.length} shown · ${on.length} selected</span></div>
+      <div class="ctools"><label class="srch">${SRCH}<input data-cq aria-label="Search users" placeholder="Search by name, role or email" value="${esc(S.cardTeamQ || "")}"></label><div data-rc>${roleChips(S.cardTeamRole || "all", 'data-act="trole"')}</div></div>
+      <div class="ctw"><table class="tbl ctbl"><thead><tr><th>User</th><th>Department</th><th>Role</th></tr></thead><tbody data-ctb>
+      ${cardTeamRows()}
+      </tbody></table></div></div>
       ${whatIDid(i)}`;
     foot = `<button class="btn btn-t" data-act="later" data-i="${i}">Do it later</button>${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${on.length ? "" : "disabled"}>Send ${on.length} invites</button>`;
   }
@@ -3477,11 +3492,13 @@ stage.addEventListener("click", (e) => {
     if (a.dataset.act === "accept") return decide(i, "accept");
     if (a.dataset.act === "later") return decide(i, "later");
     if (a.dataset.act === "deep") return openDeep(i);
+    if (a.dataset.act === "trole") { S.cardTeamRole = a.dataset.v; return refreshTeamCard(); }
     return;
   }
   const c = e.target.closest(".card");
   if (c && S.phase === "review" && +c.dataset.i !== S.active) focusCard(+c.dataset.i);
 });
+stage.addEventListener("input", (e) => { if (e.target.matches("[data-cq]")) { S.cardTeamQ = e.target.value; refreshTeamCard(); } });
 stage.addEventListener("change", (e) => {
   const a = e.target.closest("[data-act]"); if (!a) return;
   if (a.dataset.act === "pauth") { S.profileAuth = a.checked; renderReview(0); }
@@ -3607,6 +3624,19 @@ function renderDeep() {
 }
 
 /* ---- Step bodies ---- */
+const teamMatch = (p, q, role) => (role === "all" || p.role === role) && (!q || [p.name, p.email, p.role, p.dept, p.title, p.mobile || ""].join(" ").toLowerCase().includes(q));
+const roleChips = (role, dact) => `<div class="rchips"><button class="fchip${role === "all" ? " on" : ""}" ${dact} data-v="all">All<i>${PEOPLE.length}</i></button>${ROLES.map((r) => `<button class="fchip${role === r.id ? " on" : ""}" ${dact} data-v="${esc(r.id)}">${esc(r.id)}<i>${PEOPLE.filter((p) => p.role === r.id).length}</i></button>`).join("")}</div>`;
+function cardTeamRows() {
+  const q = (S.cardTeamQ || "").trim().toLowerCase(), role = S.cardTeamRole || "all";
+  const rows = PEOPLE.filter((p) => teamMatch(p, q, role));
+  return rows.map((p) => `<tr class="${p.on ? "" : "off"}"><td><div class="who"><span class="av t${p.t}">${p.i}</span><div><b>${esc(p.name)}</b><small>${esc(p.title || "")}</small><small class="mono">${esc(p.email)}</small></div></div></td><td>${esc(p.dept)}</td><td><span class="rolep">${esc(p.role)}</span></td></tr>`).join("") || `<tr><td colspan="3"><div class="empty">No one matches. Clear the search or pick another role.</div></td></tr>`;
+}
+function refreshTeamCard() {
+  const el = card(KI("team")); if (!el) return;
+  const t = $("[data-ctb]", el); if (t) t.innerHTML = cardTeamRows();
+  const c = $("[data-rc]", el); if (c) c.innerHTML = roleChips(S.cardTeamRole || "all", 'data-act="trole"');
+  const n = $("[data-cn]", el); if (n) { const k = PEOPLE.filter((p) => teamMatch(p, (S.cardTeamQ || "").trim().toLowerCase(), S.cardTeamRole || "all")).length; n.textContent = `${k} shown · ${PEOPLE.filter((p) => p.on).length} selected`; }
+}
 function teamBody(closed) {
   const dis = closed ? "disabled" : "";
   const tabs = `<div class="tabs2" role="tablist"><button class="dtab${S.teamTab === "users" ? " on" : ""}" role="tab" data-dact="tt" data-t="users">Users<i>${PEOPLE.length}</i></button><button class="dtab${S.teamTab === "roles" ? " on" : ""}" role="tab" data-dact="tt" data-t="roles">Roles and permissions<i>${ROLES.length}</i></button></div>`;
@@ -3614,12 +3644,12 @@ function teamBody(closed) {
     return tabs + `<div class="panel"><div class="panel-h"><b>What each role can do</b><span>Change a person's role on the Users tab</span></div><div class="rolegrid">${ROLES.map((r) => { const ps = PEOPLE.filter((p) => p.on && p.role === r.id); return `<div class="rolec"><b>${esc(r.id)}</b><p>${esc(r.desc)}</p><div class="stack">${ps.map((p) => `<span class="av t${p.t}" title="${esc(p.name)}">${p.i}</span>`).join("") || `<small style="color:var(--faint)">Nobody yet</small>`}</div><small style="color:var(--muted)">${ps.length} ${ps.length === 1 ? "person" : "people"}</small></div>`; }).join("")}</div></div>`;
   }
   const q = S.teamQuery.trim().toLowerCase();
-  const rows = PEOPLE.map((p, j) => [p, j]).filter(([p]) => !q || [p.name, p.email, p.role, p.dept, p.title].join(" ").toLowerCase().includes(q));
+  const rows = PEOPLE.map((p, j) => [p, j]).filter(([p]) => teamMatch(p, q, S.teamRole || "all"));
   const n = PEOPLE.filter((p) => p.on).length;
   const all = rows.length && rows.every(([p]) => p.on);
   const add = S.addUser ? `<div class="addrow"><label>Name<input class="inp" id="auName" placeholder="Full name"></label><label>Work email<input class="inp" id="auMail" placeholder="name@hdfc.com"></label><label>Department<select class="sel" id="auDept">${DEPTS.map((x) => `<option>${esc(x)}</option>`).join("")}</select></label><label>Role<select class="sel" id="auRole">${ROLES.map((r) => `<option>${esc(r.id)}</option>`).join("")}</select></label><div class="btns"><button class="btn btn-p" data-dact="auSave">Add</button><button class="btn" data-dact="auCancel">Cancel</button></div></div>` : "";
   return tabs + `<div class="panel"><div class="panel-h"><b>Suggested users</b><span>${PEOPLE.length} found on your DLT registration · ${n} selected</span>${closed ? "" : `<div class="r"><button class="btn" data-dact="auOpen">${PLUS}Add user</button></div>`}</div>
-    <div class="tools"><label class="srch">${SRCH}<input data-keep="teamq" data-dq="team" aria-label="Search users" placeholder="Search by name, role or email" value="${esc(S.teamQuery)}"></label></div>${add}
+    <div class="tools"><label class="srch">${SRCH}<input data-keep="teamq" data-dq="team" aria-label="Search users" placeholder="Search by name, role, email or department" value="${esc(S.teamQuery)}"></label>${roleChips(S.teamRole || "all", 'data-dact="trole"')}</div>${add}
     <div class="tbl-wrap"><table class="tbl"><thead><tr><th style="width:44px">${cbx('data-pall="1"', all, dis, "Select all")}</th><th>User</th><th>Mobile</th><th>Department</th><th>Role</th><th style="width:44px"></th></tr></thead><tbody>
     ${rows.map(([p, j]) => `<tr class="${p.on ? "" : "off"}"><td>${cbx(`data-pp="${j}"`, p.on, dis, "Invite " + p.name)}</td>
       <td><div class="who"><span class="av t${p.t}">${p.i}</span><div><b>${esc(p.name)}</b><small style="font-family:var(--mono)">${esc(p.email)}</small></div></div></td>
@@ -3728,6 +3758,7 @@ deep.addEventListener("click", (e) => {
   if (act === "tpg") { S.tplPage = a.dataset.p != null ? +a.dataset.p : S.tplPage + +a.dataset.d; return rerenderDeep(); }
   if (act === "tclear") { S.tplSel.clear(); return rerenderDeep(); }
   if (act === "tt") { S.teamTab = a.dataset.t; return rerenderDeep(); }
+  if (act === "trole") { S.teamRole = a.dataset.v; return rerenderDeep(); }
   if (act === "auOpen") { S.addUser = true; rerenderDeep(); const f = $("#auName", deep); if (f) f.focus(); return; }
   if (act === "auCancel") { S.addUser = false; return rerenderDeep(); }
   if (act === "auSave") {

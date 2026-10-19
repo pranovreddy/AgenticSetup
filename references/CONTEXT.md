@@ -508,3 +508,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.46 Cards (user file) — flat card icons
 - `cfArt` v4: a flat white rounded tile with a bold brand-blue line glyph. No gradients, glow, blur or shadow (the glassy v3 was rejected). Colours via `--igt` (tile) and `--igs` (glyph).
+
+### 8f.47 Cards (user file) — team search and role filter; Done check beside the step name
+- Team review card: search box plus role chips with counts (All, Regulatory / Legal, Business Admin, Super Admin) above a richer user list (name, job title, email, department, role). Filters update the list in place without losing focus. The Details page keeps its search and now has the same role chips (and searches department too). Helpers: `teamMatch`, `roleChips`, `cardTeamRows`, `refreshTeamCard`.
+- Dark card, finished state: the green check is on the right of the step name (it had dropped below it).
