@@ -86,6 +86,13 @@ MT = """
 """
 i=d.index('</style>'); d=d[:i]+MT+d[i:]
 
+# ---- BRAND: placeholders instead of invented names ----
+rep('<span class="hn-t">Your enterprise</span>','<span class="hn-t">${sk(92, \'t\')}</span>')
+rep('<small>Brand</small>','')
+rep('<span class="hn-t">${b.name}</span>','<span class="hn-t">${sk(48, \'t\')}</span>')
+rep('<span class="hlob" data-b="${i}" data-j="${j}">${l}</span>','<span class="hlob" data-b="${i}" data-j="${j}" style="width:${52 + ((i + j) % 3) * 14}px"></span>')
+i=d.index('</style>'); d=d[:i]+".hlob{min-width:0!important;padding:0!important}.hbr-n .sk{height:8px}\n"+d[i:]
+
 KF = '''
 #gForm .fld-box{height:22px!important}
 #gForm .fld-hd{min-height:13px!important}

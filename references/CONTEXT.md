@@ -418,3 +418,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.20 Cards (user file) — smoother ring flip
 - The ring's card flip now follows the ring position (`--flip` set per card in `ringPaint`, eased) instead of snapping when a card becomes primary. A card's header and details fade in only once it has settled at the front (`--cc`), so nothing busy shows while it turns. The idle ring stays on the dark face.
+
+### 8f.21 Cards (user file) — Brands animation uses placeholders
+- Brands and LOBs scene (portrait doc): no invented names. "Your enterprise", brand names, "Brand" caption and "Product line n" are now skeleton bars and empty pills (builder: `portrait.py`).
