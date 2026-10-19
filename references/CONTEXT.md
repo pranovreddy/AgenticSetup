@@ -471,3 +471,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.36 Layout directions exploration (no change to the prototype)
 - Problem: the card format shrinks content text and breaks on short windows; the processing ring reads as credit cards.
 - Four directions mocked up at 1440x900 (agent processing and review for each), in `references/design-directions/` (`layout-directions.html`, builder `build.py`, PNGs in `png/`): A Workspace + Rail, B Top Dock, C Agent Console, D Mission Board + Folder Tabs. Waiting on the user to choose a direction before building it into the prototype.
+
+### 8f.37 Console variations (no change to the prototype)
+- User leaned towards C (Agent Console) but felt it had too many boxes. Three lighter variants mocked up in `references/design-directions/` (`console-variations.html`, `build_c.py`): C2 Open surface (no sheet, underlined fields), C3 Light console + ledger (flat label/value rows, breadcrumb), C4 Steps inside the console (vertical stepper in the blue panel, settings-style sections). C1 is the original for comparison.
