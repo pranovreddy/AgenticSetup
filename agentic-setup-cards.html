@@ -1965,6 +1965,36 @@ body.phase-finale .ah-ok svg{ width:30px!important; height:30px!important; }
 body.phase-finale .stage .card.st-later{ filter:none; }
 body.phase-finale .stage .card.st-later::after{ box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)!important; }
 body.phase-finale .ah-ok.skip{ background:linear-gradient(145deg,#c9ced9,#8f98ab)!important; }
+/* ---- app shell, walkthrough, Consent Migration ---- */
+body.app-open .deck,body.app-open #finale,body.app-open .hdr,body.app-open .tband,body.app-open .rail3c,body.app-open .closes,body.app-open .env{ display:none!important; }
+body.app-open .proto{ z-index:130; }
+.appshell{ position:fixed; inset:0; z-index:120; display:flex; background:#f6f8fd; font-family:var(--font); color:var(--ink); }
+.app-side{ width:264px; flex:none; height:100%; overflow:auto; background:#fff; border-right:1px solid var(--line); padding:18px 14px 24px; }
+.app-logo{ display:flex; align-items:center; gap:10px; padding:4px 8px 18px; } .app-logo img{ width:30px; height:30px; object-fit:contain } .app-logo b{ font-size:17px; letter-spacing:-.02em }
+.app-sec{ margin-bottom:14px; border-radius:14px; transition:background .3s; } .app-sec p{ margin:0; padding:6px 10px; font:650 11px/1 var(--font); letter-spacing:.09em; text-transform:uppercase; color:#8a96ad; }
+.app-it{ width:100%; display:flex; align-items:center; gap:12px; height:42px; padding:0 12px; border:0; border-radius:10px; background:none; font:550 14.5px/1 var(--font); color:#334155; cursor:pointer; text-align:left; }
+.app-it svg{ width:19px; height:19px; flex:none; color:#64748b } .app-it:hover{ background:#f2f5fc } .app-it.on{ background:#eaf0ff; color:#1d4ed8; font-weight:650 } .app-it.on svg{ color:#2563eb }
+.app-it .chv{ margin-left:auto; display:grid; } .app-it .chv svg{ width:14px; height:14px }
+.app-main{ flex:1; min-width:0; overflow:auto; padding:40px clamp(24px,5vw,72px) 60px; }
+.mg{ max-width:980px; margin:0 auto; } .mg h2{ margin:0; font-size:28px; letter-spacing:-.03em; font-weight:680 } .mg-p{ margin:8px 0 22px; color:var(--muted); font-size:15.5px; max-width:62ch }
+.mg-note{ display:flex; gap:10px; align-items:flex-start; padding:12px 16px; border-radius:12px; background:#eff1f6; color:#4b576d; font-size:14.5px; margin-bottom:18px } .mg-note svg{ width:18px; height:18px; flex:none; margin-top:1px }
+.mg-stages{ display:flex; align-items:center; gap:0; padding:18px 22px; border-radius:16px; background:#fff; box-shadow:0 0 0 1px var(--line); margin-bottom:18px; flex-wrap:wrap; row-gap:12px }
+.mg-st{ display:flex; align-items:center; gap:12px; opacity:.55 } .mg-st.on{ opacity:1 } .mg-st .n{ width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:#e6ebf7; font:650 13px/1 var(--font); color:#52607d } .mg-st.on .n{ background:#2563eb; color:#fff }
+.mg-st b{ display:block; font-size:15px } .mg-st small{ font-size:13px; color:var(--muted) } .mg-sep{ flex:1; min-width:30px; height:1px; background:#d7def0; margin:0 18px }
+.mg-empty{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; padding:46px 24px; border-radius:16px; background:#fff; box-shadow:0 0 0 1px var(--line); }
+.mg-ico{ display:grid; place-items:center; width:64px; height:64px; border-radius:18px; background:#eaf0ff; color:#2563eb; margin-bottom:6px } .mg-empty h3{ margin:0; font-size:19px } .mg-empty p{ margin:0 0 14px; color:var(--muted); max-width:52ch; font-size:14.5px }
+.mg-fmt{ margin-top:22px } .mg-fmt h4{ margin:0 0 10px; font-size:15px } .mg-cols{ display:flex; flex-wrap:wrap; gap:8px } .mg-cols span{ padding:7px 13px; border-radius:99px; background:#fff; box-shadow:0 0 0 1px var(--line); font-size:13.5px; color:#334155 }
+.tour-bd{ position:fixed; inset:0; background:rgba(11,26,51,.28); z-index:121; pointer-events:auto; }
+.tour-ring{ position:fixed; z-index:122; border-radius:18px; box-shadow:0 0 0 3px #2563eb,0 0 0 9999px rgba(11,26,51,.32); background:rgba(255,255,255,0); pointer-events:none; transition:all .5s cubic-bezier(.22,1,.36,1); }
+.tour-bd{ background:transparent; }
+.tour-card{ position:fixed; z-index:123; width:min(420px,calc(100vw - 32px)); padding:22px 24px 20px; border-radius:20px; background:#fff; box-shadow:0 0 0 1px var(--line),0 40px 80px -30px rgba(20,40,120,.55); animation:fade .35s both; }
+.tour-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px } .tour-ic{ width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(145deg,#6f98ff,#2f55e3); color:#fff } .tour-ic svg{ width:20px; height:20px }
+.tour-card .lnk{ background:none; border:0; font-size:13.5px; font-weight:600; color:var(--muted); cursor:pointer; text-decoration:underline }
+.tour-k{ margin:0; font:650 11.5px/1 var(--font); letter-spacing:.08em; text-transform:uppercase; color:#2c47b2 } .tour-card h3{ margin:8px 0 6px; font-size:22px; letter-spacing:-.02em }
+.tour-b{ margin:0 0 10px; color:#334155; font-size:15px; line-height:1.5 } .tour-tip{ margin:0 0 14px; padding:10px 12px; border-radius:10px; background:#eef3ff; color:#2c47b2; font-size:14px; font-weight:550 }
+.tour-bar{ height:4px; border-radius:4px; background:#e7ecf8; overflow:hidden; margin-bottom:14px } .tour-bar i{ display:block; height:100%; background:linear-gradient(90deg,#6f98ff,#2563eb); transition:width .4s }
+.tour-act{ display:flex; align-items:center; justify-content:space-between; gap:10px } .tour-act>div:last-child{ display:flex; gap:8px } .tour-dots{ display:flex; gap:6px } .tour-dots i{ width:7px; height:7px; border-radius:50%; background:#d0d9ee } .tour-dots i.on{ width:20px; border-radius:4px; background:#2563eb }
+@media (max-width:760px){ .app-side{ width:72px; padding:12px 8px } .app-it span,.app-sec p,.app-logo b,.app-it .chv{ display:none } .app-it{ justify-content:center; padding:0 } .tour-card{ left:16px!important; top:auto!important; bottom:16px } }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -3625,7 +3655,69 @@ function finale() {
   });
   $("#elapsed").textContent = took ? `You reviewed the whole setup in ${Math.floor(took / 60)} min ${took % 60} s.` : "";
 }
-$("#goMig").addEventListener("click", () => toast("Opening Consent Migration…"));
+$("#goMig").addEventListener("click", () => openApp());
+
+/* ---------- After setup: the app, a short walkthrough of its sidebar, then Consent Migration ---------- */
+const APP_ICON = (n) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${({
+  home: '<path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>', list: '<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>', building: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/>', layers: '<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12.5 9 5 9-5"/>',
+  migration: '<path d="M4 7h12l-3-3M20 17H8l3 3"/>', approvals: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>', plug: '<path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/>', shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>', phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18h2"/>',
+  file: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/>', chart: '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>', users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M17 9a2.4 2.4 0 1 0 0-.01M17 14c2.4 0 4 1.6 4 4.5"/>', coin: '<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.4 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5v1.5M12 16v1.5"/>', clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' })[n] || ""}</svg>`;
+const APP_NAV = [
+  { s: "Workspace", it: [["home", "Home", "home"], ["assets", "Manage Assets", "list"], ["brands", "Brands & LOBs", "building"], ["templates", "Promo Template Mapping", "layers"]] },
+  { s: "Operate", it: [["migration", "Migration", "migration"], ["approvals", "Approvals", "approvals"], ["integrations", "Integrations", "plug"], ["acquisition", "Consent Acquisition", "shield"], ["gtm", "GTM Partners", "phone"]] },
+  { s: "Analyse", it: [["reports", "Reports", "file"], ["insights", "Insights", "chart"]] },
+  { s: "Admin", it: [["users", "User and Roles", "users"], ["finance", "Finance", "coin"], ["audit", "Audit Trail", "clock"]] },
+];
+const TOUR = [
+  { t: "Workspace", ic: "home", body: "Everything you set up lives here: home, brands and lines of business, assets, and template mapping.", tip: "Open any Workspace page to manage what you just prepared.", secs: [0] },
+  { t: "Operate", ic: "migration", body: "Day-to-day consent work runs from Operate: migration, approvals, integrations, acquisition and GTM partners.", tip: "Start with Migration. Upload a CSV whenever you are ready.", secs: [1] },
+  { t: "Analyse and Admin", ic: "chart", body: "Reports and insights show how consent is performing. Admin covers users, finance and the audit trail.", tip: "Next, continue into Migration.", secs: [2, 3] },
+];
+let tourStep = 0, appActive = "migration";
+function appDate(add, short) { const d = new Date(Date.now() + add * 864e5); return d.toLocaleDateString("en-GB", short ? { day: "2-digit", month: "short", year: "numeric" } : { day: "numeric", month: "long", year: "numeric" }); }
+function appHTML(tour) {
+  const skipped = S.cards.map((c, i) => c.st === "later" ? STEPS[i].title : null).filter(Boolean);
+  const nav = APP_NAV.map((sec, si) => `<div class="app-sec${tour && TOUR[tourStep].secs.includes(si) ? " is-hit" : ""}" data-sec="${si}"><p>${sec.s}</p>${sec.it.map(([id, l, ic]) => `<button type="button" class="app-it${id === appActive ? " on" : ""}" data-app="${id}">${APP_ICON(ic)}<span>${l}</span>${id === "integrations" ? `<i class="chv">${IC.chev}</i>` : ""}</button>`).join("")}</div>`).join("");
+  const stages = [["Upload and Submit", "Closes " + appDate(30)], ["Consent Notification", appDate(31, 1)], ["Consent Based Scrubbing", appDate(41, 1)]].map(([a, b], k) => `${k ? '<i class="mg-sep"></i>' : ""}<div class="mg-st${k === 0 ? " on" : ""}"><span class="n">${k + 1}</span><div><b>${a}</b><small>${b}</small></div></div>`).join("");
+  const main = appActive === "migration" ? `<div class="mg"><h2>Consent Migration</h2><p class="mg-p">Migrate your legacy consent records into DigiConsent. They are validated, verified and notified to users in one guided flow.</p>
+      ${skipped.length ? `<div class="mg-note">${IC.info}<span><b>${skipped.join(" and ")}</b> ${skipped.length > 1 ? "are" : "is"} saved for later. Finish ${skipped.length > 1 ? "them" : "it"} from the sidebar; migration does not wait for ${skipped.length > 1 ? "them" : "it"}.</span></div>` : ""}
+      <div class="mg-stages">${stages}</div>
+      <div class="mg-empty"><span class="mg-ico"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15"/></svg></span><h3>No consents uploaded yet</h3><p>Upload a CSV with consent records to migrate them into DigiConsent. AI will help validate and resolve errors automatically.</p><button type="button" class="btn btn-p" data-app-act="upload" id="newUp">New upload</button></div>
+      <div class="mg-fmt"><h4>Format for your CSV</h4><div class="mg-cols">${["Mobile number", "Consent status", "Consent date", "Channel", "Purpose", "Brand", "Line of business"].map((x) => `<span>${x}</span>`).join("")}</div></div></div>`
+    : `<div class="mg"><h2>${APP_NAV.flatMap((s) => s.it).find((x) => x[0] === appActive)[1]}</h2><p class="mg-p">This page is not part of the prototype. Go back to Migration to continue.</p><button class="btn btn-p" data-app="migration">Back to Migration</button></div>`;
+  const t = TOUR[tourStep], last = tourStep >= TOUR.length - 1;
+  const card = tour ? `<div class="tour-bd"></div><div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourT"><div class="tour-top"><span class="tour-ic">${APP_ICON(t.ic)}</span>${last ? "" : `<button class="lnk" data-tour="done">Skip walkthrough</button>`}</div><p class="tour-k">App walkthrough · ${tourStep + 1} of ${TOUR.length}</p><h3 id="tourT">${t.t}</h3><p class="tour-b">${t.body}</p><p class="tour-tip">${t.tip}</p><div class="tour-bar"><i style="width:${Math.round((tourStep + 1) / TOUR.length * 100)}%"></i></div><div class="tour-act"><div class="tour-dots">${TOUR.map((_, k) => `<i class="${k === tourStep ? "on" : ""}"></i>`).join("")}</div><div>${tourStep > 0 ? `<button class="btn btn-t" data-tour="back">Back</button>` : ""}<button class="btn btn-p" data-tour="${last ? "done" : "next"}">${last ? "Go to Migration" : "Next"}</button></div></div></div>` : "";
+  return `<aside class="app-side"><div class="app-logo"><img src="${$(".hdr .mk img").src}" alt="DigiConsent"><b>DigiConsent</b></div><nav>${nav}</nav></aside><main class="app-main">${main}</main>${card}`;
+}
+function placeTour() {
+  const card = $("#tourCard"), hit = $(".app-sec.is-hit"); if (!card || !hit) return;
+  const sels = $$(".app-sec.is-hit"), a = sels[0].getBoundingClientRect(), b = sels[sels.length - 1].getBoundingClientRect();
+  const top0 = a.top, h0 = b.bottom - a.top, cw = card.offsetWidth, ch = card.offsetHeight;
+  card.style.left = `${Math.round(a.right + 22)}px`; card.style.top = `${Math.round(Math.max(16, Math.min(top0 + h0 / 2 - ch / 2, innerHeight - ch - 16)))}px`;
+  let ring = $("#tourRing"); if (!ring) { ring = document.createElement("div"); ring.id = "tourRing"; ring.className = "tour-ring"; $("#app").appendChild(ring); }
+  ring.style.cssText = `left:${a.left - 6}px;top:${top0 - 6}px;width:${a.width + 12}px;height:${h0 + 12}px`;
+}
+function drawApp(tour) { const el = $("#app"); const keepRing = $("#tourRing"); el.innerHTML = appHTML(tour); if (tour) requestAnimationFrame(placeTour); }
+function openApp() {
+  clearInterval(S.clockT); appActive = "migration"; tourStep = 0;
+  let el = $("#app"); if (!el) { el = document.createElement("div"); el.id = "app"; el.className = "appshell"; document.body.appendChild(el); }
+  document.body.classList.add("app-open"); drawApp(true);
+  if (!RM) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, easing: "ease-out" });
+}
+document.addEventListener("click", (e) => {
+  const app = $("#app"); if (!app || !app.contains(e.target)) return;
+  const t = e.target.closest("[data-tour]");
+  if (t) {
+    const a = t.dataset.tour;
+    if (a === "next") { tourStep = Math.min(TOUR.length - 1, tourStep + 1); return drawApp(true); }
+    if (a === "back") { tourStep = Math.max(0, tourStep - 1); return drawApp(true); }
+    if (a === "done") { $("#tourRing")?.remove(); drawApp(false); return; }
+  }
+  const n = e.target.closest("[data-app]"); if (n) { if ($(".tour-card")) return; appActive = n.dataset.app; return drawApp(false); }
+  if (e.target.closest("[data-app-act=upload]")) toast("Choose a CSV file to upload");
+});
+addEventListener("resize", () => { if ($("#tourCard")) placeTour(); });
+
 
 /* ---------- Card events ---------- */
 stage.addEventListener("click", (e) => {

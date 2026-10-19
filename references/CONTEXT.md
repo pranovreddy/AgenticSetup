@@ -556,3 +556,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - Skipped (saved for later) steps show grey on the finished page, "Skipped for now" on the face, and the header reads "You can start migration" with a line naming what is saved for later.
 - Team and Templates: "Do it later" now sits beside the primary button on the right.
 - AI processing: the moving corner brackets around the animation are hidden (`.reticle`, `.kbay > i` in the loader doc).
+
+### 8f.59 Cards (user file) — Go to migration: app, walkthrough, Consent Migration
+- "Go to migration" opens the app shell: full sidebar (Workspace, Operate, Analyse, Admin, Migration highlighted) and a three-step walkthrough (Workspace, Operate, Analyse and Admin) with a spotlight ring on the sidebar group and a card anchored beside it (Skip, Back, Next, dots, progress; last step "Go to Migration"). Ported in spirit from `agentic-setup-final-approach-cards.html` (`agAppTourBeats`, `AG_APP_NAV`, `agMigUnlockedMarkup`).
+- Then Consent Migration: title and copy, three stages (Upload and Submit closing in 30 days, Consent Notification, Consent Based Scrubbing), the "No consents uploaded yet" empty state with New upload, the CSV format chips, and a grey note if steps were saved for later. Other sidebar pages show a placeholder.
