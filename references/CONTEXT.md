@@ -530,3 +530,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.52 Cards (user file) — search and filters on one line; Brands and LOBs representation
 - Team: search box and role chips sit on one line (card and Details page); the card's search field is wider so its placeholder is not cut.
 - Brands and LOBs review card: enterprise root, then each brand as a coloured initials tile with name, sender ID and LOB count, its lines of business as chips under it, joined by tree connectors.
+
+### 8f.53 Cards (user file) — templates review shows summary only
+- Templates review card: summary stats plus a count per line of business (bars, plus Not mapped); the template-by-template list was removed from the card. The full list, filters and edits are in Details.

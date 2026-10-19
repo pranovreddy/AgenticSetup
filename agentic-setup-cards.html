@@ -1896,6 +1896,14 @@ body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .car
 .btree .blobs .lob{ padding:6px 12px; border-radius:99px; background:#eef3ff; color:#2c47b2; font-size:13px; font-weight:600; box-shadow:none; border:0; }
 .btree .blobs .lob:before{ display:none; }
 .ctools .srch{ flex:0 0 330px!important; width:330px!important; }
+/* templates review: summary and counts per line of business; the full list lives in Details */
+.lobsum{ margin-top:6px; }
+.lobsum-h{ display:flex; align-items:baseline; gap:12px; padding-bottom:10px; border-bottom:1px solid var(--line); margin-bottom:4px; }
+.lobsum-h b{ font-size:14px; } .lobsum-h span{ font-size:12.5px; color:var(--muted); }
+.lobsum-r{ display:grid; grid-template-columns:150px 1fr 36px; align-items:center; gap:14px; padding:9px 0; font-size:13.5px; }
+.lobsum-r .bar{ height:8px; border-radius:6px; background:#e9eefb; overflow:hidden; } .lobsum-r .bar i{ display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,#7ea1ff,#2563eb); }
+.lobsum-r b{ text-align:right; font-variant-numeric:tabular-nums; }
+.lobsum-r.un .bar i{ background:#f5b544; } .lobsum-r.un .ln,.lobsum-r.un b{ color:#a55a05; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -3449,12 +3457,11 @@ function renderReviewBase(i) {
     const lock = false, changed = TPLS.some((t) => t.lob !== t.lob0);
     const sample = [...TPLS.filter((t) => t.c === "m"), ...TPLS.filter((t) => t.c === "h"), ...TPLS.filter((t) => !t.lob)].slice(0, 6);
     body = `<h3 class="r-h">98 of 100 templates have a line of business</h3>
-      <p class="r-p">Matched by reading each message. The ones to check are listed first. The 2 unmapped don't hold up migration.</p>
+      <p class="r-p">Matched by reading each message. The 2 unmapped don't hold up migration.</p>
       <div class="panel cpanel"><div class="tstats"><div class="ring"><span>98%</span></div><div class="tm"><div><b>100</b><span>Scanned</span></div><div><b>27</b><span><i style="background:var(--blue)"></i>High confidence</span></div><div><b>71</b><span><i style="background:#8FB0FF"></i>To check</span></div><div><b>2</b><span><i style="background:rgba(11,18,32,.25)"></i>Unmapped</span></div></div></div></div>
-      <div class="panel cpanel"><div class="panel-h"><b>Templates</b><span>Showing ${sample.length} of 100 (sample)</span></div>
-      <table class="tbl ctbl"><thead><tr><th>Template</th><th>Line of business</th><th>Confidence</th></tr></thead><tbody>
-      ${sample.map((t) => `<tr><td><b class="tn">${esc(t.name)}</b><small class="tx" title="${esc(t.text)}">${esc(t.text)}</small></td><td>${t.lob ? esc(t.lob) : `<span class="muted">Not mapped</span>`}</td><td><span class="conf ${t.lob !== t.lob0 ? "m" : t.c}">${t.lob !== t.lob0 ? "Changed" : t.c === "h" ? "High" : t.c === "m" ? "Check" : "Unmapped"}</span></td></tr>`).join("")}
-      </tbody></table></div>
+      <div class="lobsum"><div class="lobsum-h"><b>Templates per line of business</b><span>Open Details to read and change each one</span></div>
+      ${TPL_LOBS.map((l) => `<div class="lobsum-r"><span class="ln">${esc(l.lob)}</span><div class="bar"><i style="width:${Math.round(l.n / 22 * 100)}%"></i></div><b>${l.n}</b></div>`).join("")}
+      <div class="lobsum-r un"><span class="ln">Not mapped</span><div class="bar"><i style="width:${Math.round(2 / 22 * 100)}%"></i></div><b>2</b></div></div>
       ${whatIDid(i)}`;
     foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}" ${lock ? "disabled" : ""}>${changed ? "Send for review" : "Confirm mapping"}</button>`;
     if (lock) body += `<div class="lock-face">${IC.lock}<b>Opens when brands and LOBs are set up</b><span>Templates are mapped to your lines of business, so they wait for that step.</span></div>`;
