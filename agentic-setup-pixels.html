@@ -201,33 +201,40 @@ select.inp{height:36px;padding:0 8px}
 #cardM{position:fixed;left:-9999px;top:0;height:auto!important;visibility:hidden;opacity:1;transform:none;transition:none}
 .cd-in{display:flex;flex-direction:column;height:100%;transition:opacity .18s ease}
 .card.swap .cd-in{opacity:0}
-.cd-hd{padding:24px 28px 4px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex:none}
-.cd-hd small{color:var(--s-muted);font-size:13px;display:flex;align-items:center;gap:8px}
-.cd-hd h2{margin:8px 0 0;font-size:24px;line-height:1.2;letter-spacing:-.025em;font-weight:650}
+.cd-hd{padding:30px 36px 6px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex:none}
+.cd-hd small{color:var(--s-muted);font-size:14px;display:flex;align-items:center;gap:8px}
+.cd-hd h2{margin:8px 0 0;font-size:28px;line-height:1.2;letter-spacing:-.025em;font-weight:650}
 .card.big .cd-hd{border-bottom:1px solid var(--s-line);padding-bottom:16px}
-.cd-bd{flex:1;min-height:0;overflow:auto;padding:4px 28px 22px}
-.cd-ft{flex:none;padding:14px 28px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--s-line)}
+.cd-bd{flex:1;min-height:0;overflow:auto;padding:6px 36px 28px}
+.cd-ft{flex:none;padding:16px 36px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--s-line)}
 .card.big .cd-hd,.card.big .cd-bd,.card.big .cd-ft{padding-left:max(28px,calc((100% - 960px)/2));padding-right:max(28px,calc((100% - 960px)/2))}
 .cd-tog{flex:none}
 .cd-agent{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--s-blue);background:var(--s-soft);padding:5px 10px 5px 8px;border-radius:999px;margin-top:10px}
 .cd-agent img{width:13px;height:auto}
-.cd-sum{font-size:15px;line-height:1.55;color:var(--s-ink2);margin:10px 0 0}
+.cd-sum{font-size:16px;line-height:1.6;color:var(--s-ink2);margin:10px 0 0}
 .lfacts{margin-top:16px;border-top:1px solid var(--s-line)}
-.lfacts>div{display:grid;grid-template-columns:130px 1fr auto;gap:14px;padding:10px 0;border-bottom:1px solid var(--s-line);font-size:14px;align-items:baseline}
+.lfacts>div{display:grid;grid-template-columns:170px 1fr auto;gap:16px;padding:13px 0;border-bottom:1px solid var(--s-line);font-size:15px;align-items:baseline}
 .lfacts span{color:var(--s-muted)}
 .lfacts b{font-weight:600}
 .lfacts em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
-.lmore{font-size:13px;color:var(--s-muted);margin-top:8px}
-.lneed{display:flex;gap:10px;margin-top:16px;font-size:14px;line-height:1.5;color:var(--s-ink2)}
+.lmore{font-size:14px;color:var(--s-muted);margin-top:8px}
+.lneed{display:flex;gap:10px;margin-top:18px;font-size:15px;line-height:1.5;color:var(--s-ink2)}
 .lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
 .lneed.amb:before{background:#e9a23b}
 .lneed b{color:var(--s-ink);margin-right:4px}
 .lneed.amb b{color:var(--s-amber)}
-.lpts{list-style:none;counter-reset:p;margin:16px 0 0;padding:0;display:grid;gap:12px;font-size:14.5px;line-height:1.5;color:var(--s-ink)}
+.dgrid{display:grid;grid-template-columns:minmax(260px,340px) 1fr;height:100%;min-height:0}
+.dsum{padding:4px 30px 24px 0;border-right:1px solid var(--s-line);overflow:auto}
+.dtext{overflow:auto;padding:0 6px 24px 32px;min-height:0}
+.dtext .doc h4:first-child{margin-top:4px}
+.card.isdoc .cd-bd{overflow:hidden;padding-bottom:0}
+.card.big .dgrid{max-width:1100px;margin:0 auto}
+@media (max-width:820px){.dgrid{grid-template-columns:1fr;grid-template-rows:auto 1fr}.dsum{border-right:0;border-bottom:1px solid var(--s-line);max-height:38vh;padding-right:0}.dtext{padding-left:0}}
+.lpts{list-style:none;counter-reset:p;margin:16px 0 0;padding:0;display:grid;gap:12px;font-size:15px;line-height:1.5;color:var(--s-ink)}
 .lpts li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:4px}
 .lpts li:before{content:counter(p);font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);margin-top:1px}
 .lavs{display:flex;gap:8px;margin-top:18px}
-.lavs span{width:36px;height:36px;border-radius:50%;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center;font-size:12.5px;font-weight:600;transition:opacity .3s}
+.lavs span{width:42px;height:42px;border-radius:50%;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center;font-size:12.5px;font-weight:600;transition:opacity .3s}
 .lavs span.off{opacity:.3}
 
 @media (max-width:820px){.lfacts>div{grid-template-columns:110px 1fr}.lfacts em{display:none}.prog{gap:14px;font-size:12px}.prog .lbl{display:none}.facts>div{grid-template-columns:110px auto}.facts em{display:none}.fgrid{grid-template-columns:1fr}}
@@ -359,10 +366,10 @@ function makeSprites(){
     var row=[];
     for(var s=0;s<SIZES;s++){
       var c=document.createElement("canvas"); c.width=c.height=px; var x=c.getContext("2d");
-      var f=.36+s*(.5/(SIZES-1)), a=px*f, o=(px-a)/2, col="rgb("+r+","+g+","+b+")", pair=[];
+      var f=.3+s*(.34/(SIZES-1)), a=px*f, o=(px-a)/2, col="rgb("+r+","+g+","+b+")", pair=[];
       if(GLYPH==="arrow"){
         x.strokeStyle=col; x.lineCap="round"; x.lineJoin="round";
-        x.lineWidth=Math.max(1,px*(.1+.05*s/(SIZES-1)));
+        x.lineWidth=Math.max(1,px*(.09+.03*s/(SIZES-1)));
         x.beginPath(); x.moveTo(o,o+a); x.lineTo(o+a,o);            // shaft
         x.moveTo(o+a*.38,o); x.lineTo(o+a,o); x.lineTo(o+a,o+a*.62); // head
         x.stroke(); row.push([c,c]); continue;
@@ -823,14 +830,13 @@ function cardSummary(i){
 var CARD={on:false,big:false};
 function docCard(){
   var d=DOCS[F.doc], kick="Before we begin · agreement "+(F.doc+1)+" of 2";
-  if(CARD.big) return {kick:kick,title:d.name,tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',
-    body:'<div class="doc">'+d.sections.map(function(s){return '<h4>'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div>',
-    l:'<span class="ls">'+(F.readEnd?'You have reached the end.':'Scroll to the end to accept.')+'</span>',
+  return {kick:kick,title:d.name,
+    tog:CARD.big?'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Exit full page</button>':'<button class="btn ghost cd-tog" data-a="details">'+I("max")+'Full page</button>',
+    body:'<div class="dgrid"><aside class="dsum"><div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ol>'+
+      '<div class="lneed"><span>This summary is only a guide. What you accept is the full text of the document.</span></div></aside>'+
+      '<div class="dtext"><div class="doc">'+d.sections.map(function(s){return '<h4>'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div></div></div>',
+    l:'<span class="ls">'+(F.readEnd?'You have reached the end.':'Read to the end of the text to accept.')+'</span>',
     r:'<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>'};
-  return {kick:kick,title:d.name,tog:'',
-    body:'<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ol>'+
-      '<div class="lneed"><span>This summary is only a guide. What you accept is the full text of the document.</span></div>',
-    l:'', r:'<button class="btn" data-a="details">Read and accept'+I("arrow")+'</button>'};
 }
 function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
@@ -845,16 +851,18 @@ function cardWrap(p){
 function placeCard(){
   var c=$("card"), r;
   if(CARD.big) r={l:0,t:0,w:W,h:H};
-  else{var w=Math.min(660,W-32), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-130); m.innerHTML="";
+  else if(F.mode==="gate"){var w=Math.min(1120,W-48), h=Math.min(H-140,700); r={l:(W-w)/2,t:Math.max(60,(H-h)/2-14),w:w,h:h}}
+  else{var w=Math.min(820,W-32), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-130); m.innerHTML="";
     r={l:(W-w)/2,t:Math.max(64,(H-h)/2-18),w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
 }
-function renderCard(){var c=$("card"), bd=c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0; c.innerHTML=cardHTML(); bd=c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard()}
+function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
+  c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard()}
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
 function hideCard(){CARD.on=false; $("card").classList.remove("on")}
 function expandCard(){var c=$("card"); if(CARD.big) return; c.classList.add("swap");
-  later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd) bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
+  later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
   later(function(){CARD.big=false; c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
 /* finishing a step: the card comes back to its summary size, then gives way to the agent */
@@ -936,7 +944,7 @@ function detailParts(i){
 }
 function checkEnd(){var b=$("shBody"); if(SHEET==="doc"&&!F.readEnd&&b.scrollTop+b.clientHeight>=b.scrollHeight-24){F.readEnd=true; renderSheet()}}
 $("shBody").addEventListener("scroll",checkEnd);
-function checkCardEnd(){var bd=$("card").querySelector(".cd-bd"); if(F.mode==="gate"&&CARD.big&&!F.readEnd&&bd&&bd.scrollTop+bd.clientHeight>=bd.scrollHeight-24){F.readEnd=true; renderCard()}}
+function checkCardEnd(){var bd=$("card").querySelector(".dtext"); if(F.mode==="gate"&&!F.readEnd&&bd&&bd.scrollTop+bd.clientHeight>=bd.scrollHeight-24){F.readEnd=true; renderCard()}}
 $("card").addEventListener("scroll",checkCardEnd,true);
 
 /* ======================= events ======================= */
