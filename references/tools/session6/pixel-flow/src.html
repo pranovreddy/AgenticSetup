@@ -1100,11 +1100,11 @@ function placeCard(){
   if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
   else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
-    if(aOn){A0.style.width=(w-24)+"px"; setSum(subline(F.active)); aH=A0.offsetHeight}
+    if(aOn){A0.style.width=w+"px"; setSum(subline(F.active)); aH=A0.offsetHeight}
     var top=aOn?Math.max(aH-2,(H-h)/2+(aH-22)/2-14):Math.max(64,(H-h)/2-18); if(aOn) h=Math.min(h,H-top-88);
     r={l:x0+(av-w)/2,t:top,w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
-  A0.classList.toggle("on",aOn); if(aOn){A0.style.top=(r.t-aH+22)+"px"; A0.style.left=(r.l+12)+"px"}
+  A0.classList.toggle("on",aOn); if(aOn){A0.style.top=(r.t-aH+22)+"px"; A0.style.left=r.l+"px"}
   placeStatus();
 }
 function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
