@@ -493,3 +493,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - Replaced the 3D ring during AI processing with the stack from the recording: the open step is one tall card; upcoming steps wait above it as narrowing dark pills (title + "Queued"), finished steps settle below it as pills (title + result with a green tick). When a step finishes its card shrinks into a pill and the next pill grows into the open card (width, height and position transition together; the white card fades in after it has expanded, then the scene starts).
 - Code: `stackPaint()` and `body.stack-mode`, a `.pillf` face added to every card, `fitScene` uses fixed card dimensions while the stack is on. The ring is kept for the idle "ready for review" screen (the stack hands over to it when processing ends).
 - Backup before the change: /tmp/bd/cards_pre_stack.html (not in the repo).
+
+### 8f.42 Cards (user file) — wider stack card, original landscape animations
+- The open card in the processing stack is now 780x540 (pills follow its width) and plays the original landscape loader scenes again (`LOADER_DOC` with `LD_BOX`), not the portrait ones. Portrait doc `LOADER_DOC_P` is no longer used during processing.
