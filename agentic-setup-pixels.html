@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agentic Setup Pixels</title>
+<style>
+:root{
+  --deep:#0b37c9; --ink:#ffffff; --navy:#0a2a8f; --muted:rgba(10,42,143,.55); --amber:#ffd27a;
+  --s-ink:#0f1b3d; --s-ink2:#35466a; --s-muted:#5b6b8c; --s-line:#e6ebf3; --s-blue:#2563eb; --s-soft:#eef3ff;
+  --s-green:#0f8a5f; --s-gsoft:#e5f6ee; --s-amber:#a55a05; --s-asoft:#fff4e0;
+}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--deep);
+  font-family:Inter,"Helvetica Neue",Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+canvas#px{position:fixed;inset:0;width:100%;height:100%;display:block}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.brand{position:fixed;top:24px;left:28px;z-index:3;display:flex;align-items:center;gap:10px;
+  font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand img{width:20px;height:auto;filter:brightness(0) invert(1)}
+.status{position:fixed;top:22px;right:28px;z-index:3;display:flex;align-items:center;gap:8px;
+  font-size:13px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(6px)}
+.status i{width:7px;height:7px;border-radius:50%;background:#fff;animation:ping 1.6s infinite}
+.status.still i{animation:none}
+.status.done i{animation:none;background:#7cf0b4}
+.status.attn i{animation:none;background:var(--amber)}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}100%{box-shadow:0 0 0 9px rgba(255,255,255,0)}}
+
+/* the agent speaks in the middle of the field */
+.stage{position:fixed;left:50%;top:47%;transform:translate(-50%,-50%);z-index:2;
+  width:min(940px,90vw);text-align:center;pointer-events:none;
+  text-shadow:0 2px 28px rgba(4,24,120,.55)}
+.kick{font-size:14px;opacity:.8;letter-spacing:.01em;margin-bottom:14px;min-height:1.2em}
+.kick .att{display:inline-flex;align-items:center;gap:6px;margin-left:10px;color:var(--amber);opacity:1;font-weight:600}
+.kick .att:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.line{font-size:clamp(28px,3.4vw,50px);font-weight:600;letter-spacing:-.035em;line-height:1.06;min-height:1.06em}
+.sub{font-size:clamp(15px,1.4vw,19px);opacity:.9;margin:16px auto 0;line-height:1.45;min-height:1.4em;max-width:720px}
+.sub .ok,.ok{display:inline-flex;width:18px;height:18px;border-radius:50%;background:#fff;color:var(--deep);
+  align-items:center;justify-content:center;vertical-align:-3px;margin-right:8px}
+.ok svg{width:11px;height:11px}
+
+.w{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(.35em);
+  transition:opacity .55s ease var(--d),filter .55s ease var(--d),transform .7s cubic-bezier(.2,.8,.2,1) var(--d)}
+.in .w{opacity:1;filter:blur(0);transform:none}
+.out .w{opacity:0;filter:blur(8px);transform:translateY(-.25em);transition-duration:.22s;transition-delay:0s}
+
+/* summary details under the headline: plain text on the field, no boxes */
+.extra{opacity:0;transform:translateY(10px);transition:opacity .5s ease .2s,transform .6s cubic-bezier(.2,.8,.2,1) .2s;
+  pointer-events:auto;text-shadow:none;width:fit-content;max-width:100%;margin:0 auto}
+.extra.in{opacity:1;transform:none}
+.extra.out{opacity:0;transition-delay:0s;transition-duration:.2s}
+.facts{display:grid;gap:9px;margin:26px auto 0;text-align:left;font-size:15px;width:fit-content;min-width:min(440px,86vw)}
+.facts>div{display:grid;grid-template-columns:150px auto auto;gap:16px;align-items:baseline}
+.facts span{opacity:.68}
+.facts b{font-weight:600}
+.facts em{font-style:normal;font-size:11.5px;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.14);opacity:.85;justify-self:start}
+.more{font-size:14px;opacity:.7;margin-top:12px}
+.pts{list-style:none;counter-reset:p;margin:24px auto 0;padding:0;text-align:left;max-width:600px;font-size:16px;line-height:1.5;display:grid;gap:12px}
+.pts li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:6px}
+.pts li:before{content:counter(p);font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(255,255,255,.16);margin-top:2px}
+.note{font-size:13.5px;opacity:.72;margin-top:18px}
+.need{font-size:14.5px;margin-top:22px;opacity:.95}
+.need b{font-weight:600;margin-right:6px}
+.need.amb b{color:var(--amber)}
+.three{display:flex;gap:28px;justify-content:center;margin-top:26px;font-size:15px;flex-wrap:wrap}
+.three span{display:flex;align-items:center;gap:8px;opacity:.9}
+.avs{display:flex;justify-content:center;gap:8px;margin-top:26px}
+.avs span{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:600;
+  background:rgba(255,255,255,.95);color:var(--deep);transition:opacity .3s}
+.avs span.off{opacity:.3}
+.acts{display:flex;gap:10px;justify-content:center;align-items:center;margin:28px auto 0;width:fit-content;flex-wrap:wrap}
+.btn{font:600 14px/1 Inter,"Helvetica Neue",Arial,sans-serif;height:36px;padding:0 16px;border-radius:8px;border:0;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--deep);box-shadow:0 10px 26px rgba(4,20,100,.28);
+  transition:transform .15s,box-shadow .15s,opacity .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.4);box-shadow:none}
+.btn.link{background:none;box-shadow:none;color:#fff;opacity:.8;padding:0 8px;text-decoration:underline;text-underline-offset:3px}
+.auth{display:flex;gap:12px;align-items:flex-start;text-align:left;margin:22px auto 0;max-width:520px;cursor:pointer;font-size:14.5px}
+.auth small{display:block;opacity:.7;font-size:13px;margin-top:3px}
+.cbx{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(255,255,255,.75);display:grid;place-items:center;flex:none;margin-top:1px}
+.cbx.on{background:#fff;color:var(--deep);border-color:#fff}
+.cbx svg{width:13px;height:13px;stroke-width:3}
+.clock{display:flex;gap:10px;justify-content:center;margin-top:12px}
+.clock div{min-width:76px;padding:10px 0 8px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24)}
+.clock b{display:block;font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.clock span{font-size:12px;opacity:.75}
+.cl-lbl{font-size:13px;opacity:.75;margin-top:24px}
+
+/* bottom: progress on the light end of the gradient */
+.prog{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);z-index:3;display:flex;gap:24px;
+  font-size:13px;color:var(--muted);white-space:nowrap}
+.prog span{display:flex;align-items:center;gap:7px;transition:color .4s}
+.prog b{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.35;transition:all .4s}
+.prog .on{color:var(--navy);font-weight:600}
+.prog .on b{opacity:1;box-shadow:0 0 0 4px rgba(11,55,201,.15)}
+.prog .dn{color:var(--navy)}
+.prog .dn b{opacity:1;background:var(--deep)}
+.prog em{font-style:normal;font-weight:600;color:var(--navy);opacity:.7;margin-right:-6px}
+
+.toast{position:fixed;left:50%;bottom:76px;transform:translate(-50%,12px);z-index:20;background:#0a2a8f;color:#fff;
+  font-size:14px;padding:10px 16px;border-radius:10px;opacity:0;transition:.3s;pointer-events:none;box-shadow:0 10px 30px rgba(4,20,100,.3)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* prototype menu */
+.proto{position:fixed;left:20px;bottom:24px;z-index:12}
+.proto>button{font:500 13px Inter,sans-serif;color:var(--navy);background:rgba(255,255,255,.75);border:1px solid rgba(10,42,143,.15);
+  border-radius:8px;height:32px;padding:0 12px;cursor:pointer}
+.pm{position:absolute;left:0;bottom:40px;background:#fff;border-radius:12px;box-shadow:0 20px 50px rgba(4,20,100,.3);padding:6px;
+  display:none;min-width:230px}
+.pm.on{display:block}
+.pm button{display:block;width:100%;text-align:left;font:14px Inter,sans-serif;color:var(--s-ink);background:none;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+.pm button:hover{background:var(--s-soft)}
+.pm hr{border:0;border-top:1px solid var(--s-line);margin:6px 4px}
+
+/* details: a light sheet slides in over the field */
+.scrim{position:fixed;inset:0;background:rgba(4,20,100,.32);opacity:0;pointer-events:none;transition:opacity .4s;z-index:9}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(780px,94vw);background:#fff;color:var(--s-ink);z-index:10;
+  transform:translateX(104%);transition:transform .55s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;
+  box-shadow:-30px 0 80px rgba(4,20,100,.35);border-radius:20px 0 0 20px}
+.sheet.on{transform:none}
+.sh-hd{padding:22px 28px 16px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:1px solid var(--s-line)}
+.sh-hd small{color:var(--s-muted);font-size:13px;display:flex;align-items:center;gap:8px}
+.sh-hd h3{margin:6px 0 0;font-size:22px;letter-spacing:-.02em;font-weight:650}
+.sh-x{width:36px;height:36px;border-radius:8px;border:1px solid #dfe5ef;background:#fff;cursor:pointer;color:var(--s-ink);display:grid;place-items:center}
+.sh-bd{flex:1;overflow:auto;padding:6px 28px 28px}
+.sh-ft{padding:14px 28px;border-top:1px solid var(--s-line);display:flex;justify-content:space-between;align-items:center;gap:14px}
+.sheet .btn{background:var(--s-blue);color:#fff;box-shadow:none}
+.sheet .btn.ghost{background:#fff;color:var(--s-ink);border:1px solid #d9e0ec}
+.sheet .btn:disabled{opacity:.4}
+.sheet .ls{color:var(--s-muted);font-size:13.5px}
+.sheet .cbx{border-color:#b8c3d6}
+.sheet .cbx.on{background:var(--s-blue);border-color:var(--s-blue);color:#fff}
+.sheet .auth{margin:0;max-width:420px;font-size:13.5px}
+.sheet .auth small{color:var(--s-muted);opacity:1}
+.chipmini{font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
+.chipmini.amb{background:var(--s-asoft);color:var(--s-amber)}
+.chipmini.gr{background:var(--s-gsoft);color:var(--s-green)}
+.sh-sum{background:var(--s-soft);border-radius:12px;padding:14px 16px;margin:18px 0 6px;font-size:14px;line-height:1.55;color:var(--s-ink2)}
+.sh-sum b{color:var(--s-ink)}
+.doc h4{font-size:15px;margin:24px 0 8px;letter-spacing:-.01em}
+.doc p{font-size:13.5px;line-height:1.7;color:var(--s-ink2);margin:0 0 10px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;margin-top:20px}
+.fd label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s-muted);margin-bottom:6px}
+.fd label em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
+.fd.w2{grid-column:1/-1}
+.inp{width:100%;box-sizing:border-box;height:40px;border:1px solid #d9e0ec;border-radius:8px;padding:0 12px;font:14.5px Inter,sans-serif;color:var(--s-ink);background:#fff}
+select.inp{height:36px;padding:0 8px}
+.lslot{display:flex;gap:14px;align-items:center;margin-top:20px}
+.lbox{width:64px;height:64px;border-radius:12px;border:1px solid var(--s-line);display:grid;place-items:center;font-weight:800;color:#004c8f;letter-spacing:-.02em}
+.row{display:grid;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--s-line);font-size:14.5px}
+.row.hd{color:var(--s-muted);font-size:12.5px;font-weight:600;padding:12px 0 8px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center;font-size:12.5px;font-weight:600;flex:none}
+.rn{font-weight:600}.rm{color:var(--s-muted);font-size:13px}
+.ck{width:20px;height:20px;border-radius:6px;border:1.5px solid #b8c3d6;display:grid;place-items:center;cursor:pointer}
+.ck.on{background:var(--s-blue);border-color:var(--s-blue);color:#fff}
+.ck svg{width:13px;height:13px;stroke-width:3}
+.tree{list-style:none;margin:16px 0 0;padding:0}
+.root{display:flex;align-items:center;gap:12px;margin-top:20px}
+.tile{width:40px;height:40px;border-radius:10px;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center}
+.tile svg{width:19px;height:19px}
+.tree>li{position:relative;margin-left:19px;padding:12px 0 6px 28px;border-left:1.5px solid #d7e0f0}
+.tree>li:last-child{border-left-color:transparent}
+.tree>li:last-child:before{content:"";position:absolute;left:-1.5px;top:0;height:31px;border-left:1.5px solid #d7e0f0}
+.tree>li:after{content:"";position:absolute;left:0;top:30px;width:22px;border-top:1.5px solid #d7e0f0}
+.bn{display:flex;align-items:center;gap:10px}
+.bn small{display:block;font-size:11.5px;color:var(--s-muted)}
+.mono{font:600 12px ui-monospace,Menlo,monospace;color:var(--s-muted);background:#f3f6fb;padding:3px 8px;border-radius:6px;margin-left:6px}
+.lobs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px 50px}
+.lob{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;padding:6px 6px 6px 12px;border-radius:999px;background:#f3f6fb;border:1px solid var(--s-line)}
+.lob button{width:22px;height:22px;border-radius:50%;border:0;background:none;cursor:pointer;color:var(--s-muted);display:grid;place-items:center}
+.lob button:hover{background:#e3e9f4;color:var(--s-ink)}
+.lob button svg{width:12px;height:12px}
+.spl{display:flex;height:10px;border-radius:999px;overflow:hidden;background:#eef2f8}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.fc{font:13px Inter,sans-serif;padding:6px 12px;border-radius:999px;border:1px solid #d9e0ec;background:#fff;color:var(--s-ink2);cursor:pointer}
+.fc.on{background:var(--s-ink);color:#fff;border-color:var(--s-ink)}
+.cf{font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px;justify-self:start}
+.cf.h{background:var(--s-gsoft);color:var(--s-green)}.cf.m{background:var(--s-soft);color:var(--s-blue)}.cf.u{background:var(--s-asoft);color:var(--s-amber)}
+.stat{display:flex;gap:34px;margin-top:20px}
+.stat b{display:block;font-size:26px;letter-spacing:-.02em}.stat span{font-size:13px;color:var(--s-muted)}
+
+@media (max-width:820px){.prog{gap:14px;font-size:12px}.prog .lbl{display:none}.facts>div{grid-template-columns:110px auto}.facts em{display:none}.fgrid{grid-template-columns:1fr}}
+@media (max-height:760px){.stage{top:45%}.pts{font-size:15px;gap:8px}.facts{gap:6px;margin-top:18px}.acts{margin-top:20px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+<symbol id="i-build" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 21v-4h4v4"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12.5 9 5 9-5"/><path d="m3 17 9 5 9-5" opacity=".6"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+</defs></svg>
+
+<canvas id="px" aria-hidden="true"></canvas>
+<div class="brand"><img alt="" src="data:image/png;base64,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">DigiConsent</div>
+<div class="status" id="status"><i></i><span id="statusTxt"></span></div>
+
+<main class="stage" id="stage" aria-live="polite">
+  <div class="kick" id="kick"></div>
+  <div class="line" id="line"></div>
+  <div class="sub" id="sub"></div>
+  <div class="extra" id="extra"></div>
+</main>
+
+<nav class="prog" id="prog" aria-label="Progress"></nav>
+<div class="toast" id="toast"></div>
+<div class="scrim" id="scrim" data-a="close"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <div class="sh-hd"><div><small id="shKick"></small><h3 id="shTitle"></h3></div><button class="sh-x" data-a="close" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="sh-bd" id="shBody"></div>
+  <div class="sh-ft" id="shFoot"></div>
+</aside>
+<div class="proto"><div class="pm" id="pm"></div><button id="pmb" type="button">Prototype</button></div>
+<script>
+(function(){
+"use strict";
+var LOGO="data:image/png;base64,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";
+var DOCS=[{"id":"terms","name":"Terms of Use","summary":["You warrant that the consent data and KYC details you submit are accurate and lawfully obtained.","AI checks can block, reject or route your registration and uploads for audit, and a successful upload is not proof of valid consent.","You indemnify the Company, and its liability to you is capped at three months."],"sections":[["0. Introduction","THIS DOCUMENT IS AN ELECTRONIC RECORD IN TERMS OF THE INFORMATION TECHNOLOGY ACT, 2000 AND RULES THERE UNDER AS APPLICABLE. THIS ELECTRONIC RECORD IS GENERATED BY A COMPUTER SYSTEM AND DOES NOT REQUIRE ANY PHYSICAL OR DIGITAL SIGNATURES. These terms and conditions (“Terms and Conditions”) govern the use of the consent management platform called Wisely Consent (“Platform”) accessible via designated web portals and/or as a mobile application provided by Tanla Platforms Limited. In consideration of the mutual covenants hereof, the Terms and Conditions constitute a binding and enforceable contract between the Tanla Platforms Limited (“Company”) and you (defined below). These Terms and Conditions may be updated by the Company from time to time and the Terms and Conditions, as amended, shall apply to you. You may always review the most current version of the Terms and Conditions on the Platform. Your continued use of the Platform after any such updates constitutes definitive acceptance of the revised terms."],["1. General Terms","1.1. These Terms and Conditions set out the terms on which Senders, Registered Telemarketers, Partners and Access Providers (Telecom Service Providers), operating on their own or via their authorised representatives, may utilize the platform infrastructure and consent management services (“Services”) from the Company for inter alia Consent migration, Consent acquisition, and the transmission of Promotional Messages (defined below) and Promotional Voice Calls (defined below) in a manner compliant with the Telecom Commercial Communications Customer Preference Regulations, 2018 (TCCCPR). Unless the context otherwise requires, the terms ‘Access Providers’, ’Authority’, ‘Consent’, ‘Promotional Message’, ‘Promotional Voice Call’, ‘Registered Telemarketer / RTM’, ‘Sender’, ‘Service Message’, ‘Service Call’, ‘Transactions Message’, and ‘Transactional Voice Call’ shall have the meanings ascribed to them under the TCCCPR.<br><br>1.2. Within these Terms and Conditions, 'Privacy Notice' shall mean the privacy notice of the Platform, which shall be read as a part of these Terms and Conditions.<br><br>1.3. You agree that these Terms and Conditions and the Privacy Notice shall apply in conjunction with any Codes of Practice (complied or implemented by the Company, Access Providers or Authority), customer agreement form, purchase order, or separate agreement signed by you with the Company, or implemented by the Company, where they relate the Platform.<br><br>1.4. Within these Terms and Conditions, “User” or “you” shall mean any Sender (an individual/entity/enterprise), a Registered Telemarketer, a Partner or an Access Provider (Telecom Service Provider/TSP) accessing, integrating with, or otherwise utilizing the Platform.<br><br>1.5. By clicking 'I/We Accept' during the sign-up process, you agree and acknowledge that by accessing the Platform, you<br><br>1.5.1. are at least 18 years of age;<br>1.5.2. have read, understood, and are bound by the Terms and Conditions and Privacy Notice, and where you represent a Sender or Access Provider, confirm and represent that you have the necessary power and authority to bind such Sender or Access Provider to these Terms and Conditions and the Privacy Notice;<br>1.5.3. represent that you are compliant with all applicable laws (including the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, the TCCCPR, and the Digital Personal Data Protection Act, 2023 and their underlying rules and regulations).<br><br>1.6. While (i) the Terms and Conditions are subject to revision at any time, as determined by the Company, and all changes are effective immediately upon being posted on the Platform, and (ii) it is your responsibility to review these Terms and Conditions periodically for any updates or changes; the Company shall make commercially reasonable efforts to periodically inform you of the Terms and Conditions, Privacy Notice and other relevant terms that you are bound by, and update you of any change in such terms (if any). To the extent the Company is required to obtain your consent for any changes to the Terms and Conditions or Privacy Notice under applicable laws, the Company will seek your consent for the same.<br><br>1.7. You agree and accept that your registration on the Platform will be subject to risk assessments carried out by the Company based on data provided by you or data received from third party sources, using inter alia Artificial Intelligence (AI) or Machine Learning (ML) systems. The Company is under no obligation to provide you with access to the Platform, and may reject your registration on its Platform, in its sole discretion.<br><br>1.8. You agree to not use the Platform for any purpose that is prohibited by these Terms and Conditions or applicable law."],["2. Information and Data Integrity","2.1. You warrant the accuracy, completeness, consistency, and truthfulness of all information, including Subscriber Consent and preference records and any ‘Know Your Customer’ (“KYC”) documents, that you submit on the Platform.<br><br>2.2. If you provide any information which is inaccurate, incomplete, inconsistent, or untrue, or if there are reasonable grounds to suspect the same, the Company reserves the right to suspend or terminate your access to the Platform.<br><br>2.3. Any Personal Data uploaded to, or provided on, the Platform will be processed in accordance with the applicable data protection laws including the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 (“Privacy Rules”) and the Digital Personal Data Protection Act, 2023 (“DPDP Act”). Unless the context otherwise requires, in these Terms and Conditions the phrase ‘Personal Data’ will have the meaning ascribed to it under the DPDP Act.<br><br>2.4. You permit us to contact your authorized personnel on their phone number or e-mail ID (as required) provided, for administrative and compliance purposes, and in relation to your access to and use of the Platform.<br><br>2.5. You shall remain solely responsible for maintaining the confidentiality and data security of your username, access tokens, password, API credentials, cryptographic keys and any other information required to register for, or access, the Platform. The right to use the Platform is not transferable to any other person or entity. The Company shall not be liable for any loss or damage arising from your failure to maintain the secrecy and confidentiality of your access credentials to the Platform. You agree to immediately notify the Company of any unauthorized use of your account or any other security breach via dpo@tanla.com, as soon as you become are aware of such unauthorized use or security breach. Such notification will include a description of the breach, including the nature, timing, and extent of occurrence, and the datasets believed to be affected. You hereby agree to cooperate with all efforts made by the Company to investigate into, remedy, and report this breach to relevant regulatory authorities, as may be required, and provide information to the Company as may be requested from time to time in relation to the same.<br><br>2.6. You represent and warrant that all Consent data uploaded to the Platform has been explicitly, lawfully, and verifiably obtained directly from the Subscriber in strict compliance with applicable laws, including but not limited to, the Privacy Rules, the TCCCPR, and the DPDP Act (collectively “Data Protection Laws”), and these Terms and Conditions.<br><br>2.7. You shall not submit Consent records that are fabricated, synthetically generated, mechanically duplicated, or otherwise non-compliant with requirements under Data Protection Laws.<br><br>2.8. You acknowledge that the provision or attempted provision of any fraudulent data, including mechanically duplicated or legally defective consent records, constitutes a material breach of these Terms and Conditions.<br><br>2.9. The obligation to ensure the authenticity, validity, and scope of any data provided by the you, including Subscriber Consent data, lies solely with you, and you shall cooperate with any and all requests submitted by the Company in this regard .<br><br>2.10. You will upload or provide data to the Platform only per formats or specifications prescribed by the Company, and you agree and accept that the Company may reject any data uploaded to the Platform that does not conform to these formats or specifications.<br><br>2.11. You agree and accept that the Company’s processing of uploaded Consent data is subject to applicable laws, particularly the TCCCPR. For this reason, the Company’s processing of this data may be subject to limits such volume based limits, or limitations on Subscribers for whom the Company may register Consents.<br><br>2.12. You shall:<br><br>2.12.1. secure all facilities and services (including terminals, software, modem, telecommunications facilities and internet connectivity and browsers, and any third-party keys) necessary for utilizing the Platform;<br>2.12.2. provide the Company with access to the relevant data required to enable it to provide the Platform and associated services to you; and<br>2.12.3. comply with the Company’s instructions and guidelines, in connection with the Platform and its use thereof.<br><br>2.13. You shall not attempt to gain access to the software, data, systems or controls underlying the Platform otherwise than as expressly permitted by the Company in writing."],["3. AI Validation","3.1. You acknowledge that the Platform utilizes proprietary AI and ML models to conduct pre-ingestion validation and continuous risk assessment of Users, Consent records, and ingestion behaviour. The automated assessments may impact the services made available to you on the Platform or your ability to access the Platform, further discussed under this clause 3.<br><br>3.2. The Company reserves the absolute right to unilaterally block, reject, throttle, or route for manual audit your Platform registration request, Consent records, or batch uploads that the system identifies as anomalous, statistically invalid, or high-risk.<br><br>3.3. The Company explicitly disclaims all liability for AI or ML driven operational errors, including false positives or negatives, and any other results of AI or ML driven operations.<br><br>3.4. For clarity, as the processing of Consent records is subject to requirements under applicable laws (particularly the TCCCPR), the successful upload of a Consent record on the Platform (a) does not constitute a validation of its authenticity; (b) does not absolve you of regulatory or contractual liability if the Consent is later found to be non- compliant with Data Protection Laws; and (c) does not guarantee that your Promotional Messages or Promotional Voice Calls will be delivered to Subscribers."],["4. Technical and Data Security","4.1. The Platform utilizes cryptographic tokenization and encryption standards to secure Consent records stored within its underlying ledgers and databases.<br><br>4.2. You must secure your API keys, callback endpoints, administrative credentials, and all other data and systems utilised to access and use the Platform.<br><br>4.3. You acknowledge and agree that you are solely liable for any unauthorized access, data exfiltration, or rogue/malicious data uploads resulting from compromised credentials originating from you or any RTM appointed by you."],["5. Consent and Preference Management Limitations","5.1. You acknowledge and agrees that the Platform executes validation against Subscriber Consent and Preference data exclusively for commercial communications categorized as Promotional Messages and Promotional Voice Calls.<br><br>5.2. You are solely responsible for, and will ensure, the accurate classification of your communications as Promotional Messages / Promotional Voice Calls, and any other form communications recognised under the TCCCPR.<br><br>5.3. You acknowledge that the Company may use behavioural signals to detect and flag traffic misclassification as part of its dynamic trust evaluation and risk scoring processes. You further acknowledge that the Company may incorporate additional measures to ensure regulatory compliance and safeguard Subscriber Consents and preferences."],["6. Consequences of Wrong Classification of Commercial Communication","6.1. If you misclassify, disguise or attempt to disguise Promotional Messages or Promotional Voice Calls as Service Messages, Service Voice Calls, Transactional Messages, Transactional Voice Calls to bypass automated validation, you shall solely be responsible and liable for the same, and the Company will bear no liability or responsibility for the same.<br><br>6.2. Further, any such actions will constitute a material breach of these Terms and Conditions."],["7. Exclusions","7.1. The Platform is provided to you on \"as is\" and \"as available\" basis without warranty of any kind either express or implied. The Company does not warrant that the Platform will be uninterrupted or error free or that the Platform or its hosting server are free from viruses or other harmful components. Further, you acknowledge that on occasion the Platform may be temporarily down due to periodic maintenance, technical issues, or for any security reasons beyond the Company's control. In such instances of downtime, the Company shall not be held liable for any losses which you may incur.<br><br>7.2. The Terms and Conditions do not govern pricing or commercial arrangements. Such functions are managed under separate commercial agreements between you and the Company."],["8. Intellectual Property","8.1. You acknowledge that you acquire no rights under these Terms and Conditions to the Company’s intellectual property (including the Platform), other than as specifically granted under these Terms and Conditions.<br><br>8.2. By accepting, and subject to your compliance with these Terms and Conditions, the Company provides you a limited, non-transferable, royalty-free, revocable, non- sublicensable, non-exclusive right to use the Platform solely for the use of the Services. You are strictly prohibited from:<br><br>8.2.1. using or allowing a third-party to use the Platform except as set out in these Terms and Conditions;<br>8.2.2. license, sublicense, sell, resell, lease, transfer, assign, distribute, or commercially exploit the Platform, or make it available to third parties other than authorised users, and then only as permitted under these Terms and Conditions;<br>8.2.3. create derivative works of the Platform or its components, or of any proprietary software used in the Platform;<br>8.2.4. access the source code or attempt to reverse engineer, decompile, transform, disassemble, modify, copy, distribute, transmit, or reproduce the Platform or its components;<br>8.2.5. use the Platform to build a competing product or service, copy features, functions, or graphics, or perform/disclose any benchmarks, security, or performance testing;<br>8.2.6. rent, share, lend, or operate the Platform on a time-share, service bureau, or marketplace basis, or permit a single Platform account owned by you to be used by other third parties (except as expressly permitted); or<br>8.2.7. use the Platform account for testing, development, or training purposes unless specifically allowed.<br><br>8.3. By accepting these Terms and Conditions, you hereby grant the Company:<br><br>8.3.1. A limited, non-exclusive, revocable, worldwide, royalty-free, fully-paid up license for the duration of the subsistence of the Terms and Conditions to use your intellectual property (such as trademarks, trade names etc.) to enable the Services.<br>8.3.2. An unlimited, exclusive, irrevocable, worldwide, perpetual, royalty-free, fully-paid up, license (with rights to sublicense through one or more tiers of sublicensees) to use, exploit and commercialize in any manner now known or in the future discovered and for whatever purpose, the rights in and to all feedback, comments, suggestions, ideas, observations, modifications, insights, improvements, enhancements and/or any other inputs obtained from you in any manner in relation to access to and use of the Platform. Further, you understand and agree that any rights licensed under this Clause 8.3 shall not revert to you solely due to non-use by the Company."],["9. Indemnification and Limitation of Liability","9.1. In no event shall the Company, including their affiliates, directors, or employees, be liable for any direct, indirect, punitive, or consequential damages resulting from the use or inability to use the Platform.<br><br>9.2. You agree to release, indemnify, and hold the Company and its affiliates and its officers, employees, directors and agents harmless from any and all losses, damages, expenses, regulatory penalties (including financial disincentives imposed by the Telecom Regulatory Authority of India or the Department of Telecommunications), including reasonable attorneys' fees, rights, claims, actions of any kind and injury arising out of or relating to (a) a breach of these Terms and Conditions; (b) any breach of applicable laws including the Data Protection Laws; (c) your use of the Platform; or (d) the submission of invalid, fraudulent, or unverified Consent data.<br><br>9.3. In no event shall the Company’s total cumulative liability to you, for the entire duration of the Terms and Conditions, including any extensions thereof, for any and all losses, liabilities, damages, deficiencies, demands, claims (including third party claims), actions, judgments or causes of action, assessments, interest, penalties and other costs or expenses (including, without limitation, reasonable attorneys' fees and expenses), whether in contract or tort, exceed three (3) calendar months from the date on which a claim is made by you.<br><br>9.4. These indemnity obligations will survive the termination these Terms and Conditions or the termination of your access to the Platform."],["10. Suspension and Termination","10.1. The Company reserves the right to modify, suspend, or withdraw access to the Platform at its sole discretion, in view of business exigencies or guidelines issued by Telecom Regulatory Authority of India, the Department of Telecommunications, regulatory agencies or legal orders from a court of competent jurisdiction.<br><br>10.2. You agree that the Company may, in its sole discretion, suspend or terminate these Terms and Conditions (including your access to the Platform) if the Company believes that (a) you have violated or acted inconsistently with the letter or spirit of these Terms and Conditions; or (b) you are in breach of any requirements under applicable laws (including the Privacy Rules, the TCCCPR, and the DPDP Act).<br><br>10.3. You agree that the Company will not be liable to you or any third party for the suspension of your access to the Platform or the termination of these Terms and Conditions."],["11. General Provisions","11.1. These Terms and Conditions are governed in accordance with the laws of India. Any dispute shall be subject to the exclusive jurisdiction of courts in Hyderabad, Telangana, India.<br><br>11.2. You shall not host, display, upload, modify, publish, transmit, store, update or share any information (including synthetically generated information) on or over the Platform that, among other things:<br><br>11.2.1. belongs to another person and to which you do not have any right;<br>11.2.2. is defamatory, obscene, pornographic, paedophilic, invasive of another’s privacy (including bodily privacy), insulting or harassing on the basis of gender, racially or ethnically objectionable;<br>11.2.3. encourages money laundering or gambling or an online game that causes user harm;<br>11.2.4. promotes enmity between different groups on the grounds of religion or caste with the intent to incite violence;<br>11.2.5. is harmful to children;<br>11.2.6. infringes intellectual property rights;<br>11.2.7. deceives or misleads the addressee about the origin of the message or communicates misinformation or patently false and untrue information;<br>11.2.8. is regarding the Central Government’s business that is identified as fake or false or misleading by such authorised fact check unit;<br>11.2.9. impersonates another person;<br>11.2.10. threatens unity, sovereignty, integrity, defence, security of India, public order or friendly relations with foreign states;<br>11.2.11. is insulting to another nation;<br>11.2.12. contains viruses or malicious code;<br>11.2.13. causes incitement to the commission of any cognizable offence, or prevents investigation of any offence;<br>11.2.14. in the nature of an online game that is not verified as a permissible online game, or is in the nature of an advertisement or surrogate advertisement or promotion of such a game or any platform/entity offering such game; and/or<br>11.2.15. violates any law in force."],["12. No Waiver and Severability","You agree that no action of the Company, other than an express written waiver or amendment, may be interpreted as a waiver or amendment of any of these Terms and Conditions. In the event any clause of these Terms is found to be unenforceable, then whenever possible, this will not affect any other clause, and each shall remain in full force and effect."],["13. Grievance Redressal","In relation to any queries, support requests, complaints, or grievances in relation to access to and/or use of the Platform, please contact our Grievance Officer: <br><br>Designation: Grievance Officer, Wisely Consent <br>Corporate Address: Tanla Platforms Limited, Tanla Technology Centre, Hitech City Road, Madhapur, Hyderabad, Telangana, India - 500081 <br>Contact email: dpo@tanla.com <br><br>By clicking on the \"Accept Terms of Use\" box, I confirm that I have read, understood, and agree to the Platform Terms and Conditions. I confirm I am authorized to bind my organization to these regulatory and technical obligations. If I do not agree to the terms of these Terms and Conditions, the Company may not be able to provide access to the Platform."]]},{"id":"privacy","name":"Privacy Policy","summary":["We process your identity, KYC, consent, log and grievance data to run the platform.","We share it with telecom providers, hosting and security vendors, and authorities where required.","You can access, correct or delete your data, or complain to us or the Data Protection Board."],"sections":[["0. About this notice","This Privacy Notice (“Privacy Notice”) is issued by Tanla Platforms Limited (“Tanla”, “Company”, “we”, “us”, or “our”). This document describes how Tanla collects, records, evaluates, secures, and handles the Personal Data of individuals acting as authorized administrators, operational managers, technical personnel, or corporate representatives (“Platform Users”, “Corporate Users”, or “you”) on behalf of Senders (Enterprises), Telecom Service Providers (Access Providers / TSPs), Partners, Registered Telemarketers (RTMs) who access, integrate with, or operate our proprietary Wisely Consent Platform and its associated APIs and administrative interfaces (collectively, the “Platform”). This notice does not govern the underlying end-subscriber consumer communications data, for which your organization acts as the primary Data Fiduciary. You agree that these terms shall apply in conjunction with, and are additional to, the general Terms of Use, or any other agreement/terms governing your use of Wisely Consent Platform."],["1. Personal data we process","The table below sets out the categories of personal data processed, why each is processed, and the services it enables.<br><br><b>Name, mobile number, email id, subscriber ID, user account ID or other platform identifier<\/b><br>Purpose: To identify you as the user and tie consent and communication preference records to the right profile, and to support account queries and grievances.<br>Enables: Account access, consent management, preference updates, retrieval of consent history, support.<br><br><b>Personal data in corporate KYC documents (directors' government IDs, authorised signatories, power of attorney, registration certificates)<\/b><br>Purpose: To run legal and technical risk assessments, verify corporate legitimacy, prevent identity fraud and validate the registering user's authority.<br>Enables: Completing onboarding, authorising high-volume consent migrations.<br><br><b>Consent status records: given, denied, modified, updated or withdrawn<\/b><br>Purpose: To keep a verifiable record of your consent choices.<br>Enables: Activation, denial, modification or revocation of promotional message and voice call preferences, per sender.<br><br><b>Communication preference settings (category, channel, other preferences)<\/b><br>Purpose: To record your preferences for promotional messages and voice calls.<br>Enables: Preference-based delivery of particular categories or channels.<br><br><b>Date, time and method of consent capture or withdrawal<\/b><br>Purpose: To create an auditable record of when and how a consent choice was made or changed.<br>Enables: Compliance validation, dispute resolution, audit trail, proof of consent lifecycle.<br><br><b>Platform logs: access and transaction logs, device or browser metadata, API access keys, IP address, session information<\/b><br>Purpose: To secure the Platform, detect misuse, troubleshoot issues and maintain integrity and auditability.<br>Enables: Secure access, fraud detection, monitoring, incident investigation, service continuity.<br><br><b>Grievance, complaint or support request details and correspondence<\/b><br>Purpose: To respond to your queries, requests, grievances and complaints.<br>Enables: Grievance redressal, support resolution, exercise of data principal rights.<br><br><b>Records of sharing consent instructions or preference updates with relevant Principal Entities, Senders or ecosystem participants<\/b><br>Purpose: To put your consent and preference choices into effect and pass updates to the parties who rely on them.<br>Enables: Applying updated consents and preferences; sender-side compliance."],["2. Who we share it with","In order to make the Platform and its services available to you, we will need to share your personal data with certain third parties, such as authorised telecom service providers, technology service providers such as cloud hosting providers, database administrators and security log management vendors, government authorities, and third parties in case we undergo any mergers / acquisitions / investments / sale.<br><br>In such cases, to the extent permitted under applicable laws, we will ensure that the recipients of your personal data adopt appropriate security measures which are commensurate with the kind of personal data that they are accessing."],["3. Your rights","As an individual acting as a Platform User, you may have the following rights in respect of the processing of your personal data under this Privacy Notice to the extent provided under applicable laws:<br><br>(a) the right to access, correct, and update your personal data;<br>(b) the right to request deletion of your personal information;<br>(c) the right to seek redressal of your grievances by us or the relevant authority;<br>and (d) the right to nominate one or more individuals to be able to exercise your rights in the event of your death or incapacity.<br><br>To enable exercise of the above rights, please reach out to dpo@tanla.com. When reaching out to exercise your rights, please ensure you provide your name and phone number to help us identify you and support the exercise of your rights. You also have the right to lodge a complaint with the Data Protection Board of India if you believe we have processed your personal information in violation of applicable data protection law. However, we encourage you to raise any complaint with us first so we can do our best to resolve it."],["4. Security measures","We have implemented security policies, rules and technical measures, as required under applicable law including firewalls, transport layer security and other physical and electronic security measures to protect your personal data from inter alia unauthorised access, improper use or disclosure, unauthorised modification and unlawful destruction or accidental loss."],["5. Consent","By clicking \"Accept Privacy Policy\", you acknowledge that:<br>a) You have read and understood how your personal data will be processed as per this Privacy Notice.<br>b) You hereby provide your consent to our processing of your personal information in accordance with this Privacy Notice. You have the right to withdraw your consent to processing of your personal information you have provided to us."]]}];
+
+/* ======================= data (from the C2P2 prototype and the copy document) ======================= */
+var STEPS=[
+ {k:"profile",title:"Business profile",rh:"Please review your business profile",rs:"I filled your logo and all 7 fields from 4 sources. Check the details and submit.",
+  need:"Confirm you are authorised to submit, then send it for approval.",next:"Telecom operators check it. Team opens once it is approved."},
+ {k:"team",title:"Team",rh:"Choose who to invite",rs:"I found 6 people on your DLT registration and suggested a role for each.",
+  need:"Untick anyone you do not want to invite, then send the invites.",next:"They get an email invite to DigiConsent."},
+ {k:"brands",title:"Brands and LOBs",rh:"3 brands and 7 lines of business",rs:"Drafted from your DLT headers. Confirm as drafted and they are set up straight away.",
+  need:"Confirm the draft, or remove a line of business you do not need.",next:"GTM partners opens next."},
+ {k:"gtm",title:"GTM partners",attn:true,rh:"Karix and Value First, split by phase",rs:"4 partners sent rate cards. These two have the lowest rates across the three phases.",
+  need:"Check the two chosen partners. You can swap one.",next:"Templates opens once you confirm the partners."},
+ {k:"templates",title:"Templates",attn:true,rh:"98 of 100 templates have a line of business",rs:"Matched by reading each message. 2 still need a line of business.",
+  need:"2 templates have no line of business yet. They do not hold up migration.",next:"This is the last step. After it, your migration window opens."}
+];
+var PROFILE=[["Legal Entity Name","HDFC Bank Limited","MCA"],["Entity Type","Public Limited","MCA"],["Registered Address","HDFC Bank House, Senapati Bapat Marg, Lower Parel, Mumbai 400013","DLT"],["Business PAN/TAN","AAACH2702H","GSTIN"],["Website URL","https://www.hdfcbank.com","Website"],["Primary Industry","Banking & Financial Services","Website"],["Sub Industry","Scheduled Commercial Bank","Website"]];
+var ROLES=["Regulatory / Legal","Business Admin","Super Admin","Viewer"];
+var DEPTS=["Legal & Compliance","Risk & Audit","Marketing","Technology","Finance Operations","Operations"];
+var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance",0],["MI","Meera Iyer","meera.iyer@hdfc.com","Legal & Compliance",0],["AM","Arjun Menon","arjun.menon@hdfc.com","Risk & Audit",0],["SP","Sanjay Prabhu","sanjay.prabhu@hdfc.com","Marketing",1],["KR","Kavya Reddy","kavya.reddy@hdfc.com","Marketing",1],["DN","Divya Nair","divya.nair@hdfc.com","Technology",2]].map(function(p){return {i:p[0],name:p[1],email:p[2],dept:p[3],role:p[4],on:true}});
+var BRANDS=[{name:"HDFC Bank",hdr:"HDFCBK",lobs:["Credit Cards","Personal Loan","Home Loan"]},{name:"HDFC Life",hdr:"HDFCLI",lobs:["Term Insurance","Savings Plans"]},{name:"HDFC ERGO",hdr:"HDFCER",lobs:["Motor Insurance","Health Insurance"]}];
+var PARTNERS=[{name:"Karix",pick:true,r:[.75,1.2,.6],why:"Lowest rates on migration and refresh."},{name:"Value First",pick:true,r:[.8,1.2,.7],why:"Ties on acquisition at ₹1.20, with stronger enterprise SLA cover."},{name:"Tata",pick:false,r:[.82,1.28,.68],why:"Close on refresh, higher on migration and acquisition."},{name:"Route Mobile",pick:false,r:[.88,1.35,.72],why:"Above the chosen pair on every phase."}];
+var PH=["Migration","Acquisition","Refresh"], ALLOC=[60,50,65];
+var TLOBS=[["Credit Cards",22],["Personal Loan",18],["Home Loan",14],["Term Insurance",12],["Health Insurance",12],["Motor Insurance",11],["Savings Plans",9]];
+var TPLS=[["CC_REWARDS_WKND","Earn 5X reward points on dining this weekend with your HDFC Bank Credit Card.","Credit Cards","h"],["CC_EMI_CONVERT","Convert purchases above ₹5,000 into easy EMIs at low interest.","Credit Cards","m"],["PL_PREAPPROVED","You are pre-approved for a Personal Loan up to ₹10 lakh.","Personal Loan","h"],["PL_BT_OFFER","Transfer your existing loan to HDFC Bank and save on interest.","Personal Loan","m"],["HL_TOPUP","Get a top-up on your Home Loan at attractive rates.","Home Loan","h"],["LIFE_TERM_1CR","Secure ₹1 crore cover for your family from ₹490 a month.","Term Insurance","h"],["ERGO_HEALTH_FAM","Cover your whole family with Optima Secure. Cashless at 13,000+ hospitals.","Health Insurance","m"],["GEN_SERVICE_ALERT","Your service request has been updated. Open the app to view.","","u"],["GEN_THANKS","Thank you for banking with us. We value your feedback.","","u"]];
+var BASE=JSON.stringify({P:PROFILE,E:PEOPLE,B:BRANDS,G:PARTNERS,T:TPLS});
+
+/* processing: each source is read once, then the five steps are built from it */
+var SRC=["DLT","GSTIN","MCA","Website","Rate cards"];
+var STEPN=STEPS.map(function(s){return s.title});
+var SCENES = [
+  {id:"intro", dur:3.4, kick:"Onboarding Agent", line:"Preparing your five setup steps",
+   sub:"I read each source once, then build every step from it", grp:"src", prog:-1},
+  {id:"dlt",   dur:4.2, kick:"Reading sources · 1 of 5", line:"Reading your DLT registration",
+   sub:"Entity, address, headers, people on record and templates", done:"Read once, used by four steps", grp:"src", prog:0},
+  {id:"gstin", dur:3.8, kick:"Reading sources · 2 of 5", line:"Checking GSTIN",
+   sub:"Matching your PAN against the GST registry", done:"PAN AAACH2702H matched", grp:"src", prog:1},
+  {id:"mca",   dur:3.8, kick:"Reading sources · 3 of 5", line:"Checking MCA",
+   sub:"Confirming the legal entity and its type", done:"HDFC Bank Limited, Public Limited", grp:"src", prog:2},
+  {id:"web",   dur:3.8, kick:"Reading sources · 4 of 5", line:"Looking up your company website",
+   sub:"Reading hdfcbank.com for your industry", done:"Banking & Financial Services", grp:"src", prog:3},
+  {id:"rates", dur:3.8, kick:"Reading sources · 5 of 5", line:"Reading partner rate cards",
+   sub:"Rates from 4 partners across three phases", done:"4 rate cards read", grp:"src", prog:4},
+  {id:"form",  dur:6.2, kick:"Step 1 of 5 · Business profile · from DLT, GSTIN, MCA and website", line:"Filling in your business profile",
+   sub:"0 of 7 fields filled", grp:"step", prog:0},
+  {id:"team",  dur:6.0, kick:"Step 2 of 5 · Team · from DLT", line:"Finding your team",
+   subs:["Finding people on record","Matching roles and permissions","Suggesting people to invite"],
+   done:"6 people suggested, each with a role", grp:"step", prog:1},
+  {id:"brands",dur:6.4, kick:"Step 3 of 5 · Brands and LOBs · from DLT", line:"Drafting your brands",
+   subs:["Grouping DLT headers into brands","Creating lines of business","Refining the drafts"],
+   done:"3 brands and 7 lines of business", grp:"step", prog:2},
+  {id:"gtm",   dur:6.4, kick:"Step 4 of 5 · GTM partners · from rate cards", line:"Choosing your GTM partners",
+   subs:["Comparing rate cards","Selecting the best rates","Setting allocations by phase"],
+   done:"2 of 4 partners chosen, split by phase", grp:"step", prog:3},
+  {id:"tpl",   dur:7.6, kick:"Step 5 of 5 · Templates · from DLT", line:"Mapping your templates",
+   subs:["Getting your 100 templates","Matching each one to a line of business"],
+   done:"98 of 100 mapped, 2 need a line of business", grp:"step", prog:4},
+  {id:"done",  dur:Infinity}
+];
+var FORM_ORDER = [0,4,1,5,2,6,3];   // alternate left and right columns
+var FILL_T0 = .5, FILL_STEP = .7, FILL_DUR = .55;
+var STEP_SCENE={profile:["form",7],team:["team",6],brands:["brands",6.4],gtm:["gtm",6.4],templates:["tpl",7.6]};
+
+var REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ======================= helpers ======================= */
+function hash(i){var x=Math.sin(i*12.9898+78.233)*43758.5453;return x-Math.floor(x)}
+function clamp(x,a,b){return x<a?a:x>b?b:x}
+function ease(x){x=clamp(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function I(n){return '<svg class="i"><use href="#i-'+n+'"/></svg>'}
+var OK='<span class="ok"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.3 2.2 4.7-5"/></svg></span>';
+
+/* ======================= pixel engine ======================= */
+var cv=$("px"), ctx=cv.getContext("2d");
+var ofA=document.createElement("canvas"), oA=ofA.getContext("2d",{willReadFrequently:true});
+var ofB=document.createElement("canvas"), oB=ofB.getContext("2d",{willReadFrequently:true});
+var W,H,dpr,cell,cols,rows,N;
+var ambR,val,spd,hole,tint,dist,maxDist,tgt;
+var sprites=[], glow;
+var L={};          // layout in cell units: cols, rows, cx, cy, tw, th
+var TINTS=6, SIZES=9;
+var GLYPH=/glyph=arrow/.test(location.hash)?"arrow":"tri";
+
+function makeSprites(){
+  var px=Math.ceil(cell*dpr); sprites=[];
+  for(var t=0;t<TINTS;t++){
+    var k=t/(TINTS-1), r=Math.round(255+(64-255)*k), g=Math.round(255+(112-255)*k), b=Math.round(255+(236-255)*k);
+    var row=[];
+    for(var s=0;s<SIZES;s++){
+      var c=document.createElement("canvas"); c.width=c.height=px; var x=c.getContext("2d");
+      var f=.36+s*(.5/(SIZES-1)), a=px*f, o=(px-a)/2, col="rgb("+r+","+g+","+b+")", pair=[];
+      if(GLYPH==="arrow"){
+        x.strokeStyle=col; x.lineCap="round"; x.lineJoin="round";
+        x.lineWidth=Math.max(1,px*(.1+.05*s/(SIZES-1)));
+        x.beginPath(); x.moveTo(o,o+a); x.lineTo(o+a,o);            // shaft
+        x.moveTo(o+a*.38,o); x.lineTo(o+a,o); x.lineTo(o+a,o+a*.62); // head
+        x.stroke(); row.push([c,c]); continue;
+      }
+      // logo triangle: filled, soft corners, pointing right or left (alternates cell to cell like the mark)
+      for(var d=0;d<2;d++){var cc=d?document.createElement("canvas"):c; cc.width=cc.height=px; var y2=cc.getContext("2d");
+        var tw=a*.92, th=a, x0=(px-tw)/2, y0=(px-th)/2;
+        y2.fillStyle=y2.strokeStyle=col; y2.lineJoin="round"; y2.lineWidth=Math.max(.8,px*.06);
+        y2.beginPath();
+        if(!d){y2.moveTo(x0,y0); y2.lineTo(x0+tw,y0+th/2); y2.lineTo(x0,y0+th)}
+        else  {y2.moveTo(x0+tw,y0); y2.lineTo(x0,y0+th/2); y2.lineTo(x0+tw,y0+th)}
+        y2.closePath(); y2.fill(); y2.stroke(); pair.push(cc)}
+      row.push(pair);
+    }
+    sprites.push(row);
+  }
+  var gs=Math.ceil(cell*dpr*3); glow=document.createElement("canvas"); glow.width=glow.height=gs;
+  var gx=glow.getContext("2d"), gr=gx.createRadialGradient(gs/2,gs/2,0,gs/2,gs/2,gs/2);
+  gr.addColorStop(0,"rgba(190,215,255,.9)"); gr.addColorStop(1,"rgba(190,215,255,0)");
+  gx.fillStyle=gr; gx.fillRect(0,0,gs,gs);
+}
+
+function resize(){
+  dpr=Math.min(2,window.devicePixelRatio||1); W=innerWidth; H=innerHeight;
+  cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+  cell=clamp(Math.round(Math.min(W/92,H/56)),11,18);
+  cols=Math.ceil(W/cell)+1; rows=Math.ceil(H/cell)+1; N=cols*rows;
+  ofA.width=ofB.width=cols; ofA.height=ofB.height=rows;
+  ambR=new Float32Array(N); val=new Float32Array(N); spd=new Float32Array(N);
+  hole=new Float32Array(N); tint=new Uint8Array(N); dist=new Float32Array(N); tgt=new Float32Array(N);
+  for(var i=0;i<N;i++){ambR[i]=hash(i*3.1); spd[i]=5+hash(i*7.7)*9;}
+  makeSprites(); measure();
+}
+
+
+/* where the agent's words sit, in cells; pixels dim behind them so they stay readable */
+function measure(){
+  if(!cols) return;
+  var bs=["kick","line","sub","extra"].map(function(id){var el=$(id),g=document.createRange(); g.selectNodeContents(el); return g.getBoundingClientRect()}).filter(function(b){return b.width>2});
+  var x0=W*.3,x1=W*.7,y0=H*.42,y1=H*.55;
+  if(bs.length){x0=Math.min.apply(null,bs.map(function(b){return b.left}));x1=Math.max.apply(null,bs.map(function(b){return b.right}));
+    y0=Math.min.apply(null,bs.map(function(b){return b.top}));y1=Math.max.apply(null,bs.map(function(b){return b.bottom}))}
+  L={cols:cols,rows:rows,cx:(x0+x1)/2/cell,cy:(y0+y1)/2/cell,tw:(x1-x0)/cell,th:(y1-y0)/cell};
+  maxDist=0;
+  for(var y=0;y<rows;y++)for(var x=0;x<cols;x++){
+    var i=y*cols+x, px=x*cell+cell/2, py=y*cell+cell/2;
+    var dx=Math.max(x0-px,0,px-x1), dy=Math.max(y0-py,0,py-y1), d=Math.sqrt(dx*dx+dy*dy)/cell;
+    hole[i]=.2+.8*clamp((d-.4)/2.2,0,1);
+    var ly=py/H; tint[i]=Math.round(clamp((ly-.66)/.3,0,1)*(TINTS-1));
+    var ex=x-L.cx, ey=y-L.cy; dist[i]=Math.sqrt(ex*ex+ey*ey); if(dist[i]>maxDist)maxDist=dist[i];
+  }
+}
+
+function A(c,a){c.strokeStyle=c.fillStyle="rgba(255,255,255,"+clamp(a,0,1)+")"}
+var DRAW={
+  intro:function(c,t){ // rings pulse out from the agent, five sources orbit
+    c.lineWidth=1.4;
+    for(var k=0;k<4;k++){var r=((t*9+k*12)%48)+6; A(c,1.1*(1-r/52)); c.beginPath(); c.arc(L.cx,L.cy,r,0,7); c.stroke();}
+    var R=Math.min(L.rows*.4,L.cols*.3);
+    for(var j=0;j<5;j++){var a=t*.5+j*Math.PI*2/5, x=L.cx+Math.cos(a)*R*1.35, y=L.cy+Math.sin(a)*R;
+      A(c,1); c.fillRect(Math.round(x)-1,Math.round(y)-1,3,3);
+      for(var q=1;q<9;q++){var b=a-q*.04; A(c,.5-q*.055); c.fillRect(Math.round(L.cx+Math.cos(b)*R*1.35),Math.round(L.cy+Math.sin(b)*R),1,1)}}
+  },
+  dlt:function(c,t){ // a registration record is read top to bottom
+    var ph=ease(t/3.3), h=L.rows*.84, w=Math.min(L.cols*.62,h*1.5), x0=Math.round(L.cx-w/2), y0=Math.round(L.cy-h/2), f=5;
+    w=Math.round(w); h=Math.round(h);
+    c.lineWidth=1; A(c,.9); c.beginPath();
+    c.moveTo(x0+.5,y0+.5); c.lineTo(x0+w-f+.5,y0+.5); c.lineTo(x0+w+.5,y0+f+.5); c.lineTo(x0+w+.5,y0+h+.5); c.lineTo(x0+.5,y0+h+.5); c.closePath(); c.stroke();
+    c.beginPath(); c.moveTo(x0+w-f+.5,y0+.5); c.lineTo(x0+w-f+.5,y0+f+.5); c.lineTo(x0+w+.5,y0+f+.5); c.stroke();
+    A(c,.95); c.fillRect(x0+3,y0+3,Math.round(w*.3),2);
+    var sy=y0+ph*h, n=0;
+    for(var y=y0+8;y<y0+h-2;y+=3){
+      var gap=Math.round(w*(.22+.1*hash(n+40))), len=Math.round((w-6)*(.5+.45*hash(n)));
+      var lit=y<sy; A(c,lit?.85:.22); c.fillRect(x0+3,y,Math.min(gap-2,len),1);
+      if(len>gap){A(c,lit?.95:.18); c.fillRect(x0+3+gap,y,len-gap,1)}
+      n++;
+    }
+    var g=c.createLinearGradient(0,sy-6,0,sy); g.addColorStop(0,"rgba(255,255,255,0)"); g.addColorStop(1,"rgba(255,255,255,.4)");
+    if(ph<1){c.fillStyle=g; c.fillRect(x0+1,sy-6,w-1,6); A(c,1); c.fillRect(x0-2,Math.round(sy),w+5,1)}
+  },
+  gstin:function(c,t){ // two barcode bands scanned left to right
+    var ph=ease(t/3.3), x0=Math.round(L.cols*.08), x1=Math.round(L.cols*.92), sx=x0+ph*(x1-x0);
+    var bands=[[.1,.3],[.7,.9]];
+    for(var b=0;b<2;b++){var ya=Math.round(L.rows*bands[b][0]), yb=Math.round(L.rows*bands[b][1]), x=x0, n=b*97;
+      while(x<x1){var bw=1+Math.floor(hash(n)*3), gp=1+Math.floor(hash(n+.5)*2), hh=hash(n+9)<.15?2:0;
+        A(c,x<sx?.95:.24); c.fillRect(x,ya-hh,bw,yb-ya+hh*2); x+=bw+gp; n++}}
+    if(ph<1){var g=c.createLinearGradient(sx-8,0,sx,0); g.addColorStop(0,"rgba(255,255,255,0)"); g.addColorStop(1,"rgba(255,255,255,.35)");
+      c.fillStyle=g; c.fillRect(sx-8,L.rows*.06,8,L.rows*.88); A(c,1); c.fillRect(Math.round(sx),Math.round(L.rows*.05),1,Math.round(L.rows*.9))}
+  },
+  mca:function(c,t){ // registry pulse: a trace sweeps across, above and below
+    var P=[[0,0],[6,0],[7.5,-1.6],[9,0],[11,0],[11.8,1.4],[13,-9],[14.2,4],[15.2,0],[17.5,-2.2],[19.5,0],[24,0]], per=24;
+    var x0=L.cols*.04, x1=L.cols*.96, span=x1-x0, head=x0+((t*16)%(span+18));
+    [[.25,1,0],[.75,-1,9]].forEach(function(bd){
+      var yb=L.rows*bd[0];
+      function Y(x){var u=((x-x0+bd[2])%per+per)%per;for(var k=1;k<P.length;k++)if(u<=P[k][0]){var a=P[k-1],b=P[k],m=(u-a[0])/(b[0]-a[0]);return yb+bd[1]*(a[1]+(b[1]-a[1])*m)}return yb}
+      c.lineWidth=1;
+      for(var x=x0;x<x1;x+=.5){var back=head-x, a=back<0?.42:back<30?1-back/34:.42;
+        A(c,Math.max(.42,a)); c.beginPath(); c.moveTo(x,Y(x)); c.lineTo(x+.5,Y(x+.5)); c.stroke()}
+      if(head<x1){A(c,1); c.fillRect(Math.round(head)-1,Math.round(Y(head))-1,3,3)}
+    });
+  },
+  web:function(c,t){ // a globe turns around the text
+    var R=Math.min(L.rows*.45,L.cols*.32), cx=L.cx, cy=L.cy; c.lineWidth=1;
+    A(c,.95); c.beginPath(); c.arc(cx,cy,R,0,7); c.stroke();
+    for(var k=0;k<6;k++){var a=t*.55+k*Math.PI/6, cs=Math.cos(a); A(c,.25+.55*Math.abs(Math.sin(a)));
+      c.beginPath(); c.ellipse(cx,cy,Math.max(.1,R*Math.abs(cs)),R,0,0,7); c.stroke()}
+    [-60,-30,0,30,60].forEach(function(d){var r=d*Math.PI/180, y=cy+R*Math.sin(r), hw=R*Math.cos(r); A(c,.45);
+      c.beginPath(); c.moveTo(cx-hw,y); c.lineTo(cx+hw,y); c.stroke()});
+    for(var q=0;q<14;q++){var b=t*1.3-q*.05, x=cx+Math.cos(b)*R*1.25, y=cy+Math.sin(b)*R*.42-Math.cos(b)*R*.25;
+      A(c,q?.6-q*.04:1); var s=q?1:3; c.fillRect(Math.round(x)-(s>>1),Math.round(y)-(s>>1),s,s)}
+  },
+  form:function(c,t){ // seven fields fill in, left and right of the text
+    var colW=Math.round(L.cols*.2), xs=[Math.round(L.cols*.04),Math.round(L.cols*.96-colW)];
+    var gapL=L.rows*.78/4, gapR=L.rows*.78/3, top=L.rows*.07, fh=3;
+    for(var i=0;i<7;i++){
+      var left=i<4, x=xs[left?0:1], y=Math.round(left?top+i*gapL+gapL*.25:top+(i-4)*gapR+gapR*.3);
+      var ord=FORM_ORDER.indexOf(i), f=clamp((t-FILL_T0-ord*FILL_STEP)/FILL_DUR,0,1), len=.55+.4*hash(i+3);
+      A(c,.5); c.fillRect(x,y,Math.round(4+hash(i)*6),1);
+      c.lineWidth=1; A(c,f>0?.75:.35); c.strokeRect(x+.5,y+2.5,colW,fh+1);
+      if(f>0){var fw=Math.round((colW-2)*len*f); A(c,.95); c.fillRect(x+2,y+4,fw,fh-1);
+        if(f<1){A(c,1); c.fillRect(x+2+fw,y+3,1,fh+1)}
+        else{A(c,1); c.fillRect(x+colW+2,y+4,2,2)}}
+    }
+  },
+  rates:function(c,t){ // four rate cards open, then each is read row by row
+    var cw=Math.round(L.cols*.2), ch=Math.max(15,Math.round(L.rows*.26));
+    var xs=[Math.round(L.cols*.06),Math.round(L.cols*.94-cw)], ys=[Math.round(L.rows*.08),Math.round(L.rows*.6)];
+    for(var k=0;k<4;k++){var x=xs[k%2], y=ys[k>>1], g=ease((t-k*.3)/.45); if(g<=0) continue;
+      var hh=Math.max(1,Math.round(ch*g)), yy=y+Math.round((ch-hh)/2);
+      c.lineWidth=1; A(c,.85); c.strokeRect(x+.5,yy+.5,cw,hh); if(g<1) continue;
+      A(c,.9); c.fillRect(x+3,y+3,Math.round(cw*.35),2);
+      var sc=clamp((t-1.3-k*.3)/.9,0,1);
+      for(var r=0;r<3;r++){var ry=y+8+r*Math.floor((ch-10)/3), vw=Math.round(cw*(.12+.1*hash(k*3+r)));
+        A(c,.4); c.fillRect(x+3,ry,Math.round(cw*.22),1); A(c,sc*3>r+.5?1:.28); c.fillRect(x+cw-3-vw,ry-1,vw,3)}}
+  },
+  team:function(c,t){ // six people appear, get a role, then a tick
+    var xs=[Math.round(L.cols*.06),Math.round(L.cols*.63)], ys=[.2,.46,.72];
+    for(var k=0;k<6;k++){var x=xs[k<3?0:1], y=Math.round(L.rows*ys[k%3]), o=(k%3)*2+(k<3?0:1);
+      var ap=ease((t-.2-o*.18)/.5)*(PEOPLE[k].on?1:.28); if(ap<=0) continue;
+      A(c,ap); c.beginPath(); c.arc(x,y-3,1.9,0,7); c.fill(); c.beginPath(); c.arc(x,y+4,3.6,Math.PI,0); c.fill();
+      var rp=ease((t-1.5-o*.18)/.5), rw=Math.round((9+hash(k)*7)*rp);
+      if(rw>0){A(c,.95*(PEOPLE[k].on?1:.3)); c.fillRect(x+6,y-2,rw,2); A(c,.45); c.fillRect(x+6,y+2,Math.round(rw*.6),1)}
+      if(t>3+o*.2&&PEOPLE[k].on){A(c,1); c.lineWidth=1; c.beginPath(); c.moveTo(x+24,y); c.lineTo(x+25.5,y+1.5); c.lineTo(x+28.5,y-2); c.stroke()}}
+  },
+  brands:function(c,t){ // DLT headers drift into three brands, lines of business branch out
+    var B=[-150,-30,90].slice(0,BRANDS.length).map(function(a,i){return [a,BRANDS[i].lobs.length]}), cx=L.cx, cy=L.cy, r1x=L.cols*.3, r1y=L.rows*.3;
+    var pos=B.map(function(b){var a=b[0]*Math.PI/180;return [cx+Math.cos(a)*r1x, cy+Math.sin(a)*r1y]});
+    if(t<2.2){for(var i=0;i<36;i++){var k=i%B.length, sx=hash(i+50)*L.cols, sy=hash(i+90)*L.rows, m=ease((t-.1-hash(i+7)*.5)/1.1);
+      A(c,.95); c.fillRect(Math.round(sx+(pos[k][0]-sx)*m),Math.round(sy+(pos[k][1]-sy)*m),1,1)}}
+    c.lineWidth=1;
+    for(var k2=0;k2<B.length;k2++){var g=ease((t-1.6-k2*.2)/.6); if(g<=0) continue; var bx=pos[k2][0], by=pos[k2][1];
+      A(c,.8); c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx+(bx-cx)*g,cy+(by-cy)*g); c.stroke();
+      A(c,1); c.fillRect(Math.round(bx)-2,Math.round(by)-2,5,5);
+      var n=B[k2][1], a0=B[k2][0]*Math.PI/180, sh=k2===2?.75:1;
+      for(var j=0;j<n;j++){var lg=ease((t-3.2-k2*.25-j*.15)/.6); if(lg<=0) continue;
+        var a=a0+(j-(n-1)/2)*.38, lx=cx+Math.cos(a)*L.cols*.43, ly=cy+Math.sin(a)*L.rows*.44*sh;
+        A(c,.55); c.beginPath(); c.moveTo(bx,by); c.lineTo(bx+(lx-bx)*lg,by+(ly-by)*lg); c.stroke();
+        if(lg>=1){var pu=t>4.8?.75+.25*Math.sin(t*4+j+k2):1; A(c,pu); c.fillRect(Math.round(lx)-1,Math.round(ly)-1,3,3);
+          A(c,.5); c.fillRect(Math.round(lx)+(lx<cx?-9:3),Math.round(ly),6,1)}}}
+  },
+  gtm:function(c,t){ // four partners' rates compared, the two lowest kept, then a split by phase
+    var R=PARTNERS.map(function(p){return p.r.map(function(r){return r/1.4})}), pick=PARTNERS.map(function(p){return p.pick?1:0}), two=pick[0]+pick[1]+pick[2]+pick[3]===2;
+    var xs=[L.cols*.05,L.cols*.16,L.cols*.77,L.cols*.88], base=Math.round(L.rows*.62), hmax=L.rows*.4;
+    var sel=ease((t-1.6)/.8);
+    for(var k=0;k<4;k++){var x=Math.round(xs[k]);
+      for(var r=0;r<3;r++){var g=ease((t-.15-k*.2-r*.08)/.6), h=Math.round(hmax*R[k][r]*g);
+        A(c,pick[k]?1:1-.72*sel); c.fillRect(x+r*3,base-h,2,h)}
+      A(c,.5); c.fillRect(x-1,base+1,10,1);
+      if(pick[k]&&sel>0){A(c,sel); c.lineWidth=1; c.strokeRect(x-2.5,base-hmax*.62-2.5,13,hmax*.62+5);
+        c.beginPath(); c.moveTo(x+2,base-hmax*.62-5); c.lineTo(x+3.5,base-hmax*.62-3.5); c.lineTo(x+6.5,base-hmax*.62-6.5); c.stroke()}}
+    if(!two) return; var S=ALLOC.map(function(a){return a/100}), x0=Math.round(L.cols*.3), w=Math.round(L.cols*.4);
+    for(var q=0;q<3;q++){var f=ease((t-3.2-q*.25)/.8); if(f<=0) continue; var y=Math.round(L.rows*(.72+q*.05)), sp=Math.round(w*S[q]);
+      A(c,.35); c.fillRect(x0,y,w,1); A(c,1); c.fillRect(x0,y-1,Math.round(sp*f),2);
+      A(c,.6); c.fillRect(x0+sp+1,y-1,Math.round((w-sp-1)*f),2)}
+  },
+  tpl:function(c,t){ // 100 templates stream into seven lines of business; 2 stay behind
+    var gx0=Math.round(L.cols*.06), gy0=Math.round(L.cy-10), lx0=Math.round(L.cols*.7), lw=Math.round(L.cols*.25);
+    var ly0=Math.round(L.cy-12), cnt=[0,0,0,0,0,0,0], tot=[0,0,0,0,0,0,0], m=0;
+    var UN=[37,81].slice(0,unmapped());
+    for(var k=0;k<100;k++) if(UN.indexOf(k)<0) tot[Math.floor(hash(k+11)*7)]++;
+    var mx=Math.max.apply(null,tot);
+    for(var j=0;j<7;j++){var y=ly0+j*4; A(c,.25); c.fillRect(lx0,y,lw,1); A(c,.8); c.fillRect(lx0-3,y-1,2,2)}
+    for(var k2=0;k2<100;k2++){var gx=gx0+(k2%10)*2, gy=gy0+Math.floor(k2/10)*2;
+      if(t<k2*.014) continue;
+      if(UN.indexOf(k2)>=0){A(c,t>5.2?.45+.55*Math.abs(Math.sin(t*3)):.9); c.fillRect(gx,gy,1,1); continue}
+      var lane=Math.floor(hash(k2+11)*7), ts=2.6+m*.025, p=clamp((t-ts)/.6,0,1); m++;
+      if(p<=0){A(c,.9); c.fillRect(gx,gy,1,1); continue}
+      if(p<1){var e=ease(p), ty=ly0+lane*4; A(c,1);
+        c.fillRect(Math.round(gx+(lx0-gx)*e),Math.round(gy+(ty-gy)*e-Math.sin(Math.PI*e)*4),1,1); continue}
+      cnt[lane]++}
+    for(var j2=0;j2<7;j2++){var fw=Math.round(lw*cnt[j2]/mx); if(fw>0){A(c,1); c.fillRect(lx0,ly0+j2*4-1,fw,2)}}
+  },
+  done:function(c,t){ // a ring closes around the result, then rings out
+    var R=Math.min(L.rows*.46,Math.max(L.tw*.55+2,Math.min(L.rows*.4,L.cols*.3))), p=ease(t/1.3);
+    c.lineWidth=1; A(c,1); c.beginPath(); c.arc(L.cx,L.cy,R,-Math.PI/2,-Math.PI/2+p*Math.PI*2); c.stroke();
+    if(p<1){var a=-Math.PI/2+p*Math.PI*2; c.fillRect(Math.round(L.cx+Math.cos(a)*R)-1,Math.round(L.cy+Math.sin(a)*R)-1,3,3)}
+    for(var k=0;k<5;k++){var a2=-Math.PI/2+k*Math.PI*2/5, on=p>=(k+.5)/5; A(c,on?1:.3);
+      c.fillRect(Math.round(L.cx+Math.cos(a2)*R)-1,Math.round(L.cy+Math.sin(a2)*R)-1,3,3)}
+    if(t>1.3&&!REDUCE){for(var j=0;j<3;j++){var e=(t-1.3-j*.35); if(e<0)continue; e=e%3.2; var r=R+e*18;
+      A(c,.7*(1-e/3.2)); c.beginPath(); c.arc(L.cx,L.cy,r,0,7); c.stroke()}}
+  }
+};
+
+
+/* scenes for the rest of the journey */
+Object.assign(DRAW,{
+  agree:function(c,t){ // two agreements, left and right; the one being read is lit, key clauses marked
+    var w=Math.round(L.cols*.19), h=Math.round(L.rows*.64), y0=Math.round(L.rows*.15), xs=[Math.round(L.cols*.05),Math.round(L.cols*.95-w)];
+    for(var d=0;d<2;d++){var x0=xs[d], act=F.doc===d&&!F.accepted[d], acc=F.accepted[d], base=act?1:acc?.75:.35;
+      c.lineWidth=1; A(c,.9*base); c.strokeRect(x0+.5,y0+.5,w,h);
+      A(c,base); c.fillRect(x0+3,y0+3,Math.round(w*.45),2);
+      var sy=y0+((t*.22+d*.4)%1)*h, n=0, key=[1,4,7];
+      for(var y=y0+8;y<y0+h-2;y+=3){var len=Math.round((w-6)*(.45+.5*hash(n+d*31))), k=key.indexOf(n)>=0;
+        A(c,(k&&(act||acc)?1:act&&y<sy?.55:.25)*base); c.fillRect(x0+3,y,len,1);
+        if(k&&(act||acc)){A(c,base); c.fillRect(x0+w-4,y-1,2,2)}
+        n++}
+      if(act&&!REDUCE){A(c,.9); c.fillRect(x0-1,Math.round(sy),w+3,1)}
+      if(acc){A(c,1); c.lineWidth=1.2; var tx=x0+w/2, ty=y0-4; c.beginPath(); c.moveTo(tx-3,ty); c.lineTo(tx-1,ty+2); c.lineTo(tx+3,ty-2); c.stroke()}}
+  },
+  plan:function(c,t){ // five steps joined in a line that ends in migration
+    var y=Math.round(L.rows*.17), x0=L.cols*.12, x1=L.cols*.88, p=ease(t/1.8);
+    c.lineWidth=1; A(c,.55); c.beginPath(); c.moveTo(x0,y+.5); c.lineTo(x0+(x1-x0)*p,y+.5); c.stroke();
+    for(var k=0;k<6;k++){var x=x0+(x1-x0)*k/5; if(p<k/5-.001) continue; var s=k===5?5:3; A(c,k===5?1:.95);
+      c.fillRect(Math.round(x-s/2),Math.round(y-s/2+.5),s,s)}
+    if(t>1.8&&!REDUCE){var q=((t-1.8)*.25)%1, px=x0+(x1-x0)*q; for(var j=0;j<8;j++){A(c,1-j*.12); c.fillRect(Math.round(px-j*.8),y,1,1)}}
+    var yb=Math.round(L.rows*.8);
+    for(var m=0;m<3;m++){var g=ease((t-.4-m*.25)/.6); if(g<=0) continue; var cx=L.cx+(m-1)*L.cols*.2;
+      A(c,.35*g); c.beginPath(); c.arc(cx,yb,2.5,0,7); c.stroke()}
+  },
+  verify:function(c,t){ // the profile goes out to four operators and comes back approved
+    var P=[[.12,.2],[.88,.2],[.12,.8],[.88,.8]], cx=L.cx, cy=L.cy;
+    for(var k=0;k<4;k++){var nx=P[k][0]*L.cols, ny=P[k][1]*L.rows, ln=ease((t-k*.1)/.7), ok=t>3+k*.3;
+      c.lineWidth=1; A(c,ok?.75:.3); c.beginPath(); c.moveTo(cx,cy); c.lineTo(cx+(nx-cx)*ln,cy+(ny-cy)*ln); c.stroke();
+      if(ln<1) continue;
+      if(!ok&&!REDUCE){for(var j=0;j<2;j++){var q=((t*.8+j*.5+k*.13)%1), px=cx+(nx-cx)*q, py=cy+(ny-cy)*q; A(c,1); c.fillRect(Math.round(px),Math.round(py),1,1)}}
+      A(c,ok?1:.6); c.beginPath(); c.arc(nx,ny,ok?3.4:2.4,0,7); c.stroke();
+      if(ok){c.beginPath(); c.moveTo(nx-1.6,ny); c.lineTo(nx-.4,ny+1.2); c.lineTo(nx+1.8,ny-1.4); c.stroke()}}
+  },
+  pass:function(c,t){ // a ring closes around the result
+    var R=Math.min(L.rows*.42,Math.max(L.tw*.55+2,L.rows*.3)), p=ease(t/.9);
+    c.lineWidth=1.2; A(c,1); c.beginPath(); c.arc(L.cx,L.cy,R,-Math.PI/2,-Math.PI/2+p*Math.PI*2); c.stroke();
+    if(t>.9&&!REDUCE){var e=t-.9, r=R+e*22; A(c,.8*(1-e/1.4)); c.beginPath(); c.arc(L.cx,L.cy,r,0,7); c.stroke()}
+  },
+  final:function(c,t){ // the five steps on a ring, and a stream moving into migration
+    var R=Math.min(L.rows*.47,Math.max(L.tw*.55+2,L.rows*.36)), p=ease(t/1.3);
+    c.lineWidth=1; A(c,.9); c.beginPath(); c.arc(L.cx,L.cy,R,-Math.PI/2,-Math.PI/2+p*Math.PI*2); c.stroke();
+    for(var k=0;k<5;k++){var a=-Math.PI/2+k*Math.PI*2/5+(REDUCE?0:t*.05); A(c,p>=(k+.5)/5?1:.3);
+      c.fillRect(Math.round(L.cx+Math.cos(a)*R)-1,Math.round(L.cy+Math.sin(a)*R)-1,3,3)}
+    if(REDUCE) return;
+    for(var j=0;j<60;j++){var sp=.06+hash(j)*.08, x=((hash(j+3)+t*sp)%1)*L.cols, y=L.rows*(.12+hash(j+9)*.76);
+      if(Math.abs(x-L.cx)<R&&Math.abs(y-L.cy)<R) continue; A(c,.35+.5*hash(j+5)); c.fillRect(Math.round(x),Math.round(y),2,1)}
+  }
+});
+
+function paint(ctx2,id,t){
+  ctx2.globalAlpha=1; ctx2.fillStyle="#000"; ctx2.fillRect(0,0,cols,rows);
+  if(REDUCE) t=Math.max(t,30);
+  DRAW[id](ctx2,t);
+  return ctx2.getImageData(0,0,cols,rows).data;
+}
+
+/* scene player: show(id, at) switches the picture; the change spreads out from the text */
+var clock=0,last=performance.now(),paused=false;
+var SC={id:"agree",t0:0}, PREV=null, changeAt=-9;
+function show(id,at){if(SC.id===id&&at==null) return; PREV={id:SC.id,t0:SC.t0}; SC={id:id,t0:clock-(at||0)}; changeAt=clock}
+
+function background(){
+  var g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#0a33c2"); g.addColorStop(.42,"#2a62e6"); g.addColorStop(.7,"#6f98f0");
+  g.addColorStop(.88,"#d4e1fc"); g.addColorStop(1,"#f6f9ff");
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  var cx=L.cx*cell, cy=L.cy*cell, r=Math.max(W,H)*.34, rg=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+  rg.addColorStop(0,"rgba(8,38,170,.55)"); rg.addColorStop(1,"rgba(8,38,170,0)");
+  ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+}
+
+function frame(now){
+  var dt=Math.min(.05,(now-last)/1000); last=now;
+  if(!paused) clock+=dt;
+  if(F.mode==="proc") procTick();
+
+  var dNew=paint(oA,SC.id,clock-SC.t0), dOld=null, el=clock-changeAt, TW=REDUCE?0:.9;
+  if(PREV&&el<TW+.2) dOld=paint(oB,PREV.id,clock-PREV.t0);
+
+  ctx.setTransform(dpr,0,0,dpr,0,0); background();
+  ctx.setTransform(1,0,0,1,0,0);
+  var ps=Math.ceil(cell*dpr), gs=glow.width, k=Math.min(1,dt), wave=REDUCE?0:1, tt=clock;
+  for(var y=0;y<rows;y++)for(var x=0;x<cols;x++){
+    var j=y*cols+x, delay=dist[j]/maxDist*TW, v4=j*4, target, front=0;
+    if(dOld&&el<delay) target=dOld[v4]/255;
+    else{target=dNew[v4]/255; if(dOld){var e=(el-delay)/.08; front=Math.exp(-e*e)*.55}}
+    target=target*hole[j]+front;
+    val[j]+=(target-val[j])*Math.min(1,k*spd[j]);
+    var v=clamp(val[j],0,1);
+    var amb=(.13+.11*ambR[j]+wave*(.08*Math.sin((x-y)*.21-tt*1.5)+.05*Math.sin(x*.06+y*.04+tt*.4)))*hole[j];
+    var a=amb*(1-v)+v*(.86+.14*hash(j+Math.floor(tt*6)));
+    if(a<.025) continue;
+    ctx.globalAlpha=a;
+    ctx.drawImage(sprites[tint[j]][Math.min(SIZES-1,Math.floor(v*SIZES))][(x+y)&1],Math.round(x*cell*dpr),Math.round(y*cell*dpr));
+  }
+  ctx.globalCompositeOperation="lighter";
+  for(var j2=0;j2<N;j2++){var vv=val[j2]; if(vv<.45||tint[j2]>2) continue;
+    ctx.globalAlpha=(vv-.45)*.22; ctx.drawImage(glow,(j2%cols)*cell*dpr+ps/2-gs/2,Math.floor(j2/cols)*cell*dpr+ps/2-gs/2)}
+  ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
+  requestAnimationFrame(frame);
+}
+
+/* ======================= words in the middle ======================= */
+var said={kick:null,line:null,sub:null,extra:null};
+function setWords(el,html,words){
+  var go=function(){
+    el.classList.remove("out","in");
+    if(words){var n=0; el.innerHTML=html.split(" ").map(function(w){return '<span class="w" style="--d:'+(n++*45)+'ms">'+w+'</span>'}).join(" ")}
+    else el.innerHTML=html?'<span class="w" style="--d:0ms">'+html+'</span>':"";
+    void el.offsetWidth; el.classList.add("in"); measure();
+  };
+  if(el.innerHTML&&!REDUCE){el.classList.add("out"); later(go,220,true)} else go();
+}
+function setExtra(html,quiet){
+  var el=$("extra");
+  if(quiet){el.innerHTML=html; measure(); return}
+  el.classList.remove("in"); el.classList.add("out");
+  later(function(){el.innerHTML=html; el.classList.remove("out"); void el.offsetWidth; el.classList.add("in"); measure()},html&&el.innerHTML?230:(REDUCE?0:120),true);
+}
+/* o: {kick, line, sub, extra, status:[text, cls], prog:{label, items, states}} ; only what changed animates */
+function say(o,quiet){
+  if(o.kick!=null&&o.kick!==said.kick){said.kick=o.kick; $("kick").innerHTML=o.kick}
+  if(o.line!=null&&o.line!==said.line){said.line=o.line; setWords($("line"),o.line,true)}
+  if(o.sub!=null&&o.sub!==said.sub){said.sub=o.sub; setWords($("sub"),o.sub,false)}
+  if(o.extra!=null&&o.extra!==said.extra){said.extra=o.extra; setExtra(o.extra,quiet)}
+  if(o.status){$("statusTxt").textContent=o.status[0]; $("status").className="status "+(o.status[1]||"")}
+  if(o.prog) drawProg(o.prog);
+  measure();
+}
+function drawProg(p){
+  $("prog").innerHTML=(p.label?'<em>'+p.label+'</em>':'')+p.items.map(function(l,i){var c=p.states[i]||"";return '<span class="'+c+'"><b></b><span class="lbl">'+esc(l)+'</span></span>'}).join("");
+}
+function states(n,cur,doneUpTo){var a=[];for(var i=0;i<n;i++)a.push(i<doneUpTo?"dn":i===cur?"on":"");return a}
+
+/* timers that die when the user jumps */
+var timers=[];
+function later(f,ms,keep){var id=setTimeout(f,ms); if(!keep) timers.push(id); return id}
+function clearLater(){timers.forEach(clearTimeout); timers=[]}
+function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove("on")},2600)}
+
+/* ======================= flow ======================= */
+var F={mode:"gate",doc:0,accepted:[false,false],readEnd:false,status:["review","locked","locked","locked","locked"],
+  active:0,auth:false,teamLater:false,lobf:"all",procT0:0,procI:-1,subState:""};
+var STEPLINE=function(i){return "Step "+(i+1)+" of 5 · "+STEPS[i].title};
+
+/* 1 · agreements: summary first, the full text is in the sheet; accept only after reading to the end */
+function gate(d){
+  F.mode="gate"; F.doc=d; show("agree");
+  var doc=DOCS[d];
+  say({kick:"Before we begin · agreement "+(d+1)+" of 2", line:doc.name, sub:"Here is what it says, in short",
+    extra:'<ol class="pts">'+doc.summary.map(function(s){return '<li>'+esc(s)+'</li>'}).join("")+'</ol>'+
+      '<div class="note">This summary is only a guide. What you accept is the full text of the document.</div>'+
+      '<div class="acts"><button class="btn" data-a="read">Read and accept'+I("arrow")+'</button></div>',
+    status:[d?"One agreement left":"Two agreements to accept","still"],
+    prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:DOCS.map(function(x,i){return F.accepted[i]?"dn":i===d?"on":""})}});
+}
+
+/* 2 · the setup plan */
+function plan(){
+  F.mode="plan"; show("plan");
+  say({kick:"Your setup plan", line:"Five steps, then migration", sub:"Each step is prepared for you first. You check the summary, then accept or submit.",
+    extra:'<div class="three"><span>'+I("spark")+'The work is done for you</span><span>'+I("user")+'You review each step</span><span>'+I("lock")+'Nothing is submitted without you</span></div>'+
+      '<div class="acts"><button class="btn" data-a="start">Start AI analysis'+I("arrow")+'</button></div>',
+    status:["Ready to start","still"], prog:{label:"Steps",items:STEPN,states:[]}});
+}
+
+/* 3 · processing (timeline) */
+var STARTS=[];(function(){var s=0;SCENES.forEach(function(x){STARTS.push(s);s+=x.dur})})();
+function sceneAt(t){for(var i=SCENES.length-1;i>=0;i--)if(t>=STARTS[i])return i;return 0}
+function proc(at){F.mode="proc"; F.procT0=clock-(at||0); F.procI=-1; procTick()}
+function procTick(){
+  var pt=clock-F.procT0, i=sceneAt(pt), s=SCENES[i], lt=pt-STARTS[i];
+  if(i!==F.procI){F.procI=i;
+    if(s.id==="done"){ready(); return}
+    show(s.id,lt); F.subState=s.subs?"s0":"";
+    say({kick:s.kick,line:s.line,sub:s.sub||s.subs[0],extra:"",status:["Onboarding Agent is working"],
+      prog:{label:s.grp==="src"?"Sources":"Steps",items:s.grp==="src"?SRC:STEPN,states:states(5,s.prog,s.prog)}});
+    return}
+  if(s.subs){var span=s.dur*.75,n=s.subs.length;
+    if(lt<span){var k0=Math.min(n-1,Math.floor(lt/(span/n))); if(F.subState!=="s"+k0){F.subState="s"+k0; say({sub:s.subs[k0]})}}}
+  if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:OK+s.done})}
+  if(s.id==="form"){var c=0; for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
+    var txt=c===7?OK+"7 of 7 fields filled":c+" of 7 fields filled";
+    if(F.subState!==txt){F.subState=txt; said.sub=txt; $("sub").innerHTML='<span class="w" style="--d:0ms">'+txt+'</span>'; $("sub").classList.add("in")}}
+}
+function ready(){
+  F.mode="ready"; show("done");
+  say({kick:"Onboarding Agent", line:"Your five steps are ready", sub:"I've done the groundwork. Check each summary and decide.",
+    extra:'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>'+
+      '<div class="acts"><button class="btn" data-a="go0">Review your business profile'+I("arrow")+'</button></div>',
+    status:["Ready for your review","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
+}
+
+/* 4 · review: the agent's summary in the middle, decision buttons, details in the sheet */
+function review(i,quiet){
+  F.mode="review"; F.active=i; var st=STEPS[i], sc=STEP_SCENE[st.k];
+  if(!quiet) show(sc[0],sc[1]);
+  say({kick:STEPLINE(i)+(st.attn?'<span class="att">Needs a look</span>':''), line:heading(i), sub:subline(i), extra:summaryExtra(i),
+    status:["Needs you",st.attn?"attn":"still"], prog:{label:"Steps",items:STEPN,states:states(5,i,i)}},quiet);
+}
+function heading(i){var k=STEPS[i].k;
+  if(k==="brands") return BRANDS.length+" brands and "+lobCount()+" lines of business";
+  if(k==="templates") return (100-unmapped())+" of 100 templates have a line of business";
+  return STEPS[i].rh}
+function subline(i){var k=STEPS[i].k, u=unmapped();
+  if(k==="templates") return "Matched by reading each message. "+(u?u+" still need"+(u===1?"s":"")+" a line of business.":"You set the rest yourself.");
+  return STEPS[i].rs}
+function facts(rows){return '<div class="facts">'+rows.map(function(r){return '<div><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b>'+(r[2]?'<em>'+esc(r[2])+'</em>':'<i></i>')+'</div>'}).join("")+'</div>'}
+function needLine(st){var t=st.need; if(st.k==="templates"){var u=unmapped(); t=u?u+" template"+(u===1?" has":"s have")+" no line of business yet. They do not hold up migration.":"Every template now has a line of business."}
+  return '<div class="need'+(st.attn?' amb':'')+'"><b>'+(st.attn?'Needs a look':'Needs you')+'</b>'+esc(t)+'</div>'}
+function onPeople(){return PEOPLE.filter(function(p){return p.on})}
+function lobCount(){return BRANDS.reduce(function(a,b){return a+b.lobs.length},0)}
+function picked(){return PARTNERS.filter(function(p){return p.pick})}
+function unmapped(){return TPLS.filter(function(t){return !t[2]}).length}
+function authRow(){return '<div class="auth" data-a="auth"><span class="cbx'+(F.auth?' on':'')+'">'+(F.auth?I("check"):'')+'</span><span><b>I\'m authorised to submit this KYC, and it\'s accurate.</b><small>The company accepts responsibility for any false information.</small></span></div>'}
+function primary(i){
+  var k=STEPS[i].k;
+  if(k==="profile") return '<button class="btn" data-a="submit"'+(F.auth?'':' disabled')+'>Submit for approval</button>';
+  if(k==="team"){var n=onPeople().length; return '<button class="btn" data-a="invites"'+(n?'':' disabled')+'>Send '+n+' invite'+(n===1?'':'s')+'</button>'}
+  if(k==="brands") return '<button class="btn" data-a="brands">Confirm brands</button>';
+  if(k==="gtm") return '<button class="btn" data-a="gtm"'+(picked().length===2?'':' disabled')+'>Accept partners</button>';
+  return '<button class="btn" data-a="tpl">Confirm mapping</button>';
+}
+function summaryExtra(i){
+  var st=STEPS[i], h="";
+  if(st.k==="profile") h=facts([["Legal entity",PROFILE[0][1],"MCA"],["Entity type",PROFILE[1][1],"MCA"],["Business PAN",PROFILE[3][1],"GSTIN"],["Industry",PROFILE[5][1],"Website"]])+
+    '<div class="more">and 3 more fields, including your registered address</div>'+authRow();
+  if(st.k==="team"){var cnt={}; onPeople().forEach(function(p){cnt[ROLES[p.role]]=(cnt[ROLES[p.role]]||0)+1});
+    h='<div class="avs">'+PEOPLE.map(function(p){return '<span class="'+(p.on?'':'off')+'" title="'+esc(p.name)+'">'+p.i+'</span>'}).join("")+'</div>'+
+      '<div class="more">'+(Object.keys(cnt).map(function(r){return cnt[r]+' '+r}).join(" · ")||"Nobody selected")+'</div>'+needLine(st)}
+  if(st.k==="brands") h=facts(BRANDS.map(function(b){return [b.name,b.lobs.join(", ")||"No lines of business"]}))+needLine(st);
+  if(st.k==="gtm"){var pk=picked(); h=(pk.length===2?facts(PH.map(function(p,k){return [p,pk[0].name+" "+ALLOC[k]+"% · "+pk[1].name+" "+(100-ALLOC[k])+"%"]})):'<div class="more">Choose exactly two partners in the details.</div>')+needLine(st)}
+  if(st.k==="templates"){var u=unmapped(); h=facts([["Suggested",(100-u)+" templates have a line of business"],["Top lines",TLOBS.slice(0,3).map(function(l){return l[0]+" "+l[1]}).join(" · ")],["Need a look",u?u+" without a line of business":"None"]])+needLine(st)}
+  var later=st.k==="team"?'<button class="btn link" data-a="later">Do it later</button>':'';
+  return h+'<div class="acts">'+primary(i)+'<button class="btn ghost" data-a="details">See details</button>'+later+'</div>';
+}
+function refresh(){ // after a change in the details: summary text and sheet follow, pixels read the data live
+  if(F.mode==="review"){said.extra=null; review(F.active,true)}
+  if($("sheet").classList.contains("on")) renderSheet();
+}
+
+/* the profile goes to the operators */
+function verify(){
+  closeSheet(); F.mode="verify"; F.status[0]="verifying"; show("verify");
+  say({kick:STEPLINE(0), line:"Checking your business details", sub:"Sent to the 4 telecom operators",
+    extra:'<div class="more">Team opens as soon as it is approved.</div>', status:["Waiting for operators","still"]});
+  later(function(){say({sub:"Waiting for their checks"})},1700);
+  later(function(){say({sub:OK+"Approved by 4 of 4 operators"})},4300);
+  later(function(){complete(0,"Business profile approved")},5800);
+}
+/* a step is done: the ring closes, then the next one opens */
+function complete(i,title){
+  closeSheet(); F.status[i]="done"; F.mode="pass"; show("pass");
+  var nx=i<4?"Next: "+STEPS[i+1].title:"Next: your migration window";
+  say({kick:STEPLINE(i), line:title, sub:OK+nx, extra:"", status:["Step done","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
+  later(function(){if(i<4){F.status[i+1]="review"; review(i+1)} else final()},2300);
+}
+
+/* 5 · finale */
+function final(){
+  F.mode="final"; show("final");
+  var tl=onPeople().length;
+  say({kick:"Onboarding Agent · setup complete", line:"You're set to start migration", sub:"Here is what was set up for HDFC Bank Limited.",
+    extra:facts([["Business profile","Approved by 4 of 4 operators"],["Team",F.teamLater?"Saved for later":tl+" invites sent"],["Brands and LOBs",BRANDS.length+" brands · "+lobCount()+" lines of business"],["GTM partners",picked().map(function(p){return p.name}).join(" and ")],["Templates",(100-unmapped())+" of 100 mapped"]])+
+      '<div class="cl-lbl">Migration closes in</div><div class="clock" id="clock"></div>'+
+      '<div class="acts"><button class="btn" data-a="mig">Go to migration'+I("arrow")+'</button></div>',
+    status:["Setup complete","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
+  var end=Date.now()+30*864e5;
+  (function t(){var c=$("clock"); if(!c) return later(t,100); var s=Math.max(0,Math.floor((end-Date.now())/1000));
+    c.innerHTML=[[Math.floor(s/86400),"days"],[Math.floor(s/3600)%24,"hrs"],[Math.floor(s/60)%60,"mins"]].map(function(x){return '<div><b>'+String(x[0]).padStart(2,"0")+'</b><span>'+x[1]+'</span></div>'}).join("");
+    later(t,1000)})();
+}
+
+/* ======================= details sheet ======================= */
+var SHEET=null;
+function openSheet(kind){SHEET=kind; F.readEnd=false; renderSheet(); $("shBody").scrollTop=0; $("sheet").classList.add("on"); $("sheet").setAttribute("aria-hidden","false"); $("scrim").classList.add("on"); if(kind==="doc") later(checkEnd,600)}
+function closeSheet(){SHEET=null; $("sheet").classList.remove("on"); $("sheet").setAttribute("aria-hidden","true"); $("scrim").classList.remove("on")}
+function foot(l,r){$("shFoot").innerHTML='<div>'+(l||'')+'</div><div style="display:flex;gap:10px">'+(r||'')+'</div>'}
+function fd(l,v,tag,wide,id){return '<div class="fd'+(wide?" w2":"")+'"><label>'+esc(l)+(tag?'<em>'+esc(tag)+'</em>':'')+'</label><input class="inp" value="'+esc(v)+'" data-f="'+id+'"></div>'}
+function renderSheet(){
+  var b=$("shBody"), top=b.scrollTop, h="";
+  if(SHEET==="doc"){var d=DOCS[F.doc];
+    $("shKick").innerHTML="Agreement "+(F.doc+1)+" of 2"; $("shTitle").textContent=d.name;
+    h='<div class="sh-sum"><b>In short.</b> '+d.summary.map(esc).join(" ")+'</div><div class="doc">'+d.sections.map(function(s){return '<h4>'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div>';
+    b.innerHTML=h; b.scrollTop=top;
+    foot('<span class="ls">'+(F.readEnd?'You have reached the end.':'Scroll to the end to accept.')+'</span>','<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>');
+    return}
+  var i=F.active, st=STEPS[i];
+  $("shKick").innerHTML=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''); $("shTitle").textContent=st.k==="profile"?"Business profile details":st.title;
+  if(st.k==="profile"){h='<div class="lslot"><div class="lbox">HDFC</div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
+    foot(authRow(),primary(i))}
+  if(st.k==="team"){var cols="30px 1fr 170px 170px";
+    h='<div class="row hd" style="grid-template-columns:'+cols+'"><span></span><span>User</span><span>Department</span><span>Role</span></div>'+PEOPLE.map(function(x,k){return '<div class="row" style="grid-template-columns:'+cols+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center"><div class="av">'+x.i+'</div><div><div class="rn">'+esc(x.name)+'</div><div class="rm">'+esc(x.email)+'</div></div></div><select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(r){return '<option'+(r===x.dept?' selected':'')+'>'+r+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(r,q){return '<option value="'+q+'"'+(q===x.role?' selected':'')+'>'+r+'</option>'}).join("")+'</select></div>'}).join("");
+    foot('<button class="btn ghost" data-a="later">Do it later</button>',primary(i))}
+  if(st.k==="brands"){h='<div class="root"><div class="tile">'+I("build")+'</div><div><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="tile" style="width:34px;height:34px">'+I("layers")+'</span><div><small>Brand</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
+    foot('<span class="ls">Confirm as drafted and it is set up straight away.</span>',primary(i))}
+  if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
+    h='<div class="row hd" style="grid-template-columns:'+c2+'"><span></span><span>Partner</span>'+PH.map(function(x){return '<span>'+x+'</span>'}).join("")+'<span>Why</span></div>'+PARTNERS.map(function(x,k){return '<div class="row" style="grid-template-columns:'+c2+';opacity:'+(x.pick?1:.7)+'"><span class="ck'+(x.pick?' on':'')+'" data-a="ptn" data-i="'+k+'">'+(x.pick?I("check"):'')+'</span><b>'+esc(x.name)+'</b>'+x.r.map(function(r){return '<span>₹'+r.toFixed(2)+'</span>'}).join("")+'<span class="rm">'+esc(x.why)+'</span></div>'}).join("")+
+      '<div class="rn" style="margin-top:26px">Volume split by phase</div>'+(pk.length===2?PH.map(function(x,k){return '<div class="row" style="grid-template-columns:110px 1fr 200px"><span>'+x+'</span><div class="spl"><i style="width:'+ALLOC[k]+'%;background:#2563eb"></i><i style="width:'+(100-ALLOC[k])+'%;background:#9bb8ff"></i></div><span class="rm">'+esc(pk[0].name)+' '+ALLOC[k]+'% · '+esc(pk[1].name)+' '+(100-ALLOC[k])+'%</span></div>'}).join(""):'<div class="sh-sum">Choose exactly two partners to see the split.</div>');
+    foot('<span class="ls">'+pk.length+' of 2 partners chosen</span>',primary(i))}
+  if(st.k==="templates"){var u=unmapped(), rows=TPLS.map(function(t,k){return [t,k]}).filter(function(x){var t=x[0];return F.lobf==="all"||(F.lobf==="un"?t[3]==="u":t[2]===F.lobf)}), c3="170px 1fr 160px 80px";
+    h='<div class="stat"><div><b>100</b><span>Scanned</span></div><div><b>'+(100-u)+'</b><span>With a line of business</span></div><div><b style="color:var(--s-amber)">'+u+'</b><span>Unmapped</span></div></div>'+
+      '<div class="chips"><button class="fc'+(F.lobf==="all"?' on':'')+'" data-a="lobf" data-v="all">All</button>'+TLOBS.map(function(l){return '<button class="fc'+(F.lobf===l[0]?' on':'')+'" data-a="lobf" data-v="'+l[0]+'">'+l[0]+' · '+l[1]+'</button>'}).join("")+'<button class="fc'+(F.lobf==="un"?' on':'')+'" data-a="lobf" data-v="un">Needed a look · 2</button></div>'+
+      rows.map(function(x){var t=x[0],k=x[1];return '<div class="row" style="grid-template-columns:'+c3+'"><b style="font:600 12.5px/1.3 ui-monospace,Menlo,monospace">'+t[0]+'</b><span style="color:var(--s-ink2);font-size:14px">'+esc(t[1])+'</span>'+(t[3]==="u"?'<select class="inp" data-c="tlob" data-i="'+k+'"><option value="">Choose a line</option>'+TLOBS.map(function(l){return '<option'+(l[0]===t[2]?' selected':'')+'>'+l[0]+'</option>'}).join("")+'</select>':'<span>'+esc(t[2])+'</span>')+'<span class="cf '+(t[3]==="u"&&t[2]?'m':t[3])+'">'+(t[3]==="u"?(t[2]?'Set by you':'Unmapped'):({h:'High',m:'Check'})[t[3]])+'</span></div>'}).join("");
+    foot('<span class="ls">Showing '+rows.length+' of 9 sample templates</span>',primary(i))}
+  b.innerHTML=h; b.scrollTop=top;
+}
+function checkEnd(){var b=$("shBody"); if(SHEET==="doc"&&!F.readEnd&&b.scrollTop+b.clientHeight>=b.scrollHeight-24){F.readEnd=true; renderSheet()}}
+$("shBody").addEventListener("scroll",checkEnd);
+
+/* ======================= events ======================= */
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-a]"); if(!el){if(!e.target.closest(".proto")) $("pm").classList.remove("on"); return}
+  var a=el.dataset.a, i=+el.dataset.i;
+  if(a==="close") closeSheet();
+  else if(a==="read") openSheet("doc");
+  else if(a==="accdoc"){if(!F.readEnd) return; F.accepted[F.doc]=true; closeSheet();
+    if(F.doc===0) later(function(){gate(1)},250);
+    else{F.mode="pass"; show("pass"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: your setup plan",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}}
+  else if(a==="start") proc(0);
+  else if(a==="go0") review(0);
+  else if(a==="details") openSheet("step");
+  else if(a==="auth"){F.auth=!F.auth; refresh()}
+  else if(a==="submit"){if(F.auth) verify()}
+  else if(a==="ptog"){PEOPLE[i].on=!PEOPLE[i].on; refresh()}
+  else if(a==="invites"){F.teamLater=false; complete(1,"Invites sent")}
+  else if(a==="later"){F.teamLater=true; complete(1,"Team saved for later")}
+  else if(a==="rmlob"){BRANDS[+el.dataset.b].lobs.splice(+el.dataset.l,1); refresh()}
+  else if(a==="brands") complete(2,"Brands and LOBs set up");
+  else if(a==="ptn"){var n=picked().length; if(PARTNERS[i].pick||n<2){PARTNERS[i].pick=!PARTNERS[i].pick} else toast("Untick one partner first"); refresh()}
+  else if(a==="gtm") complete(3,"Partners confirmed");
+  else if(a==="lobf"){F.lobf=el.dataset.v; renderSheet()}
+  else if(a==="tpl") complete(4,"Templates mapped");
+  else if(a==="mig") toast("Opening Consent Migration…");
+});
+document.addEventListener("change",function(e){var el=e.target, i=+el.dataset.i;
+  if(el.dataset.c==="role"){PEOPLE[i].role=+el.value; refresh()}
+  if(el.dataset.c==="dept"){PEOPLE[i].dept=el.value}
+  if(el.dataset.c==="tlob"){TPLS[i][2]=el.value; refresh()}
+  if(el.dataset.f!=null){PROFILE[+el.dataset.f][1]=el.value; refresh()}
+});
+addEventListener("keydown",function(e){
+  if(e.key==="Escape") closeSheet();
+  if(e.code==="Space"&&!/INPUT|SELECT|BUTTON/.test(document.activeElement.tagName)){e.preventDefault(); paused=!paused}
+});
+addEventListener("resize",function(){resize()});
+
+/* ======================= prototype jumps ======================= */
+function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function jump(w){
+  clearLater(); closeSheet(); resetData(); F.auth=false; F.teamLater=false; F.lobf="all";
+  F.accepted=w==="gate"?[false,false]:[true,true];
+  if(w==="gate") gate(0);
+  else if(w==="plan") plan();
+  else if(w==="proc") proc(0);
+  else if(w==="ready") ready();
+  else if(w==="final"){F.status=["done","done","done","done","done"]; final()}
+  else{var n=+w.slice(1); F.status=STEPS.map(function(_,k){return k<n?"done":k===n?"review":"locked"}); review(n)}
+}
+(function(){var pm=$("pm");
+  pm.innerHTML=[["gate","Agreements"],["plan","Setup plan"],["proc","AI processing"],["ready","Ready for review"],["r0","Review: Business profile"],["r1","Review: Team"],["r2","Review: Brands and LOBs"],["r3","Review: GTM partners"],["r4","Review: Templates"],["final","Finished"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
+    '<hr><button data-j="glyph">Pixels: use arrows</button><button data-j="pause">Pause motion</button>';
+  $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on")};
+  pm.onclick=function(e){var b=e.target.closest("[data-j]"); if(!b) return; var j=b.dataset.j;
+    if(j==="glyph"){GLYPH=GLYPH==="tri"?"arrow":"tri"; b.textContent=GLYPH==="tri"?"Pixels: use arrows":"Pixels: use triangles"; makeSprites(); return}
+    if(j==="pause"){paused=!paused; b.textContent=paused?"Play motion":"Pause motion"; return}
+    pm.classList.remove("on"); jump(j)};
+})();
+
+resize();
+var h=(location.hash||"").replace("#","").split("&")[0];
+if(/^(gate|plan|proc|ready|final|r[0-4])$/.test(h)) jump(h); else gate(0);
+var m=/t=([\d.]+)/.exec(location.hash); if(m&&F.mode==="proc") F.procT0=clock-parseFloat(m[1]);
+requestAnimationFrame(function(n){last=n; frame(n)});
+})();
+</script>
+</body>
+</html>
