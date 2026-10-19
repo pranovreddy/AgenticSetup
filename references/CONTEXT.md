@@ -523,3 +523,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.50 Cards (user file) — larger mini face; no box inside the box
 - The mini card face (icon, name, result) is larger (icon tile 132px, name 36px, result 22px).
 - Review card panes: inner panels (team list, brands enterprise block, brand rows, GTM and templates panels) lose their own border, background and shadow so content sits straight on the white card, separated by hairlines only.
+
+### 8f.51 Cards (user file) — space under the card header bar
+- Review panes start 22px below the header bar (`.r-body` padding-top), so the title and the first content no longer touch it.
