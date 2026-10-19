@@ -438,3 +438,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.26 Cards (user file) — new card icons
 - `cfArt` redrawn: each step has one glass tile with a crisp white line glyph (ID card, people, layers, bars, document) instead of the stacked 3D shapes. Tile and glyph colours are CSS variables (`--ig1`, `--ig2`, `--igs`, `--igr`, `--igo`) set per dark skin, so each style gets matching icons (violet-teal, amber outline, cyan neon, white, gold).
 - The light card header icon is now a gradient tile with a white glyph.
+
+### 8f.27 Cards (user file) — glassy minimal icons
+- `cfArt` v3: a frosted-glass tile (translucent fill, soft highlight, gradient rim) with a thin 6px line glyph and a coloured glow behind it; replaces the solid blue tile. Skin variables: `--ig2` (glow/tint), `--igg` (glyph glow), `--igs` (glyph stroke), `--igo` (tint strength).
