@@ -890,6 +890,15 @@ function background(){
   else if(AZURE){g.addColorStop(0,"#1650e0"); g.addColorStop(.5,"#2f78f2"); g.addColorStop(1,"#4a8af5")}
   else{g.addColorStop(0,"#0a33c2"); g.addColorStop(.5,"#2459e3"); g.addColorStop(1,"#2d63e8")}
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  if(LIGHT){ // a slow drift: three soft colour pools wander across the sky (still for reduced motion)
+    var t=REDUCE?0:clock, R=Math.max(W,H)*.6, M=Math.max(W,H);
+    [[.2+.14*Math.sin(t*.11),.25+.12*Math.cos(t*.09),R,"120,170,255",.42],
+     [.82+.1*Math.cos(t*.08),.4+.14*Math.sin(t*.1+1),R*.9,"196,176,255",.3],
+     [.5+.18*Math.sin(t*.07+2),.9+.06*Math.cos(t*.12),R,"140,225,255",.34]].forEach(function(o){
+      var px=o[0]*W, py=o[1]*H, q=ctx.createRadialGradient(px,py,0,px,py,o[2]);
+      q.addColorStop(0,"rgba("+o[3]+","+o[4]+")"); q.addColorStop(1,"rgba("+o[3]+",0)");
+      ctx.fillStyle=q; ctx.fillRect(0,0,W,H)})
+  }
   var cx=L.cx*cell, cy=L.cy*cell, r=Math.max(W,H)*.34, rg=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
   if(LIGHT){rg.addColorStop(0,"rgba(255,255,255,.85)"); rg.addColorStop(1,"rgba(255,255,255,0)")}
   else if(AZURE){rg.addColorStop(0,"rgba(8,38,170,.42)"); rg.addColorStop(1,"rgba(8,38,170,0)")}
