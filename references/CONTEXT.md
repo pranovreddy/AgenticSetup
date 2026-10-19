@@ -451,3 +451,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.30 Cards (user file) — styles locked
 - The style switcher is removed. The look is fixed to dark "Brand blue" (`dk-6`) and light "Porcelain" (`lt-1`), set on `body` by a one-line script. The other skin CSS stays in the stylesheet unused.
+
+### 8f.31 Cards (user file) — brand logo in the Agent summary chip
+- The chip's blob is replaced by the brand logo (the same image as the top-left rail logo, copied from `.hdr .mk img` when the left panel is built).

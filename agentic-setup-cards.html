@@ -1765,6 +1765,8 @@ body.dk-6 .cf-art svg{ --ig2:#e4f1ff; --igo:.3; --igs:#fff; --igg:#bfe0ff; filte
 /* dark face layout: status on top, icon in the middle, title and result at the bottom */
 .cardf .cf-top{ order:0; } .cardf .cf-art{ order:1; margin:6px 18px 10px!important; } .cardf .cf-mid{ order:2; margin-top:0; } .cardf .cf-bot{ order:3; margin-top:6px; }
 .cardf .cf-mid-done{ order:2; }
+.h-lab .h-orb img{ width:20px; height:20px; object-fit:contain; display:block; }
+.h-lab .h-orb{ width:22px; height:22px; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -3015,13 +3017,9 @@ function tband() {
       <h2 class="h-t" id="hTitle"></h2><p class="h-s" id="atTele"></p><ul class="h-tasks" id="hTasks" aria-label="What the agent is doing"></ul><div class="h-acc" id="hAcc"></div></div>
       <nav class="h-steps" id="tbSteps" aria-label="Setup steps">${STEPS.map((s, i) => `<button type="button" data-i="${i}" aria-label="${esc(s.title)}"><i class="si"><b class="ck">${IC.check}</b></i><span>${esc(s.title)}</span></button>`).join("")}</nav></div><div class="edge" id="edge"></div>`);
     c = $("#tband");
-    { /* static particle sphere for the Agent summary chip */
-      const cv = $(".h-orb canvas", c), cx = cv.getContext("2d"), n = 90, ga = Math.PI * (3 - Math.sqrt(5));
-      for (let k = 0; k < n; k++) {
-        const y = 1 - (k / (n - 1)) * 2, rr = Math.sqrt(1 - y * y), th = k * ga, x = Math.cos(th) * rr, z = Math.sin(th) * rr;
-        cx.fillStyle = `rgba(63,110,246,${(0.35 + 0.5 * (z + 1) / 2).toFixed(2)})`;
-        cx.beginPath(); cx.arc(26 + x * 23, 26 + y * 23, 1.1 + (z + 1) * 0.5, 0, 6.283); cx.fill();
-      }
+    { /* brand logo in the Agent summary chip */
+      const lg = $(".hdr .mk img"), orb = $(".h-orb", c);
+      if (lg && orb) orb.innerHTML = `<img alt="" src="${lg.src}">`;
     }
     AgentBlobs.mount(c); AgentBlobs.state("think"); hbKind = "think"; $("#heroBlob").dataset.state = "think";
     $("#hAcc").addEventListener("click", (e) => {
