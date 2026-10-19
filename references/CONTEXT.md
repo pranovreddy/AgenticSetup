@@ -403,3 +403,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.16 Cards (user file) — review stack no longer overlaps the left text
 - In review (`has-tband`), finished steps now tuck behind the front card as a narrow peek (about 34px per step) instead of spreading left under the title and message. The left text keeps its full width.
+
+### 8f.17 Cards (user file) — review stack both sides, authorisation row
+- Review: upcoming steps on the right now peek behind the front card like the finished ones on the left (perspective-corrected offsets).
+- Review footer: the "I'm authorised to submit this KYC" row has no grey background.

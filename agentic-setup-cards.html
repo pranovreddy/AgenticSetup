@@ -295,7 +295,7 @@ body.v3b .card.is-analysing .ld{ background:#fff; }
 .check input { margin: 1px 0 0; width: 16px; height: 16px; accent-color: var(--blue); flex: none; }
 .r-foot { display: flex; align-items: center; gap: 8px; padding: 14px 20px 18px; border-top: 1px solid var(--line); background: rgba(255,255,255,.7); }
 .r-foot .btn-p { margin-left: auto; }
-.r-foot .check { flex: 1; min-width: 0; margin: 0; padding: 8px 10px; }
+.r-foot .check { flex: 1; min-width: 0; margin: 0; padding: 8px 0; background: none; }
 .what { border-top: 1px solid var(--line); padding-top: 4px; }
 .what summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); padding: 6px 0; }
 .what summary::-webkit-details-marker { display: none; }
@@ -2371,9 +2371,9 @@ function layout() {
       el.style.setProperty("--o", [1, .92, .8, .66, .52][Math.min(k, 4)]);
     } else
     {
-      /* review: finished steps tuck behind the front card as a narrow peek, so they never run under the left-hand text */
-      const peek = TB && !AN && dir < 0;
-      const cx = peek ? -(aw * f / 2) + (proj(i, a) * f) - 34 * a * f + 4 : dir * x * f;
+      /* review: finished steps tuck behind the front card as a narrow peek on both sides, so they never run under the left-hand text */
+      const peek = TB && !AN && dir !== 0;
+      const ps = 1500 / (1500 - z), cx = peek ? (LP / 2 + dir * (aw * f / 2 + (dir > 0 ? 18 : 34) * a * f - 4 - proj(i, a) * f * ps)) / ps - LP / 2 : dir * x * f;
       el.style.transform = `translate3d(${cx + LP / 2}px, ${-4 * f}px, ${z}px) rotateY(${-dir * TH}deg) rotateZ(0deg) scale(${SC[a] * f})`;
     }
     if (!document.body.classList.contains("all-closed")) el.style.setProperty("--o", OP[a]); el.style.opacity = 1; el.style.zIndex = 20 - a;
