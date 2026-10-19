@@ -502,3 +502,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.44 Cards (user file) — back to the 3D ring with the vertical animations
 - User asked to go back to the 3D circle with the vertical (portrait) animations. A switch `STACK_ON = false` now selects the ring + portrait scenes (`LOADER_DOC_P`, `LD_BOX_P`) for processing. Setting it to `true` brings back the card stack with wide landscape scenes. Both code paths are kept.
+
+### 8f.45 Cards (user file) — AI typing back in the profile review, more top space
+- `fillProfile` types each business-profile field in turn again (logo shimmer, then field by field with the highlight, source tag popping in), instead of showing all values at once. The profile review pane has 22px more space above the logo.

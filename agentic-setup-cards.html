@@ -1820,6 +1820,8 @@ body.stack-mode.arc-mode .card .ld{ height:400px!important; margin:0 4px; }
 body.stack-mode.arc-mode .card .ld:not(.kv) .ld-crop iframe{ width:720px; height:360px; }
 body.stack-mode.arc-mode .card .cap{ margin:14px 40px 0; }
 body.stack-mode.arc-mode .card .c-head{ padding:22px 34px 8px; }
+/* a little more air above the profile form */
+.card [data-review] .kyc-top{ margin-top:22px; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -3277,10 +3279,16 @@ async function fillProfile() {
   if (S.active === 0) document.body.classList.add("is-working");
   const lg = $("[data-logo]", el);
   if (lg) lg.classList.add("is-in");
-  /* values were found while preparing; show them at once with a light sweep, no re-typing */
+  /* the agent types what it found into each field, one after another, with the source tag popping in */
+  if (lg && !RM) { lg.classList.remove("is-in"); lg.classList.add("is-shimmer"); await sleep(650); if (run !== S.runId) return; lg.classList.remove("is-shimmer"); lg.classList.add("is-in"); }
   for (const row of $$(".pf", el)) {
+    if (run !== S.runId) return;
     const f = KYC.find((x) => x.k === row.dataset.k), inp = $(".pin", row);
-    inp.value = f.v(); row.classList.remove("is-waiting"); row.classList.add("is-filled");
+    row.classList.remove("is-waiting"); row.classList.add("is-filling");
+    inp.value = "";
+    await typeIntoField(inp, f.v(), Math.min(1100, 260 + f.v().length * 22));
+    row.classList.remove("is-filling"); row.classList.add("is-filled");
+    await sleep(RM ? 0 : 120);
   }
   document.body.classList.remove("is-working");
   if (run !== S.runId) return;
