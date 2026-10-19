@@ -461,3 +461,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.33 Cards (user file) — amber attention subtext; note line removed
 - Dark card subtext turns amber (with a dot) when the step has something for the user to act on: GTM partners and Templates while ready or in review (`attn: true` on those steps).
 - Removed the "Submitted for approval. Your team step opens as soon as it's approved." line under the profile check animation.
+
+### 8f.34 Cards (user file) — closer, more compact cards
+- PM feedback: cards looked like credit cards. Ready-screen ring is smaller with only a 4px gap between cards (440x560, scale x0.86); finale row and overview use a 10px gap; the fanned stack steps are tighter; corner radius is 22px; the "•••• 01" placeholder text is now "Step 1 of 5".

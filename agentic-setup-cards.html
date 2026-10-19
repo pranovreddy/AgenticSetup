@@ -1770,6 +1770,8 @@ body.dk-6 .cf-art svg{ --ig2:#e4f1ff; --igo:.3; --igs:#fff; --igg:#bfe0ff; filte
 /* subtext that needs the user's attention is amber */
 .cardf .cf-res.attn{ color:#ffc857!important; display:inline-flex; align-items:center; gap:8px; }
 .cardf .cf-res.attn::before{ content:""; width:9px; height:9px; border-radius:50%; background:#ffc857; box-shadow:0 0 0 4px rgba(255,200,87,.25); flex:none; }
+/* compact, less card-like: tighter corners and no glossy edge */
+.cardf{ border-radius:22px!important; } .card-in{ border-radius:22px!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2431,9 +2433,9 @@ const RING = { pos: 0, target: 0, raf: 0, idle: false }, RING_TILT = 0;
 function ringGeom() {
   const r = stage.getBoundingClientRect();
   const LPa = (document.body.classList.contains("has-tband") || RING.idle) ? Math.min(400, r.width * .28) : 0;
-  const cw = 450, ch = 650, gap = 26, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
+  const idle = RING.idle, cw = idle ? 440 : 450, ch = idle ? 560 : 650, gap = idle ? 4 : 26, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
   const availH = r.height - 36, availW = r.width - LPa - 70;
-  const f = Math.max(.3, Math.min(.8, (availH - 10) / ((R * .85 + ch * .9 + 60) * 1.2), availW / ((R * 1.9 + cw * .35 + 30) * 1.12)));
+  const f = Math.max(.3, Math.min(.8, (availH - 10) / ((R * .85 + ch * .9 + 60) * 1.2), availW / ((R * 1.9 + cw * .35 + 30) * 1.12))) * (idle ? .86 : 1);
   return { r, LPa, cw, ch, R, f, cy: 22 * f - 52 };
 }
 function ringPaint() {
@@ -2483,7 +2485,7 @@ function layout() {
   const all = cards();
   if (S.mode === "overview") {
     const fin = S.phase === "finale";
-    const so = 0.6, g = 18;
+    const so = 0.6, g = 10;
     let f, cardH, pitch, yOff = 0;
     if (fin) {
       /* Scale from the viewport — pack (header + stage + CTA) is flex-centered as one unit. */
@@ -2525,7 +2527,7 @@ function layout() {
     return;
   }
   if (S.mode === "ring") {
-    const so = 0.6, g = 18, gap2 = 30, ctaH = 48, botM = 24;
+    const so = 0.6, g = 10, gap2 = 30, ctaH = 48, botM = 24;
     const avail = r.height - gap2 - ctaH - botM - 8;
     let f = Math.min(0.92, avail / (CH * so), r.width / (5 * CW * so + 4 * g + 40));
     f = Math.max(f, 0.2);
@@ -2560,7 +2562,7 @@ function layout() {
     if (document.body.classList.contains("all-closed")) {
       /* start / ready screens: the other steps fan out to the right behind the front card, so it reads as a deck of five */
       const X0 = LP / 2 + Math.max(r.width * .16, 170) - 120 * f, k = Math.max(0, off);
-      el.style.transform = `translate3d(${X0 + k * 84 * f}px, ${-4 * f}px, ${-k * 70}px) rotateY(${k ? -10 : 0}deg) rotateZ(0deg) scale(${f * .78 * (1 - k * .06)})`;
+      el.style.transform = `translate3d(${X0 + k * 64 * f}px, ${-4 * f}px, ${-k * 70}px) rotateY(${k ? -10 : 0}deg) rotateZ(0deg) scale(${f * .78 * (1 - k * .06)})`;
       el.style.setProperty("--o", [1, .92, .8, .66, .52][Math.min(k, 4)]);
     } else
     {
@@ -3790,7 +3792,7 @@ function faceHTML(i) {
   const run = c.st === "analysing" || c.st === "inreview";
   const done = c.st === "done";
   const showRes = c.st === "ready" || c.st === "review" || c.st === "done" || c.st === "later";
-  const res = showRes ? esc(s.mini) : `•••• ${String(i + 1).padStart(2, "0")}`;
+  const res = showRes ? esc(s.mini) : `Step ${i + 1} of 5`;
   /* Done: check on the title row (right) — no "Done" pill */
   const st = done ? "" : `<span class="cf-st ${run ? "run" : ""}">${run ? "<i></i>" : ic || "<i></i>"}${esc(txt)}</span>`;
   const titleRow = done
