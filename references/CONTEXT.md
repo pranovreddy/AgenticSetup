@@ -397,3 +397,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - A second embedded doc `LOADER_DOC_P` (built by `references/tools/session5/deck-enhanced/portrait.py` from the original `LOADER_DOC`) is used only by `playLoader`; the review-step `kycv` scene still uses the landscape `LOADER_DOC`.
 - kyc/brand: sources in a row on top, agent under them, result card below. team: registry on top, 2x2 people, invite list as a row of three. gtm: 2x2 partners, allocation and summary side by side below. match: stream | agent | lanes as three tall columns.
 - `ptest.js` renders one scene standalone at 360x410 for checking.
+
+### 8f.15 Cards (user file) — finished state
+- `agentic-setup-cards.html` finale: larger gradient success check that pops in, draws its tick and pulses rings; confetti burst (skipped for reduced motion); green-rimmed step cards; the migration-window countdown sits in a frosted panel with a live dot and a glowing button.
