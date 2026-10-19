@@ -24,6 +24,10 @@ body.phase-finale .cf-mid h3{ font-size:31px; } body.phase-finale .cf-res{ font-
 /* review: step label and the side cards on the right are readable */
 .card .c-head .c-n{ font-size:16px; } .card [data-review] input:not([type=checkbox]),.card [data-review] select,.card [data-review] textarea{ font-size:16px!important; }
 body.ph-review .cf-v{ width:90px; gap:16px; } body.ph-review .cf-v b{ font-size:34px; } body.ph-review .cf-v em{ font-size:20px; opacity:1; } body.ph-review .cf-st{ font-size:19px; height:38px; }
+/* the vertical stepper left of the review text is removed */
+body.has-tband .tband .h-steps{ display:none!important; }
+/* enterprise logo 1.5x (112x96 -> 168x144) */
+.card [data-review] .kyc-logo{ width:168px; height:144px; border-radius:20px; } .kyc-logo .kl-edit{ width:30px; height:30px; } .kyc-logo .kl-ph svg{ width:38px; height:38px; }
 /* skipped steps on the finished page: light blue instead of grey */
 .cardf.s-skipped,body[class*="dk-"] .cardf.s-skipped,body.dk-6 .cardf.s-skipped{ background:linear-gradient(170deg,#e3eeff,#b4cffb)!important; box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 24px 44px -26px rgba(37,99,235,.35)!important; color:#1e3a8a!important; }
 .cardf.s-skipped .cf-res,.cardf.s-skipped .cf-mid h3,.cardf.s-skipped .cf-bot{ color:#1e3a8a!important; }
@@ -60,7 +64,7 @@ sub('''  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_P
     if (S.phase !== "review") return [1000, base];
     const sr = stage.getBoundingClientRect(), LPx = document.body.classList.contains("has-tband") ? Math.min(400, sr.width * .28) : 0;
     const fw = Math.max(0.42, Math.min(1.14, (sr.width - LPx - 56 - (document.body.classList.contains("has-tband") ? 40 : 0)) / 1000));
-    return [1000, Math.max(base, Math.round(innerHeight * .7 / fw))];
+    return [1000, Math.round(base * (STEPS[i].key === "profile" ? 1.15 : 1.12))];
   }''')
 sub("(r.width - LP - (AN ? 220 : 32) - (TB ?", "(r.width - LP - (AN ? 220 : (S.phase === \"review\" ? 56 : 32)) - (TB ?")
 
