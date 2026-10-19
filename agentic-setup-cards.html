@@ -1554,14 +1554,23 @@ body.v3b.arc-mode .card .cardf{ transform:rotateY(360deg)!important; }
 body.v3b.arc-mode .card.is-prim .card-in{ transform:rotateY(0deg)!important; background:#fff!important; }
 body.v3b.arc-mode .card.is-prim .cardf{ transform:rotateY(180deg)!important; }
 body.arc-mode.has-tband .card:not(.is-focus){ opacity:1!important; }
+body.arc-mode.arc-idle .card:not(.is-focus){ filter:none!important; opacity:1!important; }
 body.arc-mode .card:not(.is-focus){ filter:blur(2.2px) saturate(.92)!important; }
 body.arc-mode .card.is-focus{ filter:none!important; }
 body.arc-live .card{ transition:opacity .6s var(--ease),filter .6s,width .8s var(--ease),height .8s var(--ease),margin .8s var(--ease)!important; }
 body.arc-mode .card .c-head{ padding:28px 30px 12px; } body.arc-mode .card .c-head .c-n{ right:30px; top:30px; }
-body.arc-mode .card .cap{ margin:18px 30px 0; }
+body.arc-mode [data-analyse] .cap{ display:block; }
+body.arc-mode .card .cap{ margin:22px 34px 0; }
+body.arc-mode .card .cap-row{ font-size:17px; font-weight:600; letter-spacing:-.01em; min-height:26px; }
+body.arc-mode .card .cap-row .sp{ width:16px; height:16px; }
+body.arc-mode .card .segs{ margin-top:14px; gap:6px; } body.arc-mode .card .segs i{ height:4px; }
 body.arc-mode .card .plan-live{ margin:16px 30px 0; gap:9px; }
-body.arc-mode .card .ld{ height:228px!important; min-height:0!important; flex:none!important; margin:0 2px; border-radius:0; box-shadow:none!important; border:0!important; background:#fff; }
-body.arc-mode .card .cap{ margin:14px 30px 0; }
+body.arc-mode .card .ld{ height:318px!important; min-height:0!important; flex:none!important; margin:0 2px; border-radius:0; box-shadow:none!important; border:0!important; background:#fff; }
+body.arc-mode [data-analyse] .cap{ display:block; }
+body.arc-mode .card .cap{ margin:22px 34px 0; }
+body.arc-mode .card .cap-row{ font-size:17px; font-weight:600; letter-spacing:-.01em; min-height:26px; }
+body.arc-mode .card .cap-row .sp{ width:16px; height:16px; }
+body.arc-mode .card .segs{ margin-top:14px; gap:6px; } body.arc-mode .card .segs i{ height:4px; }
 body.arc-mode .card .plan-live li{ font-size:13px; transition:color .3s; }
 body.arc-mode .card .plan-live li:not(.ok) i svg{ display:none; }
 body.arc-mode .card .plan-live li.now{ color:var(--ink); font-weight:600; }
@@ -2120,8 +2129,7 @@ function renderAnalyse(i) {
   } else if (c.st === "analysing") {
     box.innerHTML = `<div class="ld"><div class="ld-crop"><iframe title="${esc(s.title)}: the agent at work" tabindex="-1" aria-hidden="true"></iframe></div></div>
       <div class="cap"><div class="cap-row"><span class="sp"></span><span class="t run" data-line>${esc(s.checks[0][0])}</span><span class="n" data-n>1 of ${s.checks.length}</span></div>
-      <div class="segs">${s.checks.map(() => "<i></i>").join("")}</div></div>
-      <ul class="plan plan-live">${s.checks.map((x) => `<li><i>${IC.check}</i>${esc(x[0])}</li>`).join("")}</ul>`;
+      <div class="segs">${s.checks.map(() => "<i></i>").join("")}</div></div>`;
   } else if ($("[data-fx]", box)) {
     $("[data-fx]", box).classList.add("is-done");
   } else {
@@ -2154,7 +2162,7 @@ function fitScene(ld, box) {
   const crop = $(".ld-crop", ld), fr = $("iframe", ld);
   const [x0, y0, x1, y1] = box, bw = x1 - x0, bh = y1 - y0;
   const W0 = ld.clientWidth || AW - 40, H0 = ld.clientHeight || 300;
-  const s = Math.min((W0 - 24) / bw, (H0 - 20) / bh, 1.1);
+  const s = Math.min((W0 - (document.body.classList.contains("arc-mode") ? 8 : 24)) / bw, (H0 - 20) / bh, document.body.classList.contains("arc-mode") ? 1.5 : 1.1);
   crop.style.width = `${bw * s}px`; crop.style.height = `${bh * s}px`;
   crop.style.marginLeft = `${(-bw * s) / 2}px`; crop.style.marginTop = `${(-bh * s) / 2}px`;
   fr.style.transform = `translate(${-x0 * s}px, ${-y0 * s}px) scale(${s})`;
@@ -2190,18 +2198,27 @@ function topLd() {
 }
 function topLdShow(on) { const t = topLd(); void t.offsetWidth; t.classList.toggle("on", !!on); if (!on) { const fr = $("iframe", t); if (fr) fr.removeAttribute("srcdoc"); } }
 function topLdReset() { const ld = $(".ld", topLd()); ld.getAnimations().forEach((a) => a.cancel()); const fr = $("iframe", ld); fr.srcdoc = ""; if (!RM) ld.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 520, easing: "cubic-bezier(.16,1,.3,1)" }); return ld; }
-function arcOff() { document.body.classList.remove("arc-mode", "arc-live"); cancelAnimationFrame(RING.raf); RING.raf = 0; cards().forEach((el) => el.classList.remove("is-prim")); const t = $("#topLd"); if (t) topLdShow(false); }
+/* ready for review: the same ring keeps turning slowly, showing the dark blue sides */
+function ringIdleStart() {
+  RING.idle = true; cancelAnimationFrame(RING.raf);
+  document.body.classList.add("arc-mode", "arc-idle", "arc-live");
+  let last = performance.now();
+  const tick = (now) => { if (!RING.idle) return; const dt = Math.min(.1, (now - last) / 1000); last = now; RING.pos = (RING.pos + dt * .15) % 5; ringPaint(); RING.raf = requestAnimationFrame(tick); };
+  if (RM) { ringPaint(); return; }
+  RING.raf = requestAnimationFrame(tick);
+}
+function arcOff() { RING.idle = false; document.body.classList.remove("arc-mode", "arc-live", "arc-idle"); cancelAnimationFrame(RING.raf); RING.raf = 0; cards().forEach((el) => el.classList.remove("is-prim")); const t = $("#topLd"); if (t) topLdShow(false); }
 const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX[STEPS[i].loader], run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600);
 
 /* ---------- The 3D ring: five cards on a circle that turns to bring the next step to the front ---------- */
-const RING = { pos: 0, target: 0, raf: 0 }, RING_TILT = 0;
+const RING = { pos: 0, target: 0, raf: 0, idle: false }, RING_TILT = 0;
 function ringGeom() {
   const r = stage.getBoundingClientRect();
-  const LPa = document.body.classList.contains("has-tband") ? Math.min(400, r.width * .28) : 0;
-  const cw = 392, ch = 520, gap = 28, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
+  const LPa = (document.body.classList.contains("has-tband") || RING.idle) ? Math.min(400, r.width * .28) : 0;
+  const cw = 450, ch = 540, gap = 26, R = (cw + gap) / (2 * Math.sin(Math.PI / 5));
   const availH = r.height - 36, availW = r.width - LPa - 70;
   const f = Math.max(.3, Math.min(.8, (availH - 10) / ((R * .85 + ch * .9 + 60) * 1.2), availW / ((R * 1.9 + cw * .35 + 30) * 1.12)));
-  return { r, LPa, cw, ch, R, f, cy: 22 * f + 6 };
+  return { r, LPa, cw, ch, R, f, cy: 22 * f - 52 };
 }
 function ringPaint() {
   const g = ringGeom(), { r, cw, ch, R, f } = g, all = cards();
@@ -2217,7 +2234,7 @@ function ringPaint() {
     el.classList.remove("is-far", "is-right", "is-clickable");
     if (Math.abs(d) < pd) { pd = Math.abs(d); prim = i; }
   });
-  all.forEach((el, i) => { const on = i === prim && pd < .5; el.classList.toggle("is-prim", on); el.classList.toggle("is-focus", on); });
+  all.forEach((el, i) => { const on = i === prim && pd < .5 && !RING.idle; el.classList.toggle("is-prim", on); el.classList.toggle("is-focus", on); });
 }
 function ringTo(idx) {
   RING.target = idx; cancelAnimationFrame(RING.raf);
@@ -2307,8 +2324,8 @@ function layout() {
     return;
   }
   if (window.__ringOut) { window.__ringOut = 0; all.forEach((el, i) => { el.style.transitionDelay = `${Math.abs(i - S.active) * 80}ms`; }); setTimeout(() => all.forEach((el) => { el.style.transitionDelay = ""; }), 1600); }
-  if (document.body.classList.contains("arc-mode") && S.phase === "analyse" && !document.body.classList.contains("all-closed")) {
-    if (RING.target !== S.active) ringTo(S.active); else if (!RING.raf) ringPaint();
+  if (document.body.classList.contains("arc-mode") && ((S.phase === "analyse" && !document.body.classList.contains("all-closed")) || RING.idle)) {
+    if (RING.idle) { if (!RING.raf) ringPaint(); } else if (RING.target !== S.active) ringTo(S.active); else if (!RING.raf) ringPaint();
     return;
   }
   const [aw, ah] = dims(S.active);
@@ -2881,14 +2898,14 @@ function procCap() { tbSync(); }
 /* telemetry of the card being worked on is mirrored into the top band */
 /* (the per-step task list under the subtext now carries the live check detail) */
 async function unlock(run) {
-  S.phase = "unlock"; arcOff(); procCap(null);
+  S.phase = "unlock"; const wasArc = document.body.classList.contains("arc-mode"); arcOff(); if (wasArc) { document.body.classList.add("arc-mode", "arc-live"); } RING.idle = true; procCap(null);
   if (!$("#readyL")) stage.insertAdjacentHTML("beforeend", `<div class="rdl" id="readyL"><span class="rdl-k"><i></i>5 of 5 prepared</span><h2>Your five steps are ready for review</h2><p>The agent has done the groundwork. Open each step, check it and approve.</p>
     <button class="rdl-go" id="rdlGo" type="button">Review them<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`);
   head("Setup ready", "5 of 5", "Your five steps are ready for review", "", false);
   document.body.classList.add("all-closed");
   S.mode = "focus"; document.body.classList.remove("mode-overview", "mode-ring");
   cards().forEach((el) => el.classList.remove("is-analysing", "is-done-flash"));
-  S.active = 0; layout(); faceSig = ""; faces();
+  S.active = 0; ringIdleStart(); faceSig = ""; faces();
   setTimeout(() => { const r = $("#readyL"); if (r) { r.classList.add("on"); $("#rdlGo").focus({ preventScroll: true }); } }, RM ? 0 : 700);
 }
 if (!window.__rdlBound) { window.__rdlBound = 1; document.addEventListener("click", (e) => { if (!(e.target.closest("#rdlGo") || (document.body.classList.contains("all-closed") && e.target.closest(".card"))) || S.phase !== "unlock") return; const r = $("#readyL"); r.classList.remove("on"); setTimeout(() => r.remove(), 600); document.body.classList.remove("all-closed"); startReview(); }); }

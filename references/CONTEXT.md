@@ -389,3 +389,5 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - agentic-setup-cards.html: ring seen straight on (tilt 0) so all cards sit on one horizontal line, gap 30 (comment e1b2c0af).
 
 - agentic-setup-cards.html: scene inside the front card has no border and is larger (cards 392 wide); non-focus ring cards blurred 2.2px (comments 93af4284, fd63aba1).
+
+- agentic-setup-cards.html: ring moved up; ready-for-review screen keeps the same ring turning slowly on the dark sides (ringIdleStart, class arc-idle); checklist removed from the white card; card 450x540 with a larger scene (318 px high) and a bigger live caption + progress bar under it (comments f2f60362, fe9fadec, 2bc33772). Scenes themselves are still the landscape product scenes; a true portrait recomposition would mean rebuilding each of the five scene layouts in LOADER_DOC.
