@@ -474,3 +474,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.37 Console variations (no change to the prototype)
 - User leaned towards C (Agent Console) but felt it had too many boxes. Three lighter variants mocked up in `references/design-directions/` (`console-variations.html`, `build_c.py`): C2 Open surface (no sheet, underlined fields), C3 Light console + ledger (flat label/value rows, breadcrumb), C4 Steps inside the console (vertical stepper in the blue panel, settings-style sections). C1 is the original for comparison.
+
+### 8f.38 Direction chosen: C2 (Open surface). Processing screen options
+- User picked C2 (blue console on the left, open surface on the right). Three agent-processing options mocked up in the C2 shell (`references/design-directions/processing-options.html`, `build_p.py`, PNGs `png/processing-P*.png`): P1 Lanes board (the style the user attached), P2 Tabs carry the progress, P3 Pipeline (sources, agent, five steps joined by lines). Next: user picks one, then build C2 and the chosen processing screen into the prototype and test at short heights.
