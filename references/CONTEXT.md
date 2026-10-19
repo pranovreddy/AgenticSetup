@@ -467,3 +467,7 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.35 Cards (user file) — brands as a hierarchy tree
 - PM (Pratyush): the brands step is a hierarchy. In the review card, the enterprise sits at the root with brands as branches and lines of business as leaves, joined by connector lines (`.htree`/`.hlobs`). The Details page editor uses the same tree connectors (`.bgrid` > `.bcard` > `.lobrow`).
+
+### 8f.36 Layout directions exploration (no change to the prototype)
+- Problem: the card format shrinks content text and breaks on short windows; the processing ring reads as credit cards.
+- Four directions mocked up at 1440x900 (agent processing and review for each), in `references/design-directions/` (`layout-directions.html`, builder `build.py`, PNGs in `png/`): A Workspace + Rail, B Top Dock, C Agent Console, D Mission Board + Folder Tabs. Waiting on the user to choose a direction before building it into the prototype.
