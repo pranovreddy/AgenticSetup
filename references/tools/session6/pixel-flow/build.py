@@ -13,3 +13,6 @@ full = src.replace("__LOGO__", logo).replace("__DOCS__", docs).replace("__HDFC__
 # light version: same page, data-theme="light" switches the field, triangles and the pieces that sit on it
 light = full.replace('<html lang="en">', '<html lang="en" data-theme="light">').replace("<title>Agentic Setup Pixels</title>", "<title>Agentic Setup Pixels Light</title>")
 (root / "agentic-setup-pixels-light.html").write_text(light)
+# azure version: a brighter blue field than the original deep blue
+azure = full.replace('<html lang="en">', '<html lang="en" data-theme="azure">').replace("<title>Agentic Setup Pixels</title>", "<title>Agentic Setup Pixels Azure</title>")
+(root / "agentic-setup-pixels-azure.html").write_text(azure)
