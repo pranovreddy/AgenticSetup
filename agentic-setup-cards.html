@@ -1772,6 +1772,34 @@ body.dk-6 .cf-art svg{ --ig2:#e4f1ff; --igo:.3; --igs:#fff; --igg:#bfe0ff; filte
 .cardf .cf-res.attn::before{ content:""; width:9px; height:9px; border-radius:50%; background:#ffc857; box-shadow:0 0 0 4px rgba(255,200,87,.25); flex:none; }
 /* compact, less card-like: tighter corners and no glossy edge */
 .cardf{ border-radius:22px!important; } .card-in{ border-radius:22px!important; }
+/* brands: hierarchy tree (enterprise > brands > lines of business) */
+.htree,.hlobs{ list-style:none; margin:0; padding:0; }
+.htree{ margin:10px 0 2px 22px; }
+.hlobs{ margin:5px 0 0 26px; }
+.htree > li,.hlobs > li{ position:relative; padding-left:24px; }
+.htree > li{ padding-bottom:8px; } .hlobs > li{ padding-bottom:4px; }
+.htree > li::before,.hlobs > li::before{ content:""; position:absolute; left:0; top:0; bottom:0; border-left:2px solid #c9d8f5; }
+.htree > li:last-child::before{ bottom:auto; height:22px; }
+.hlobs > li:last-child::before{ bottom:auto; height:13px; }
+.htree > li::after,.hlobs > li::after{ content:""; position:absolute; left:0; top:22px; width:20px; height:10px; border-bottom:0; border-top:2px solid #c9d8f5; border-top-left-radius:0; }
+.hlobs > li::after{ top:13px; width:18px; height:0; }
+.htree > li > .cbrand{ padding:6px 10px; }
+.htree .cbrand-h{ margin:0; }
+.hlobs .lob{ display:inline-flex; align-items:center; gap:6px; }
+.hlobs .lob::before{ content:""; width:6px; height:6px; border-radius:50%; background:#8fb0ff; }
+.ent2.cent.tree-on{ padding-bottom:6px; }
+/* brands editor on the details page, same tree */
+.bgrid{ display:flex!important; flex-direction:column; gap:14px!important; margin-left:16px; padding-left:0; position:relative; }
+.bgrid > .bcard,.bgrid > .addbrand{ position:relative; margin-left:26px; }
+.bgrid > .bcard::before,.bgrid > .addbrand::before{ content:""; position:absolute; left:-26px; top:26px; width:26px; border-top:2px solid #c9d8f5; }
+.bgrid > .bcard::after,.bgrid > .addbrand::after{ content:""; position:absolute; left:-26px; top:-16px; bottom:-16px; border-left:2px solid #c9d8f5; z-index:0; }
+.bgrid > :first-child::after{ top:-12px; }
+.bgrid > :last-child::after{ bottom:auto; height:calc(26px + 16px); }
+.bcard .lobrow,.bcard .addlob{ position:relative; margin-left:22px; }
+.bcard .lobrow::before,.bcard .addlob::before{ content:""; position:absolute; left:-22px; top:50%; width:20px; border-top:2px solid #d5e0f7; }
+.bcard .lobrow::after,.bcard .addlob::after{ content:""; position:absolute; left:-22px; top:-8px; bottom:-8px; border-left:2px solid #d5e0f7; }
+.bcard .lobrow:first-of-type::after{ top:-14px; }
+.bcard > :last-child::after{ bottom:auto; height:calc(50% + 8px); }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -3280,8 +3308,8 @@ function renderReviewBase(i) {
     body = `<h3 class="r-h">${BRANDS.length} brands and ${lobs} lines of business</h3>
       <p class="r-p">Drafted from your DLT headers. Confirm as drafted and they're set up straight away. Any change goes for review.</p>
       <div class="ent2 cent"><div class="ent2-h"><span class="eic">${IC.build}</span><div><b>HDFC Bank Limited</b><br><span class="sm">${BRANDS.length} brands · ${lobs} lines of business</span></div><span class="pill">Enterprise</span></div>
-      <div class="cbgrid">${BRANDS.map((b) => `<div class="cbrand"><div class="cbrand-h"><span class="bic">${IC.brands}</span><div><small>Brand</small><b>${esc(b.name)}</b></div><span class="mono">${esc(b.hdr)}</span></div>
-        <div class="clobs">${b.lobs.map((l) => `<span class="lob">${esc(l)}</span>`).join("")}</div></div>`).join("")}</div></div>
+      <ul class="htree">${BRANDS.map((b) => `<li class="hb-brand"><div class="cbrand"><div class="cbrand-h"><span class="bic">${IC.brands}</span><div><small>Brand</small><b>${esc(b.name)}</b></div><span class="mono">${esc(b.hdr)}</span></div></div>
+        <ul class="hlobs">${b.lobs.map((l) => `<li><span class="lob">${esc(l)}</span></li>`).join("")}</ul></li>`).join("")}</ul></div>
       ${whatIDid(i)}`;
     foot = `${deepBtn}<button class="btn btn-p" data-act="accept" data-i="${i}">${brandsChanged() ? "Send for review" : "Confirm brands"}</button>`;
   }

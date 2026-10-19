@@ -464,3 +464,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.34 Cards (user file) — closer, more compact cards
 - PM feedback: cards looked like credit cards. Ready-screen ring is smaller with only a 4px gap between cards (440x560, scale x0.86); finale row and overview use a 10px gap; the fanned stack steps are tighter; corner radius is 22px; the "•••• 01" placeholder text is now "Step 1 of 5".
+
+### 8f.35 Cards (user file) — brands as a hierarchy tree
+- PM (Pratyush): the brands step is a hierarchy. In the review card, the enterprise sits at the root with brands as branches and lines of business as leaves, joined by connector lines (`.htree`/`.hlobs`). The Details page editor uses the same tree connectors (`.bgrid` > `.bcard` > `.lobrow`).
