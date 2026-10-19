@@ -410,3 +410,8 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.18 Cards (user file) — left panel agent
 - The left panel's agent blob is smaller (58px) and sits in a row with a "DigiConsent agent" pill above the title, instead of floating alone over it. Applies to processing, ready and review.
+
+### 8f.19 Cards (user file) — crisp focus card, bigger profile form, richer ready state
+- Focus card: no backdrop blur; the lock veil on locked steps is a plain light overlay (no blur); the staggered "materialize" entrance no longer uses blur (it left list items looking blurred).
+- Business profile review form: larger logo, labels and fields (50px) so it fills the card.
+- Step ready state (after processing): bigger success mark, a stats row (sources read, checks done, step to review), the crisp timeline, and a "Next" hint with the action for that step.
