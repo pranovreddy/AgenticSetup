@@ -589,3 +589,5 @@ Focus card height lowered again, from 80vh to 70vh (8f.62).
 8f.67 UX copy: left padding of the review text block raised from 16px to 40px (replaces the 8f.66 alignment).
 
 8f.68 UX copy: review focus cards are 80% of the window height (the scale is set from innerHeight * .8 over the card's content height). Measured: 720px at 900 tall, 576px at 720 tall, all five steps, no clipping.
+
+8f.69 UX copy: text size review of all five review cards. Every visible text is now 16px or larger, one size per role: labels and body 16 (labels 600, body 400, buttons 600), brand names 18 (the enterprise name was 17), table and stat values as before. The search box (15px) is raised to 16. The Team and Business profile cards have no headline (removed earlier), Brands, GTM and Templates keep their 22px headline.

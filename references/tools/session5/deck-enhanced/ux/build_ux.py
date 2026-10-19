@@ -30,6 +30,9 @@ body.has-tband .tband .h-steps{ display:none!important; }
 .card [data-review] .kyc-logo{ width:168px; height:144px; border-radius:20px; } .kyc-logo .kl-edit{ width:30px; height:30px; } .kyc-logo .kl-ph svg{ width:38px; height:38px; }
 /* review text sits 40px from the left edge, just right of the logo pill edge */
 @media (min-width:861px){ body.has-tband .tband .hero-in{ padding-left:40px!important; } }
+/* review text consistency: one size per role (labels and body 16, brand names 18, headings 22/30), buttons one weight */
+.card [data-review] .btree b,.card [data-review] .ent2-h b{ font-size:18px!important; }
+.card [data-review] ~ * .btn,.card .card-foot .btn,.card [data-act].btn{ font-weight:600; }
 /* skipped steps on the finished page: light blue instead of grey */
 .cardf.s-skipped,body[class*="dk-"] .cardf.s-skipped,body.dk-6 .cardf.s-skipped{ background:linear-gradient(170deg,#e3eeff,#b4cffb)!important; box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 24px 44px -26px rgba(37,99,235,.35)!important; color:#1e3a8a!important; }
 .cardf.s-skipped .cf-res,.cardf.s-skipped .cf-mid h3,.cardf.s-skipped .cf-bot{ color:#1e3a8a!important; }
@@ -72,7 +75,7 @@ sub("(r.width - LP - (AN ? 220 : 32) - (TB ?", "(r.width - LP - (AN ? 220 : (S.p
 
 # review cards: smallest text 10px -> 16px (+6). Each text element below the floor is raised to it; larger text keeps its size.
 sub("window.__deck = { opening,", """const MIN_FONT = 16; let fzQ = 0;
-function bumpFonts() { fzQ = 0; document.querySelectorAll(".card [data-review] *").forEach((e) => { if (e.dataset.fz || !([...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))) return; e.dataset.fz = 1; if (parseFloat(getComputedStyle(e).fontSize) < MIN_FONT) e.style.setProperty("font-size", `${MIN_FONT}px`, "important"); }); }
+function bumpFonts() { fzQ = 0; document.querySelectorAll(".card [data-review] *").forEach((e) => { if (e.dataset.fz || !([...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))) return; e.dataset.fz = 1; if (parseFloat(getComputedStyle(e).fontSize) < MIN_FONT) e.style.setProperty("font-size", `${MIN_FONT}px`, "important"); }); document.querySelectorAll(".card [data-review] input:not([type=checkbox]),.card [data-review] select").forEach((e) => { if (parseFloat(getComputedStyle(e).fontSize) < MIN_FONT) e.style.setProperty("font-size", `${MIN_FONT}px`, "important"); }); }
 new MutationObserver(() => { if (!fzQ) fzQ = requestAnimationFrame(bumpFonts); }).observe(document.getElementById("stage"), { childList: true, subtree: true, characterData: true });
 window.__deck = { opening,""")
 # review focus card: 80% of the window height (scale follows the card's content height)
