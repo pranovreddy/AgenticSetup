@@ -2056,6 +2056,11 @@ body.phase-finale .cf-mid h3{ font-size:31px; } body.phase-finale .cf-res{ font-
 /* review: step label and the side cards on the right are readable */
 .card .c-head .c-n{ font-size:16px; } .card [data-review] input:not([type=checkbox]),.card [data-review] select,.card [data-review] textarea{ font-size:16px!important; }
 body.ph-review .cf-v{ width:90px; gap:16px; } body.ph-review .cf-v b{ font-size:34px; } body.ph-review .cf-v em{ font-size:20px; opacity:1; } body.ph-review .cf-st{ font-size:19px; height:38px; }
+/* skipped steps on the finished page: light blue instead of grey */
+.cardf.s-skipped,body[class*="dk-"] .cardf.s-skipped,body.dk-6 .cardf.s-skipped{ background:linear-gradient(170deg,#e3eeff,#b4cffb)!important; box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 24px 44px -26px rgba(37,99,235,.35)!important; color:#1e3a8a!important; }
+.cardf.s-skipped .cf-res,.cardf.s-skipped .cf-mid h3,.cardf.s-skipped .cf-bot{ color:#1e3a8a!important; }
+.cardf.s-skipped .cf-top .cf-st{ background:rgba(255,255,255,.75)!important; color:#1e40af!important; box-shadow:0 0 0 1px rgba(37,99,235,.25) inset!important; }
+.cardf.s-skipped .cf-art svg g{ stroke:#2563eb!important; opacity:.5; }
 body.phase-finale .cf-st{ font-size:16px; height:34px; }
 @media (max-width:1180px){ .rdl{ left:92px; width:min(300px,28%); } .rdl h2{ font-size:29px; } .rdl p{ font-size:14px; } }
 @media (max-width:860px){
