@@ -18,13 +18,14 @@ svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .brand{position:fixed;top:24px;left:28px;z-index:3;display:flex;align-items:center;gap:10px;
   font-weight:600;font-size:15px;letter-spacing:-.01em}
 .brand img{width:20px;height:auto;filter:brightness(0) invert(1)}
-.status{position:fixed;top:22px;right:28px;z-index:3;display:flex;align-items:center;gap:8px;
+.status{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:9;transition:top .55s cubic-bezier(.2,.8,.2,1),opacity .3s;display:flex;align-items:center;gap:8px;
   font-size:13px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.12);
   border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(6px)}
 .status i{width:7px;height:7px;border-radius:50%;background:#fff;animation:ping 1.6s infinite}
 .status.still i{animation:none}
 .status.done i{animation:none;background:#7cf0b4}
 .status.attn i{animation:none;background:var(--amber)}
+.status.hid{opacity:0;pointer-events:none}
 @keyframes ping{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}100%{box-shadow:0 0 0 9px rgba(255,255,255,0)}}
 
 /* the agent speaks in the middle of the field */
@@ -417,9 +418,18 @@ function resize(){
 
 
 /* where the agent's words sit, in cells; pixels dim behind them so they stay readable */
+function placeStatus(){
+  var st=$("status"), c=$("card");
+  if(typeof CARD!=="undefined"&&CARD.on){st.classList.toggle("hid",CARD.big); var t=parseFloat(c.style.top)||0; st.style.top=Math.max(14,t-48)+"px"; return}
+  st.classList.remove("hid");
+  var k=$("kick"), g=document.createRange(); g.selectNodeContents(k); var b=g.getBoundingClientRect();
+  if(!b.height){var l=$("line"); g.selectNodeContents(l); b=g.getBoundingClientRect()}
+  if(b.height) st.style.top=Math.max(14,b.top-50)+"px";
+}
 function measure(){
   if(!cols) return;
-  var bs=["kick","line","sub","extra"].map(function(id){var el=$(id),g=document.createRange(); g.selectNodeContents(el); return g.getBoundingClientRect()}).filter(function(b){return b.width>2});
+  placeStatus();
+  var bs=((typeof CARD!=="undefined"&&CARD.on)?["kick","line","sub","extra"]:["status","kick","line","sub","extra"]).map(function(id){var el=$(id),g=document.createRange(); g.selectNodeContents(el); return g.getBoundingClientRect()}).filter(function(b){return b.width>2});
   var x0=W*.3,x1=W*.7,y0=H*.42,y1=H*.55;
   if(bs.length){x0=Math.min.apply(null,bs.map(function(b){return b.left}));x1=Math.max.apply(null,bs.map(function(b){return b.right}));
     y0=Math.min.apply(null,bs.map(function(b){return b.top}));y1=Math.max.apply(null,bs.map(function(b){return b.bottom}))}
@@ -855,6 +865,8 @@ function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
   var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
+  else if(st.k==="profile"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
+    p={title:heading(i),tog:'',body:'<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">'+esc(subline(i))+'</p>'+d0.h,l:d0.l,r:d0.r}}
   else p={title:heading(i),tog:'',body:cardSummary(i),l:'<button class="btn ghost" data-a="details">'+I("max")+'See details</button>'+(st.k==="team"?' <button class="btn ghost" data-a="later">Do it later</button>':''),r:primary(i)};
   p.kick=kick; return cardWrap(p);
 }
@@ -868,12 +880,13 @@ function placeCard(){
   else{var w=Math.min(820,W-32), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-130); m.innerHTML="";
     r={l:(W-w)/2,t:Math.max(64,(H-h)/2-18),w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
+  placeStatus();
 }
 function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
   c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard()}
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
-function hideCard(){CARD.on=false; $("card").classList.remove("on")}
+function hideCard(){CARD.on=false; $("card").classList.remove("on"); placeStatus()}
 function expandCard(){var c=$("card"); if(CARD.big) return; c.classList.add("swap");
   later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
@@ -991,7 +1004,7 @@ document.addEventListener("change",function(e){var el=e.target, i=+el.dataset.i;
   if(el.dataset.c==="role"){PEOPLE[i].role=+el.value; refresh()}
   if(el.dataset.c==="dept"){PEOPLE[i].dept=el.value}
   if(el.dataset.c==="tlob"){TPLS[i][2]=el.value; refresh()}
-  if(el.dataset.f!=null){PROFILE[+el.dataset.f][1]=el.value; refresh()}
+  if(el.dataset.f!=null){PROFILE[+el.dataset.f][1]=el.value} // saved quietly: a redraw here would swallow the next click
 });
 addEventListener("keydown",function(e){
   if(e.key==="Escape"){if(CARD.big) collapseCard(); else closeSheet()}
