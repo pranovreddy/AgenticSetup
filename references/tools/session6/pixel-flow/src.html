@@ -30,7 +30,7 @@ body.appon > .brand{opacity:0;pointer-events:none}
 .status.done i{animation:none;background:#7cf0b4}
 .status.attn i{animation:none;background:var(--amber)}
 .status.hid{opacity:0;pointer-events:none}
-@keyframes ping{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}100%{box-shadow:0 0 0 9px rgba(255,255,255,0)}}
+@keyframes ping{0%{box-shadow:0 0 0 0 var(--p1,rgba(255,255,255,.6))}100%{box-shadow:0 0 0 9px var(--p0,rgba(255,255,255,0))}}
 
 /* the agent speaks in the middle of the field */
 .stage{position:fixed;left:50%;top:47%;transform:translate(-50%,-50%);z-index:2;
@@ -113,7 +113,7 @@ body.appon > .brand{opacity:0;pointer-events:none}
 .prog b{display:block;width:22px;height:2px;border-radius:2px;background:rgba(255,255,255,.25);position:relative;overflow:hidden}
 .prog b:after{content:"";position:absolute;inset:0;background:#fff;transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .prog b.dn:after{transform:none}
-@keyframes pring{0%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}100%{box-shadow:0 0 0 8px rgba(255,255,255,0)}}
+@keyframes pring{0%{box-shadow:0 0 0 0 var(--r1,rgba(255,255,255,.45))}100%{box-shadow:0 0 0 8px var(--r0,rgba(255,255,255,0))}}
 @media (max-width:1199px){.prog li:not(.on) .lbl{display:none}.prog b{width:14px}}
 
 .toast{position:fixed;left:50%;bottom:76px;transform:translate(-50%,12px);z-index:20;background:#0a2a8f;color:#fff;
@@ -379,6 +379,51 @@ select.inp{height:36px;padding:0 8px}
 
 @media (max-width:820px){.lfacts>div{grid-template-columns:110px 1fr}.lfacts em{display:none}.facts>div{grid-template-columns:110px auto}.facts em{display:none}.fgrid{grid-template-columns:1fr}}
 @media (max-height:760px){.stage{top:45%}.pts{font-size:15px;gap:8px}.facts{gap:6px;margin-top:18px}.acts{margin-top:20px}}
+
+/* ===== Light theme (data-theme="light" on <html>): same page on a light sky field ===== */
+html[data-theme=light]{--p1:rgba(37,99,235,.45);--p0:rgba(37,99,235,0);--r1:rgba(11,55,201,.35);--r0:rgba(11,55,201,0)}
+html[data-theme=light],html[data-theme=light] body{background:#e6efff;color:var(--s-ink)}
+html[data-theme=light] .stage{text-shadow:0 0 26px rgba(255,255,255,.95),0 0 8px rgba(255,255,255,.7)}
+html[data-theme=light] .kick{opacity:1;color:var(--s-muted)}
+html[data-theme=light] .kick .att{color:var(--s-amber)}
+html[data-theme=light] .sub{opacity:1;color:var(--s-ink2)}
+html[data-theme=light] .ok{background:var(--deep);color:#fff}
+html[data-theme=light] .three span,html[data-theme=light] .more,html[data-theme=light] .note,html[data-theme=light] .need,html[data-theme=light] .cl-lbl{opacity:1;color:var(--s-ink2)}
+html[data-theme=light] .facts em{background:rgba(37,99,235,.1);color:var(--s-blue)}
+html[data-theme=light] .pts li:before{background:rgba(37,99,235,.12);color:var(--s-blue)}
+html[data-theme=light] .extra .btn{background:var(--s-blue);color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.28)}
+html[data-theme=light] .extra .btn.ghost{background:rgba(255,255,255,.75);color:var(--s-ink);border:1px solid #cdd8ee;box-shadow:none}
+html[data-theme=light] .extra .btn.link{background:none;color:var(--s-blue);box-shadow:none}
+html[data-theme=light] .clock div{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 8px 24px rgba(30,70,170,.1)}
+html[data-theme=light] .clock span{opacity:1;color:var(--s-muted)}
+
+html[data-theme=light] .status{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 6px 20px rgba(30,70,170,.12)}
+html[data-theme=light] .status i{background:var(--s-blue)}
+html[data-theme=light] .status.done i{background:var(--s-green)}
+html[data-theme=light] .status.attn i{background:#e9a23b}
+html[data-theme=light] .brand{background:rgba(255,255,255,.72);border-color:rgba(10,42,143,.14);box-shadow:0 10px 30px rgba(30,70,170,.14)}
+html[data-theme=light] .brand .bl{background:#fff}
+html[data-theme=light] .brand .me{box-shadow:0 0 0 3px rgba(37,99,235,.18)}
+html[data-theme=light] .prog{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:rgba(10,42,143,.55);box-shadow:0 10px 30px rgba(30,70,170,.14)}
+html[data-theme=light] .prog em{background:var(--deep);color:#fff}
+html[data-theme=light] .prog li i{border-color:rgba(10,42,143,.25);color:rgba(10,42,143,.55);background:transparent}
+html[data-theme=light] .prog li.on{color:var(--navy)}
+html[data-theme=light] .prog li.dn{color:var(--navy)}
+html[data-theme=light] .prog li.on i,html[data-theme=light] .prog li.dn i{background:var(--deep);border-color:var(--deep);color:#fff}
+html[data-theme=light] .prog b{background:rgba(10,42,143,.14)}
+html[data-theme=light] .prog b:after{background:var(--deep)}
+html[data-theme=light] .closes:not(.inapp){background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 10px 30px rgba(30,70,170,.14)}
+html[data-theme=light] .closes:not(.inapp) .ci{background:#eef1f7;color:#5b6b8c}
+html[data-theme=light] .closes:not(.inapp) small{color:#7a88a6}
+html[data-theme=light] .proto>button{color:var(--navy);background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.15)}
+html[data-theme=light] .card{box-shadow:0 26px 64px rgba(30,70,170,.24),0 0 0 1px rgba(10,42,143,.07)}
+/* the Agent summary stays a deeper blue so it stands out on the light field */
+html[data-theme=light] .asum{background:radial-gradient(90% 180% at 100% 0%,rgba(150,200,255,.5) 0%,rgba(150,200,255,0) 60%),linear-gradient(105deg,#1a3fc4 0%,#2f63e8 55%,#4d93f7 100%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.35),0 -8px 36px rgba(37,99,235,.35)}
+html[data-theme=light] .ahd{color:#fff}
+html[data-theme=light] .ahd img{filter:brightness(0) invert(1)}
+html[data-theme=light] .ast{color:#fff}
+html[data-theme=light] .asum:after{background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.25) 45%,transparent 60%);background-size:250% 100%}
 </style>
 </head>
 <body>
@@ -520,11 +565,13 @@ var sprites=[], glow;
 var L={};          // layout in cell units: cols, rows, cx, cy, tw, th
 var TINTS=6, SIZES=9;
 var GLYPH=/glyph=arrow/.test(location.hash)?"arrow":"tri";
+var LIGHT=document.documentElement.getAttribute("data-theme")==="light";
 
 function makeSprites(){
   var px=Math.ceil(cell*dpr); sprites=[];
   for(var t=0;t<TINTS;t++){
     var k=t/(TINTS-1), r=Math.round(255+(64-255)*k), g=Math.round(255+(112-255)*k), b=Math.round(255+(236-255)*k);
+    if(LIGHT){r=37;g=99;b=235}   // light theme: blue triangles on a light field
     var row=[];
     for(var s=0;s<SIZES;s++){
       var c=document.createElement("canvas"); c.width=c.height=px; var x=c.getContext("2d");
@@ -830,10 +877,12 @@ function show(id,at){if(SC.id===id&&at==null) return; PREV={id:SC.id,t0:SC.t0}; 
 
 function background(){
   var g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,"#0a33c2"); g.addColorStop(.5,"#2459e3"); g.addColorStop(1,"#2d63e8");
+  if(LIGHT){g.addColorStop(0,"#cfe0ff"); g.addColorStop(.55,"#e6efff"); g.addColorStop(1,"#f6f9ff")}
+  else{g.addColorStop(0,"#0a33c2"); g.addColorStop(.5,"#2459e3"); g.addColorStop(1,"#2d63e8")}
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   var cx=L.cx*cell, cy=L.cy*cell, r=Math.max(W,H)*.34, rg=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
-  rg.addColorStop(0,"rgba(8,38,170,.55)"); rg.addColorStop(1,"rgba(8,38,170,0)");
+  if(LIGHT){rg.addColorStop(0,"rgba(255,255,255,.85)"); rg.addColorStop(1,"rgba(255,255,255,0)")}
+  else{rg.addColorStop(0,"rgba(8,38,170,.55)"); rg.addColorStop(1,"rgba(8,38,170,0)")}
   ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
 }
 
@@ -863,7 +912,7 @@ function frame(now){
     ctx.drawImage(sprites[tint[j]][Math.min(SIZES-1,Math.floor(v*SIZES))][(x+y)&1],Math.round(x*cell*dpr),Math.round(y*cell*dpr));
   }
   ctx.globalCompositeOperation="lighter";
-  for(var j2=0;j2<N;j2++){var vv=val[j2]; if(vv<.45||tint[j2]>2) continue;
+  for(var j2=0;j2<N;j2++){var vv=val[j2]; if(LIGHT||vv<.45||tint[j2]>2) continue;
     ctx.globalAlpha=(vv-.45)*.1; ctx.drawImage(glow,(j2%cols)*cell*dpr+ps/2-gs/2,Math.floor(j2/cols)*cell*dpr+ps/2-gs/2)}
   ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
   requestAnimationFrame(frame);
@@ -1104,9 +1153,10 @@ function final(){
       '<div class="acts"><button class="btn" data-a="mig">Go to migration'+I("arrow")+'</button></div>',
     status:["Setup complete","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
   var end=Date.now()+30*864e5;
+  var clockSet=false;
   (function t(){var c=$("clock"); if(!c) return later(t,100); var s=Math.max(0,Math.floor((end-Date.now())/1000));
     c.innerHTML=[[Math.floor(s/86400),"days"],[Math.floor(s/3600)%24,"hrs"],[Math.floor(s/60)%60,"mins"]].map(function(x){return '<div><b>'+String(x[0]).padStart(2,"0")+'</b><span>'+x[1]+'</span></div>'}).join("");
-    later(t,1000)})();
+    if(!clockSet){clockSet=true; measure()} later(t,1000)})();
 }
 
 /* 6 · the product: Consent Migration page, then the first-visit walkthrough (four cards) */
