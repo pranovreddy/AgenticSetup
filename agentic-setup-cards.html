@@ -3060,15 +3060,15 @@ function renderHeroTasks(i, show, checks, key) {
   const cur = Math.min(Math.max(0, (S.cards[i].step || 1) - 1), Math.max(0, n - 1));
   if (heroTasksFor !== taskKey) {
     heroTasksFor = taskKey; heroTasksStep = -1;
-    box.innerHTML = `<div class="ht-track">${list.map((c, k) =>
+    /* a blank row before and after, so the active line always sits in the middle row, even on the first and last step */
+    box.innerHTML = `<div class="ht-track"><li class="blank" aria-hidden="true"></li>${list.map((c, k) =>
       `<li data-t="${k}"><span class="tx">${esc(c[0])}</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></li>`
-    ).join("")}</div>`;
+    ).join("")}<li class="blank" aria-hidden="true"></li></div>`;
   }
   if (heroTasksStep === cur) return; heroTasksStep = cur;
-  const start = n <= 3 ? 0 : Math.max(0, Math.min(cur - 1, n - 3));
   const track = $(".ht-track", box);
-  if (track) track.style.transform = `translateY(${-start * 30}px)`;
-  $$("li", box).forEach((li, k) => li.classList.toggle("focus", k === cur));
+  if (track) track.style.transform = `translateY(${-cur * 30}px)`;
+  $$("li[data-t]", box).forEach((li) => li.classList.toggle("focus", +li.dataset.t === cur));
 }
 function tbSync() {
   const c = tband(), ph = S.phase, on = ph === "analyse" || ph === "review";

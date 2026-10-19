@@ -454,3 +454,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.31 Cards (user file) — brand logo in the Agent summary chip
 - The chip's blob is replaced by the brand logo (the same image as the top-left rail logo, copied from `.hdr .mk img` when the left panel is built).
+
+### 8f.32 Cards (user file) — active line always centred
+- Left panel task list: blank rows before and after the list, so the active line always sits in the middle row, including the first and last step (previously the last step slid to the bottom row).
