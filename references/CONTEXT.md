@@ -575,3 +575,5 @@ In `agentic-setup-cards-ux.html` (built by `references/tools/session5/deck-enhan
 Skipped steps on the finished page (UX copy) are light blue (`.cardf.s-skipped`) with dark blue text, instead of grey. Note 8f.62 also covers the review text floor.
 
 Focus card height lowered from 90vh to 80vh (8f.62).
+
+Focus card height lowered again, from 80vh to 70vh (8f.62).

@@ -60,7 +60,7 @@ sub('''  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_P
     if (S.phase !== "review") return [1000, base];
     const sr = stage.getBoundingClientRect(), LPx = document.body.classList.contains("has-tband") ? Math.min(400, sr.width * .28) : 0;
     const fw = Math.max(0.42, Math.min(1.14, (sr.width - LPx - 56 - (document.body.classList.contains("has-tband") ? 40 : 0)) / 1000));
-    return [1000, Math.max(base, Math.round(innerHeight * .8 / fw))];
+    return [1000, Math.max(base, Math.round(innerHeight * .7 / fw))];
   }''')
 sub("let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah,", "let f = Math.max(0.42, Math.min(1.14, (S.phase === \"review\" ? 1e9 : r.height - 40) / ah,")
 sub("(r.width - LP - (AN ? 220 : 32) - (TB ?", "(r.width - LP - (AN ? 220 : (S.phase === \"review\" ? 56 : 32)) - (TB ?")
