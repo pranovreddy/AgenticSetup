@@ -540,3 +540,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - GTM: the "I accept the rate card terms" tick moved into the bottom bar, beside the buttons.
 - The "Details" button is now "View and edit" on every review card.
 - Templates: "Do it later" beside Confirm mapping; saving for later marks the step as later and does not block the finish.
+
+### 8f.55 Cards (user file) — smaller finished page
+- Finished page: card row about 22% smaller, header tick and title smaller, and the countdown block has no panel behind it (no background, border, shadow or blur).

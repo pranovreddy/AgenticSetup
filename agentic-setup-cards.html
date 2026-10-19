@@ -1914,6 +1914,10 @@ body.ph-review.has-tband .card:not(.is-focus),body.has-tband:not(.arc-mode) .car
 .btree .blobs .lob{ padding:8px 14px; }
 .htree > li:after{ top:19px; }
 .ctbl .who small{ margin-top:2px }
+/* finished page: no panel behind the countdown, tighter header */
+body.phase-finale .finale{ background:transparent!important; border:0!important; box-shadow:none!important; backdrop-filter:none!important; padding:0!important; }
+body.phase-finale .ah-ok{ width:56px!important; height:56px!important; } body.phase-finale .ah-ok svg{ width:28px!important; height:28px!important; }
+body.phase-finale .ah h1{ font-size:28px!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2648,7 +2652,7 @@ function layout() {
       const vw = Math.min(r.width || window.innerWidth, window.innerWidth);
       const vh = window.innerHeight, pack = vh < 760 ? 300 : 430;   /* header and countdown panel take this much height */
       f = Math.min(0.96, (vw / (5 * CW * so + 4 * g + 100)) * 1.2, Math.max(120, vh - pack) / (CH * so));
-      f = Math.max(f, 0.16);
+      f = Math.max(f * 0.78, 0.14);   /* a smaller card row */
       cardH = CH * so * f;
       pitch = (CW * so + g) * f;
       stage.style.setProperty("--fin-stage", `${Math.round(cardH + 16)}px`);
