@@ -391,3 +391,9 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - agentic-setup-cards.html: scene inside the front card has no border and is larger (cards 392 wide); non-focus ring cards blurred 2.2px (comments 93af4284, fd63aba1).
 
 - agentic-setup-cards.html: ring moved up; ready-for-review screen keeps the same ring turning slowly on the dark sides (ringIdleStart, class arc-idle); checklist removed from the white card; card 450x540 with a larger scene (318 px high) and a bigger live caption + progress bar under it (comments f2f60362, fe9fadec, 2bc33772). Scenes themselves are still the landscape product scenes; a true portrait recomposition would mean rebuilding each of the five scene layouts in LOADER_DOC.
+
+### 8f.14 Cards (user file) — portrait loader scenes
+- `agentic-setup-cards.html`: the ring's white front card is now taller (ring card 450x650, `.ld` 470px). The five product scenes (kyc, team, brand, gtm, match) were recomposed as portrait 360x410 stages instead of scaling the landscape ones, so elements use height rather than width.
+- A second embedded doc `LOADER_DOC_P` (built by `references/tools/session5/deck-enhanced/portrait.py` from the original `LOADER_DOC`) is used only by `playLoader`; the review-step `kycv` scene still uses the landscape `LOADER_DOC`.
+- kyc/brand: sources in a row on top, agent under them, result card below. team: registry on top, 2x2 people, invite list as a row of three. gtm: 2x2 partners, allocation and summary side by side below. match: stream | agent | lanes as three tall columns.
+- `ptest.js` renders one scene standalone at 360x410 for checking.
