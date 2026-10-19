@@ -2842,7 +2842,7 @@ function layout() {
   }
   const [aw, ah] = dims(S.active);
   const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .28) : 0, TH = 56, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
-  let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
+  let f = Math.max(0.42, Math.min(1.14, (S.phase === "review" ? innerHeight * .8 : r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
     const off = i - S.active, a = Math.min(Math.abs(off), 4), dir = Math.sign(off);

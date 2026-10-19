@@ -75,6 +75,8 @@ sub("window.__deck = { opening,", """const MIN_FONT = 16; let fzQ = 0;
 function bumpFonts() { fzQ = 0; document.querySelectorAll(".card [data-review] *").forEach((e) => { if (e.dataset.fz || !([...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))) return; e.dataset.fz = 1; if (parseFloat(getComputedStyle(e).fontSize) < MIN_FONT) e.style.setProperty("font-size", `${MIN_FONT}px`, "important"); }); }
 new MutationObserver(() => { if (!fzQ) fzQ = requestAnimationFrame(bumpFonts); }).observe(document.getElementById("stage"), { childList: true, subtree: true, characterData: true });
 window.__deck = { opening,""")
+# review focus card: 80% of the window height (scale follows the card's content height)
+sub("let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah,", "let f = Math.max(0.42, Math.min(1.14, (S.phase === \"review\" ? innerHeight * .8 : r.height - 40) / ah,")
 (root / "agentic-setup-cards-ux.html").write_text(h)
 print("ok", len(h))
 
