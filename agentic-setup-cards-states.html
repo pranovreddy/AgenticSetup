@@ -2129,6 +2129,8 @@ body.deep-ro .deep-bar [data-dact]:not([data-dact="close"]){ display:none; }
 .c-head .status.ux-chip{ display:inline-flex!important; position:absolute; right:168px; top:12px; height:30px; padding:0 12px; border-radius:99px; font-size:14px; }
 
 .cardf .cf-st.ux{ font-size:12px; height:26px; padding:0 9px; } body.phase-finale .cardf .cf-st.ux{ font-size:16px; height:34px; padding:0 14px; } body.phase-finale .cardf .cf-st.ux svg{ width:16px; height:16px; }
+
+.c-head .status.ux-chip.ux-hide{ display:none!important; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -4245,7 +4247,7 @@ function uxStat(i) {
 }
 function uxChip(i) {
   const el = card(i); if (!el) return; const k = uxStat(i), [n, c, b] = UXS[k], st = $("[data-status]", el); if (!st) return;
-  st.className = "status ux-chip"; st.style.setProperty("--c", c); st.style.setProperty("--b", b);
+  st.className = "status ux-chip" + (k === "ready" ? " ux-hide" : ""); st.style.setProperty("--c", c); st.style.setProperty("--b", b);
   st.innerHTML = `${k === "preparing" ? uxI(k).replace("<svg ", '<svg class="spin" ') : uxI(k)}${n}`;
 }
 const _ss = setStatus; setStatus = function (i) { _ss(i); uxChip(i); };

@@ -26,7 +26,7 @@ function uxStat(i) {
 }
 function uxChip(i) {
   const el = card(i); if (!el) return; const k = uxStat(i), [n, c, b] = UXS[k], st = $("[data-status]", el); if (!st) return;
-  st.className = "status ux-chip"; st.style.setProperty("--c", c); st.style.setProperty("--b", b);
+  st.className = "status ux-chip" + (k === "ready" ? " ux-hide" : ""); st.style.setProperty("--c", c); st.style.setProperty("--b", b);
   st.innerHTML = `${k === "preparing" ? uxI(k).replace("<svg ", '<svg class="spin" ') : uxI(k)}${n}`;
 }
 const _ss = setStatus; setStatus = function (i) { _ss(i); uxChip(i); };
