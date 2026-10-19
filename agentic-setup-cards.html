@@ -1601,10 +1601,10 @@ body.agent-on.has-tband .card.is-focus .card-in{ box-shadow:0 0 0 1.5px rgba(104
 .clobs{ display:flex; flex-wrap:wrap; gap:5px; }
 
 /* ---- AI processing: the five cards form a curved glass wall; the scene plays above it ---- */
-body.v3b.arc-mode .card .card-in{ transform:rotateY(180deg)!important; }
-body.v3b.arc-mode .card .cardf{ transform:rotateY(360deg)!important; }
-body.v3b.arc-mode .card.is-prim .card-in{ transform:rotateY(0deg)!important; background:#fff!important; }
-body.v3b.arc-mode .card.is-prim .cardf{ transform:rotateY(180deg)!important; }
+/* the flip follows the ring's position, so the front card turns white smoothly as it arrives; its details appear only once it has settled */
+body.v3b.arc-mode .card .card-in{ transform:rotateY(var(--flip,180deg))!important; background:#fff!important; transition:none!important; }
+body.v3b.arc-mode .card .cardf{ transform:rotateY(calc(var(--flip,180deg) + 180deg))!important; transition:none!important; }
+body.arc-mode .card .card-in .c-head,body.arc-mode .card .card-in [data-analyse]{ opacity:var(--cc,0); }
 body.arc-mode.has-tband .card:not(.is-focus){ opacity:1!important; }
 body.arc-mode.arc-idle .card:not(.is-focus){ filter:none!important; opacity:1!important; }
 body.arc-mode .card:not(.is-focus){ filter:blur(2.2px) saturate(.92)!important; }
@@ -2284,6 +2284,8 @@ function ringPaint() {
     let d = i - RING.pos; d = (((d + 2.5) % 5) + 5) % 5 - 2.5;
     const a = d * 72, ar = a * Math.PI / 180, ca = Math.cos(ar), sa = Math.sin(ar);
     const face = (Math.abs(a) <= 90 ? a : a - 180 * Math.sign(a)) * .6, tl = Math.abs(RING_TILT) * Math.PI / 180;
+    const w0 = Math.min(1, Math.abs(d) / .6), flip = RING.idle ? 180 : 180 * w0 * w0 * (3 - 2 * w0), cc = RING.idle ? 0 : Math.max(0, (.28 - Math.abs(d)) / .28);
+    el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3));
     size(el, cw, ch);
     /* the circle is seen from slightly above: depth moves a card up or down, the card itself stays upright */
     el.style.transform = `translate3d(${R * sa * f + g.LPa / 2}px, ${g.cy + R * ca * f * Math.sin(tl)}px, ${R * ca * f * Math.cos(tl)}px) rotateY(${face}deg) rotateZ(0deg) scale(${f})`;

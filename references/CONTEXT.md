@@ -415,3 +415,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - Focus card: no backdrop blur; the lock veil on locked steps is a plain light overlay (no blur); the staggered "materialize" entrance no longer uses blur (it left list items looking blurred).
 - Business profile review form: larger logo, labels and fields (50px) so it fills the card.
 - Step ready state (after processing): bigger success mark, a stats row (sources read, checks done, step to review), the crisp timeline, and a "Next" hint with the action for that step.
+
+### 8f.20 Cards (user file) — smoother ring flip
+- The ring's card flip now follows the ring position (`--flip` set per card in `ringPaint`, eased) instead of snapping when a card becomes primary. A card's header and details fade in only once it has settled at the front (`--cc`), so nothing busy shows while it turns. The idle ring stays on the dark face.
