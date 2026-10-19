@@ -488,3 +488,8 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 ### 8f.40 C2P2: the real loader animations on the right
 - The processing surface now plays the product loader scenes (same `LOADER_DOC` as the cards deck, landscape, sped up 1.7x, cropped with the cards deck's `LD_BOX` boxes) in an iframe on the right: kyc for Business profile, team, brand, gtm, match. The hand-written live fills were removed.
 - Scene step messages drive the tab bar and the console checklist; a scene ends on its own (7.6 s limit) and the next tab starts. The Brands scene uses placeholder shapes instead of "Brand A / Product line n". Reduced motion skips the scene and just advances.
+
+### 8f.41 Cards (user file) — processing as a card stack (from the user's screen recording)
+- Replaced the 3D ring during AI processing with the stack from the recording: the open step is one tall card; upcoming steps wait above it as narrowing dark pills (title + "Queued"), finished steps settle below it as pills (title + result with a green tick). When a step finishes its card shrinks into a pill and the next pill grows into the open card (width, height and position transition together; the white card fades in after it has expanded, then the scene starts).
+- Code: `stackPaint()` and `body.stack-mode`, a `.pillf` face added to every card, `fitScene` uses fixed card dimensions while the stack is on. The ring is kept for the idle "ready for review" screen (the stack hands over to it when processing ends).
+- Backup before the change: /tmp/bd/cards_pre_stack.html (not in the repo).

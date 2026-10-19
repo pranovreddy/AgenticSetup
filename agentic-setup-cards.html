@@ -1800,6 +1800,21 @@ body.dk-6 .cf-art svg{ --ig2:#e4f1ff; --igo:.3; --igs:#fff; --igg:#bfe0ff; filte
 .bcard .lobrow::after,.bcard .addlob::after{ content:""; position:absolute; left:-22px; top:-8px; bottom:-8px; border-left:2px solid #d5e0f7; }
 .bcard .lobrow:first-of-type::after{ top:-14px; }
 .bcard > :last-child::after{ bottom:auto; height:calc(50% + 8px); }
+/* ---- processing stack: one open card, the rest as pills above and below ---- */
+.pillf{ position:absolute; inset:0; z-index:5; display:flex; align-items:center; gap:12px; padding:0 22px 0 14px; border-radius:99px; color:#fff; opacity:0; pointer-events:none; transition:opacity .25s;
+  background:radial-gradient(120% 220% at 50% -90%,rgba(110,150,255,.7),transparent 62%),linear-gradient(180deg,#1b2b72,#0f1744);
+  box-shadow:0 0 0 1px rgba(150,180,255,.38) inset,0 -10px 22px -10px rgba(90,130,255,.85) inset,0 16px 28px -14px rgba(8,16,70,.7); }
+.pillf .pf-i{ width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.14); flex:none } .pillf .pf-i svg{ width:16px; height:16px }
+.pillf b{ font-size:16px; font-weight:600; letter-spacing:-.01em; white-space:nowrap }
+.pillf .pf-r{ margin-left:auto; display:inline-flex; align-items:center; gap:7px; font-size:14px; font-weight:500; color:rgba(220,232,255,.85); white-space:nowrap }
+.pillf .pf-ok{ display:grid; place-items:center; width:20px; height:20px; border-radius:50%; background:#34d399; color:#06351f } .pillf .pf-ok svg{ width:12px; height:12px; stroke-width:3.2 }
+body.stack-mode .card.is-pill .pillf{ opacity:1; transition-delay:.35s }
+body.stack-mode .card.is-pill .card-in,body.stack-mode .card.is-pill .cardf{ opacity:0!important; transition:opacity .22s!important; pointer-events:none }
+body.stack-mode .card:not(.is-pill) .card-in{ opacity:1; transition:opacity .35s .45s }
+body.stack-mode.arc-mode .card,body.stack-mode.arc-mode .card:not(.is-focus){ filter:none!important; }
+body.stack-mode .card.is-pill{ opacity:1!important; }
+body.stack-mode .card{ transition:transform .9s cubic-bezier(.22,1,.36,1),width .9s cubic-bezier(.22,1,.36,1),height .9s cubic-bezier(.22,1,.36,1),margin .9s cubic-bezier(.22,1,.36,1)!important; }
+body.stack-mode .card.is-pill .card-in{ box-shadow:none!important }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -2326,6 +2341,7 @@ function buildCards() {
       <div class="pane pane-r" data-review></div>
       <div class="mini"><div class="m-ic">${IC[s.key]}<span class="m-badge"><span class="b-un">${IC.unlock}</span><span class="b-ok">${IC.check}</span></span></div><div class="m-t">${esc(s.title)}</div><div class="m-s" data-mini>Queued</div></div>
     </div>`;
+    el.insertAdjacentHTML("beforeend", `<div class="pillf" aria-hidden="true"><span class="pf-i">${IC[s.key]}</span><b>${esc(s.title)}</b><span class="pf-r" data-pmini>Queued</span></div>`);
     stage.appendChild(el);
     renderAnalyse(i);
   });
@@ -2352,6 +2368,7 @@ function setStatus(i) {
   let m = mini;
   if (c.st === "done" || c.st === "inreview" || c.st === "later") m = doneMini(i);
   if (c.st === "ready" || c.st === "review") m = lockedNow ? "Locked" : STEPS[i].mini;
+  { const pm = $("[data-pmini]", el); if (pm) pm.innerHTML = (c.st === "done" || c.st === "ready" ? `<i class="pf-ok">${IC.check}</i>` : "") + esc(m); }
   $("[data-mini]", el).innerHTML = (c.st === "done" ? `<span style="color:var(--green)">${IC.check}</span>` : "") + esc(m);
   el.className = el.className.replace(/\bst-\S+/g, "").trim() + ` st-${c.st === "inreview" || c.st === "later" ? "done" : c.st}`;
 }
@@ -2407,7 +2424,8 @@ function capStep(i, n) {
 function fitScene(ld, box) {
   const crop = $(".ld-crop", ld), fr = $("iframe", ld);
   const [x0, y0, x1, y1] = box, bw = x1 - x0, bh = y1 - y0;
-  const W0 = ld.clientWidth || AW - 40, H0 = ld.clientHeight || 300;
+  const sk = document.body.classList.contains("stack-mode");
+  const W0 = sk ? 446 : (ld.clientWidth || AW - 40), H0 = sk ? 470 : (ld.clientHeight || 300);
   const s = Math.min((W0 - (document.body.classList.contains("arc-mode") ? 8 : 24)) / bw, (H0 - 20) / bh, document.body.classList.contains("arc-mode") ? 1.5 : 1.1);
   crop.style.width = `${bw * s}px`; crop.style.height = `${bh * s}px`;
   crop.style.marginLeft = `${(-bw * s) / 2}px`; crop.style.marginTop = `${(-bh * s) / 2}px`;
@@ -2453,7 +2471,7 @@ function ringIdleStart() {
   if (RM) { ringPaint(); return; }
   RING.raf = requestAnimationFrame(tick);
 }
-function arcOff() { RING.idle = false; document.body.classList.remove("arc-mode", "arc-live", "arc-idle"); cancelAnimationFrame(RING.raf); RING.raf = 0; cards().forEach((el) => el.classList.remove("is-prim")); const t = $("#topLd"); if (t) topLdShow(false); }
+function arcOff() { RING.idle = false; document.body.classList.remove("arc-mode", "arc-live", "arc-idle", "stack-mode"); cards().forEach((c) => c.classList.remove("is-pill")); cancelAnimationFrame(RING.raf); RING.raf = 0; cards().forEach((el) => el.classList.remove("is-prim")); const t = $("#topLd"); if (t) topLdShow(false); }
 const playLoader = (i, run) => runScene($(".ld", card(i)), STEPS[i].loader, LD_BOX_P, run, (n) => capStep(i, Math.max(S.cards[i].step, n)), undefined, 7600, LOADER_DOC_P);
 
 /* ---------- The 3D ring: five cards on a circle that turns to bring the next step to the front ---------- */
@@ -2484,6 +2502,35 @@ function ringPaint() {
     if (Math.abs(d) < pd) { pd = Math.abs(d); prim = i; }
   });
   all.forEach((el, i) => { const on = i === prim && pd < .5 && !RING.idle; el.classList.toggle("is-prim", on); el.classList.toggle("is-focus", on); });
+}
+/* Processing: the open step is one tall card; upcoming steps wait above it as pills, finished ones settle below it. */
+function stackPaint() {
+  const r = stage.getBoundingClientRect(), all = cards();
+  const LPa = Math.min(400, r.width * .28), cw = 450, ch = 650, P = 52, STEP = 20, GAP = 10;
+  const Ht = ch + 2 * (GAP + P + 3 * STEP);
+  const f = Math.max(.34, Math.min(.94, (r.height - 24) / Ht, (r.width - LPa - 60) / (cw + 40)));
+  const act = S.active, cy = -(Ht * f) / 2 + (GAP + P + 3 * STEP + ch / 2) * f;
+  window.__ringOut = 1;
+  all.forEach((el, i) => {
+    const k = i - act, a = Math.abs(k);
+    const pill = k !== 0;
+    el.classList.toggle("is-pill", pill);
+    el.classList.toggle("is-prim", !pill); el.classList.toggle("is-focus", !pill);
+    el.classList.remove("is-far", "is-right", "is-clickable");
+    el.style.setProperty("--flip", "0deg"); el.style.setProperty("--cc", pill ? 0 : 1); el.style.setProperty("--o", 1);
+    let w = cw, h = ch, y = cy, s = f, z = 40;
+    if (pill) {
+      w = cw - 56 - (a - 1) * 44; h = P;
+      const off = (ch / 2 + GAP + P / 2 + (a - 1) * STEP) * f;
+      y = cy + (k < 0 ? 1 : -1) * off * (k < 0 ? 1 : 1);
+      s = f * (1 - (a - 1) * .05); z = 40 - a;
+      if (k > 0) y = cy - off; else y = cy + off;
+    }
+    size(el, w, h);
+    el.style.transitionDelay = "";
+    el.style.transform = `translate3d(${LPa / 2}px, ${y}px, 0px) rotateY(0deg) rotateZ(0deg) scale(${s})`;
+    el.style.opacity = 1; el.style.zIndex = z;
+  });
 }
 function ringTo(idx) {
   RING.target = idx; cancelAnimationFrame(RING.raf);
@@ -2574,7 +2621,7 @@ function layout() {
   }
   if (window.__ringOut) { window.__ringOut = 0; all.forEach((el, i) => { el.style.transitionDelay = `${Math.abs(i - S.active) * 80}ms`; }); setTimeout(() => all.forEach((el) => { el.style.transitionDelay = ""; }), 1600); }
   if (document.body.classList.contains("arc-mode") && ((S.phase === "analyse" && !document.body.classList.contains("all-closed")) || RING.idle)) {
-    if (RING.idle) { if (!RING.raf) ringPaint(); } else if (RING.target !== S.active) ringTo(S.active); else if (!RING.raf) ringPaint();
+    if (RING.idle) { document.body.classList.remove("stack-mode"); cards().forEach((c) => c.classList.remove("is-pill")); if (!RING.raf) ringPaint(); } else { document.body.classList.add("stack-mode"); stackPaint(); }
     return;
   }
   const [aw, ah] = dims(S.active);
@@ -2694,7 +2741,7 @@ async function analyse(run, go) {
     head("Onboarding Agent · working", `${i + 1} of 5`, "Preparing your setup", s.checks[0][0], true, s.title); procCap(`Preparing step ${i + 1} of 5 · ${s.title}`);
     layout();
     capStep(i, 1);
-    await W(300); if (run !== S.runId) return;
+    await W(i === 0 ? 700 : 1000); if (run !== S.runId) return;
     await playLoader(i, run); if (run !== S.runId) return;
     capStep(i, s.checks.length); $$(".segs i", el).forEach((x) => { x.classList.add("on"); x.classList.remove("cur"); });
     await W(400); if (run !== S.runId) return;
