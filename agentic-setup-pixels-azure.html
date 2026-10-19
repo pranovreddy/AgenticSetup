@@ -578,9 +578,10 @@ var LIGHT=document.documentElement.getAttribute("data-theme")==="light", AZURE=d
 
 function makeSprites(){
   var px=Math.ceil(cell*dpr); sprites=[];
-  for(var t=0;t<TINTS;t++){
-    var k=t/(TINTS-1), r=Math.round(255+(64-255)*k), g=Math.round(255+(112-255)*k), b=Math.round(255+(236-255)*k);
+  for(var t=0;t<TINTS+(AZURE?1:0);t++){
+    var k=Math.min(1,t/(TINTS-1)), r=Math.round(255+(64-255)*k), g=Math.round(255+(112-255)*k), b=Math.round(255+(236-255)*k);
     if(LIGHT){r=37;g=99;b=235}   // light theme: blue triangles on a light field
+    if(AZURE&&t===TINTS){r=255;g=176;b=32}   // azure theme: the lit triangles are amber
     var row=[];
     for(var s=0;s<SIZES;s++){
       var c=document.createElement("canvas"); c.width=c.height=px; var x=c.getContext("2d");
@@ -606,7 +607,7 @@ function makeSprites(){
   }
   var gs=Math.ceil(cell*dpr*3); glow=document.createElement("canvas"); glow.width=glow.height=gs;
   var gx=glow.getContext("2d"), gr=gx.createRadialGradient(gs/2,gs/2,0,gs/2,gs/2,gs/2);
-  gr.addColorStop(0,"rgba(190,215,255,.9)"); gr.addColorStop(1,"rgba(190,215,255,0)");
+  gr.addColorStop(0,AZURE?"rgba(255,196,100,.9)":"rgba(190,215,255,.9)"); gr.addColorStop(1,AZURE?"rgba(255,196,100,0)":"rgba(190,215,255,0)");
   gx.fillStyle=gr; gx.fillRect(0,0,gs,gs);
 }
 
@@ -926,10 +927,13 @@ function frame(now){
     val[j]+=(target-val[j])*Math.min(1,k*spd[j]);
     var v=clamp(val[j],0,1);
     var amb=(.13+.11*ambR[j]+wave*(.08*Math.sin((x-y)*.21-tt*1.5)+.05*Math.sin(x*.06+y*.04+tt*.4)))*hole[j];
-    var a=amb*(1-v)+v*(.58+.1*hash(j+Math.floor(tt*6)));
+    var lit=v*(.58+.1*hash(j+Math.floor(tt*6))), a=amb*(1-v)+lit;
     if(a<.025) continue;
-    ctx.globalAlpha=a;
-    ctx.drawImage(sprites[tint[j]][Math.min(SIZES-1,Math.floor(v*SIZES))][(x+y)&1],Math.round(x*cell*dpr),Math.round(y*cell*dpr));
+    var sz=sprites[tint[j]][Math.min(SIZES-1,Math.floor(v*SIZES))][(x+y)&1], dx=Math.round(x*cell*dpr), dy=Math.round(y*cell*dpr);
+    if(AZURE&&v>.04){ // azure: quiet grid stays white, the lit triangles are amber
+      if(amb*(1-v)>.025){ctx.globalAlpha=amb*(1-v); ctx.drawImage(sz,dx,dy)}
+      ctx.globalAlpha=Math.min(1,lit*1.5); ctx.drawImage(sprites[TINTS][Math.min(SIZES-1,Math.floor(v*SIZES))][(x+y)&1],dx,dy);
+    }else{ctx.globalAlpha=a; ctx.drawImage(sz,dx,dy)}
   }
   ctx.globalCompositeOperation="lighter";
   for(var j2=0;j2<N;j2++){var vv=val[j2]; if(LIGHT||vv<.45||tint[j2]>2) continue;
