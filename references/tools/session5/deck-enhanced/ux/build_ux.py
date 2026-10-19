@@ -21,6 +21,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .doc-foot span{ color:#475066; }
 .q-note,.gate-meta,.ah-k .n{ color:#5d6780; }
 body.phase-finale .cf-mid h3{ font-size:31px; } body.phase-finale .cf-res{ font-size:25px; opacity:1; }
+/* review: step label and the side cards on the right are readable */
+.card .c-head .c-n{ font-size:16px; } .card [data-review] input:not([type=checkbox]),.card [data-review] select,.card [data-review] textarea{ font-size:16px!important; }
+body.ph-review .cf-v{ width:90px; gap:16px; } body.ph-review .cf-v b{ font-size:34px; } body.ph-review .cf-v em{ font-size:20px; opacity:1; } body.ph-review .cf-st{ font-size:19px; height:38px; }
 body.phase-finale .cf-st{ font-size:16px; height:34px; }
 @media (max-width:1180px){ .rdl{ left:92px; width:min(300px,28%); } .rdl h2{ font-size:29px; } .rdl p{ font-size:14px; } }
 @media (max-width:860px){
@@ -44,5 +47,24 @@ body.phase-finale .cf-st{ font-size:16px; height:34px; }
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', CSS + '<script>document.body.classList.add("dk-6","lt-1");</script>')
 sub("const LPa = (document.body.classList.contains(\"has-tband\") || RING.idle) ? Math.min(400, r.width * .28) : 0;",
     "const LPa = (innerWidth <= 860) ? 0 : (document.body.classList.contains(\"has-tband\") || RING.idle) ? Math.min(400, r.width * (r.width < 1180 ? .36 : .28)) : 0;")
+
+# focus card: 90vh tall. The scale stays width-limited, so the card grows in height, not in text size.
+sub('''  if (S.mode === "focus") return [1000, STEPS[i].key === "profile" ? RH_PROFILE : STEPS[i].key === "team" ? 720 : RH];''',
+'''  if (S.mode === "focus") {
+    const base = STEPS[i].key === "profile" ? RH_PROFILE : STEPS[i].key === "team" ? 720 : RH;
+    if (S.phase !== "review") return [1000, base];
+    const sr = stage.getBoundingClientRect(), LPx = document.body.classList.contains("has-tband") ? Math.min(400, sr.width * .28) : 0;
+    const fw = Math.max(0.42, Math.min(1.14, (sr.width - LPx - 56 - (document.body.classList.contains("has-tband") ? 40 : 0)) / 1000));
+    return [1000, Math.max(base, Math.round(innerHeight * .9 / fw))];
+  }''')
+sub("let f = Math.max(0.42, Math.min(1.14, (r.height - 40) / ah,", "let f = Math.max(0.42, Math.min(1.14, (S.phase === \"review\" ? 1e9 : r.height - 40) / ah,")
+sub("(r.width - LP - (AN ? 220 : 32) - (TB ?", "(r.width - LP - (AN ? 220 : (S.phase === \"review\" ? 56 : 32)) - (TB ?")
+
+# review cards: smallest text 10px -> 16px (+6). Each text element below the floor is raised to it; larger text keeps its size.
+sub("window.__deck = { opening,", """const MIN_FONT = 16; let fzQ = 0;
+function bumpFonts() { fzQ = 0; document.querySelectorAll(".card [data-review] *").forEach((e) => { if (e.dataset.fz || !([...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))) return; e.dataset.fz = 1; if (parseFloat(getComputedStyle(e).fontSize) < MIN_FONT) e.style.setProperty("font-size", `${MIN_FONT}px`, "important"); }); }
+new MutationObserver(() => { if (!fzQ) fzQ = requestAnimationFrame(bumpFonts); }).observe(document.getElementById("stage"), { childList: true, subtree: true, characterData: true });
+window.__deck = { opening,""")
 (root / "agentic-setup-cards-ux.html").write_text(h)
 print("ok", len(h))
+
