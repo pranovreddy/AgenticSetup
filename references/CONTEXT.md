@@ -431,3 +431,6 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 
 ### 8f.24 Cards (user file) — Brands scene tag as icon
 - The "Enterprise" text tag in the Brands scene is now an icon-only pill.
+
+### 8f.25 Cards (user file) — card style switcher (5 dark, 5 light)
+- A switcher at the top centre picks the dark face (Now, Aurora, Editorial, Neon, Brand, Graphite) and the light face (Now, Porcelain, Tinted, Neo-ink, Frost, Spine). It sets `body.dk-N` / `body.lt-N` and remembers the choice in localStorage. "Now" is the previous look. All skins are CSS overrides at the end of the main stylesheet ("CARD SKINS" block).

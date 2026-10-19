@@ -1647,6 +1647,106 @@ body.arc-mode .card.is-analysing .cardf{ box-shadow:0 0 0 1.5px rgba(140,185,255
 
 /* a hidden agent column must never catch clicks (it sat over the Start and Review buttons after a jump) */
 .tband:not(.on),.tband:not(.on) *{ pointer-events:none!important; }
+/* ============ CARD SKINS: five dark faces, five light faces (switcher at the top) ============ */
+.skinsw{ position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:80; display:flex; align-items:center; gap:14px; padding:6px 8px 6px 14px; border-radius:99px; background:rgba(255,255,255,.86); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 0 0 1px rgba(180,196,235,.6),0 12px 28px -14px rgba(30,60,150,.4); font:600 11px/1 var(--font); color:#52607d; }
+.skinsw .grp{ display:flex; align-items:center; gap:4px; }
+.skinsw .lab{ letter-spacing:.07em; text-transform:uppercase; font-size:10px; margin-right:4px; color:#7a879e; }
+.skinsw button{ height:26px; min-width:26px; padding:0 9px; border:0; border-radius:99px; background:transparent; color:#52607d; font:600 11.5px/1 var(--font); cursor:pointer; transition:background .2s,color .2s; }
+.skinsw button:hover{ background:rgba(63,110,246,.1); }
+.skinsw button.on{ background:#1d2b64; color:#fff; }
+.skinsw .sep{ width:1px; height:18px; background:#d7def0; }
+.skinsw .nm{ min-width:76px; color:#1d2b64; font-weight:650; }
+@media (max-width:900px){ .skinsw .nm{ display:none; } .skinsw{ gap:8px; padding-left:10px; } }
+
+/* ---- common reset for any dark skin ---- */
+body[class*="dk-"] .cardf,body[class*="dk-"] .cardf.s-queued,body[class*="dk-"] .cardf.s-locked,body[class*="dk-"] .cardf.s-done{ -webkit-backdrop-filter:none!important; backdrop-filter:none!important; }
+body[class*="dk-"] .cardf::after{ opacity:.0!important; animation:none!important; }
+body[class*="dk-"] .cardf.s-locked{ filter:saturate(.35) brightness(.8); }
+
+/* DARK 1 · Aurora: near-black with a blurred violet/teal aurora and a gradient ring */
+body.dk-1 .cardf,body.dk-1 .cardf.s-queued,body.dk-1 .cardf.s-locked,body.dk-1 .cardf.s-done{
+  background:radial-gradient(60% 45% at 18% 8%,rgba(124,92,255,.55),transparent 70%),radial-gradient(55% 45% at 92% 92%,rgba(25,211,197,.42),transparent 70%),radial-gradient(50% 40% at 85% 6%,rgba(59,130,246,.38),transparent 70%),#080b17!important;
+  box-shadow:0 30px 60px -26px rgba(60,40,160,.65),0 0 0 1px rgba(255,255,255,.08) inset!important; color:#f1f3ff; }
+body.dk-1 .cardf::before{ background:conic-gradient(from 200deg,#7c5cff,#19d3c5,#3b82f6,#7c5cff)!important; padding:1.5px!important; -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0)!important; -webkit-mask-composite:xor!important; mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)!important; opacity:.8; }
+body.dk-1 .cf-top .cf-st{ background:rgba(255,255,255,.08)!important; box-shadow:0 0 0 1px rgba(255,255,255,.18) inset!important; backdrop-filter:blur(8px); }
+body.dk-1 .cf-mid h3{ letter-spacing:-.025em; }
+body.dk-1 .cf-res{ color:rgba(235,238,255,.72)!important; }
+body.dk-1 .cf-art svg{ filter:hue-rotate(35deg) saturate(1.25) drop-shadow(0 0 22px rgba(124,92,255,.55)) drop-shadow(0 18px 24px rgba(0,0,0,.4)); }
+
+/* DARK 2 · Editorial: flat midnight ink, hairline grid, outlined step number, mono glyph */
+body.dk-2 .cardf,body.dk-2 .cardf.s-queued,body.dk-2 .cardf.s-locked,body.dk-2 .cardf.s-done{
+  background:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px) 0 0/100% 32px,linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px) 0 0/32px 100%,#0b1124!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.1) inset,0 26px 50px -26px rgba(2,6,24,.8)!important; border-radius:14px; }
+body.dk-2 .cardf::before{ content:""; inset:auto!important; left:26px!important; top:0!important; width:44px!important; height:4px!important; border-radius:0 0 3px 3px!important; background:#ffb547!important; }
+body.dk-2 .cardf::after{ content:"01"; opacity:1!important; animation:none!important; inset:auto!important; right:-6px!important; top:34px!important; left:auto!important; bottom:auto!important; width:auto!important; transform:none!important; background:none!important; font:700 190px/1 var(--font); letter-spacing:-.06em; color:transparent; -webkit-text-stroke:1.5px rgba(255,255,255,.12); z-index:0; pointer-events:none; }
+body.dk-2 .card:nth-of-type(2) .cardf::after{ content:"02"; } body.dk-2 .card:nth-of-type(3) .cardf::after{ content:"03"; } body.dk-2 .card:nth-of-type(4) .cardf::after{ content:"04"; } body.dk-2 .card:nth-of-type(5) .cardf::after{ content:"05"; }
+body.dk-2 .cf-mid h3{ font-size:32px; font-weight:700; letter-spacing:-.035em; }
+body.dk-2 .cf-res{ font:500 14px/1.4 var(--mono)!important; letter-spacing:.02em; color:#ffb547!important; }
+body.dk-2 .cf-top .cf-st{ background:transparent!important; border-radius:6px; box-shadow:0 0 0 1px rgba(255,255,255,.25) inset!important; font:600 11px/1 var(--mono); text-transform:uppercase; letter-spacing:.08em; height:26px; }
+body.dk-2 .cf-art svg{ filter:grayscale(1) brightness(1.5) contrast(.85); opacity:.9; }
+
+/* DARK 3 · Neon: teal-black glass, dot matrix, cyan rim light and corner brackets */
+body.dk-3 .cardf,body.dk-3 .cardf.s-queued,body.dk-3 .cardf.s-locked,body.dk-3 .cardf.s-done{
+  background:radial-gradient(70% 50% at 50% 100%,rgba(0,229,255,.28),transparent 70%),radial-gradient(rgba(120,240,255,.2) 1px,transparent 1.4px) 0 0/16px 16px,#041218!important;
+  box-shadow:0 0 0 1px rgba(0,229,255,.55) inset,0 0 34px -6px rgba(0,229,255,.5),0 30px 54px -26px rgba(0,30,40,.9)!important; border-radius:22px; color:#e8fdff; }
+body.dk-3 .cardf::before{ background:linear-gradient(#5cf2ff,#5cf2ff) left top/18px 2px no-repeat,linear-gradient(#5cf2ff,#5cf2ff) left top/2px 18px no-repeat,linear-gradient(#5cf2ff,#5cf2ff) right top/18px 2px no-repeat,linear-gradient(#5cf2ff,#5cf2ff) right top/2px 18px no-repeat,linear-gradient(#5cf2ff,#5cf2ff) left bottom/18px 2px no-repeat,linear-gradient(#5cf2ff,#5cf2ff) left bottom/2px 18px no-repeat,linear-gradient(#5cf2ff,#5cf2ff) right bottom/18px 2px no-repeat,linear-gradient(#5cf2ff,#5cf2ff) right bottom/2px 18px no-repeat!important; inset:10px!important; border-radius:0!important; opacity:.9; }
+body.dk-3 .cf-mid h3{ font-weight:600; letter-spacing:.005em; text-shadow:0 0 18px rgba(0,229,255,.45); }
+body.dk-3 .cf-res{ color:#7ff3ff!important; }
+body.dk-3 .cf-top .cf-st{ background:rgba(0,229,255,.1)!important; color:#aef7ff; box-shadow:0 0 0 1px rgba(0,229,255,.5) inset,0 0 16px -4px rgba(0,229,255,.6)!important; }
+body.dk-3 .cf-art svg{ filter:hue-rotate(-28deg) saturate(1.5) drop-shadow(0 0 20px rgba(0,229,255,.6)); }
+
+/* DARK 4 · Brand: saturated blue-to-indigo gradient with a glossy top light, white pill */
+body.dk-4 .cardf,body.dk-4 .cardf.s-queued,body.dk-4 .cardf.s-locked,body.dk-4 .cardf.s-done{
+  background:radial-gradient(90% 55% at 30% -8%,rgba(255,255,255,.42),transparent 62%),linear-gradient(165deg,#4a78ff 0%,#2d44e0 46%,#1a1f94 100%)!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.3) inset,0 1px 0 rgba(255,255,255,.5) inset,0 34px 60px -24px rgba(26,40,170,.75)!important; color:#fff; }
+body.dk-4 .cardf::before{ background:radial-gradient(60% 40% at 100% 100%,rgba(255,255,255,.2),transparent 70%)!important; }
+body.dk-4 .cf-top .cf-st{ background:#fff!important; color:#1d2fb8!important; box-shadow:0 8px 18px -8px rgba(10,20,110,.6)!important; }
+body.dk-4 .cf-top .cf-st svg{ color:#1d2fb8!important; } body.dk-4 .cf-top .cf-st i{ background:#1d2fb8!important; }
+body.dk-4 .cf-mid h3{ font-size:32px; font-weight:750; letter-spacing:-.03em; }
+body.dk-4 .cf-res{ color:rgba(255,255,255,.86)!important; }
+body.dk-4 .cf-art svg{ filter:brightness(1.25) saturate(.9) drop-shadow(0 0 26px rgba(255,255,255,.55)) drop-shadow(0 20px 26px rgba(10,16,100,.45)); }
+
+/* DARK 5 · Graphite: brushed charcoal metal with a gold accent */
+body.dk-5 .cardf,body.dk-5 .cardf.s-queued,body.dk-5 .cardf.s-locked,body.dk-5 .cardf.s-done{
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px),linear-gradient(145deg,#32353d 0%,#17191e 52%,#262930 100%)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.28) inset,0 0 0 1px rgba(255,255,255,.07) inset,0 30px 54px -24px rgba(0,0,0,.85)!important; color:#f1ede4; }
+body.dk-5 .cardf::before{ background:linear-gradient(115deg,transparent 30%,rgba(255,236,190,.1) 45%,transparent 60%)!important; }
+body.dk-5 .cf-top .cf-st{ background:rgba(240,190,90,.12)!important; color:#f3d79a; box-shadow:0 0 0 1px rgba(240,190,90,.4) inset!important; }
+body.dk-5 .cf-top .cf-st i{ background:#f0be5a!important; }
+body.dk-5 .cf-mid h3{ font-weight:600; color:#fbf6ea; text-shadow:0 1px 0 rgba(0,0,0,.6),0 -1px 0 rgba(255,255,255,.12); }
+body.dk-5 .cf-res{ color:#e8c985!important; font-variant-numeric:tabular-nums; }
+body.dk-5 .cf-art svg{ filter:sepia(.75) saturate(2.1) hue-rotate(-12deg) brightness(1.05) drop-shadow(0 16px 22px rgba(0,0,0,.5)); }
+
+/* ---- LIGHT faces ---- */
+/* LIGHT 1 · Porcelain: clean white, soft lift, gradient icon tile */
+body.lt-1 .card .card-in,body.lt-1 .card.is-focus .card-in{ background:linear-gradient(180deg,#fff,#f6f8fe)!important; box-shadow:0 0 0 1px #e1e7f6,0 1px 0 #fff inset,0 34px 70px -34px rgba(30,60,160,.45)!important; border:0!important; border-radius:24px; }
+body.lt-1 .card .c-ic{ background:linear-gradient(145deg,#5b86ff,#3a4fe0)!important; color:#fff!important; box-shadow:0 8px 16px -8px rgba(40,70,220,.7); border-radius:13px; }
+body.lt-1 .card .c-head{ border-bottom:1px solid #edf0f8; margin-bottom:14px; }
+body.lt-1 .card .c-title{ font-size:18px; font-weight:650; }
+
+/* LIGHT 2 · Tinted panels: pale blue surface with white content panels */
+body.lt-2 .card .card-in,body.lt-2 .card.is-focus .card-in{ background:#e9eefb!important; box-shadow:0 0 0 1px #d6dff3,0 34px 70px -34px rgba(30,60,160,.5)!important; border:0!important; border-radius:26px; }
+body.lt-2 .card .pane-a,body.lt-2 .card .pane-r{ background:#fff; margin:6px 12px 12px; border-radius:18px; box-shadow:0 0 0 1px rgba(30,60,150,.06),0 10px 22px -14px rgba(30,60,150,.35); }
+body.lt-2 .card .c-ic{ background:#fff!important; color:#3366f0!important; box-shadow:0 0 0 1px #d6dff3,0 6px 12px -8px rgba(30,60,150,.4); border-radius:50%; }
+body.lt-2 .card .c-title{ font-weight:650; color:#1d2b64; }
+
+/* LIGHT 3 · Neo-ink: warm ivory, hard ink outline and offset shadow, yellow header */
+body.lt-3 .card .card-in,body.lt-3 .card.is-focus .card-in{ background:#fffaf0!important; border:2px solid #141a30!important; box-shadow:9px 9px 0 #141a30!important; border-radius:18px; }
+body.lt-3 .card .c-head{ background:#ffdf6b; border-bottom:2px solid #141a30; margin-bottom:16px; }
+body.lt-3 .card .c-ic{ background:#141a30!important; color:#ffdf6b!important; border-radius:10px; }
+body.lt-3 .card .c-title{ font-weight:800; letter-spacing:-.02em; color:#141a30; }
+body.lt-3 .card .c-n{ color:#141a30!important; font-weight:700; }
+
+/* LIGHT 4 · Frost: pastel aurora wash, white glass sheen, glowing rim */
+body.lt-4 .card .card-in,body.lt-4 .card.is-focus .card-in{ background:radial-gradient(60% 40% at 8% 0%,rgba(186,170,255,.45),transparent 70%),radial-gradient(55% 40% at 100% 8%,rgba(255,196,170,.4),transparent 70%),radial-gradient(60% 45% at 80% 100%,rgba(160,230,215,.45),transparent 70%),rgba(255,255,255,.9)!important; box-shadow:0 0 0 1.5px rgba(255,255,255,.95) inset,0 0 0 1px rgba(170,160,235,.45),0 30px 70px -30px rgba(120,100,230,.55)!important; border:0!important; border-radius:28px; }
+body.lt-4 .card .c-ic{ background:rgba(255,255,255,.8)!important; color:#6b4eff!important; box-shadow:0 0 0 1px rgba(170,160,235,.5),0 8px 16px -8px rgba(110,90,230,.5); border-radius:14px; }
+body.lt-4 .card .c-title{ font-weight:650; color:#2a2060; }
+
+/* LIGHT 5 · Spine: full-bleed brand header band over a white body */
+body.lt-5 .card .card-in,body.lt-5 .card.is-focus .card-in{ background:#fff!important; box-shadow:0 0 0 1px #dbe3f6,0 34px 70px -34px rgba(30,60,170,.5)!important; border:0!important; border-radius:22px; }
+body.lt-5 .card .c-head{ background:linear-gradient(120deg,#2342cf,#4f7bff); color:#fff; margin-bottom:16px; padding-bottom:18px!important; }
+body.lt-5 .card .c-ic{ background:rgba(255,255,255,.2)!important; color:#fff!important; box-shadow:0 0 0 1px rgba(255,255,255,.35) inset; }
+body.lt-5 .card .c-title{ color:#fff; font-weight:650; } body.lt-5 .card .c-n{ color:rgba(255,255,255,.75)!important; }
 </style>
 </head>
 <body class="phase-gate mode-overview v3b v3c">
@@ -1692,6 +1792,26 @@ body.arc-mode .card.is-analysing .cardf{ box-shadow:0 0 0 1.5px rgba(140,185,255
   <div class="boot-bar"><i id="bootBar"></i></div>
 </div>
 
+<div class="skinsw" id="skinSw" role="group" aria-label="Card style"></div>
+<script>
+(function(){
+  var D=["Now","Aurora","Editorial","Neon","Brand","Graphite"],L=["Now","Porcelain","Tinted","Neo-ink","Frost","Spine"],st={dk:0,lt:0};
+  try{var s=JSON.parse(localStorage.getItem("cardSkin")||"{}");st.dk=+s.dk||0;st.lt=+s.lt||0;}catch(e){}
+  var box=document.getElementById("skinSw");
+  function apply(){
+    var b=document.body;for(var k=1;k<=5;k++){b.classList.remove("dk-"+k,"lt-"+k);}
+    if(st.dk)b.classList.add("dk-"+st.dk);if(st.lt)b.classList.add("lt-"+st.lt);
+    try{localStorage.setItem("cardSkin",JSON.stringify(st));}catch(e){}
+    render();
+  }
+  function grp(label,key,names){
+    return '<div class="grp"><span class="lab">'+label+'</span>'+names.map(function(n,i){return '<button type="button" data-k="'+key+'" data-i="'+i+'" title="'+n+'" class="'+(st[key]===i?"on":"")+'">'+(i?i:"Now")+'</button>';}).join("")+'<span class="nm">'+names[st[key]]+'</span></div>';
+  }
+  function render(){box.innerHTML=grp("Dark","dk",D)+'<span class="sep"></span>'+grp("Light","lt",L);}
+  box.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;st[t.dataset.k]=+t.dataset.i;apply();});
+  apply();
+})();
+</script>
 <main class="deck" id="deck">
   <div class="fin-pack" id="finPack">
     <div class="deck-head">
