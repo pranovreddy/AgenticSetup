@@ -682,14 +682,14 @@ function frame(now){
     val[j]+=(target-val[j])*Math.min(1,k*spd[j]);
     var v=clamp(val[j],0,1);
     var amb=(.13+.11*ambR[j]+wave*(.08*Math.sin((x-y)*.21-tt*1.5)+.05*Math.sin(x*.06+y*.04+tt*.4)))*hole[j];
-    var a=amb*(1-v)+v*(.86+.14*hash(j+Math.floor(tt*6)));
+    var a=amb*(1-v)+v*(.58+.1*hash(j+Math.floor(tt*6)));
     if(a<.025) continue;
     ctx.globalAlpha=a;
     ctx.drawImage(sprites[tint[j]][Math.min(SIZES-1,Math.floor(v*SIZES))][(x+y)&1],Math.round(x*cell*dpr),Math.round(y*cell*dpr));
   }
   ctx.globalCompositeOperation="lighter";
   for(var j2=0;j2<N;j2++){var vv=val[j2]; if(vv<.45||tint[j2]>2) continue;
-    ctx.globalAlpha=(vv-.45)*.22; ctx.drawImage(glow,(j2%cols)*cell*dpr+ps/2-gs/2,Math.floor(j2/cols)*cell*dpr+ps/2-gs/2)}
+    ctx.globalAlpha=(vv-.45)*.1; ctx.drawImage(glow,(j2%cols)*cell*dpr+ps/2-gs/2,Math.floor(j2/cols)*cell*dpr+ps/2-gs/2)}
   ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
   requestAnimationFrame(frame);
 }
