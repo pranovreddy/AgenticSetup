@@ -240,6 +240,15 @@ select.inp{height:36px;padding:0 8px}
 .cd-ft{flex:none;padding:16px 36px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--s-line)}
 .card.big .cd-hd,.card.big .cd-bd,.card.big .cd-ft{padding-left:max(28px,calc((100% - 960px)/2));padding-right:max(28px,calc((100% - 960px)/2))}
 .cd-tog{flex:none}
+.asum{position:fixed;z-index:8;border-radius:20px;padding:0 6px 6px;box-sizing:border-box;opacity:0;pointer-events:none;
+  background:linear-gradient(105deg,#3d55d4 0%,#6f9ef0 32%,#a9c4f5 52%,#dcb6e6 74%,#c487cf 100%);
+  box-shadow:0 22px 60px rgba(4,20,100,.32);transform:translateY(10px);
+  transition:opacity .45s ease,transform .6s cubic-bezier(.2,.8,.2,1),top .6s cubic-bezier(.2,.8,.2,1),left .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1)}
+.asum.on{opacity:1;transform:none;pointer-events:auto}
+.ahd{height:44px;display:flex;align-items:center;gap:10px;padding:0 14px;color:#fff;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.ahd img{width:16px;height:auto;filter:brightness(0) invert(1)}
+.abd{background:#fff;border-radius:15px;padding:16px 20px 18px}
+.ast{position:relative;margin:0;font-size:16.5px;line-height:1.55;color:var(--s-ink)}
 .cd-agent{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--s-blue);background:var(--s-soft);padding:5px 10px 5px 8px;border-radius:999px;margin-top:10px}
 .cd-agent img{width:13px;height:auto}
 .cd-sum{font-size:16px;line-height:1.6;color:var(--s-ink2);margin:10px 0 0}
@@ -391,6 +400,7 @@ select.inp{height:36px;padding:0 8px}
   <div class="sh-bd" id="shBody"></div>
   <div class="sh-ft" id="shFoot"></div>
 </aside>
+<div class="asum" id="asum" aria-live="polite"><div class="ahd"><img src="__LOGO__" alt="">Agent summary</div><div class="abd"><p class="ast" id="asumT"></p></div></div>
 <section class="card" id="card" aria-label="Step review"></section>
 <div class="card on" id="cardM" aria-hidden="true"></div>
 <div class="app" id="app" aria-hidden="true"></div>
@@ -405,7 +415,7 @@ var DOCS=__DOCS__;
 
 /* ======================= data (from the C2P2 prototype and the copy document) ======================= */
 var STEPS=[
- {k:"profile",title:"Business profile",rh:"Please review your business profile",rs:"I filled in all 7 details from 4 sources. Check them and submit.",
+ {k:"profile",title:"Business profile",rh:"Please review your business profile",rs:"I filled your logo and all 7 fields from 4 sources. Check the details and submit.",
   need:"Confirm you are authorised to submit, then send it for approval.",next:"Telecom operators check it. Team opens once it is approved."},
  {k:"team",title:"Team",rh:"Choose who to invite",rs:"I found 6 people on your DLT registration and suggested a role for each.",
   need:"Untick anyone you do not want to invite, then send the invites.",next:"They get an email invite to DigiConsent."},
@@ -527,7 +537,7 @@ function resize(){
 /* where the agent's words sit, in cells; pixels dim behind them so they stay readable */
 function placeStatus(){
   var st=$("status"), c=$("card");
-  if(typeof CARD!=="undefined"&&CARD.on){st.classList.toggle("hid",CARD.big); var t=parseFloat(c.style.top)||0; st.style.top=Math.max(14,t-48)+"px";
+  if(typeof CARD!=="undefined"&&CARD.on){st.classList.toggle("hid",CARD.big||F.mode==="review"); var t=parseFloat(c.style.top)||0; st.style.top=Math.max(14,t-48)+"px";
     st.style.left=((parseFloat(c.style.left)||0)+(parseFloat(c.style.width)||0)/2)+"px"; return}
   st.classList.remove("hid"); st.style.left="50%";
   var k=$("kick"), g=document.createRange(); g.selectNodeContents(k); var b=g.getBoundingClientRect();
@@ -951,7 +961,7 @@ function primary(i){
   return '<button class="btn" data-a="tpl">Confirm mapping</button>';
 }
 function cardSummary(i){
-  var st=STEPS[i], h='<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">'+esc(subline(i))+'</p>';
+  var st=STEPS[i], h='';
   if(st.k==="profile") h+=lfacts([["Legal entity",PROFILE[0][1],"MCA"],["Entity type",PROFILE[1][1],"MCA"],["Business PAN",PROFILE[3][1],"GSTIN"],["Industry",PROFILE[5][1],"Website"]])+
     '<div class="lmore">and 3 more fields, including your registered address</div>'+authRow();
   if(st.k==="team"){var cnt={}; onPeople().forEach(function(p){cnt[ROLES[p.role]]=(cnt[ROLES[p.role]]||0)+1});
@@ -978,7 +988,7 @@ function cardHTML(){
   var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
-    p={title:heading(i),tog:'',body:'<div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">'+esc(subline(i))+'</p>'+d0.h+(st.k==="brands"?needLine(st):''),l:d0.l,r:d0.r}}
+    p={title:heading(i),tog:'',body:d0.h+(st.k==="brands"?needLine(st):''),l:d0.l,r:d0.r}}
   else p={title:heading(i),tog:'',body:cardSummary(i),l:'<button class="btn ghost" data-a="details">'+I("max")+'See details</button>'+(st.k==="team"?' <button class="btn ghost" data-a="later">Do it later</button>':''),r:primary(i)};
   p.kick=kick; return cardWrap(p);
 }
@@ -986,20 +996,26 @@ function cardWrap(p){
   return '<div class="cd-in"><div class="cd-hd"><div><small>'+p.kick+'</small><h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div><div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div></div>';
 }
 function railW(){return 24}
+function setSum(text){$("asumT").textContent=text}
+function asumOn(){return CARD.on&&!CARD.big&&F.mode==="review"}
 function placeCard(){
+  var A0=$("asum"), aOn=asumOn(), aH=0;
   var c=$("card"), r, x0=railW(), av=W-x0-24; // cards centre on the page; the stepper sits below them
   if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
   else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
-    r={l:x0+(av-w)/2,t:Math.max(64,(H-h)/2-18),w:w,h:h}}
+    if(aOn){A0.style.width=w+"px"; setSum(subline(F.active)); aH=A0.offsetHeight}
+    var top=aOn?Math.max(aH+30,(H-h)/2+aH/2-14):Math.max(64,(H-h)/2-18); if(aOn) h=Math.min(h,H-top-88);
+    r={l:x0+(av-w)/2,t:top,w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
+  A0.classList.toggle("on",aOn); if(aOn){A0.style.top=(r.t-aH-12)+"px"; A0.style.left=r.l+"px"}
   placeStatus();
 }
 function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
   c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard()}
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
-function hideCard(){CARD.on=false; $("card").classList.remove("on"); placeStatus()}
+function hideCard(){CARD.on=false; $("card").classList.remove("on"); $("asum").classList.remove("on"); placeStatus()}
 function expandCard(){var c=$("card"); if(CARD.big) return; c.classList.add("swap");
   later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
@@ -1117,7 +1133,7 @@ function teamRows(){
 }
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
-  if(st.k==="profile"){h='<div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
+  if(st.k==="profile"){h='<div class="lslot"><div class="lbox"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
     foot(authRow(),primary(i))}
   if(st.k==="team"){
     h='<div class="tbar"><div class="chips" style="margin:0">'+
