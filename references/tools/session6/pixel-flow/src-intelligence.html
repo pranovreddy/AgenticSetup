@@ -768,9 +768,9 @@ var SCENES = [
    subs:["DLT registration","GSTIN","MCA","Company website","Trademark registry","Partner rate cards"], subPre:"Now scanning: ",
    done:"All sources read. Every step is built from these.", grp:"src", prog:0, progSubs:true,
    log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.5,"GSTIN: PAN AAACH2702H is active and matches the DLT entity",0,"99%"],[2.7,"MCA: HDFC Bank Limited, a public limited company",0,"99%"],[3.9,"Website: banking and financial services",0,"94%"],[5.0,"Rate cards: 4 partners, 3 phases each"]]},
-  {id:"form",  dur:6.2, kick:"Step 1 of 5 · Business profile · from DLT, GSTIN, MCA and website", line:"Filling in your business profile",
+  {id:"form",  dur:6.2, kick:"Step 1 of 5 · Business profile", line:"Filling in your business profile",
    sub:"0 of 7 fields filled", grp:"step", prog:0,
-   log:[[.3,"Legal name and entity type come straight from MCA",0,"99%"],[1.9,"Address from DLT, PAN from GSTIN: both agree",0,"98%"],[3.5,"Industry read from your website",0,"94%"],[5.1,"All 7 fields filled, none left blank"]]},
+   log:[[.3,"Filling in your legal name and entity type",0,"99%"],[1.9,"Adding your registered address and PAN",0,"98%"],[3.5,"Choosing your industry and sub industry",0,"94%"],[5.1,"All 7 fields filled, none left blank"]]},
   {id:"team",  dur:6.0, kick:"Step 2 of 5 · Team · from DLT", line:"Finding your team",
    subs:["Finding people on record","Matching roles and permissions","Suggesting people to invite"],
    done:"6 people suggested, each with a role", grp:"step", prog:1,
@@ -1402,7 +1402,7 @@ function heading(i){var k=STEPS[i].k;
   return STEPS[i].rh}
 function subline(i){var k=STEPS[i].k, u=unmapped();
   if(k==="profile"&&F.kv) return kvText()[1];
-  if(k==="profile"&&F.pf) return "Typing in what I found on DLT, GSTIN, MCA and your website.";
+  if(k==="profile"&&F.pf) return "Typing in what I found about your business.";
   if(k==="gtm"&&F.gpart) return "Karix is the only partner with a rate card so far, so it takes all the volume. Confirm it, or wait for the others.";
   if(k==="templates"&&F.tov==="lock") return "Waiting for Brands and LOBs approval.";
   if(k==="templates") return "I read each message to find its line of business. "+(u?"For "+u+" of them I could not find a suitable match.":"You set the rest yourself.");
