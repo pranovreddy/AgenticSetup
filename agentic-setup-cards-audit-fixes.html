@@ -2418,6 +2418,10 @@ body:not(.arc-mode) .card.au-back .card-in{ visibility:visible; }
 .card .r-body > .kyc-top{ grid-row:1 / span 6; margin:6px 0 0!important; }
 .card .r-body:has(> .kyc-top) > :not(.kyc-top){ grid-column:2; }
 .card .r-body:has(> .kyc-top) > .pform{ margin-top:6px; }
+/* locked cards: the content behind the lock message is strongly blurred */
+.pane:has(> .lock-face) > .r-body, .pane:has(> .lock-face) > .r-foot{ filter:blur(7px); }
+.lock-face{ background:rgba(250,251,255,.55)!important; }
+.ux-lockov{ -webkit-backdrop-filter:blur(10px)!important; backdrop-filter:blur(10px)!important; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
