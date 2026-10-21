@@ -216,8 +216,8 @@ select.inp{height:36px;padding:0 8px}
 .stat{display:flex;gap:34px;margin-top:20px}
 .stat b{display:block;font-size:26px;letter-spacing:-.02em}.stat span{font-size:13px;color:var(--s-muted)}
 
-.sheet .btn,.card .btn{background:var(--s-blue);color:#fff;box-shadow:none}
-.sheet .btn.ghost,.card .btn.ghost{background:#fff;color:var(--s-ink);border:1px solid #d9e0ec}
+.sheet .btn,.card .btn,.xdlg .btn{background:var(--s-blue);color:#fff;box-shadow:none}
+.sheet .btn.ghost,.card .btn.ghost,.xdlg .btn.ghost{background:#fff;color:var(--s-ink);border:1px solid #d9e0ec}
 .card .btn:disabled{opacity:.4}
 .card .ls{color:var(--s-muted);font-size:13.5px}
 .card .cbx{border-color:#b8c3d6}
@@ -263,9 +263,11 @@ select.inp{height:36px;padding:0 8px}
 .cd-agent{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--s-blue);background:var(--s-soft);padding:5px 10px 5px 8px;border-radius:999px;margin-top:10px}
 .cd-agent img{width:13px;height:auto}
 .cd-conf{font-size:12.5px;color:var(--s-muted);margin-top:10px}
-.cd-asum{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 12px;padding:9px 14px 9px 9px;border-radius:12px;background:linear-gradient(90deg,#e8efff,#f5f8ff 70%);box-shadow:inset 0 0 0 1px #d6e2ff;font-size:14px;line-height:1.45;color:var(--s-ink)}
+.cd-asum{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px;font-size:14px;line-height:1.45;color:var(--s-ink2)}
+.card:not(.big):not(.isdoc) .cd-in{background:linear-gradient(180deg,#e6eeff 0,#f3f7ff 70px,rgba(255,255,255,0) 170px);border-radius:inherit}
 .cd-asum .cd-agent{margin-top:0;background:#fff;box-shadow:0 1px 2px rgba(30,70,170,.12)}.cd-asum .chipmini{margin:0}
 .cd-asum .t{flex:1 1 280px;min-width:0}
+.tdept{font-size:14px;color:var(--s-ink2)}.rolep{display:inline-block;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
 .cd-side{display:flex;align-items:center;gap:10px;flex:none;align-self:flex-start;margin-top:4px}
 .cd-sum{font-size:16px;line-height:1.6;color:var(--s-ink2);margin:10px 0 0}
 .lfacts{margin-top:16px;border-top:1px solid var(--s-line)}
@@ -379,6 +381,7 @@ select.inp{height:36px;padding:0 8px}
 .bigsum.on{display:block;background:linear-gradient(180deg,rgba(24,64,200,.72),rgba(30,80,220,.5));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 body.bigsplit .card.big .cd-ft{padding-right:140px}
 body.bigsplit #prog{opacity:0;pointer-events:none}
+body.bigsplit .brand{background:transparent!important;border-color:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .bs-in{position:absolute;left:28px;right:30px;top:150px;bottom:96px;overflow:auto;pointer-events:auto;color:#fff;scrollbar-width:none}
 .bs-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12.5px;font-weight:600;letter-spacing:.02em}
 .bs-chip img{width:16px;height:16px;border-radius:50%;background:#fff;padding:2px}
@@ -397,6 +400,50 @@ body.bigsplit #prog{opacity:0;pointer-events:none}
 .bs-acc p{margin:10px 0 0;font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.82)}
 body.bigsplit .card.big{border-radius:26px 0 0 26px}
 html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[data-px=light] .bs-acc p,html[data-px=light] .bs-acc li{color:var(--s-ink2)}
+
+.chipmini.or{background:#fff1e6;color:#c2410c}.chipmini.vi{background:#f1ecff;color:#6d28d9}.chipmini.sl{background:#eef1f6;color:#475569}
+.xface{display:grid;justify-items:center;text-align:center;padding:34px 20px 26px}.xface.xtall{padding:90px 20px}
+.xface h3{margin:16px 0 6px;font-size:19px}.xface p{margin:0;max-width:440px;color:var(--s-muted);font-size:14px;line-height:1.5}
+.xic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);box-shadow:0 0 0 8px rgba(37,99,235,.06)}
+.xic .i{width:24px;height:24px}.xic .spn{width:22px;height:22px}
+.xic.or{background:#fff1e6;color:#c2410c;box-shadow:0 0 0 8px rgba(194,65,12,.06)}.xic.amb{background:var(--s-asoft);color:var(--s-amber)}.xic.gr{background:var(--s-gsoft);color:var(--s-green)}
+.xic.vi{background:#f1ecff;color:#6d28d9}.xic.sl{background:#eef1f6;color:#475569;box-shadow:0 0 0 8px rgba(71,85,105,.05)}
+.xbtns{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.xdid{margin:6px auto 0;max-width:420px;padding:14px 16px;border:1px solid var(--s-line);border-radius:12px;font-size:13.5px}
+.xdid b{display:block;margin-bottom:8px;font-size:13.5px}.xdid em{font-style:normal;font-weight:400;color:var(--s-muted);margin-left:6px}
+.xdid ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.xdid li{display:flex;gap:8px;align-items:center;color:var(--s-ink2)}
+.xdid li .i{width:16px;height:16px;color:var(--s-green);flex:none}.xdid li.bad{color:#c2410c}.xdid li.bad .i{color:#c2410c}
+.xdid li.wait{color:var(--s-muted)}.xdid li.wait i{width:12px;height:12px;margin:0 2px;border-radius:50%;border:1.5px dashed #b5c0d4;flex:none}
+.xbar{display:flex;gap:10px;align-items:center;margin:0 0 14px;padding:10px 14px;border-radius:10px;font-size:13.5px;font-weight:500}
+.xbar .i{width:16px;height:16px;flex:none}.xbar.err{background:#fff1ec;color:#b42318}.xbar.warn{background:var(--s-asoft);color:var(--s-amber)}.xbar.info{background:var(--s-soft);color:var(--s-blue)}
+.cd-bd>.xbar:last-child{margin:14px 0 0}
+.xnote{display:flex;gap:10px;align-items:center;margin-top:16px;padding:12px 16px;border-radius:12px;font-size:14px;font-weight:500}
+.xnote .i{width:17px;height:17px;flex:none}.xnote .btn{margin-left:auto}
+.xnote.info{background:var(--s-soft);color:var(--s-blue)}.xnote.warn{background:var(--s-asoft);color:var(--s-amber)}.xnote.late{background:#e8f8f1;color:#0f7a55}
+.xro .inp,.xro select,.xro .zck,.xro .zx,.xro .btn,.xro .zlk,.xro input{pointer-events:none;opacity:.6}
+.xerr{color:#b42318!important;display:inline-flex;gap:6px;align-items:center;font-weight:500}.xerr .i{width:15px;height:15px}
+.xovw{position:relative}.xblur{filter:blur(6px);opacity:.55;pointer-events:none;user-select:none}
+.xov{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;padding:20px 40px}
+.xov h3{margin:14px 0 6px;font-size:18px}.xov p{margin:0;max-width:460px;font-size:14px;line-height:1.5;color:var(--s-ink2)}
+.fd.miss .inp{border-color:#f3b7a6;background:#fff6f3}.fd.miss .inp::placeholder{color:#c2410c}
+.fd.ret .inp{border-color:#f0c27a;background:#fffaf0}.xret{margin-left:auto;font-size:11px;font-weight:600;color:var(--s-amber);background:var(--s-asoft);padding:1px 8px;border-radius:999px}
+.spn.w{background:conic-gradient(from 0deg,#fff,rgba(255,255,255,.4),#fff);margin-right:8px;width:14px;height:14px;display:inline-block;vertical-align:-2px}
+.xdlg{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:rgba(10,24,70,.38);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.xdlg.on{display:grid}
+.xdlg-c{width:min(440px,90vw);background:#fff;border-radius:18px;padding:26px 26px 22px;box-shadow:0 30px 70px -20px rgba(10,30,90,.5);color:var(--s-ink)}
+.xdlg-c .xic{width:42px;height:42px;box-shadow:none}.xdlg-c .xic .i{width:20px;height:20px}
+.xdlg-c h3{margin:14px 0 6px;font-size:19px}.xdlg-c p{margin:0;font-size:14px;line-height:1.55;color:var(--s-ink2)}.xdlg-c .xbtns{justify-content:flex-end}
+.xoff{position:fixed;top:16px;left:50%;transform:translate(-50%,-90px);z-index:30;display:flex;align-items:center;gap:10px;padding:10px 18px;border:0;border-radius:999px;background:#101b3d;color:#fff;font:500 13.5px Inter,sans-serif;cursor:pointer;box-shadow:0 14px 34px -12px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.2,.9,.2,1)}
+.xoff.on{transform:translate(-50%,0)}.xoff i{width:8px;height:8px;border-radius:50%;background:#f59e0b}.xoff span{opacity:.6;margin-left:6px;font-size:12px}
+.xby{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;color:rgba(255,255,255,.85)}.xby i{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
+.xamb{margin:16px auto 0;max-width:460px;padding:10px 14px;border-radius:12px;background:rgba(255,210,122,.18);color:#ffe2a8;font-size:14px;line-height:1.45}
+.xops{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:8px;justify-content:center;margin-top:18px}
+.xops span{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.12);font-size:13px;color:rgba(255,255,255,.8)}.xops b{color:#fff;margin-right:auto}
+.xops .i{width:15px;height:15px}.xops .wt .i{color:#ffd27a}
+.pm{max-height:min(560px,calc(100vh - 90px));overflow:auto;min-width:290px}
+.pmg summary{cursor:pointer;list-style:none;padding:8px 12px;font:600 12.5px Inter,sans-serif;color:var(--s-muted);letter-spacing:.02em;display:flex;align-items:center;gap:8px;border-radius:8px}
+.pmg summary::-webkit-details-marker{display:none}.pmg summary:hover{background:var(--s-soft)}.pmg summary i{font-style:normal;font-weight:500;margin-left:auto;font-size:11.5px;background:#eef1f6;padding:1px 8px;border-radius:999px}
+.pmg button{padding-left:22px!important}
 .lmore{font-size:14px;color:var(--s-muted);margin-top:8px}
 .lneed{display:flex;gap:10px;margin-top:18px;font-size:15px;line-height:1.5;color:var(--s-ink2)}
 .lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
@@ -583,7 +630,7 @@ body.bigcard .proto>button{color:var(--navy)!important;background:#fff!important
 /* ===== Intelligence version: the agent core, its reasoning trace and confidence ===== */
 canvas#orb{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none}
 .stage{top:54%}
-body[data-m=plan] .stage,body[data-m=ready] .stage{top:58%}
+body[data-m=plan] .stage,body[data-m=ready] .stage,body[data-m=msg] .stage,body[data-m=pass] .stage{top:58%}
 body[data-m=proc] #sub{display:none}
 @media (max-height:760px){.stage{top:52%}body[data-m=plan] .stage,body[data-m=ready] .stage{top:56%}}
 .think{list-style:none;margin:18px auto 0;padding:0;width:min(640px,88vw);min-height:92px;text-align:center;display:grid;align-content:start;gap:7px}
@@ -643,6 +690,8 @@ body[data-m=proc] #sub{display:none}
 <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4.5 15v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3"/></symbol>
 <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M4.5 15v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3"/></symbol>
 <symbol id="i-swap" viewBox="0 0 24 24"><path d="M5 9h13l-3.5-3.5M19 15H6l3.5 3.5"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4 2.8 20h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol>
+<symbol id="i-mark" viewBox="0 0 24 24"><path d="M7 4h10v16l-5-3.5L7 20z"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
 </defs></svg>
 
@@ -670,6 +719,8 @@ body[data-m=proc] #sub{display:none}
 <section class="card" id="card" aria-label="Step review"></section>
 <div class="card on" id="cardM" aria-hidden="true"></div>
 <aside class="bigsum" id="bigsum" aria-label="Agent summary"></aside>
+<div class="xdlg" id="xdlg"></div>
+<button class="xoff" id="xoff" data-a="xonline" type="button"><i></i>You're offline. Changes are paused until you're back.<span>Click to go back online</span></button>
 <div class="app" id="app" aria-hidden="true"></div>
 <div class="tcard" id="tcard" role="dialog" aria-modal="true" aria-labelledby="tcTitle"></div>
 <div class="closes" id="closes" aria-live="off"><span class="ci"><svg class="i"><use href="#i-swap"/></svg></span><span><small>Migration closes in</small><b class="cdv">30d 00h 00m</b></span></div>
@@ -1137,6 +1188,7 @@ function coreState(dt){
   if(m==="plan"){vt=1;et=.3}
   else if(m==="ready"){vt=1;et=.5}
   else if(m==="verify"){vt=1;et=.55}
+  else if(m==="msg"){vt=1;et=.35}
   else if(m==="pass"){vt=1;et=.7}
   else if(m==="proc"){vt=1; var sc=SCENES[F.procI];
     if(sc){var lt=clock-F.procT0-STARTS[F.procI]; if(sc.id==="intro") et=.45; else if(sc.id==="sources") et=.7; else et=(lt/sc.dur)<.38?1:.8}}
@@ -1245,7 +1297,7 @@ function say(o,quiet){
   if(o.extra!=null&&o.extra!==said.extra){said.extra=o.extra; setExtra(o.extra,quiet)}
   if(o.status){$("statusTxt").textContent=o.status[0]; $("status").className="status "+(o.status[1]||"")}
   if(o.prog) drawProg(o.prog);
-  $("prog").classList.toggle("off",["gate","review","verify","pass"].indexOf(F.mode)<0);
+  $("prog").classList.toggle("off",["gate","review","verify","pass","msg"].indexOf(F.mode)<0);
   measure();
 }
 function drawProg(p){
@@ -1344,12 +1396,15 @@ function heading(i){var k=STEPS[i].k;
   if(k==="profile"&&F.kv) return kvText()[0];
   if(k==="profile"&&F.pf) return "I'm filling in your business profile";
   if(k==="brands") return BRANDS.length+" brands and "+lobCount()+" lines of business";
+  if(k==="gtm"&&F.gpart) return "Karix takes all the volume for now";
   if(k==="gtm"){var pk0=picked(); return pk0.length===2?pk0[0].name+" and "+pk0[1].name+", split by phase":"Choose two partners"}
   if(k==="templates") return (100-unmapped())+"% of your 100 templates are mapped to a line of business";
   return STEPS[i].rh}
 function subline(i){var k=STEPS[i].k, u=unmapped();
   if(k==="profile"&&F.kv) return kvText()[1];
   if(k==="profile"&&F.pf) return "Typing in what I found on DLT, GSTIN, MCA and your website.";
+  if(k==="gtm"&&F.gpart) return "Karix is the only partner with a rate card so far, so it takes all the volume. Confirm it, or wait for the others.";
+  if(k==="templates"&&F.tov==="lock") return "Waiting for Brands and LOBs approval.";
   if(k==="templates") return "I read each message to find its line of business. "+(u?"For "+u+" of them I could not find a suitable match.":"You set the rest yourself.");
   return STEPS[i].rs}
 function facts(rows){return '<div class="facts">'+rows.map(function(r){return '<div><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b>'+(r[2]?'<em>'+esc(r[2])+'</em>':'<i></i>')+'</div>'}).join("")+'</div>'}
@@ -1365,24 +1420,31 @@ function checkRow(a,on,html){return '<div class="auth" data-a="'+a+'"><span clas
 function adminNote(){var n=PEOPLE.filter(function(p){return p.on&&p.role===2}).length; return n?'<span class="ls">'+n+(n===1?' person gets':' people get')+' Super Admin (full access).</span>':''}
 function primary(i){
   var k=STEPS[i].k;
-  if(k==="profile") return '<button class="btn" data-a="submit"'+(F.auth&&!F.pf?'':' disabled')+'>Submit to telecom operators</button>';
+  if(k==="profile") return F.punk?'<button class="btn" disabled><span class="spn w"></span>Submitting…</button>':'<button class="btn" data-a="submit"'+(F.auth&&!F.pf&&profOk()?'':' disabled')+'>Submit to telecom operators</button>';
   if(k==="team"){var n=onPeople().length; return '<button class="btn" data-a="invites"'+(n?'':' disabled')+'>Send '+n+' invite'+(n===1?'':'s')+'</button>'}
   if(k==="brands") return '<button class="btn" data-a="brands"'+(F.bok?'':' disabled')+'>'+(brandsChanged()?'Send for review':'Confirm brands')+'</button>';
-  if(k==="gtm") return '<button class="btn" data-a="gtm"'+(picked().length===2&&F.gt?'':' disabled')+'>Confirm partners</button>';
+  if(k==="gtm") return '<button class="btn" data-a="gtm"'+((picked().length===2||F.gpart)&&F.gt?'':' disabled')+'>Confirm partners</button>';
   return '<button class="btn" data-a="tpl">Send '+(100-unmapped())+' for approval</button>';
 }
 function tplSummary(){
-  var un=unmapped(), mapped=100-un, review=71, sure=Math.max(0,mapped-review), pct=mapped;
+  var un=F.tpart?14:unmapped(), mapped=100-un, review=71, sure=Math.max(0,mapped-review), pct=mapped;
   var ring='<span class="tring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" pathLength="100"/><circle class="on" cx="18" cy="18" r="15.5" pathLength="100" style="stroke-dasharray:'+pct+' 100"/></svg><b>'+pct+'%</b></span>';
   var seg=function(n,c){return n?'<i class="'+c+'" style="flex:'+n+'"></i>':''};
   var mx=22, rows=TLOBS.map(function(l){return '<div class="lobr"><span>'+esc(l[0])+'</span><i><b style="width:'+Math.round(l[1]/mx*100)+'%"></b></i><em>'+l[1]+'</em></div>'}).join("")+
     '<div class="lobr un"><span>Not mapped</span><i><b style="width:'+Math.round(un/mx*100)+'%"></b></i><em>'+un+'</em></div>';
-  return '<section class="thero"><div class="thead">'+ring+'<div><b>100 scanned</b><span>'+mapped+' mapped to a line of business</span></div></div>'+
+  return (F.tpart?'<div class="xbar err">'+I("warn")+'14 templates have no line of business yet. They don\'t hold up migration.</div>':'')+'<section class="thero"><div class="thead">'+ring+'<div><b>100 scanned</b><span>'+mapped+' mapped to a line of business</span></div></div>'+
     '<div class="tbar2">'+seg(sure,"hi")+seg(Math.min(review,mapped),"rv")+seg(un,"un")+'</div>'+
     '<div class="tkey"><span class="hi"><i></i><b>'+sure+'</b> high confidence</span><span class="rv"><i></i><b>'+Math.min(review,mapped)+'</b> need review</span><span class="un"><i></i><b>'+un+'</b> unmapped</span></div></section>'+
     '<p class="tlh">Templates per line of business</p><div class="lobl">'+rows+'</div>'+(un?'<p class="chg" style="margin-top:6px">71 need review. Check them first, or send them as they are. The '+un+' with no line of business do not hold up migration.</p>':'');
 }
-function gtmCard(){
+function profOk(){return PROFILE.every(function(x){return String(x[1]).trim()})}
+function gpartCard(){var c='minmax(0,1.5fr) repeat(3,minmax(70px,.5fr))';
+  return '<div class="xbar info">'+I("info")+'Only Karix has sent a rate card. It takes all the volume until another one arrives.</div>'+
+    '<div class="gtmh"><b>Compare partners</b><span>1 of 4 chosen · ₹ per consent (refresh: per consent a year) and share of volume</span></div>'+
+    '<div class="gtmt"><div class="gr hd" style="grid-template-columns:'+c+'"><span>Partner</span>'+PH.map(function(x){return '<span class="n">'+x+'</span>'}).join("")+'</div>'+
+    PARTNERS.map(function(p,k){return '<div class="gr'+(k?' off':' pick')+'" style="grid-template-columns:'+c+'"><span class="gw"><i class="mk">'+p.name[0]+'</i><span><b>'+esc(p.name)+(k?'':'<em>Chosen</em>')+'</b><small>'+(k?'No rate card yet':esc(p.why))+'</small></span></span>'+
+      p.r.map(function(r){return '<span class="n'+(k?'':' bst')+'">'+(k?'—':'₹'+r.toFixed(2)+'<small>100%</small>')+'</span>'}).join("")+'</div>'}).join("")+'</div>'}
+function gtmCard(){if(F.gpart) return gpartCard();
   var sel=picked(), best=PH.map(function(_,k){return Math.min.apply(null,PARTNERS.map(function(p){return p.r[k]}))});
   var c='minmax(0,1.5fr) repeat(3,minmax(70px,.5fr))';
   return '<div class="gtmh"><b>Compare partners</b><span>'+sel.length+' of '+PARTNERS.length+' chosen · ₹ per consent (refresh: per consent a year) and share of volume</span></div>'+
@@ -1410,12 +1472,18 @@ function docCard(){
     tog:CARD.big?'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Exit full page</button>':'<button class="btn ghost cd-tog" data-a="details">'+I("max")+'Full page</button>',
     body:'<div class="dgrid"><aside class="dsum"><div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x,k){return '<li data-a="pt" data-k="'+k+'" tabindex="0">'+esc(x)+'</li>'}).join("")+'</ol>'+
       '<div class="lneed"><span>This summary is only a guide. What you accept is the full text of the document.</span></div></aside>'+
-      '<div class="dtext"><div class="doc">'+d.sections.map(function(s,si){return '<h4 data-sec="'+si+'">'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div></div></div>',
+      (F.gx==="fail"?'<div class="dtext"><div class="xface xtall"><span class="xic or">'+I("warn")+'</span><h3>Couldn\'t load this document</h3><p>Check your connection, then try again.</p><div class="xbtns">'+B("xgretry","Try again")+'</div></div></div></div>':'<div class="dtext"><div class="doc">'+d.sections.map(function(s,si){return '<h4 data-sec="'+si+'">'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div></div></div>'),
     l:'<span class="ls">'+(F.readEnd?'You have reached the end.':'Read to the end of the text to accept.')+'</span>',
     r:'<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>'};
 }
+function xGate(p){
+  if(F.gx==="accepted"){p.l='<span class="ls">Accepted by Ravi Menon on 14 Oct 2026, 11:42</span>'; p.r=B("xdl",I("dl")+"Download")}
+  if(F.gx==="fail"){p.l='<span class="ls">You can\'t accept until the document loads.</span>'; p.r=p.r.replace('data-a="accdoc"','data-a="accdoc" disabled')}
+  if(F.gx==="refused") p.l='<span class="ls xerr">'+I("warn")+'We couldn\'t record your acceptance. Try again.</span>';
+  return p}
 function cardHTML(){
-  if(F.mode==="gate") return cardWrap(docCard());
+  if(F.mode==="gate") return cardWrap(xGate(docCard()));
+  if(F.face&&F.face.i===F.active&&!CARD.big&&F.mode==="review") return cardWrap(faceParts(F.active));
   var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>', chips=st.attn?'<span class="chipmini amb">Needs a look</span>':'', p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
@@ -1427,6 +1495,7 @@ function cardHTML(){
     chips='<span class="chipmini amb">In review</span>';
     p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="spn"></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
   if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="spn"></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
+  if(st.k==="templates"&&F.tov&&!CARD.big){p.body='<div class="xovw"><div class="xblur">'+p.body+'</div>'+tplOverlay()+'</div>'; p.r=p.r.replace('data-a="tpl"','data-a="tpl" disabled'); if(F.tov==="lock"){chips='<span class="chipmini sl">Locked</span>'; p.title="Templates"}}
   if(CARD.big) kick=STEPLINE(i);
   p.kick=kick; p.chips=chips; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
 }
@@ -1459,7 +1528,7 @@ function renderCard(){if(F.kv&&F.kv.ph!=="done"&&$("card").querySelector(".kv if
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
 function hideCard(){CARD.on=false; $("card").classList.remove("on"); $("asum").classList.remove("on"); placeStatus()}
-function expandCard(){var c=$("card"); if(CARD.big) return; c.classList.add("swap");
+function expandCard(){var c=$("card"); if(CARD.big) return; F.snap=snapNow(); c.classList.add("swap");
   later(function(){CARD.big=true; document.body.classList.add("bigcard"); c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
   later(function(){CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
@@ -1483,7 +1552,7 @@ function verify(){
   later(function(){complete(0,"Business profile approved")},5800);
 }
 /* a step is done: the ring closes, then the next one opens */
-function complete(i,title){
+function complete(i,title){F.face=null; F.ro=false; F.notice=null;
   closeSheet(); F.status[i]="done"; F.mode="pass"; show("pass");
   var nx=i<4?"Next: "+STEPS[i+1].title:"Next: your migration window";
   say({kick:STEPLINE(i), line:title, sub:OK+nx, extra:"", status:["Step done","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
@@ -1494,15 +1563,18 @@ function complete(i,title){
 function final(){
   F.mode="final"; show("final");
   var tl=onPeople().length;
-  say({kick:"Onboarding Agent · setup complete", line:"You're set to start migration", sub:"Here is what was set up for HDFC Bank Limited.",
-    extra:facts([["Business profile","Approved by 4 of 4 operators"],["Team",F.teamLater?"Saved for later":tl+" invites sent"],["Brands and LOBs",BRANDS.length+" brands · "+lobCount()+" lines of business"],["GTM partners",picked().map(function(p){return p.name}).join(" and ")],["Templates",(100-unmapped())+" of 100 mapped"]])+
-      '<div class="cl-lbl">Migration closes in</div><div class="clock" id="clock"></div>'+
-      '<div class="acts"><button class="btn" data-a="mig">Go to migration'+I("arrow")+'</button></div>',
-    status:["Setup complete","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
+  var fv=F.fin, sk=fv==="skipped";
+  var rows=facts([["Business profile","Approved by 4 of 4 operators"],["Team",F.teamLater?"Saved for later":tl+" invites sent"],["Brands and LOBs",BRANDS.length+" brands · "+lobCount()+" lines of business"],["GTM partners",picked().map(function(p){return p.name}).join(" and ")],["Templates",sk?"Saved for later":(100-unmapped())+" of 100 mapped"]]);
+  var clock='<div class="cl-lbl">Migration closes in</div><div class="clock" id="clock"></div>';
+  say({kick:"Onboarding Agent · setup complete", line:sk?"You can start migration":"You're set to start migration",
+    sub:sk?"Team and Templates are saved for later. Finish them any time from the product.":fv==="notopen"?"Every step is done. Your migration window opens on 25 October 2026.":fv==="closed"?"Your migration window closed on 19 October 2026. Ask your account manager to open a new one.":"Here is what was set up for HDFC Bank Limited.",
+    extra:rows+(fv==="notopen"||fv==="closed"?'':clock)+
+      '<div class="acts">'+(fv==="closed"?'<button class="btn" data-a="xreq">Request a new window'+I("arrow")+'</button>':'<button class="btn" data-a="mig"'+(fv==="notopen"?' disabled':'')+'>Go to migration'+I("arrow")+'</button>')+'</div>',
+    status:[fv==="closed"?"Window closed":fv==="notopen"?"Window opens 25 Oct":"Setup complete",fv==="closed"?"attn":"done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
   var end=Date.now()+30*864e5;
   var clockSet=false;
   (function t(){var c=$("clock"); if(!c) return later(t,100); var s=Math.max(0,Math.floor((end-Date.now())/1000));
-    c.innerHTML=[[Math.floor(s/86400),"days"],[Math.floor(s/3600)%24,"hrs"],[Math.floor(s/60)%60,"mins"]].map(function(x){return '<div><b>'+String(x[0]).padStart(2,"0")+'</b><span>'+x[1]+'</span></div>'}).join("");
+    c.innerHTML=[[Math.floor(s/86400),"days"],[Math.floor(s/3600)%24,"hrs"],[Math.floor(s/60)%60,"mins"],[s%60,"secs"]].map(function(x){return '<div><b>'+String(x[0]).padStart(2,"0")+'</b><span>'+x[1]+'</span></div>'}).join("");
     if(!clockSet){clockSet=true; measure()} later(t,1000)})();
 }
 
@@ -1561,7 +1633,8 @@ var SEL_F=[1,5,6];
 function fd(l,v,tag,wide,id){ // while the agent fills the profile, later fields wait empty and the current one is typed in
   var st="", val=v, pf=id===+id&&F.pf;
   if(pf){if(id>F.pf.k){st=" wait"; val=""} else if(id===F.pf.k){st=" typing"; val=v.slice(0,F.pf.n)}}
-  return '<div class="fd'+(wide?" w2":"")+st+'"><label>'+esc(l)+' <i class="req">*</i></label><div class="pin"><input class="inp" value="'+esc(val)+'" data-f="'+id+'"'+(F.pf?' readonly tabindex="-1"':'')+'>'+(SEL_F.indexOf(id)>=0?'<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>':'')+'</div></div>'}
+  var miss=!F.pf&&F.ppart&&!String(v).trim(), ret=!F.pf&&F.pret&&F.pret.indexOf(id)>=0; if(miss) st+=" miss"; if(ret) st+=" ret";
+  return '<div class="fd'+(wide?" w2":"")+st+'"><label>'+esc(l)+' <i class="req">*</i>'+(ret?'<span class="xret">Returned by Jio and Vi</span>':'')+'</label><div class="pin"><input class="inp" value="'+esc(val)+'" data-f="'+id+'"'+(miss?' placeholder="Couldn\'t fill this"':'')+(F.pf?' readonly tabindex="-1"':'')+'>'+(SEL_F.indexOf(id)>=0?'<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>':'')+'</div></div>'}
 function renderSheet(){
   var b=$("shBody"), top=b.scrollTop, h="";
   if(SHEET==="doc"){var d=DOCS[F.doc];
@@ -1577,8 +1650,8 @@ function teamRows(){
   var q=F.tq.trim().toLowerCase(), rows=PEOPLE.map(function(x,k){return [x,k]}).filter(function(r){var x=r[0];
     return (F.tf<0||x.role===F.tf)&&(!q||(x.name+" "+x.email).toLowerCase().indexOf(q)>=0)});
   return '<div class="row hd" style="grid-template-columns:'+tcols()+'"><span></span><span>User</span><span>Mobile</span><span>Department</span><span>Role</span>'+(CARD.big?'<span></span>':'')+'</div>'+
-    (rows.length?rows.map(function(r){var x=r[0],k=r[1];return '<div class="row" style="grid-template-columns:'+tcols()+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center;min-width:0"><div class="av">'+x.i+'</div><div style="min-width:0"><div class="rn">'+esc(x.name)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis">'+esc(x.title)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis;font-size:12px">'+esc(x.email)+'</div></div></div><span class="rm" style="font-size:13.5px">'+esc(x.mob)+'</span><select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+(CARD.big?'<button class="zx" data-a="rmp" data-i="'+k+'" aria-label="Remove '+esc(x.name)+'">'+I("x")+'</button>':'')+'</div>'}).join("")
-     :'<div class="empty">No people match your search. <button class="btn ghost" data-a="tclear">Clear search</button></div>');
+    (rows.length?rows.map(function(r){var x=r[0],k=r[1];return '<div class="row" style="grid-template-columns:'+tcols()+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center;min-width:0"><div class="av">'+x.i+'</div><div style="min-width:0"><div class="rn">'+esc(x.name)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis">'+esc(x.title)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis;font-size:12px">'+esc(x.email)+'</div></div></div><span class="rm" style="font-size:13.5px">'+esc(x.mob)+'</span>'+(CARD.big?'<select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select>':'<span class="tdept">'+esc(x.dept)+'</span><span><span class="rolep">'+esc(ROLES[x.role])+'</span></span>')+(CARD.big?'<button class="zx" data-a="rmp" data-i="'+k+'" aria-label="Remove '+esc(x.name)+'">'+I("x")+'</button>':'')+'</div>'}).join("")
+     :!PEOPLE.length?'<div class="xface"><span class="xic sl">'+I("search")+'</span><h3>No users yet</h3><p>Add the people who should get access.</p><div class="xbtns"><button class="btn" data-a="auopen">+ Add user</button></div></div>':'<div class="empty">No people match your search. <button class="btn ghost" data-a="tclear">Clear search</button></div>');
 }
 
 
@@ -1591,6 +1664,9 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
 
 function fillStep(){
   if(!F.pf||F.mode!=="review"||F.active!==0) return;
+  var pill=document.querySelector("#card .fillpill > span");
+  if(F.offline){if(pill&&!F.pfPause){F.pfPause=1; pill.innerHTML="Paused while you're offline"} later(fillStep,400); return}
+  if(F.pfPause){F.pfPause=0; if(pill) pill.innerHTML='Filling in <b id="fillf"></b>'; patchFill()}
   if(F.pf.k<0){F.pf.k=0; F.pf.n=0; patchFill(); later(fillStep,420); return}
   var v=PROFILE[F.pf.k][1], sel=SEL_F.indexOf(F.pf.k)>=0;
   F.pf.n=sel?v.length:Math.min(v.length,F.pf.n+Math.max(1,Math.ceil(v.length/16)));
@@ -1754,17 +1830,139 @@ function bigParts(i){var k=STEPS[i].k, h, l="", r;
   return {h:h,l:l,r:r};
 }
 
+/* ======================= edge cases and prototype states (from the audit-fixes prototype) ======================= */
+var CHIP={amb:"amb",gr:"gr",or:"or",vi:"vi",sl:"sl"};
+var DID={profile:["Checked DLT","Checked GSTIN","Checked MCA","Looked up your company website","Filled in your business profile"]};
+function didOf(k){return DID[k]||BSUM[k][2]}
+/* what the agent did, compact, with the step that broke marked: spec {ok:n, bad:"text", none:"text"} */
+function didList(k,sp){var L=didOf(k).slice(), out=[]; L.forEach(function(x,j){
+    if(sp.bad&&j===sp.ok) out.push('<li class="bad">'+I("warn")+esc(sp.bad)+'</li>');
+    else if(sp.none&&j===L.length-1) out.push('<li class="wait"><i></i>'+esc(sp.none)+'</li>');
+    else if(j<sp.ok) out.push('<li>'+I("check")+esc(x)+'</li>');
+    else out.push('<li class="wait"><i></i>'+esc(x)+'</li>')});
+  return '<div class="xdid"><b>What I did <em>'+(sp.ok+" of "+L.length+" done")+'</em></b><ul>'+out.join("")+'</ul></div>'}
+function setFace(i,f){F.face=f; f.i=i}
+function faceParts(i){var f=F.face, k=STEPS[i].k;
+  var body='<div class="xface"><span class="xic '+(f.tone||"")+'">'+(f.spin?'<span class="spn"></span>':I(f.icon||"warn"))+'</span><h3>'+esc(f.h)+'</h3><p>'+esc(f.p)+'</p>'+(f.extra||'')+(f.btn?'<div class="xbtns">'+f.btn+'</div>':'')+'</div>'+(f.did?didList(k,f.did):'');
+  return {kick:'<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>',chips:f.chip?'<span class="chipmini '+f.chip[1]+'">'+f.chip[0]+'</span>':'',sum:f.sum,title:f.head,tog:'',body:body,l:f.l||'',r:f.r||''}}
+function B(a,label,cls,v){return '<button class="btn'+(cls?" "+cls:"")+'" data-a="'+a+'"'+(v!=null?' data-v="'+v+'"':'')+'>'+label+'</button>'}
+function showDlg(o){var d=$("xdlg"); d.innerHTML='<div class="xdlg-c" role="dialog" aria-modal="true"><span class="xic '+(o.tone||"amb")+'">'+I(o.icon||"info")+'</span><h3>'+esc(o.title)+'</h3><p>'+esc(o.text)+'</p><div class="xbtns">'+o.btns+'</div></div>'; d.classList.add("on"); var b=d.querySelector(".btn:last-child"); if(b) b.focus()}
+function hideDlg(){$("xdlg").classList.remove("on")}
+var SAVE_TXT={team:"You edited this step. Save your changes to the team list and go back to the cards, or discard them and keep the suggestion as the agent made it.",
+  brands:"You edited this step. Save your brand and line of business edits and go back to the cards, or discard them and keep the suggestion as the agent made it.",
+  gtm:"You edited this step. Save your partner choice and volume split and go back to the cards, or discard them and keep the suggestion as the agent made it.",
+  templates:"You edited this step. Save your template mapping changes and go back to the cards, or discard them and keep the suggestion as the agent made it."};
+function snapNow(){return JSON.stringify({P:PROFILE,E:PEOPLE,B:BRANDS,G:PARTNERS,T:TPLS,A:ALLOC})}
+function saveDlg(){showDlg({title:"Save your changes?",text:SAVE_TXT[STEPS[F.active].k]||SAVE_TXT.team,btns:B("dkeep","Keep editing","ghost")+B("ddiscard","Discard changes","ghost")+B("dsave","Save changes")})}
+function xBig(i,o){ // notices, read-only, failures and save errors on the full page
+  if(F.dfail) return {h:'<div class="xface xtall"><span class="xic or">'+I("warn")+'</span><h3>Couldn\'t load the details</h3><p>Your changes so far are kept.</p><div class="xbtns">'+B("xdretry","Try again")+'</div></div>',l:'',r:B("collapse","Back to cards","ghost")};
+  var n=F.notice&&F.notice.i===i?'<div class="xnote '+F.notice.kind+'">'+I(F.notice.kind==="late"?"spark":F.notice.kind==="warn"?"warn":"info")+'<span>'+esc(F.notice.text)+'</span>'+(F.notice.kind==="late"?B("xuse","Use the suggestion"):"")+'</div>':'';
+  var h=n+(F.ro?'<div class="xro">'+o.h+'</div>':o.h), l=o.l, r=o.r;
+  if(F.ro){l=''; r=B("collapse","Back to cards","ghost")}
+  if(F.derr) l+='<span class="ls xerr">'+I("warn")+'That wasn\'t saved. Try again.</span>';
+  return {h:h,l:l,r:r}}
+function tplOverlay(){var t=F.tov;
+  if(t==="lock") return '<div class="xov"><span class="xic sl">'+I("lock")+'</span><h3>Waiting for Brands and LOBs approval</h3><p>Your brands and LOBs are with the telecom operators. Skip this step for now and map templates once they are approved. You can change it later at any time.</p></div>';
+  if(t==="hold") return '<div class="xov"><span class="xic">'+I("lock")+'</span><h3>Your brands and LOBs are still under review</h3><p>2 brands and 4 LOBs are still under review. We suggest you skip this step for now and map templates once they are approved. If you continue now, templates are mapped to the approved LOBs only. You can change the mapping later at any time.</p><div class="xbtns">'+B("xskip","Skip for now")+B("xcont","Continue anyway","ghost")+'</div></div>';
+  if(t==="remap") return '<div class="xov"><span class="xic"><span class="spn"></span></span><h3>Mapping your templates again</h3><p>You removed a line of business, so I am mapping your templates again. This takes a moment.</p></div>';
+  return ""}
+/* a finished step is shown on the blue field, like the rest of the journey */
+function doneScreen(i,o){
+  F.mode="pass"; F.active=i; for(var k=0;k<=i;k++) F.status[k]="done"; show("pass"); hideCard();
+  say({kick:"",line:o.line,sub:o.sub,extra:(o.extra||"")+'<div class="acts">'+o.btn+'</div>',status:[o.chip||"Step done","done"],prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
+}
+function msgScreen(o){F.mode="msg"; show("blank"); hideCard();
+  say({kick:"",line:o.line,sub:o.sub,extra:o.btn?'<div class="acts">'+o.btn+'</div>':'',status:[o.chip,o.cls||"still"],prog:{label:"Steps",items:STEPN,states:o.prog||[]}})}
+function goStep(n){F.face=null; F.mode="pass"; F.status=STEPS.map(function(_,k){return k<n?"done":k===n?"review":"locked"}); review(n)}
+function offline(on){F.offline=on; $("xoff").classList.toggle("on",on); if(!on) toast("You're back online. Changes are saved again.")}
+function rStep(n,pre){jump("r"+n); F.pf=null; if(pre) pre()}
+function bigStep(n,pre){jump("r"+n); F.pf=null; if(pre) pre(); later(expandCard,REDUCE?300:900)}
+var XS={
+  "gate-accepted":function(){jump("gate"); F.gx="accepted"; F.readEnd=true},
+  "gate-fail":function(){jump("gate"); F.gx="fail"},
+  "gate-refused":function(){jump("gate"); F.gx="refused"; F.readEnd=true},
+  "msg-wait":function(){jump("plan"); F.status=["verifying","locked","locked","locked","locked"]; later(function(){msgScreen({chip:"Waiting for operators",line:"Nothing else is needed right now",sub:"The telecom operators are checking your business profile. This usually takes a few hours. Team opens as soon as it is approved. You can leave this page and come back.",prog:states(5,0,0)})},300)},
+  "msg-gtm":function(){jump("plan"); later(function(){F.status=["done","done","done","locked","review"]; msgScreen({chip:"Waiting for rate cards",line:"GTM partners opens soon",sub:"None of the four partners has sent a rate card yet. This step opens as soon as one arrives, and you get an email. Everything else is ready to review.",btn:B("xgo","Review Templates"+I("arrow"),"",4),prog:states(5,-1,3)})},300)},
+  "msg-back":function(){jump("plan"); F.status=["done","done","review","locked","locked"]; later(function(){msgScreen({chip:"Welcome back",line:"Welcome back, Ravi",sub:"You left off at Brands and LOBs. Business profile and Team are done. Three steps are waiting, and nothing has changed since your last visit.",btn:B("xgo","Continue with Brands and LOBs"+I("arrow"),"",2),prog:states(5,2,2)})},300)},
+  "msg-next":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; msgScreen({chip:"Step done",cls:"done",line:"Team is done",sub:"Six invites were sent. Next is Brands and LOBs. Confirm the three brands and seven lines of business, or open the details to change them.",btn:B("xgo","Review Brands and LOBs"+I("arrow"),"",2),prog:states(5,-1,2)})},300)},
+  "done-profile":function(){jump("plan"); later(function(){doneScreen(0,{line:"Business profile approved",sub:"7 fields filled · Approved by 4 of 4 operators · Logo added",extra:'<div class="xby"><i>AK</i>Done by <b>Anita Kulkarni</b> · 09:50 am</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
+  "attention-profile":function(){rStep(0,function(){setFace(0,{chip:["Needs attention","or"],head:"Fix 2 fields and submit again",sum:"Jio and Vi returned the legal entity name and registered address. Correct them, then submit to the telecom operators again.",tone:"or",h:"Jio and Vi returned 2 fields",p:"Fix the legal entity name and registered address, then submit again.",btn:B("xreview","Review","ghost","ret")})})},
+  "partly-profile":function(){rStep(0,function(){F.ppart=true; PROFILE[3][1]=""; PROFILE[4][1]=""})},
+  "err-profile":function(){rStep(0,function(){F.auth=true; F.perr=true})},
+  "unk-profile":function(){rStep(0,function(){F.auth=true; F.punk=true; later(function(){F.punk=false; toast("It was saved. Sending it to the telecom operators."); startKV()},5200)})},
+  "pm-kyc":function(){jump("plan"); later(function(){doneScreen(0,{chip:"Partly approved",line:"Approved by 2 of 4 operators",sub:"Your business profile is done. 2 operators are still reviewing it.",
+    extra:'<div class="xops"><span class="aok">'+I("check")+'<b>Airtel</b>Approved</span><span class="aok">'+I("check")+'<b>Jio</b>Approved</span><span class="wt">'+I("clock")+'<b>Vi</b>Still reviewing</span><span class="wt">'+I("clock")+'<b>BSNL</b>Still reviewing</span></div><div class="xamb">You can carry on. Messages go out only through the approved operators until the others approve.</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
+  "nothing-team":function(){rStep(1,function(){setFace(1,{head:"Nothing found for Team",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no people to suggest",p:"Your DLT registration has no contact list we can read. Add the people who should get access.",did:{ok:3,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:B("xlater","Do it later","ghost")})})},
+  "fail-team":function(){rStep(1,function(){setFace(1,failFace(1,1))})},
+  "fail2-team":function(){rStep(1,function(){setFace(1,failFace(1,2))})},
+  "inreview-team":function(){rStep(1,function(){setFace(1,reviewFace())})},
+  "later-team":function(){rStep(1,function(){setFace(1,{chip:["Do it later","vi"],head:"Team is saved for later",sum:"Nothing is blocked. You can come back to it any time.",icon:"mark",tone:"vi",h:"Team invites saved for later",p:"You chose to do this step later. Nothing has been sent.",btn:B("xreview","Review","ghost")})})},
+  "notice-team-nothing":function(){bigStep(1,function(){PEOPLE.splice(0); F.notice={i:1,kind:"info",text:"We found nothing for this step. Add what you need below."}})},
+  "notice-team-someone":function(){bigStep(1,function(){F.ro=true; F.notice={i:1,kind:"warn",text:"Anita Kulkarni submitted this step on 14 Oct, 11:42. It is read-only now."}})},
+  "notice-team-team":function(){bigStep(1,function(){F.notice={i:1,kind:"info",text:"Anita Kulkarni added 2 people while you were here. You can keep editing."}})},
+  "dialog-team":function(){bigStep(1); later(saveDlg,REDUCE?600:1700)},
+  "dialog-team-ro":function(){bigStep(1,function(){F.ro=true; F.notice={i:1,kind:"warn",text:"Anita Kulkarni submitted this step on 14 Oct, 11:42. It is read-only now."}}); later(saveDlg,REDUCE?600:1700)},
+  "conc-card":function(){rStep(1,function(){setFace(1,reviewFace())}); later(function(){toast("Anita Kulkarni submitted Team.")},700)},
+  "conc-deep":function(){bigStep(1); later(function(){F.ro=true; F.notice={i:1,kind:"warn",text:"Anita Kulkarni submitted this step on 14 Oct, 11:42. It is read-only now."}; refresh(); toast("Anita Kulkarni submitted Team.")},REDUCE?700:2200)},
+  "nothing-brands":function(){rStep(2,function(){setFace(2,{head:"Nothing found for Brands and LOBs",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no brands to suggest",p:"Your DLT headers have no brands we can read. Add your first brand and its lines of business.",did:{ok:3,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:''})})},
+  "fail-brands":function(){rStep(2,function(){setFace(2,failFace(2,1))})},
+  "notice-brands-noprep":function(){bigStep(2,function(){F.notice={i:2,kind:"info",text:"No suggestion was prepared for this step. Fill it in yourself."}})},
+  "notice-brands-late":function(){bigStep(2,function(){F.notice={i:2,kind:"late",text:"A suggestion is ready now."}})},
+  "derr-brands":function(){bigStep(2,function(){F.derr=true})},
+  "dialog-brands":function(){bigStep(2); later(saveDlg,REDUCE?600:1700)},
+  "pm-all":function(){rStep(2,function(){setFace(2,{chip:["In review","amb"],head:"Your brands and LOBs are in review",sum:"Your changes are being reviewed. You can carry on.",icon:"clock",tone:"amb",h:"Not done yet. Waiting for approval",p:"All your brands and LOBs were edited or added, so they were sent for review. Please wait for approval. Template mapping is locked until then. GTM partners is still open.",btn:B("xview","View","ghost")})}); later(function(){toast("Brands and LOBs sent for review")},700)},
+  "pm-all-lock":function(){rStep(4,function(){F.tov="lock"}); later(function(){toast("Brands and LOBs sent for review")},700)},
+  "pm-partial":function(){jump("plan"); F.status=["done","done","review","locked","locked"]; later(function(){doneScreen(2,{line:"Brands and LOBs set up",sub:"5 brands · 11 lines of business · Set up",extra:'<div class="xby"><i>RM</i>Done by <b>Ravi Menon</b> · 09:53 am</div><div class="xamb">2 brands and 4 LOBs are under review. The rest is set up.</div>',btn:B("xgo","Next: GTM partners and Templates are open"+I("arrow"),"",3)}); toast("Brands and LOBs saved. 2 brands and 4 LOBs are under review.")},300)},
+  "pm-partial-warn":function(){rStep(4,function(){F.tov="hold"}); later(function(){toast("Brands and LOBs saved. 2 brands and 4 LOBs are under review.")},700)},
+  "pm-partial-popup":function(){rStep(4); later(function(){showDlg({tone:"",icon:"info",title:"Your mapping was updated",text:"Your brands and LOBs were approved, so the templates were mapped again. Please check the mapping and confirm.",btns:B("dkeep","Check mapping")})},REDUCE?600:3200)},
+  "pm-remove-remap":function(){rStep(4,function(){F.tov="remap"}); later(function(){toast("Brands and LOBs updated. Templates will be mapped again.")},700);
+    later(function(){F.tov=null; refresh(); toast("Templates were mapped again to your updated lines of business")},REDUCE?1200:5200)},
+  "norate-gtm":function(){rStep(3,function(){setFace(3,{chip:["Locked","sl"],head:"GTM partners opens soon",sum:"No partner has sent a rate card yet. This step opens as soon as one arrives.",icon:"lock",tone:"sl",h:"Opens once a partner has sent a rate card",p:"You get an email as soon as the first one arrives.",did:{ok:0,bad:"No partner has sent a rate card yet"}})})},
+  "partly-gtm":function(){rStep(3,function(){F.gpart=true; PARTNERS.forEach(function(p,k){p.pick=k===0})})},
+  "dialog-gtm":function(){bigStep(3); later(saveDlg,REDUCE?600:1700)},
+  "nothing-templates":function(){rStep(4,function(){setFace(4,{head:"Nothing found for Templates",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no templates to suggest",p:"Your DLT account has no templates yet. Add them manually when they exist.",did:{ok:2,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:B("xlater","Do it later","ghost")})})},
+  "busy-templates":function(){rStep(4,function(){var f=failFace(4,1); f.r='<button class="btn" disabled><span class="spn w"></span>Trying again…</button>'; setFace(4,f)}); later(function(){F.face=null; refresh(); toast("Templates are ready to review")},REDUCE?1500:5200)},
+  "attention-templates":function(){rStep(4,function(){setFace(4,{chip:["Needs attention","or"],head:"Please review your templates",sum:"Suggested a line of business for 98 of 100 templates. Confirm the template mapping.",tone:"or",h:"14 templates need a new line of business",p:"14 templates were mapped to lines of business that changed.",btn:B("xreview","Review","ghost","tpart")})})},
+  "partly-templates":function(){rStep(4,function(){F.tpart=true})},
+  "dialog-templates":function(){bigStep(4); later(saveDlg,REDUCE?600:1700)},
+  "fin-skipped":function(){jump("final"); F.fin="skipped"; F.teamLater=true; final()},
+  "fin-notopen":function(){jump("final"); F.fin="notopen"; final()},
+  "fin-open":function(){jump("final")},
+  "fin-closed":function(){jump("final"); F.fin="closed"; final()},
+  "offline-x":function(){jump("r0"); later(function(){offline(true)},1400)},
+  "loadfail-deck":function(){jump("ready"); later(function(){F.mode="err"; show("blank"); say({kick:"",line:"Couldn't load your setup",sub:"Check your connection and try again.",extra:'<div class="acts">'+B("xdeck","Try again")+'</div>',status:["Couldn't load","attn"],prog:{label:"Steps",items:STEPN,states:[]}})},200)},
+  "loadfail-card":function(){rStep(0,function(){setFace(0,{head:"Please review your business profile",sum:"Filled your logo and all 7 fields from 4 sources. Change any field that is wrong, then submit.",tone:"or",h:"Couldn't load this step",p:"The rest of your setup is fine.",btn:B("xreview","Try again")})})},
+  "loadfail-deep":function(){bigStep(1,function(){F.dfail=true})},
+  "conc-unlock":function(){jump("r1"); later(function(){toast("Business profile was approved. Team is now open.")},700)}
+};
+function failFace(i,tries){var st=STEPS[i];
+  return {chip:["Needs attention","or"],head:st.title+" couldn't be prepared",sum:tries>1?"Two tries didn't work. You can fill this step in yourself.":"The agent couldn't read what it needs. Try again in a moment.",tone:"or",
+    h:tries>1?"Still couldn't prepare this step":"Couldn't prepare this step",p:tries>1?"Two tries didn't work. You can fill this step in yourself.":"The agent couldn't read what it needs for this step. Try again in a moment.",
+    did:{ok:1,bad:didOf(st.k)[1]+": couldn't finish"},l:i===3?'':B("xlater","Do it later","ghost"),r:tries>1?B("xretry","Try again","ghost")+B("xself","Do it yourself"):B("xretry","Try again")}}
+function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
+var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
+  ["Agent messages",[["Waiting","msg-wait"],["GTM waiting","msg-gtm"],["Welcome back","msg-back"],["After a decision","msg-next"]]],
+  ["Business profile",[["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Result unknown","unk-profile"],["Approved by 2 of 4 operators","pm-kyc"]]],
+  ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["In review","inreview-team"],["Do it later","later-team"],["Details: nothing found","notice-team-nothing"],["Details: done by someone else","notice-team-someone"],["Details: stays editable","notice-team-team"],["Save changes dialog","dialog-team"],["Save dialog, read-only","dialog-team-ro"],["Done by someone else, on the card","conc-card"],["Done by someone else, on the page","conc-deep"]]],
+  ["Brands and LOBs",[["Nothing found","nothing-brands"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: suggestion arrived late","notice-brands-late"],["Details: save failed","derr-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["Approved while mapping: popup","pm-partial-popup"],["LOB removed: remapping","pm-remove-remap"]]],
+  ["GTM partners",[["No rate cards, locked","norate-gtm"],["Partly prepared","partly-gtm"],["Save changes dialog","dialog-gtm"]]],
+  ["Templates",[["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Needs attention","attention-templates"],["Partly prepared","partly-templates"],["Save changes dialog","dialog-templates"]]],
+  ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
+  ["Whole screen",[["Offline","offline-x"],["Setup failed to load","loadfail-deck"],["Card failed to load","loadfail-card"],["Details failed to load","loadfail-deep"],["Locked step opens","conc-unlock"]]]];
+
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
-  if(CARD.big&&st.k!=="profile") return bigParts(i);
-  if(st.k==="profile"){h='<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
+  if(CARD.big&&st.k!=="profile") return xBig(i,bigParts(i));
+  if(st.k==="profile"){h=(F.ppart?'<div class="xbar err">'+I("warn")+'Couldn\'t fill 2 fields: Business PAN/TAN and Website URL. Add them to submit.</div>':'')+(F.pret?'<div class="xbar warn">'+I("warn")+'Jio and Vi returned 2 fields. Correct them, then submit again.</div>':'')+'<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
+    if(F.perr) h+='<div class="xbar err">'+I("warn")+'That wasn\'t saved. Try again.</div>';
+    if(F.punk) h+='<div class="xbar info"><span class="spn"></span>Checking whether that was saved…</div>';
     foot(authRow(),primary(i))}
   if(st.k==="team"){
     h='<div class="tbar"><div class="chips" style="margin:0">'+
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
         return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label></div><div id="teamRows">'+teamRows()+'</div>';
     foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>'+adminNote(),'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i))}
-  if(st.k==="brands"){h='<div class="root"><div class="lbox ent"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><small>Brand · logo from website</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
+  if(st.k==="brands"){h='<div class="root"><div class="lbox ent"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><b>'+esc(br.name)+'</b></div></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'</span>'}).join("")+'</div></li>'}).join("")+'</ul>';
     foot(checkRow("bok",F.bok,"<b>I've reviewed these details and they're correct.</b>"),'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i))}
   if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
     h='<div class="row hd" style="grid-template-columns:'+c2+'"><span></span><span>Partner</span>'+PH.map(function(x){return '<span>'+x+'</span>'}).join("")+'<span>Why</span></div>'+PARTNERS.map(function(x,k){return '<div class="row" style="grid-template-columns:'+c2+';opacity:'+(x.pick?1:.7)+'"><span class="ck'+(x.pick?' on':'')+'" data-a="ptn" data-i="'+k+'">'+(x.pick?I("check"):'')+'</span><b>'+esc(x.name)+'</b>'+x.r.map(function(r){return '<span>₹'+r.toFixed(2)+'</span>'}).join("")+'<span class="rm">'+esc(x.why)+'</span></div>'}).join("")+
@@ -1794,7 +1992,7 @@ document.addEventListener("click",function(e){
   var a=el.dataset.a, i=+el.dataset.i;
   if(a==="close") closeSheet();
   else if(a==="read") openSheet("doc");
-  else if(a==="accdoc"){if(!F.readEnd) return; F.accepted[F.doc]=true;
+  else if(a==="accdoc"){if(!F.readEnd) return; F.gx=null; F.accepted[F.doc]=true;
     finishStep(function(){
     if(F.doc===0) gate(1);
     else{F.mode="pass"; show("blank"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: what happens now",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}})}
@@ -1802,7 +2000,25 @@ document.addEventListener("click",function(e){
   else if(a==="start") proc(0);
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
-  else if(a==="collapse") collapseCard();
+  else if(a==="collapse"){if(CARD.big&&F.mode==="review"&&F.snap&&!F.ro&&snapNow()!==F.snap) saveDlg(); else collapseCard()}
+  else if(a==="dkeep") hideDlg();
+  else if(a==="dsave"){hideDlg(); F.snap=null; collapseCard(); toast("Your changes are saved")}
+  else if(a==="ddiscard"){var o=JSON.parse(F.snap); PROFILE=o.P; PEOPLE=o.E; BRANDS=o.B; PARTNERS=o.G; TPLS=o.T; ALLOC=o.A; F.am=null; hideDlg(); F.snap=null; collapseCard(); toast("Changes discarded")}
+  else if(a==="xreview"){var v=el.dataset.v; F.face=null; if(v==="ret") F.pret=[0,2]; if(v==="tpart") F.tpart=true; refresh()}
+  else if(a==="xretry"){var f=F.face; f.r='<button class="btn" disabled><span class="spn w"></span>Trying again…</button>'; refresh(); later(function(){F.face=null; refresh(); toast(STEPS[F.active].title+" is ready to review")},REDUCE?300:2200)}
+  else if(a==="xself"||a==="xadd"){var kk=STEPS[F.active].k; F.face=null; if(kk==="team"){PEOPLE.splice(0); F.addU=true} if(kk==="brands"){BRANDS.splice(0); BRANDS.push({name:"New brand",hdr:"",logo:["NEW","","#1b4f9c"],lobs:["New line of business"]})} refresh(); later(expandCard,200)}
+  else if(a==="xlater"){var ii=F.active; F.face=null; if(ii===1) F.teamLater=true; finishStep(function(){complete(ii,STEPS[ii].title+" saved for later")})}
+  else if(a==="xview"){F.ro=true; expandCard()}
+  else if(a==="xgo"){goStep(+el.dataset.v)}
+  else if(a==="xdeck") jump("ready");
+  else if(a==="xdretry"){F.dfail=false; refresh()}
+  else if(a==="xuse"){F.notice=null; refresh(); toast("The agent's suggestion is filled in")}
+  else if(a==="xskip"){F.tov=null; finishStep(function(){complete(4,"Template mapping saved for later")})}
+  else if(a==="xcont"){F.tov=null; refresh(); toast("Templates will be mapped to the approved LOBs only")}
+  else if(a==="xgretry"){F.gx=null; refresh()}
+  else if(a==="xdl") toast("Terms of Use downloaded as a PDF");
+  else if(a==="xreq") toast("Request sent to your account manager");
+  else if(a==="xonline") offline(false);
   else if(a==="auth"){if(F.pf) return; F.auth=!F.auth; refresh()}
   else if(a==="kvnext"){kvNext()}
   else if(a==="bok"){F.bok=!F.bok; refresh()}
@@ -1847,6 +2063,7 @@ document.addEventListener("click",function(e){
 });
 document.addEventListener("input",function(e){var el=e.target; // search filters the rows only, so the box keeps focus
   if(el.dataset.c==="tq"){F.tq=el.value; var r=$("teamRows"); if(r) r.innerHTML=teamRows()}
+  if(el.dataset.f!=null&&!F.pf){PROFILE[+el.dataset.f][1]=el.value; var fd0=el.closest(".fd"); if(fd0&&F.ppart) fd0.classList.toggle("miss",!el.value.trim()); var sb=document.querySelector('#card [data-a="submit"]'); if(sb) sb.disabled=!(F.auth&&profOk())}
   var kc=el.dataset.c; if(kc==="gq"||kc==="tq2"){F[kc]=el.value; if(kc==="tq2") F.tpage=0; var pos=el.selectionStart; refresh(); var n2=document.querySelector('[data-c="'+kc+'"]'); if(n2){n2.focus(); try{n2.setSelectionRange(pos,pos)}catch(_){}}}});
 document.addEventListener("change",function(e){var el=e.target, i=+el.dataset.i;
   if(el.dataset.c==="role"){PEOPLE[i].role=+el.value; refresh()}
@@ -1871,7 +2088,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 /* ======================= prototype jumps ======================= */
 function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
@@ -1882,10 +2099,12 @@ function jump(w){
   else{var n=+w.slice(1); F.status=STEPS.map(function(_,k){return k<n?"done":k===n?"review":"locked"}); review(n)}
 }
 (function(){var pm=$("pm");
-  pm.innerHTML=[["gate","Agreements"],["plan","Setup plan"],["proc","AI processing"],["ready","Ready for review"],["r0","Review: Business profile"],["r1","Review: Team"],["r2","Review: Brands and LOBs"],["r3","Review: GTM partners"],["r4","Review: Templates"],["final","Finished"],["app","Migration + walkthrough"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
-    '<hr><button data-j="glyph">Pixels: use arrows</button><button data-j="pause">Pause motion</button>';
+  pm.innerHTML='<details class="pmg" open><summary>Flow</summary>'+[["gate","Agreements"],["plan","Setup plan"],["proc","AI processing"],["ready","Ready for review"],["r0","Review: Business profile"],["r1","Review: Team"],["r2","Review: Brands and LOBs"],["r3","Review: GTM partners"],["r4","Review: Templates"],["final","Finished"],["app","Migration + walkthrough"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
+    '</details>'+XMENU.map(function(g){return '<details class="pmg"><summary>'+g[0]+'<i>'+g[1].length+'</i></summary>'+g[1].map(function(x){return '<button data-x="'+x[1]+'">'+x[0]+'</button>'}).join("")+'</details>'}).join("")+
+    '<details class="pmg"><summary>Display</summary><button data-j="glyph">Pixels: use arrows</button><button data-j="pause">Pause motion</button></details>';
   $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on")};
-  pm.onclick=function(e){var b=e.target.closest("[data-j]"); if(!b) return; var j=b.dataset.j;
+  pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); XS[x.dataset.x](); return}
+    var b=e.target.closest("[data-j]"); if(!b) return; var j=b.dataset.j;
     if(j==="glyph"){GLYPH=GLYPH==="tri"?"arrow":"tri"; b.textContent=GLYPH==="tri"?"Pixels: use arrows":"Pixels: use triangles"; makeSprites(); return}
     if(j==="pause"){paused=!paused; b.textContent=paused?"Play motion":"Pause motion"; return}
     pm.classList.remove("on"); jump(j)};
