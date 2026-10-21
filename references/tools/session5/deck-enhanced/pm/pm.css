@@ -38,3 +38,12 @@ body.ph-review .card.is-focus .card-in{ transform:none!important; backface-visib
 body.ph-review .card.is-focus .cardf{ display:none!important; }
 body.ph-review .card.is-focus *{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 body.ph-review .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
+
+/* side card labels: larger, heavier, no soft shadow */
+body.ph-review .card:not(.is-focus) .cf-v{ width:120px!important; gap:18px!important; left:20px!important; }
+body.ph-review .card:not(.is-focus) .cf-v b{ font-size:52px!important; font-weight:700!important; letter-spacing:-.01em; text-shadow:none!important; }
+body.ph-review .card:not(.is-focus) .cf-v em{ font-size:28px!important; font-weight:600!important; opacity:1!important; }
+body.ph-review .card:not(.is-focus) .cardf, body.ph-review .card:not(.is-focus) .cardf *{ -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision; }
+/* done side cards use the same large vertical label */
+body.v3b.ph-review .card.st-done:not(.is-focus) .cf-v,body.v3b.ph-review .card.st-later:not(.is-focus) .cf-v{ display:flex!important; }
+body.v3b.ph-review .card.st-done:not(.is-focus) .cf-mid,body.v3b.ph-review .card.st-later:not(.is-focus) .cf-mid,body.v3b.ph-review .card.st-done:not(.is-focus) .cf-bot{ display:none!important; }

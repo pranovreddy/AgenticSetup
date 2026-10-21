@@ -2175,6 +2175,15 @@ body.ph-review .card.is-focus .card-in{ transform:none!important; backface-visib
 body.ph-review .card.is-focus .cardf{ display:none!important; }
 body.ph-review .card.is-focus *{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 body.ph-review .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
+
+/* side card labels: larger, heavier, no soft shadow */
+body.ph-review .card:not(.is-focus) .cf-v{ width:120px!important; gap:18px!important; left:20px!important; }
+body.ph-review .card:not(.is-focus) .cf-v b{ font-size:52px!important; font-weight:700!important; letter-spacing:-.01em; text-shadow:none!important; }
+body.ph-review .card:not(.is-focus) .cf-v em{ font-size:28px!important; font-weight:600!important; opacity:1!important; }
+body.ph-review .card:not(.is-focus) .cardf, body.ph-review .card:not(.is-focus) .cardf *{ -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision; }
+/* done side cards use the same large vertical label */
+body.v3b.ph-review .card.st-done:not(.is-focus) .cf-v,body.v3b.ph-review .card.st-later:not(.is-focus) .cf-v{ display:flex!important; }
+body.v3b.ph-review .card.st-done:not(.is-focus) .cf-mid,body.v3b.ph-review .card.st-later:not(.is-focus) .cf-mid,body.v3b.ph-review .card.st-done:not(.is-focus) .cf-bot{ display:none!important; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -2931,7 +2940,7 @@ function layout() {
     return;
   }
   const [aw, ah] = dims(S.active);
-  const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .24) : 0, TH = 56, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
+  const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .24) : 0, TH = 46, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
   let f = Math.max(0.42, Math.min(1.14, (S.phase === "review" ? innerHeight * .8 : r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
