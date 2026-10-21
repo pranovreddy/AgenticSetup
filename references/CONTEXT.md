@@ -647,3 +647,5 @@ PM feedback file: success transition (green wash from the tick, ring pop, drawn 
 PM feedback file: the 'Template mapping: 98 of 100' status bar is removed from the Brands review card (it stays on the Brands details page).
 
 PM feedback file: fixed a layout bug where the processing pane was position:relative (it pushed the scene 60px down and clipped the pill). The scene now starts at the top of the card body, fills the space above the pill, and the pill sits inside the card bottom. Template counts beside the LOBs on the Brands card are hidden.
+
+PM feedback file: the edit (Details) pages are zoomed out to 85% (#deep zoom).
