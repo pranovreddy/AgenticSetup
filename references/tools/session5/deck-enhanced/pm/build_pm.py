@@ -46,6 +46,9 @@ sub('<div class="bgrid">${BRANDS.map((b, bi) => `<div class="bcard">', '${pmMapS
 # 15 templates card text
 sub('<h3 class="r-h">98 of 100 templates have a line of business ${editTag("templates")}</h3>', '<h3 class="r-h">98% of your 100 templates are mapped to a line of business ${editTag("templates")}</h3>')
 sub("Matched by reading each message. The 2 unmapped don't hold up migration.", "I read each message to find its line of business. For 2 of them I couldn't find a suitable match. You can review the matched ones and the unmapped ones, and they don't hold up migration.")
+# closes-in label
+sub('<em>Closes in</em>', '<em>Migration closes in</em>')
+sub('w === "notopen" ? "OPENS IN" : "CLOSES IN"', 'w === "notopen" ? "MIGRATION OPENS IN" : "MIGRATION CLOSES IN"')
 sub("window.__deck = { uxState,", js + "\nwindow.__deck = { uxState,")
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', f'<style id="pm-fb">{css}</style>\n<script>document.body.classList.add("dk-6","lt-1");</script>')
 (root / "agentic-setup-cards-states-pm-feedback.html").write_text(h)
