@@ -603,3 +603,5 @@ Focus card height lowered again, from 80vh to 70vh (8f.62).
 Centre-card 'Ready' chip removed in the states prototype (other statuses keep their chip).
 
 States prototype: the Business profile verification animation is about 1.7x larger (scene scale cap 2 for .kv, body height 620px).
+
+States prototype: the centre-card Preparing chip is removed too (Ready and Preparing are hidden).
