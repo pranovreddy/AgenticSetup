@@ -1562,8 +1562,8 @@ function verify(){
 function complete(i,title){F.face=null; F.ro=false; F.notice=null;
   closeSheet(); F.status[i]="done"; F.mode="pass"; show("pass");
   var nx=i<4?"Next: "+STEPS[i+1].title:"Next: your migration window";
-  say({kick:STEPLINE(i), line:title, sub:OK+nx, extra:"", status:["Step done","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
-  later(function(){if(i<4){F.status[i+1]="review"; review(i+1)} else final()},2300);
+  say({kick:STEPLINE(i), line:title, sub:OK+nx, extra:i===0&&/approved/.test(title)?opsList(4):"", status:["Step done","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
+  later(function(){if(i<4){F.status[i+1]="review"; review(i+1)} else final()},i===0?3800:2300);
 }
 
 /* 5 · finale */
@@ -1868,6 +1868,7 @@ function tplOverlay(){var t=F.tov;
   if(t==="remap") return '<div class="xov"><span class="xic"><span class="spn"></span></span><h3>Mapping your templates again</h3><p>You removed a line of business, so I am mapping your templates again. This takes a moment.</p></div>';
   return ""}
 /* a finished step is shown on the blue field, like the rest of the journey */
+function opsList(n){return '<div class="xops">'+["Airtel","Jio","Vi","BSNL"].map(function(o,k){return k<n?'<span class="aok">'+I("check")+'<b>'+o+'</b>Approved</span>':'<span class="wt">'+I("clock")+'<b>'+o+'</b>Still reviewing</span>'}).join("")+'</div>'}
 function doneScreen(i,o){
   F.mode="pass"; F.active=i; for(var k=0;k<=i;k++) F.status[k]="done"; show("pass"); hideCard();
   say({kick:"",line:o.line,sub:o.sub,extra:(o.extra||"")+'<div class="acts">'+o.btn+'</div>',status:[o.chip||"Step done","done"],prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
@@ -1886,13 +1887,13 @@ var XS={
   "msg-gtm":function(){jump("plan"); later(function(){F.status=["done","done","done","locked","review"]; msgScreen({chip:"Waiting for rate cards",line:"GTM partners opens soon",sub:"None of the four partners has sent a rate card yet. This step opens as soon as one arrives, and you get an email. Everything else is ready to review.",btn:B("xgo","Review Templates"+I("arrow"),"",4),prog:states(5,-1,3)})},300)},
   "msg-back":function(){jump("plan"); F.status=["done","done","review","locked","locked"]; later(function(){msgScreen({chip:"Welcome back",line:"Welcome back, Ravi",sub:"You left off at Brands and LOBs. Business profile and Team are done. Three steps are waiting, and nothing has changed since your last visit.",btn:B("xgo","Continue with Brands and LOBs"+I("arrow"),"",2),prog:states(5,2,2)})},300)},
   "msg-next":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; msgScreen({chip:"Step done",cls:"done",line:"Team is done",sub:"Six invites were sent. Next is Brands and LOBs. Confirm the three brands and seven lines of business, or open the details to change them.",btn:B("xgo","Review Brands and LOBs"+I("arrow"),"",2),prog:states(5,-1,2)})},300)},
-  "done-profile":function(){jump("plan"); later(function(){doneScreen(0,{line:"Business profile approved",sub:"7 fields filled · Approved by 4 of 4 operators · Logo added",extra:'<div class="xby"><i>AK</i>Done by <b>Anita Kulkarni</b> · 09:50 am</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
+  "done-profile":function(){jump("plan"); later(function(){doneScreen(0,{line:"Business profile approved",sub:"7 fields filled · Approved by 4 of 4 operators · Logo added",extra:opsList(4)+'<div class="xby"><i>AK</i>Done by <b>Anita Kulkarni</b> · 09:50 am</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
   "attention-profile":function(){rStep(0,function(){setFace(0,{chip:["Needs attention","or"],head:"Fix 2 fields and submit again",sum:"Jio and Vi returned the legal entity name and registered address. Correct them, then submit to the telecom operators again.",tone:"or",h:"Jio and Vi returned 2 fields",p:"Fix the legal entity name and registered address, then submit again.",btn:B("xreview","Review","ghost","ret")})})},
   "partly-profile":function(){rStep(0,function(){F.ppart=true; PROFILE[3][1]=""; PROFILE[4][1]=""})},
   "err-profile":function(){rStep(0,function(){F.auth=true; F.perr=true})},
   "unk-profile":function(){rStep(0,function(){F.auth=true; F.punk=true; later(function(){F.punk=false; toast("It was saved. Sending it to the telecom operators."); startKV()},5200)})},
   "pm-kyc":function(){jump("plan"); later(function(){doneScreen(0,{chip:"Partly approved",line:"Approved by 2 of 4 operators",sub:"Your business profile is done. 2 operators are still reviewing it.",
-    extra:'<div class="xops"><span class="aok">'+I("check")+'<b>Airtel</b>Approved</span><span class="aok">'+I("check")+'<b>Jio</b>Approved</span><span class="wt">'+I("clock")+'<b>Vi</b>Still reviewing</span><span class="wt">'+I("clock")+'<b>BSNL</b>Still reviewing</span></div><div class="xamb">You can carry on. Messages go out only through the approved operators until the others approve.</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
+    extra:opsList(2)+'<div class="xamb">You can carry on. Messages go out only through the approved operators until the others approve.</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
   "nothing-team":function(){rStep(1,function(){setFace(1,{head:"Nothing found for Team",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no people to suggest",p:"Your DLT registration has no contact list we can read. Add the people who should get access.",did:{ok:3,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:B("xlater","Do it later","ghost")})})},
   "fail-team":function(){rStep(1,function(){setFace(1,failFace(1,1))})},
   "fail2-team":function(){rStep(1,function(){setFace(1,failFace(1,2))})},
