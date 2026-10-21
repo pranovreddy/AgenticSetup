@@ -676,3 +676,5 @@ Audit fixes copy rebuilt on PM feedback v30 (merged commit 8fedbe0 and the four 
 - Toasts are top-centre. The offline banner stops short of the top-right Prototype button. The review card is capped at innerHeight - 150 so it ends above the previous/next arrows (no overlap at 1280, 1440 or 1920).
 - The "You can change this later" note is sticky at the bottom of the card body, so it shows on scrolling cards.
 Checked: all 55 menu states with no page errors, the full real flow to the finale, and the keyboard.
+
+Audit fixes copy: the backdrop behind the left agent text now covers the full height of the column (#tband::before, fading out over its last 72px), not just the text block, so side cards are covered top to bottom (artifact comment).

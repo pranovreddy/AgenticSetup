@@ -58,8 +58,9 @@ body.pm-ready .cardf .cf-st.ux{ background:#dcfce7!important; color:#166534!impo
 .card [data-rc] button, .card .rchips button{ min-height:30px; }
 /* m6 the agent chip clears the avatar pill on short screens */
 @media (max-height:780px){ #tband .hero-in{ padding-top:56px; } }
-/* m6 a soft backdrop behind the agent text, so side cards passing under it don't hurt legibility */
-body.au-heroback #tband .hero-in{ background:linear-gradient(to right, rgba(247,249,255,.95) 0, rgba(247,249,255,.95) 88%, rgba(247,249,255,0) 100%); border-radius:0 28px 28px 0; }
+/* m6 a soft backdrop down the whole left column, so side cards passing under the agent text are covered top to bottom */
+body.au-heroback #tband::before{ content:""; position:absolute; top:0; bottom:0; left:0; width:calc(100% + 48px); z-index:-1; pointer-events:none; background:linear-gradient(to right, rgba(247,249,255,.96) 0, rgba(247,249,255,.96) calc(100% - 72px), rgba(247,249,255,0) 100%); }
+body.au-heroback #tband{ isolation:isolate; }
 /* m9 offline: the agent pill says it has paused */
 body.au-off .pm-q.fill{ display:none!important; }
 /* p2 finale chips readable, View buttons clickable */
