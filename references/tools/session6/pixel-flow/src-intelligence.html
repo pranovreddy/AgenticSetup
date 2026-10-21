@@ -268,6 +268,23 @@ select.inp{height:36px;padding:0 8px}
 .lfacts span{color:var(--s-muted)}
 .lfacts b{font-weight:600}
 .lfacts em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
+.rp{margin:2px 0 0;font-size:14.5px;line-height:1.5;color:var(--s-ink2)}
+.chg{margin:16px 0 0;font-size:13px;color:var(--s-muted)}
+.card .auth u{text-decoration:underline;text-underline-offset:2px}
+.cd-ft .ls{max-width:300px;line-height:1.35}
+.gtmh{display:flex;align-items:baseline;gap:10px;margin:18px 0 6px;font-size:14.5px}.gtmh span{font-size:12.5px;color:var(--s-muted)}
+.gr{display:grid;gap:14px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--s-line)}
+.gr.hd{padding:6px 4px;font-size:12.5px;font-weight:600;color:var(--s-muted)}
+.gr.off{opacity:.6}.gr .n{text-align:right;font-size:14.5px;font-weight:500}.gr.hd .n{font-weight:600}
+.gr .n small{display:block;font-size:12px;color:var(--s-muted);font-weight:400}
+.gr .n.bst{color:var(--s-green);font-weight:600}
+.gw{display:flex;gap:12px;align-items:center;min-width:0}.gw b{font-size:14.5px;display:flex;align-items:center;gap:8px}.gw small{display:block;font-size:12.5px;color:var(--s-muted);margin-top:2px;line-height:1.35}
+.gw em{font-style:normal;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
+.gw .mk{flex:none;width:32px;height:32px;border-radius:9px;background:#eaf0ff;color:var(--s-blue);display:grid;place-items:center;font:600 14px Inter,sans-serif;font-style:normal}
+.lobl{display:grid;gap:2px;margin-top:4px}
+.lobr{display:grid;grid-template-columns:150px 1fr 34px;gap:14px;align-items:center;padding:7px 0;font-size:14px}
+.lobr i{display:block;height:6px;border-radius:3px;background:#eef2f8;overflow:hidden}.lobr i b{display:block;height:100%;border-radius:3px;background:var(--s-blue)}
+.lobr em{font-style:normal;text-align:right;font-weight:600}.lobr.un{color:var(--s-muted)}.lobr.un i b{background:#aab4c8}
 .lmore{font-size:14px;color:var(--s-muted);margin-top:8px}
 .lneed{display:flex;gap:10px;margin-top:18px;font-size:15px;line-height:1.5;color:var(--s-ink2)}
 .lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
@@ -554,17 +571,17 @@ var STEPS=[
   need:"Confirm you are authorised to submit, then send it for approval.",next:"Telecom operators check it. Team opens once it is approved."},
  {k:"team",title:"Team",rh:"Choose who to invite",rs:"I found 6 people on your DLT registration and suggested a role for each.",
   need:"Untick anyone you do not want to invite, then send the invites.",next:"They get an email invite to DigiConsent."},
- {k:"brands",title:"Brands and LOBs",rh:"3 brands and 7 lines of business",rs:"Drafted from your DLT headers. Confirm as drafted and they are set up straight away.",
+ {k:"brands",title:"Brands and LOBs",rh:"3 brands and 7 lines of business",rs:"Drafted from your DLT headers. Confirm as drafted and they are set up straight away. Any change goes for review.",
   need:"Confirm the draft, or remove a line of business you do not need.",next:"GTM partners opens next."},
- {k:"gtm",title:"GTM partners",attn:true,rh:"Karix and Value First, split by phase",rs:"4 partners sent rate cards. These two have the lowest rates across the three phases.",
+ {k:"gtm",title:"GTM partners",attn:true,rh:"Karix and Value First, split by phase",rs:"4 partners sent rate cards. Karix has the lowest rate in every phase. Value First matches it on acquisition and adds enterprise SLA cover, so the volume is split between them.",
   need:"Check the two chosen partners. You can swap one.",next:"Templates opens once you confirm the partners."},
- {k:"templates",title:"Templates",attn:true,rh:"98 of 100 templates have a line of business",rs:"Matched by reading each message. 2 still need a line of business.",
+ {k:"templates",title:"Templates",attn:true,rh:"98 of 100 templates have a line of business",rs:"I read each message to find its line of business. For 2 of them I could not find a suitable match.",
   need:"2 templates have no line of business yet. They do not hold up migration.",next:"This is the last step. After it, your migration window opens."}
 ];
-var PROFILE=[["Legal Entity Name","HDFC Bank Limited","MCA"],["Entity Type","Public Limited","MCA"],["Registered Address","HDFC Bank House, Senapati Bapat Marg, Lower Parel, Mumbai 400013","DLT"],["Business PAN/TAN","AAACH2702H","GSTIN"],["Website URL","https://www.hdfcbank.com","Website"],["Primary Industry","Banking & Financial Services","Website"],["Sub Industry","Scheduled Commercial Bank","Website"]];
+var PROFILE=[["Legal Entity Name","HDFC Bank Limited","MCA"],["Entity Type","Public Limited","MCA"],["Registered Address","HDFC Bank House, Senapati Bapat Marg, Lower Parel, Mumbai 400013","GSTIN"],["Business PAN/TAN","AAACH2702H","GSTIN"],["Website URL","https://www.hdfcbank.com","Website"],["Primary Industry","Banking & Financial Services","DLT"],["Sub Industry","Scheduled Commercial Bank","DLT"]];
 var ROLES=["Regulatory / Legal","Business Admin","Super Admin","Viewer"];
 var DEPTS=["Legal & Compliance","Risk & Audit","Marketing","Technology","Finance Operations","Operations"];
-var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance",0],["MI","Meera Iyer","meera.iyer@hdfc.com","Legal & Compliance",0],["AM","Arjun Menon","arjun.menon@hdfc.com","Risk & Audit",0],["SP","Sanjay Prabhu","sanjay.prabhu@hdfc.com","Marketing",1],["KR","Kavya Reddy","kavya.reddy@hdfc.com","Marketing",1],["DN","Divya Nair","divya.nair@hdfc.com","Technology",2]].map(function(p,k){return {i:p[0],name:p[1],email:p[2],dept:p[3],role:p[4],on:true,mob:["+91 98201 44120","+91 98330 21675","+91 99200 58314","+91 98670 30942","+91 97690 11823","+91 98192 76450"][k]}});
+var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance",0],["MI","Meera Iyer","meera.iyer@hdfc.com","Legal & Compliance",0],["AM","Arjun Menon","arjun.menon@hdfc.com","Risk & Audit",0],["SP","Sanjay Prabhu","sanjay.prabhu@hdfc.com","Marketing",1],["KR","Kavya Reddy","kavya.reddy@hdfc.com","Marketing",1],["DN","Divya Nair","divya.nair@hdfc.com","Technology",2]].map(function(p,k){return {title:["VP, Legal & Compliance","Compliance Manager","Head of Risk and Audit","Head of Marketing Operations","Digital Campaigns Lead","Senior Manager, Technology"][k],i:p[0],name:p[1],email:p[2],dept:p[3],role:p[4],on:true,mob:["+91 98201 44120","+91 98330 21675","+91 99200 58314","+91 98670 30942","+91 97690 11823","+91 98192 76450"][k]}});
 var BRANDS=[{name:"HDFC Bank",hdr:"HDFCBK",logo:["HDFC","BANK","#004c8f"],lobs:["Credit Cards","Personal Loan","Home Loan"]},{name:"HDFC Life",hdr:"HDFCLI",logo:["HDFC","LIFE","#1b4f9c"],lobs:["Term Insurance","Savings Plans"]},{name:"HDFC ERGO",hdr:"HDFCER",logo:["HDFC","ERGO","#d7262b"],lobs:["Motor Insurance","Health Insurance"]}];
 var PARTNERS=[{name:"Karix",pick:true,r:[.75,1.2,.6],why:"Lowest rates on migration and refresh."},{name:"Value First",pick:true,r:[.8,1.2,.7],why:"Ties on acquisition at ₹1.20, with stronger enterprise SLA cover."},{name:"Tata",pick:false,r:[.82,1.28,.68],why:"Close on refresh, higher on migration and acquisition."},{name:"Route Mobile",pick:false,r:[.88,1.35,.72],why:"Above the chosen pair on every phase."}];
 var PH=["Migration","Acquisition","Refresh"], ALLOC=[60,50,65];
@@ -1209,10 +1226,11 @@ function review(i){
 }
 function heading(i){var k=STEPS[i].k;
   if(k==="brands") return BRANDS.length+" brands and "+lobCount()+" lines of business";
-  if(k==="templates") return (100-unmapped())+" of 100 templates have a line of business";
+  if(k==="gtm"){var pk0=picked(); return pk0.length===2?pk0[0].name+" and "+pk0[1].name+", split by phase":"Choose two partners"}
+  if(k==="templates") return (100-unmapped())+"% of your 100 templates are mapped to a line of business";
   return STEPS[i].rh}
 function subline(i){var k=STEPS[i].k, u=unmapped();
-  if(k==="templates") return "Matched by reading each message. "+(u?u+" still need"+(u===1?"s":"")+" a line of business.":"You set the rest yourself.");
+  if(k==="templates") return "I read each message to find its line of business. "+(u?"For "+u+" of them I could not find a suitable match.":"You set the rest yourself.");
   return STEPS[i].rs}
 function facts(rows){return '<div class="facts">'+rows.map(function(r){return '<div><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b>'+(r[2]?'<em>'+esc(r[2])+'</em>':'<i></i>')+'</div>'}).join("")+'</div>'}
 function lfacts(rows){return '<div class="lfacts">'+rows.map(function(r){return '<div><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b>'+(r[2]?'<em>'+esc(r[2])+'</em>':'<i></i>')+'</div>'}).join("")+'</div>'}
@@ -1222,28 +1240,35 @@ function onPeople(){return PEOPLE.filter(function(p){return p.on})}
 function lobCount(){return BRANDS.reduce(function(a,b){return a+b.lobs.length},0)}
 function picked(){return PARTNERS.filter(function(p){return p.pick})}
 function unmapped(){return TPLS.filter(function(t){return !t[2]}).length}
-function authRow(){return '<div class="auth" data-a="auth"><span class="cbx'+(F.auth?' on':'')+'">'+(F.auth?I("check"):'')+'</span><span><b>I\'m authorised to submit this KYC, and it\'s accurate.</b><small>The company accepts responsibility for any false information.</small></span></div>'}
+function authRow(){return '<div class="auth" data-a="auth"><span class="cbx'+(F.auth?' on':'')+'">'+(F.auth?I("check"):'')+'</span><span><b>I\'m authorised to submit this KYC, and it\'s accurate.</b><small>Airtel, Jio, Vi and BSNL will review these 7 fields. The company accepts responsibility for any false or misleading information.</small></span></div>'}
+function checkRow(a,on,html){return '<div class="auth" data-a="'+a+'"><span class="cbx'+(on?' on':'')+'">'+(on?I("check"):'')+'</span><span>'+html+'</span></div>'}
+function adminNote(){var n=PEOPLE.filter(function(p){return p.on&&p.role===2}).length; return n?'<span class="ls">'+n+(n===1?' person gets':' people get')+' Super Admin (full access).</span>':''}
 function primary(i){
   var k=STEPS[i].k;
-  if(k==="profile") return '<button class="btn" data-a="submit"'+(F.auth?'':' disabled')+'>Submit for approval</button>';
+  if(k==="profile") return '<button class="btn" data-a="submit"'+(F.auth?'':' disabled')+'>Submit to telecom operators</button>';
   if(k==="team"){var n=onPeople().length; return '<button class="btn" data-a="invites"'+(n?'':' disabled')+'>Send '+n+' invite'+(n===1?'':'s')+'</button>'}
-  if(k==="brands") return '<button class="btn" data-a="brands">Confirm brands</button>';
-  if(k==="gtm") return '<button class="btn" data-a="gtm"'+(picked().length===2?'':' disabled')+'>Accept partners</button>';
-  return '<button class="btn" data-a="tpl">Confirm mapping</button>';
+  if(k==="brands") return '<button class="btn" data-a="brands"'+(F.bok?'':' disabled')+'>Confirm brands</button>';
+  if(k==="gtm") return '<button class="btn" data-a="gtm"'+(picked().length===2&&F.gt?'':' disabled')+'>Confirm partners</button>';
+  return '<button class="btn" data-a="tpl">Send '+(100-unmapped())+' for approval</button>';
 }
 function tplSummary(){
-  var un=unmapped(), extra=2-un, rows=TLOBS.map(function(l){var m=TLOB_META[l[0]]; return {name:l[0],brand:m[0],total:l[1],review:m[1]}});
-  // templates the user mapped themselves count as suggested and sure
-  var mapped=100-un, review=rows.reduce(function(a,r){return a+r.review},0), sure=mapped-review, pct=Math.round(mapped);
+  var un=unmapped(), mapped=100-un, review=71, sure=Math.max(0,mapped-review), pct=mapped;
   var ring='<span class="tring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" pathLength="100"/><circle class="on" cx="18" cy="18" r="15.5" pathLength="100" style="stroke-dasharray:'+pct+' 100"/></svg><b>'+pct+'%</b></span>';
   var seg=function(n,c){return n?'<i class="'+c+'" style="flex:'+n+'"></i>':''};
-  return '<section class="thero"><div class="thead">'+ring+'<div><b>Suggestion confidence</b><span>'+(un?un+' '+(un===1?'has':'have')+' no suggestion yet and need'+(un===1?'s':'')+' mapping in review.':'Every template has a line of business now.')+'</span></div></div>'+
-    '<div class="tbar2">'+seg(sure,"hi")+seg(review,"rv")+seg(un,"un")+'</div>'+
-    '<div class="tkey"><span class="hi"><i></i><b>'+sure+'</b> high confidence</span><span class="rv"><i></i><b>'+review+'</b> need review</span><span class="un"><i></i><b>'+un+'</b> unmapped</span></div></section>'+
-    '<p class="tlh">Lines of business<em>Most review needed first</em></p><div class="tlist">'+rows.sort(function(a,b){return b.review-a.review||b.total-a.total}).map(function(r){
-      return '<div class="trow"><span class="twho"><span class="av">'+esc(r.name.split(" ").map(function(w){return w[0]}).join("").slice(0,2))+'</span><span><b>'+esc(r.name)+'</b><small>'+esc(r.brand)+'</small></span></span>'+
-        '<span class="tmeter"><i class="hi" style="flex:'+(r.total-r.review)+'"></i><i class="rv" style="flex:'+r.review+'"></i></span>'+
-        '<span class="tnums"><span><b>'+r.total+'</b> suggested</span><span class="rv"><b>'+r.review+'</b> need review</span></span></div>'}).join("")+'</div>';
+  var mx=22, rows=TLOBS.map(function(l){return '<div class="lobr"><span>'+esc(l[0])+'</span><i><b style="width:'+Math.round(l[1]/mx*100)+'%"></b></i><em>'+l[1]+'</em></div>'}).join("")+
+    '<div class="lobr un"><span>Not mapped</span><i><b style="width:'+Math.round(un/mx*100)+'%"></b></i><em>'+un+'</em></div>';
+  return '<section class="thero"><div class="thead">'+ring+'<div><b>100 scanned</b><span>'+mapped+' mapped to a line of business</span></div></div>'+
+    '<div class="tbar2">'+seg(sure,"hi")+seg(Math.min(review,mapped),"rv")+seg(un,"un")+'</div>'+
+    '<div class="tkey"><span class="hi"><i></i><b>'+sure+'</b> high confidence</span><span class="rv"><i></i><b>'+Math.min(review,mapped)+'</b> need review</span><span class="un"><i></i><b>'+un+'</b> unmapped</span></div></section>'+
+    '<p class="tlh">Templates per line of business</p><div class="lobl">'+rows+'</div>'+(un?'<p class="chg" style="margin-top:6px">71 need review. Check them first, or send them as they are. The '+un+' with no line of business do not hold up migration.</p>':'');
+}
+function gtmCard(){
+  var sel=picked(), best=PH.map(function(_,k){return Math.min.apply(null,PARTNERS.map(function(p){return p.r[k]}))});
+  var c='minmax(0,1.5fr) repeat(3,minmax(70px,.5fr))';
+  return '<div class="gtmh"><b>Compare partners</b><span>'+sel.length+' of '+PARTNERS.length+' chosen · ₹ per consent (refresh: per consent a year) and share of volume</span></div>'+
+    '<div class="gtmt"><div class="gr hd" style="grid-template-columns:'+c+'"><span>Partner</span>'+PH.map(function(x){return '<span class="n">'+x+'</span>'}).join("")+'</div>'+
+    PARTNERS.map(function(p){return '<div class="gr'+(p.pick?' pick':' off')+'" style="grid-template-columns:'+c+'"><span class="gw"><i class="mk">'+p.name[0]+'</i><span><b>'+esc(p.name)+(p.pick?'<em>Chosen</em>':'')+'</b><small>'+esc(p.why)+'</small></span></span>'+
+      p.r.map(function(r,k){return '<span class="n'+(r===best[k]?' bst':'')+'">₹'+r.toFixed(2)+(p.pick&&sel.length===2?'<small>'+(p===sel[0]?ALLOC[k]:100-ALLOC[k])+'%</small>':'')+'</span>'}).join("")+'</div>'}).join("")+'</div>';
 }
 function cardSummary(i){
   var st=STEPS[i], h='';
@@ -1253,8 +1278,9 @@ function cardSummary(i){
     h+='<div class="lavs">'+PEOPLE.map(function(p){return '<span class="'+(p.on?'':'off')+'" title="'+esc(p.name)+'">'+p.i+'</span>'}).join("")+'</div>'+
       '<div class="lmore">'+(Object.keys(cnt).map(function(r){return cnt[r]+' '+r}).join(" · ")||"Nobody selected")+'</div>'+needLine(st)}
   if(st.k==="brands") h+=lfacts(BRANDS.map(function(b){return [b.name,b.lobs.join(", ")||"No lines of business"]}))+needLine(st);
-  if(st.k==="gtm"){var pk=picked(); h+=(pk.length===2?lfacts(PH.map(function(p,k){return [p,pk[0].name+" "+ALLOC[k]+"% · "+pk[1].name+" "+(100-ALLOC[k])+"%"]})):'<div class="lmore">Choose exactly two partners in the details.</div>')+needLine(st)}
-  if(st.k==="templates") h+=tplSummary()+needLine(st);
+  if(st.k==="gtm") h+=gtmCard();
+  if(st.k==="templates") h+=tplSummary();
+  if(st.k!=="profile") h+='<p class="chg">You can change this later at any time.</p>';
   return h;
 }
 var CARD={on:false,big:false};
@@ -1273,8 +1299,10 @@ function cardHTML(){
   var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
-    p={title:heading(i),tog:'',body:d0.h+(st.k==="brands"?needLine(st):''),l:d0.l,r:d0.r}}
-  else p={title:heading(i),tog:'',body:cardSummary(i),l:'<button class="btn ghost" data-a="details">'+I("max")+'See details</button>'+(st.k==="team"?' <button class="btn ghost" data-a="later">Do it later</button>':''),r:primary(i)};
+    p={title:heading(i),tog:'',body:d0.h+(st.k!=="profile"?'<p class="chg">You can change this later at any time.</p>':''),l:d0.l,r:d0.r}}
+  else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.')+'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>':
+      '<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button><button class="btn ghost" data-a="tlater">Do it later</button>';
+    p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:primary(i)}}
   p.kick=kick; return cardWrap(p);
 }
 function cardWrap(p){
@@ -1415,7 +1443,7 @@ function teamRows(){
   var q=F.tq.trim().toLowerCase(), rows=PEOPLE.map(function(x,k){return [x,k]}).filter(function(r){var x=r[0];
     return (F.tf<0||x.role===F.tf)&&(!q||(x.name+" "+x.email).toLowerCase().indexOf(q)>=0)});
   return '<div class="row hd" style="grid-template-columns:'+TCOLS+'"><span></span><span>User</span><span>Mobile</span><span>Department</span><span>Role</span></div>'+
-    (rows.length?rows.map(function(r){var x=r[0],k=r[1];return '<div class="row" style="grid-template-columns:'+TCOLS+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center;min-width:0"><div class="av">'+x.i+'</div><div style="min-width:0"><div class="rn">'+esc(x.name)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis">'+esc(x.email)+'</div></div></div><span class="rm" style="font-size:13.5px">'+esc(x.mob)+'</span><select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select></div>'}).join("")
+    (rows.length?rows.map(function(r){var x=r[0],k=r[1];return '<div class="row" style="grid-template-columns:'+TCOLS+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center;min-width:0"><div class="av">'+x.i+'</div><div style="min-width:0"><div class="rn">'+esc(x.name)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis">'+esc(x.title)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis;font-size:12px">'+esc(x.email)+'</div></div></div><span class="rm" style="font-size:13.5px">'+esc(x.mob)+'</span><select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select></div>'}).join("")
      :'<div class="empty">No people match your search. <button class="btn ghost" data-a="tclear">Clear search</button></div>');
 }
 function detailParts(i){
@@ -1426,9 +1454,9 @@ function detailParts(i){
     h='<div class="tbar"><div class="chips" style="margin:0">'+
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
         return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label></div><div id="teamRows">'+teamRows()+'</div>';
-    foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>',primary(i))}
+    foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>'+adminNote(),primary(i))}
   if(st.k==="brands"){h='<div class="root"><div class="lbox ent"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><small>Brand · logo from website</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
-    foot('<span class="ls">'+BRANDS.length+' brands · '+lobCount()+' lines of business</span>',primary(i))}
+    foot(checkRow("bok",F.bok,"<b>I've reviewed these details and they're correct.</b>"),primary(i))}
   if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
     h='<div class="row hd" style="grid-template-columns:'+c2+'"><span></span><span>Partner</span>'+PH.map(function(x){return '<span>'+x+'</span>'}).join("")+'<span>Why</span></div>'+PARTNERS.map(function(x,k){return '<div class="row" style="grid-template-columns:'+c2+';opacity:'+(x.pick?1:.7)+'"><span class="ck'+(x.pick?' on':'')+'" data-a="ptn" data-i="'+k+'">'+(x.pick?I("check"):'')+'</span><b>'+esc(x.name)+'</b>'+x.r.map(function(r){return '<span>₹'+r.toFixed(2)+'</span>'}).join("")+'<span class="rm">'+esc(x.why)+'</span></div>'}).join("")+
       '<div class="rn" style="margin-top:26px">Volume split by phase</div>'+(pk.length===2?PH.map(function(x,k){return '<div class="row" style="grid-template-columns:110px 1fr 200px"><span>'+x+'</span><div class="spl"><i style="width:'+ALLOC[k]+'%;background:#2563eb"></i><i style="width:'+(100-ALLOC[k])+'%;background:#9bb8ff"></i></div><span class="rm">'+esc(pk[0].name)+' '+ALLOC[k]+'% · '+esc(pk[1].name)+' '+(100-ALLOC[k])+'%</span></div>'}).join(""):'<div class="sh-sum">Choose exactly two partners to see the split.</div>');
@@ -1460,6 +1488,9 @@ document.addEventListener("click",function(e){
   else if(a==="details") expandCard();
   else if(a==="collapse") collapseCard();
   else if(a==="auth"){F.auth=!F.auth; refresh()}
+  else if(a==="bok"){F.bok=!F.bok; refresh()}
+  else if(a==="gterms"){F.gt=!F.gt; refresh()}
+  else if(a==="tlater") finishStep(function(){complete(4,"Templates saved for later")});
   else if(a==="submit"){if(F.auth) finishStep(verify)}
   else if(a==="ptog"){PEOPLE[i].on=!PEOPLE[i].on; refresh()}
   else if(a==="invites"){F.teamLater=false; finishStep(function(){complete(1,"Invites sent")})}

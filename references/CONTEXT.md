@@ -548,3 +548,12 @@ Reference the owner gave: a dark-to-violet hero where the product talks to the u
 - `agentic-setup-pixels-intelligence.html`, built by `references/tools/session6/pixel-flow/build.py` from `src-intelligence.html` — a **fork** of `src.html` (deep blue), not auto-synced; port later fixes by hand.
 - Adds a visible agent core (triangle-sphere + pinwheel heart + orbit rings, overlay canvas `#orb`) above the title, with a phase chip (Planning / Observing / Reasoning / Drafting / Ready), a 3-line reasoning trace with confidence pills, beams from the core to the scene shapes, and a spinning logo + confidence meter in the Agent summary panel.
 - Core hides on review/agreements/final screens and when there is no room (R<2.7 cells). Sources scene geometry was moved to clear the core. Scenes keep the abstract background from the original.
+
+### 8f.44 Intelligence page: review cards from the audit-fixes prototype
+- Fields and data now follow `agentic-setup-cards-audit-fixes.html` (branch `claude/upbeat-wright-t81thr`); the design is still the pixel page's white card. Only `src-intelligence.html` changed, not the other three pixel pages.
+- Profile: sources GSTIN (address) and DLT (industry, sub industry); authorise text names Airtel, Jio, Vi and BSNL; button "Submit to telecom operators".
+- Team: job title under each name; footer note "N people get Super Admin (full access)".
+- Brands: "I've reviewed these details and they're correct." must be ticked before Confirm brands; summary line says any change goes for review.
+- GTM: compare-partners table in the card (Chosen chip, best rate green, share of volume), rate card terms checkbox, "Confirm partners", "View and edit".
+- Templates: "98% of your 100 templates are mapped...", 100 scanned / 27 high / 71 need review / 2 unmapped, templates per line of business, "Send 98 for approval", "Do it later".
+- All steps except Business profile end with "You can change this later at any time." The card states (nothing found, couldn't prepare, locks, partial approval) in that prototype were not ported.
