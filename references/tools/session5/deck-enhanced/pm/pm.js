@@ -3,7 +3,7 @@
 function pmHl() { const doc = $("#doc"); if (!doc) return; let cur = 0; $$("h3", doc).forEach((x, n) => { if (x.offsetTop <= doc.scrollTop + 60) cur = n; }); const links = $$("#prose a[data-clause]"); let best = null; links.forEach((a) => { if (+a.dataset.clause <= cur) best = a; }); links.forEach((a) => a.classList.toggle("on", a === best)); }
 $("#doc").addEventListener("scroll", pmHl, { passive: true }); $("#tabs").addEventListener("click", () => setTimeout(pmHl, 60)); setTimeout(pmHl, 300);
 /* 4 closes-in context */
-{ const s = $("#closes .s"); if (s && !$(".cx", s)) s.insertAdjacentHTML("beforeend", '<small class="cx">Finish onboarding before this window closes, so you can migrate your consents.</small>'); }
+{ $("#closes")?.setAttribute("tabindex", "0"); const s = $("#closes .s"); if (s && !$(".cx", s)) s.insertAdjacentHTML("beforeend", '<small class="cx">Finish onboarding before this window closes, so you can migrate your consents.</small>'); }
 /* 7 ready screen chips say Ready for review, with a tick */
 const _pmFaces = faces;
 faces = function () { _pmFaces(); const rd = !!$("#readyL"); document.body.classList.toggle("pm-ready", rd && document.body.classList.contains("all-closed")); if (!rd || !document.body.classList.contains("all-closed")) return; $$(".cardf .cf-st.ux", stage).forEach((x) => { x.innerHTML = `${uxI("done")}Ready for review`; }); };

@@ -611,3 +611,5 @@ States prototype: the centre-card Preparing chip is removed too (Ready and Prepa
 8f.75 PM comment 15: the Templates card says '98% of your 100 templates are mapped to a line of business' and that 2 had no suitable match, and that matched and unmapped ones can be reviewed.
 
 Closes-in pill label is 'Migration closes in' (and 'Migration opens in') in the PM feedback file.
+
+Closes-in context line shows only on hover or focus (PM feedback file); the pill is 56px at rest.

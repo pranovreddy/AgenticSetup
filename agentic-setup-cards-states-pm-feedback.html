@@ -2164,6 +2164,11 @@ body.all-closed:not(.pm-ready) .cardf .cf-st.ux{ display:none; }
 .lm .pf,.lm .tc{ display:inline-flex!important; flex-direction:row!important; align-items:center; white-space:nowrap; width:auto; height:auto; }
 .lm .pf svg,.lm .tc svg{ width:14px!important; height:14px!important; flex:none; }
 .lobrow .x{ grid-column:2; grid-row:1; } .lobrow .inp{ grid-column:1; grid-row:1; }
+
+/* closes-in context only on hover or focus */
+.closes .cx{ max-height:0; opacity:0; margin-top:0; overflow:hidden; transition:max-height .3s var(--ease),opacity .25s,margin .3s; }
+.closes:hover .cx,.closes:focus-within .cx,.closes:focus .cx{ max-height:80px; opacity:1; margin-top:4px; }
+.closes{ pointer-events:auto; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -4511,7 +4516,7 @@ function uxState(name) {
 function pmHl() { const doc = $("#doc"); if (!doc) return; let cur = 0; $$("h3", doc).forEach((x, n) => { if (x.offsetTop <= doc.scrollTop + 60) cur = n; }); const links = $$("#prose a[data-clause]"); let best = null; links.forEach((a) => { if (+a.dataset.clause <= cur) best = a; }); links.forEach((a) => a.classList.toggle("on", a === best)); }
 $("#doc").addEventListener("scroll", pmHl, { passive: true }); $("#tabs").addEventListener("click", () => setTimeout(pmHl, 60)); setTimeout(pmHl, 300);
 /* 4 closes-in context */
-{ const s = $("#closes .s"); if (s && !$(".cx", s)) s.insertAdjacentHTML("beforeend", '<small class="cx">Finish onboarding before this window closes, so you can migrate your consents.</small>'); }
+{ $("#closes")?.setAttribute("tabindex", "0"); const s = $("#closes .s"); if (s && !$(".cx", s)) s.insertAdjacentHTML("beforeend", '<small class="cx">Finish onboarding before this window closes, so you can migrate your consents.</small>'); }
 /* 7 ready screen chips say Ready for review, with a tick */
 const _pmFaces = faces;
 faces = function () { _pmFaces(); const rd = !!$("#readyL"); document.body.classList.toggle("pm-ready", rd && document.body.classList.contains("all-closed")); if (!rd || !document.body.classList.contains("all-closed")) return; $$(".cardf .cf-st.ux", stage).forEach((x) => { x.innerHTML = `${uxI("done")}Ready for review`; }); };
