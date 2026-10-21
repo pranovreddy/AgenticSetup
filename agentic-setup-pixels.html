@@ -380,69 +380,77 @@ select.inp{height:36px;padding:0 8px}
 @media (max-width:820px){.lfacts>div{grid-template-columns:110px 1fr}.lfacts em{display:none}.facts>div{grid-template-columns:110px auto}.facts em{display:none}.fgrid{grid-template-columns:1fr}}
 @media (max-height:760px){.stage{top:45%}.pts{font-size:15px;gap:8px}.facts{gap:6px;margin-top:18px}.acts{margin-top:20px}}
 
-/* ===== Light theme (data-theme="light" on <html>): same page on a light sky field ===== */
-html[data-theme=light]{--p1:rgba(37,99,235,.45);--p0:rgba(37,99,235,0);--r1:rgba(11,55,201,.35);--r0:rgba(11,55,201,0)}
-html[data-theme=light],html[data-theme=light] body{background:#e6efff;color:var(--s-ink)}
-html[data-theme=light] .stage{text-shadow:0 0 26px rgba(255,255,255,.95),0 0 8px rgba(255,255,255,.7)}
-html[data-theme=light] .kick{opacity:1;color:var(--s-muted)}
-html[data-theme=light] .kick .att{color:var(--s-amber)}
-html[data-theme=light] .sub{opacity:1;color:var(--s-ink2)}
-html[data-theme=light] .ok{background:var(--deep);color:#fff}
-html[data-theme=light] .three span,html[data-theme=light] .more,html[data-theme=light] .note,html[data-theme=light] .need,html[data-theme=light] .cl-lbl{opacity:1;color:var(--s-ink2)}
-html[data-theme=light] .facts em{background:rgba(37,99,235,.1);color:var(--s-blue)}
-html[data-theme=light] .pts li:before{background:rgba(37,99,235,.12);color:var(--s-blue)}
-html[data-theme=light] .extra .btn{background:var(--s-blue);color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.28)}
-html[data-theme=light] .extra .btn.ghost{background:rgba(255,255,255,.75);color:var(--s-ink);border:1px solid #cdd8ee;box-shadow:none}
-html[data-theme=light] .extra .btn.link{background:none;color:var(--s-blue);box-shadow:none}
-html[data-theme=light] .clock div{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 8px 24px rgba(30,70,170,.1)}
-html[data-theme=light] .clock span{opacity:1;color:var(--s-muted)}
+/* ===== Light theme (data-px="light" on <html>): same page on a light sky field ===== */
+html[data-px=light]{--p1:rgba(37,99,235,.45);--p0:rgba(37,99,235,0);--r1:rgba(11,55,201,.35);--r0:rgba(11,55,201,0)}
+html[data-px=light],html[data-px=light] body{background:#e6efff;color:var(--s-ink)}
+html[data-px=light] .stage{text-shadow:0 0 26px rgba(255,255,255,.95),0 0 8px rgba(255,255,255,.7)}
+html[data-px=light] .kick{opacity:1;color:var(--s-muted)}
+html[data-px=light] .kick .att{color:var(--s-amber)}
+html[data-px=light] .sub{opacity:1;color:var(--s-ink2)}
+html[data-px=light] .ok{background:var(--deep);color:#fff}
+html[data-px=light] .three span,html[data-px=light] .more,html[data-px=light] .note,html[data-px=light] .need,html[data-px=light] .cl-lbl{opacity:1;color:var(--s-ink2)}
+html[data-px=light] .facts em{background:rgba(37,99,235,.1);color:var(--s-blue)}
+html[data-px=light] .pts li:before{background:rgba(37,99,235,.12);color:var(--s-blue)}
+html[data-px=light] .extra .btn{background:var(--s-blue);color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.28)}
+html[data-px=light] .extra .btn.ghost{background:rgba(255,255,255,.75);color:var(--s-ink);border:1px solid #cdd8ee;box-shadow:none}
+html[data-px=light] .extra .btn.link{background:none;color:var(--s-blue);box-shadow:none}
+html[data-px=light] .clock div{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 8px 24px rgba(30,70,170,.1)}
+html[data-px=light] .clock span{opacity:1;color:var(--s-muted)}
 
-html[data-theme=light] .status{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 6px 20px rgba(30,70,170,.12)}
-html[data-theme=light] .status i{background:var(--s-blue)}
-html[data-theme=light] .status.done i{background:var(--s-green)}
-html[data-theme=light] .status.attn i{background:#e9a23b}
-html[data-theme=light] .brand{background:rgba(255,255,255,.72);border-color:rgba(10,42,143,.14);box-shadow:0 10px 30px rgba(30,70,170,.14)}
-html[data-theme=light] .brand .bl{background:#fff}
-html[data-theme=light] .brand .me{box-shadow:0 0 0 3px rgba(37,99,235,.18)}
-html[data-theme=light] .prog{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:rgba(10,42,143,.55);box-shadow:0 10px 30px rgba(30,70,170,.14)}
-html[data-theme=light] .prog em{background:var(--deep);color:#fff}
-html[data-theme=light] .prog li i{border-color:rgba(10,42,143,.25);color:rgba(10,42,143,.55);background:transparent}
-html[data-theme=light] .prog li.on{color:var(--navy)}
-html[data-theme=light] .prog li.dn{color:var(--navy)}
-html[data-theme=light] .prog li.on i,html[data-theme=light] .prog li.dn i{background:var(--deep);border-color:var(--deep);color:#fff}
-html[data-theme=light] .prog b{background:rgba(10,42,143,.14)}
-html[data-theme=light] .prog b:after{background:var(--deep)}
-html[data-theme=light] .closes:not(.inapp){background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 10px 30px rgba(30,70,170,.14)}
-html[data-theme=light] .closes:not(.inapp) .ci{background:#eef1f7;color:#5b6b8c}
-html[data-theme=light] .closes:not(.inapp) small{color:#7a88a6}
-html[data-theme=light] .proto>button{color:var(--navy);background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.15)}
-html[data-theme=light] .card{box-shadow:0 26px 64px rgba(30,70,170,.24),0 0 0 1px rgba(10,42,143,.07)}
+html[data-px=light] .status{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 6px 20px rgba(30,70,170,.12)}
+html[data-px=light] .status i{background:var(--s-blue)}
+html[data-px=light] .status.done i{background:var(--s-green)}
+html[data-px=light] .status.attn i{background:#e9a23b}
+html[data-px=light] .brand{background:rgba(255,255,255,.72);border-color:rgba(10,42,143,.14);box-shadow:0 10px 30px rgba(30,70,170,.14)}
+html[data-px=light] .brand .bl{background:#fff}
+html[data-px=light] .brand .me{box-shadow:0 0 0 3px rgba(37,99,235,.18)}
+html[data-px=light] .prog{background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:rgba(10,42,143,.55);box-shadow:0 10px 30px rgba(30,70,170,.14)}
+html[data-px=light] .prog em{background:var(--deep);color:#fff}
+html[data-px=light] .prog li i{border-color:rgba(10,42,143,.25);color:rgba(10,42,143,.55);background:transparent}
+html[data-px=light] .prog li.on{color:var(--navy)}
+html[data-px=light] .prog li.dn{color:var(--navy)}
+html[data-px=light] .prog li.on i,html[data-px=light] .prog li.dn i{background:var(--deep);border-color:var(--deep);color:#fff}
+html[data-px=light] .prog b{background:rgba(10,42,143,.14)}
+html[data-px=light] .prog b:after{background:var(--deep)}
+html[data-px=light] .closes:not(.inapp){background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.14);color:var(--s-ink);box-shadow:0 10px 30px rgba(30,70,170,.14)}
+html[data-px=light] .closes:not(.inapp) .ci{background:#eef1f7;color:#5b6b8c}
+html[data-px=light] .closes:not(.inapp) small{color:#7a88a6}
+html[data-px=light] .proto>button{color:var(--navy);background:rgba(255,255,255,.78);border-color:rgba(10,42,143,.15)}
+html[data-px=light] .card{box-shadow:0 26px 64px rgba(30,70,170,.24),0 0 0 1px rgba(10,42,143,.07)}
 /* the Agent summary stays a deeper blue so it stands out on the light field */
-html[data-theme=light] .asum{background:radial-gradient(90% 180% at 100% 0%,rgba(150,200,255,.5) 0%,rgba(150,200,255,0) 60%),linear-gradient(105deg,#1a3fc4 0%,#2f63e8 55%,#4d93f7 100%);
+html[data-px=light] .asum{background:radial-gradient(90% 180% at 100% 0%,rgba(150,200,255,.5) 0%,rgba(150,200,255,0) 60%),linear-gradient(105deg,#1a3fc4 0%,#2f63e8 55%,#4d93f7 100%);
   box-shadow:0 0 0 1px rgba(255,255,255,.35),0 -8px 36px rgba(37,99,235,.35)}
-html[data-theme=light] .ahd{color:#fff}
-html[data-theme=light] .ahd img{filter:brightness(0) invert(1)}
-html[data-theme=light] .ast{color:#fff}
-html[data-theme=light] .asum:after{background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.25) 45%,transparent 60%);background-size:250% 100%}
+html[data-px=light] .ahd{color:#fff}
+html[data-px=light] .ahd img{filter:brightness(0) invert(1)}
+html[data-px=light] .ast{color:#fff}
+html[data-px=light] .asum:after{background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.25) 45%,transparent 60%);background-size:250% 100%}
 
-/* ===== Azure theme (data-theme="azure" on <html>): a brighter blue field than the original deep blue ===== */
-html[data-theme=azure],html[data-theme=azure] body{background:#2f78f2}
-html[data-theme=azure] .brand,html[data-theme=azure] .status,html[data-theme=azure] .prog,html[data-theme=azure] .closes:not(.inapp),html[data-theme=azure] .proto>button{
+/* ===== Azure theme (data-px="azure" on <html>): a brighter blue field than the original deep blue ===== */
+html[data-px=azure],html[data-px=azure] body{background:#2f78f2}
+html[data-px=azure] .brand,html[data-px=azure] .status,html[data-px=azure] .prog,html[data-px=azure] .closes:not(.inapp),html[data-px=azure] .proto>button{
   background:rgba(8,38,170,.3);border-color:rgba(255,255,255,.3)}
-html[data-theme=azure] .brand .bl{background:#fff}
-html[data-theme=azure] body.appon .proto>button{color:var(--navy);background:#fff;border-color:rgba(10,42,143,.15)}
-html[data-theme=azure] .clock div{background:rgba(8,38,170,.28);border-color:rgba(255,255,255,.3)}
-html[data-theme=azure] .stage{text-shadow:0 2px 26px rgba(4,24,120,.5)}
+html[data-px=azure] .brand .bl{background:#fff}
+html[data-px=azure] body.appon .proto>button{color:var(--navy);background:#fff;border-color:rgba(10,42,143,.15)}
+html[data-px=azure] .clock div{background:rgba(8,38,170,.28);border-color:rgba(255,255,255,.3)}
+html[data-px=azure] .stage{text-shadow:0 2px 26px rgba(4,24,120,.5)}
 /* all text that sits directly on the blue field is solid white (no dimmed greys) */
-html[data-theme=azure] .kick,html[data-theme=azure] .sub,html[data-theme=azure] .three>span,html[data-theme=azure] .facts span,html[data-theme=azure] .more,
-html[data-theme=azure] .note,html[data-theme=azure] .need,html[data-theme=azure] .cl-lbl,html[data-theme=azure] .clock span{opacity:1;color:#fff}
-html[data-theme=azure] .facts em{background:rgba(255,255,255,.2);opacity:1;color:#fff}
-html[data-theme=azure] .prog{color:#fff}
-html[data-theme=azure] .prog li{color:#fff}
-html[data-theme=azure] .prog li i{color:#fff;border-color:rgba(255,255,255,.6)}
-html[data-theme=azure] .prog li.on i,html[data-theme=azure] .prog li.dn i{color:var(--deep);border-color:#fff}
-html[data-theme=azure] .closes:not(.inapp) small{color:#fff}
+html[data-px=azure] .kick,html[data-px=azure] .sub,html[data-px=azure] .three>span,html[data-px=azure] .facts span,html[data-px=azure] .more,
+html[data-px=azure] .note,html[data-px=azure] .need,html[data-px=azure] .cl-lbl,html[data-px=azure] .clock span{opacity:1;color:#fff}
+html[data-px=azure] .facts em{background:rgba(255,255,255,.2);opacity:1;color:#fff}
+html[data-px=azure] .prog{color:#fff}
+html[data-px=azure] .prog li{color:#fff}
+html[data-px=azure] .prog li i{color:#fff;border-color:rgba(255,255,255,.6)}
+html[data-px=azure] .prog li.on i,html[data-px=azure] .prog li.dn i{color:var(--deep);border-color:#fff}
+html[data-px=azure] .closes:not(.inapp) small{color:#fff}
+
+/* a full-page card is white: keep the corner pills readable on it, in every theme */
+body.bigcard .brand,body.bigcard .closes:not(.inapp){background:#fff!important;border-color:#dfe6f3!important;color:var(--s-ink)!important;box-shadow:0 8px 24px rgba(30,70,170,.16)!important}
+body.bigcard .brand .bl{background:#eef3ff!important}
+body.bigcard .closes:not(.inapp) .ci{background:#eef1f7!important;color:#5b6b8c!important}
+body.bigcard .closes:not(.inapp) small{color:#7a88a6!important}
+body.bigcard .proto>button{color:var(--navy)!important;background:#fff!important;border:1px solid #d5ddec!important;box-shadow:0 6px 18px rgba(30,70,170,.14)}
 </style>
+<script>/* pick this page's look with an attribute of our own: the artifact viewer sets data-theme on <html> itself, which must not change it */document.documentElement.setAttribute("data-px","")</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><defs>
@@ -583,7 +591,7 @@ var sprites=[], glow;
 var L={};          // layout in cell units: cols, rows, cx, cy, tw, th
 var TINTS=6, SIZES=9;
 var GLYPH=/glyph=arrow/.test(location.hash)?"arrow":"tri";
-var LIGHT=document.documentElement.getAttribute("data-theme")==="light", AZURE=document.documentElement.getAttribute("data-theme")==="azure";
+var LIGHT=document.documentElement.getAttribute("data-px")==="light", AZURE=document.documentElement.getAttribute("data-px")==="azure";
 
 function makeSprites(){
   var px=Math.ceil(cell*dpr); sprites=[];
@@ -1142,13 +1150,13 @@ function placeCard(){
 }
 function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
   c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard()}
-function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
+function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
 function hideCard(){CARD.on=false; $("card").classList.remove("on"); $("asum").classList.remove("on"); placeStatus()}
 function expandCard(){var c=$("card"); if(CARD.big) return; c.classList.add("swap");
-  later(function(){CARD.big=true; c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
+  later(function(){CARD.big=true; document.body.classList.add("bigcard"); c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
-  later(function(){CARD.big=false; c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
+  later(function(){CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
 /* finishing a step: the card comes back to its summary size, then gives way to the agent */
 function finishStep(fn){
   if(CARD.big){collapseCard(); later(function(){hideCard(); later(fn,380)},800)}
@@ -1340,7 +1348,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 /* ======================= prototype jumps ======================= */
 function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; $("card").classList.remove("big","swap"); resetData(); F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();

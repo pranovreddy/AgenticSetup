@@ -9,10 +9,14 @@ docs = (here / "docs.json").read_text().replace("</", "<\\/")
 # the HDFC Bank logo image used by the earlier prototypes
 hdfc = re.search(r'HDFC_LOGO\s*=\s*"([^"]+)"', (root / "agentic-setup-final-approach-cards-critique-fixes.html").read_text()).group(1)
 full = src.replace("__LOGO__", logo).replace("__DOCS__", docs).replace("__HDFC__", hdfc)
-(root / "agentic-setup-pixels.html").write_text(full)
-# light version: same page, data-theme="light" switches the field, triangles and the pieces that sit on it
-light = full.replace('<html lang="en">', '<html lang="en" data-theme="light">').replace("<title>Agentic Setup Pixels</title>", "<title>Agentic Setup Pixels Light</title>")
-(root / "agentic-setup-pixels-light.html").write_text(light)
+# The look is chosen by data-px (set by a script at the top of the page and on <html>), never by data-theme:
+# the artifact viewer sets data-theme itself, which used to turn every page light or deep blue.
+def page(theme, title):
+    out = full.replace("__PXT__", theme)
+    if theme: out = out.replace('<html lang="en">', '<html lang="en" data-px="%s">' % theme)
+    return out.replace("<title>Agentic Setup Pixels</title>", "<title>%s</title>" % title)
+(root / "agentic-setup-pixels.html").write_text(page("", "Agentic Setup Pixels"))
+# light version: same page, data-px="light" switches the field, triangles and the pieces that sit on it
+(root / "agentic-setup-pixels-light.html").write_text(page("light", "Agentic Setup Pixels Light"))
 # azure version: a brighter blue field than the original deep blue
-azure = full.replace('<html lang="en">', '<html lang="en" data-theme="azure">').replace("<title>Agentic Setup Pixels</title>", "<title>Agentic Setup Pixels Azure</title>")
-(root / "agentic-setup-pixels-azure.html").write_text(azure)
+(root / "agentic-setup-pixels-azure.html").write_text(page("azure", "Agentic Setup Pixels Azure"))
