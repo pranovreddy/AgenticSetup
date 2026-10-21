@@ -20,3 +20,6 @@ def page(theme, title):
 (root / "agentic-setup-pixels-light.html").write_text(page("light", "Agentic Setup Pixels Light"))
 # azure version: a brighter blue field than the original deep blue
 (root / "agentic-setup-pixels-azure.html").write_text(page("azure", "Agentic Setup Pixels Azure"))
+# intelligence version: a fork (src-intelligence.html) of the deep-blue page with a visible agent core and reasoning trace
+ifull = (here / "src-intelligence.html").read_text().replace("__LOGO__", logo).replace("__DOCS__", docs).replace("__HDFC__", hdfc).replace("__PXT__", "")
+(root / "agentic-setup-pixels-intelligence.html").write_text(ifull)
