@@ -663,3 +663,5 @@ PM feedback file (pm4.js): brands approval scenarios. All edited or added = ambe
 PM feedback file (pm5.js): partial KYC approval. Approved by at least one operator = step Done; the card shows 'Approved by 2 of 4 operators' with each operator (Approved / Still reviewing) and a note that messages go only through approved operators; the left text says 'partly approved'; the finale card reads 'Approved by 2 of 4'. Prototype menu: Business profile > Approved by 2 of 4 operators (__deck.uxState('pm-kyc')). The live flow still ends at 4 of 4; operator names and counts are sample data. The 'pending operators approve later' update is not simulated.
 
 PM feedback file (pm6.js): while brands are under review the Templates card is shown in a lock-like state (blurred content, padlock, the review note) with 'Skip for now' (saves for later) and 'Continue anyway' (opens the mapping, approved LOBs only). Confirm mapping stays disabled until then.
+
+PM feedback file: the Prototype button and its menu moved to the top right; Previous and Next are two small arrow buttons without text, bottom right (#pmNav).
