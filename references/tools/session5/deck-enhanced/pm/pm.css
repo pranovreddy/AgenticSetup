@@ -100,3 +100,7 @@ body.v3b.ph-review .card.st-done:not(.is-focus) .cf-mid,body.v3b.ph-review .card
 .t-pg{ display:flex; justify-content:space-between; align-items:center; gap:14px; padding:16px 22px; flex-wrap:wrap; font-size:16px; color:#566176; } .t-pb{ display:flex; gap:8px; } .t-pb .pg{ min-width:46px; height:46px; border-radius:10px; border:1px solid var(--line-2); background:#fff; font:600 16px var(--font); padding:0 14px; } .t-pb .pg.on{ background:#0f1a36; color:#fff; } .t-pg select{ height:42px; border-radius:8px; border:1px solid var(--line-2); padding:0 10px; font-size:16px; margin-left:8px; }
 .pb-h .pb-a{ flex-wrap:nowrap; } .pm-lk{ white-space:nowrap; }
 .pb-h{ flex-wrap:nowrap!important; } .pb-n{ flex:1 1 60px!important; } .pb-h .pm-tag{ flex:none; }
+/* closes-in pill hugs its content, and widens on hover */
+.closes{ width:fit-content!important; }
+.closes .cx{ width:0; max-width:0; transition:max-height .3s var(--ease),opacity .25s,margin .3s,width .3s var(--ease),max-width .3s var(--ease); }
+.closes:hover .cx,.closes:focus-within .cx,.closes:focus .cx{ width:240px; max-width:240px; }

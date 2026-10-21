@@ -621,3 +621,5 @@ PM feedback file: crisper card text. The open review card is drawn flat (no pres
 PM feedback file: side-card text. Done side cards use the same large vertical label (52px, 28px sub-label) instead of the tiny horizontal text; side-card rotation 56 to 46 degrees so labels are less squeezed.
 
 PM feedback file: new Brands and LOBs details page (brand and LOB cards, promo examples, Consent Wallet phone preview, confirm checkbox), GTM compare table (Scrubbing group, BEST cells, dark Selected N bar with Accept & Set Allocation) and Templates mapping page (LOB list with counts, confidence pills, drag onto a LOB, pager). Source: pm2.js, pm3.js.
+
+PM feedback file: closes-in pill hugs its content (207px) and widens on hover (314px) to show the migration context.
