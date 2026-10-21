@@ -2317,6 +2317,7 @@ body.phase-finale .edge,body.phase-finale .edge::before,body.phase-finale .edge:
 .pm-tl{ list-style:none; margin:8px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; width:min(480px,100%); }
 .pm-tl li{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; font-size:16px; } .pm-tl li b{ font-weight:700; } .pm-tl li span{ margin-left:auto; font-weight:600; } .pm-tl svg{ width:18px; height:18px; flex:none; }
 .pm-tl li.ok{ background:#e9f8ee; color:#15803d; } .pm-tl li.wait{ background:#fdf0d5; color:#8a4b06; }
+.pm-hold{ gap:10px; } .pm-hold small{ max-width:62ch; font-size:17px; line-height:1.55; color:#2c3753; } .pm-hold b{ font-size:21px; } .pm-hb{ display:flex; gap:10px; margin-top:8px; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -4948,6 +4949,18 @@ uxState = function (name) {
   setTimeout(() => { const c = S.cards[0]; c.st = "done"; c.at = now(); c.telco = pmTelco(name === "pm-kyc" ? 2 : 4); STEPS.forEach((_, k) => { renderReview(k); setStatus(k); }); refreshLocks(); railSync(); faces(); focusCard(0); }, 500);
 };
 { const m = $("#protoMenu"); if (m) { const g = [...m.querySelectorAll(".pm-g")].find((x) => /^Business profile/.test(x.textContent.trim())); if (g) g.insertAdjacentHTML("beforeend", '<button data-state="pm-kyc">Approved by 2 of 4 operators</button>'); } }
+/* ===== Templates while brands are under review: a lock-like state with Skip or Continue anyway ===== */
+const _pmRR6 = renderReview;
+renderReview = function (i) {
+  _pmRR6(i); if (STEPS[i].key !== "templates") return; const el = card(i), box = el && $("[data-review] .r-body", el), c = S.cards[i];
+  if (!box || (c.st !== "review" && c.st !== "ready")) return; const note = pmTplNote();
+  if (!note) { S.tplProceed = false; return; }
+  $(".pm-warn", box)?.remove(); const foot = $("[data-review] .r-foot", el); const conf = foot && $("[data-act=accept]", foot);
+  if (S.tplProceed) { if (conf) conf.disabled = false; return; }
+  if (conf) conf.disabled = true;
+  if (!$(".pm-hold", box)) { box.style.position = "relative"; box.insertAdjacentHTML("beforeend", `<div class="ux-lockov pm-hold" role="status"><span class="lk">${uxI("locked")}</span><b>Your brands and LOBs are still under review</b><small>${esc(note)}</small><div class="pm-hb"><button class="btn btn-p" data-ux6="skip" type="button">Skip for now</button><button class="btn" data-ux6="go" type="button">Continue anyway</button></div></div>`); }
+};
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-ux6]"); if (!b) return; if (b.dataset.ux6 === "skip") return decide(4, "later"); S.tplProceed = true; renderReview(4); toast("Templates will be mapped to the approved LOBs only"); }, true);
 
 window.__deck = { uxState, opening, jump, S, focusCard, openDeep, refreshLocks, renderReview, setStatus, firstOpen };
 

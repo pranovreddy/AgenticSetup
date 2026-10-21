@@ -3,7 +3,7 @@ import pathlib
 here = pathlib.Path(__file__).parent
 root = here.parents[4]
 h = (root / "agentic-setup-cards-states.html").read_text()
-css = (here / "pm.css").read_text(); js = (here / "pm.js").read_text() + (here / "pm2.js").read_text() + (here / "pm3.js").read_text() + (here / "pm4.js").read_text() + (here / "pm5.js").read_text()
+css = (here / "pm.css").read_text(); js = (here / "pm.js").read_text() + (here / "pm2.js").read_text() + (here / "pm3.js").read_text() + (here / "pm4.js").read_text() + (here / "pm5.js").read_text() + (here / "pm6.js").read_text()
 
 def sub(old, new, n=1):
     global h

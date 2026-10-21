@@ -180,3 +180,4 @@ body.phase-finale .edge,body.phase-finale .edge::before,body.phase-finale .edge:
 .pm-tl{ list-style:none; margin:8px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; width:min(480px,100%); }
 .pm-tl li{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; font-size:16px; } .pm-tl li b{ font-weight:700; } .pm-tl li span{ margin-left:auto; font-weight:600; } .pm-tl svg{ width:18px; height:18px; flex:none; }
 .pm-tl li.ok{ background:#e9f8ee; color:#15803d; } .pm-tl li.wait{ background:#fdf0d5; color:#8a4b06; }
+.pm-hold{ gap:10px; } .pm-hold small{ max-width:62ch; font-size:17px; line-height:1.55; color:#2c3753; } .pm-hold b{ font-size:21px; } .pm-hb{ display:flex; gap:10px; margin-top:8px; }
