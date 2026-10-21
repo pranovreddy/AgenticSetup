@@ -426,6 +426,7 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .xov{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;padding:20px 40px}
 .xov h3{margin:14px 0 6px;font-size:18px}.xov p{margin:0;max-width:460px;font-size:14px;line-height:1.5;color:var(--s-ink2)}
 .fd.miss .inp{border-color:#f3b7a6;background:#fff6f3}.fd.miss .inp::placeholder{color:#c2410c}
+.fd.lock .inp{background:#f4f6fa;color:var(--s-ink2);border-color:#e3e8f1;cursor:not-allowed;padding-right:34px}.pin .lki{position:absolute;right:12px;top:50%;width:14px;height:14px;margin-top:-7px;fill:none;stroke:#94a0b8;stroke-width:2}
 .fd.ret .inp{border-color:#f0c27a;background:#fffaf0}.xret{margin-left:auto;font-size:11px;font-weight:600;color:var(--s-amber);background:var(--s-asoft);padding:1px 8px;border-radius:999px}
 .spn.w{background:conic-gradient(from 0deg,#fff,rgba(255,255,255,.4),#fff);margin-right:8px;width:14px;height:14px;display:inline-block;vertical-align:-2px}
 .xdlg{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:rgba(10,24,70,.38);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
@@ -1636,12 +1637,12 @@ var SHEET=null;
 function openSheet(kind){SHEET=kind; F.readEnd=false; renderSheet(); $("shBody").scrollTop=0; $("sheet").classList.add("on"); $("sheet").setAttribute("aria-hidden","false"); $("scrim").classList.add("on"); if(kind==="doc") later(checkEnd,600)}
 function closeSheet(){SHEET=null; $("sheet").classList.remove("on"); $("sheet").setAttribute("aria-hidden","true"); $("scrim").classList.remove("on")}
 function sheetFoot(l,r){$("shFoot").innerHTML='<div>'+(l||'')+'</div><div style="display:flex;gap:10px">'+(r||'')+'</div>'}
-var SEL_F=[1,5,6];
+var SEL_F=[1,5,6], LOCK_F=[0,2,3]; // legal name, registered address and PAN come from official records and can't be edited
 function fd(l,v,tag,wide,id){ // while the agent fills the profile, later fields wait empty and the current one is typed in
   var st="", val=v, pf=id===+id&&F.pf;
   if(pf){if(id>F.pf.k){st=" wait"; val=""} else if(id===F.pf.k){st=" typing"; val=v.slice(0,F.pf.n)}}
-  var miss=!F.pf&&F.ppart&&!String(v).trim(), ret=!F.pf&&F.pret&&F.pret.indexOf(id)>=0; if(miss) st+=" miss"; if(ret) st+=" ret";
-  return '<div class="fd'+(wide?" w2":"")+st+'"><label>'+esc(l)+' <i class="req">*</i>'+(ret?'<span class="xret">Returned by Jio and Vi</span>':'')+'</label><div class="pin"><input class="inp" value="'+esc(val)+'" data-f="'+id+'"'+(miss?' placeholder="Couldn\'t fill this"':'')+(F.pf?' readonly tabindex="-1"':'')+'>'+(SEL_F.indexOf(id)>=0?'<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>':'')+'</div></div>'}
+  var miss=!F.pf&&F.ppart&&!String(v).trim(), ret=!F.pf&&F.pret&&F.pret.indexOf(id)>=0, lk=LOCK_F.indexOf(id)>=0&&!F.pf; if(miss) st+=" miss"; if(ret) st+=" ret"; if(lk) st+=" lock";
+  return '<div class="fd'+(wide?" w2":"")+st+'"><label>'+esc(l)+' <i class="req">*</i>'+(ret?'<span class="xret">Returned by Jio and Vi</span>':'')+'</label><div class="pin"><input class="inp" value="'+esc(val)+'" data-f="'+id+'"'+(miss?' placeholder="Couldn\'t fill this"':'')+(F.pf?' readonly tabindex="-1"':lk?' disabled title="From official records. It can\'t be changed here."':'')+'>'+(lk?'<svg class="lki"><use href="#i-lock"/></svg>':'')+(SEL_F.indexOf(id)>=0?'<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>':'')+'</div></div>'}
 function renderSheet(){
   var b=$("shBody"), top=b.scrollTop, h="";
   if(SHEET==="doc"){var d=DOCS[F.doc];
@@ -1888,8 +1889,8 @@ var XS={
   "msg-back":function(){jump("plan"); F.status=["done","done","review","locked","locked"]; later(function(){msgScreen({chip:"Welcome back",line:"Welcome back, Ravi",sub:"You left off at Brands and LOBs. Business profile and Team are done. Three steps are waiting, and nothing has changed since your last visit.",btn:B("xgo","Continue with Brands and LOBs"+I("arrow"),"",2),prog:states(5,2,2)})},300)},
   "msg-next":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; msgScreen({chip:"Step done",cls:"done",line:"Team is done",sub:"Six invites were sent. Next is Brands and LOBs. Confirm the three brands and seven lines of business, or open the details to change them.",btn:B("xgo","Review Brands and LOBs"+I("arrow"),"",2),prog:states(5,-1,2)})},300)},
   "done-profile":function(){jump("plan"); later(function(){doneScreen(0,{line:"Business profile approved",sub:"7 fields filled · Approved by 4 of 4 operators · Logo added",extra:opsList(4)+'<div class="xby"><i>AK</i>Done by <b>Anita Kulkarni</b> · 09:50 am</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
-  "attention-profile":function(){rStep(0,function(){setFace(0,{chip:["Needs attention","or"],head:"Fix 2 fields and submit again",sum:"Jio and Vi returned the legal entity name and registered address. Correct them, then submit to the telecom operators again.",tone:"or",h:"Jio and Vi returned 2 fields",p:"Fix the legal entity name and registered address, then submit again.",btn:B("xreview","Review","ghost","ret")})})},
-  "partly-profile":function(){rStep(0,function(){F.ppart=true; PROFILE[3][1]=""; PROFILE[4][1]=""})},
+  "attention-profile":function(){rStep(0,function(){setFace(0,{chip:["Needs attention","or"],head:"Fix 2 fields and submit again",sum:"Jio and Vi returned the website URL and primary industry. Correct them, then submit to the telecom operators again.",tone:"or",h:"Jio and Vi returned 2 fields",p:"Fix the website URL and primary industry, then submit again.",btn:B("xreview","Review","ghost","ret")})})},
+  "partly-profile":function(){rStep(0,function(){F.ppart=true; PROFILE[4][1]=""; PROFILE[6][1]=""})},
   "err-profile":function(){rStep(0,function(){F.auth=true; F.perr=true})},
   "unk-profile":function(){rStep(0,function(){F.auth=true; F.punk=true; later(function(){F.punk=false; toast("It was saved. Sending it to the telecom operators."); startKV()},5200)})},
   "pm-kyc":function(){jump("plan"); later(function(){doneScreen(0,{chip:"Partly approved",line:"Approved by 2 of 4 operators",sub:"Your business profile is done. 2 operators are still reviewing it.",
@@ -1955,7 +1956,7 @@ var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
   if(CARD.big&&st.k!=="profile") return xBig(i,bigParts(i));
-  if(st.k==="profile"){h=(F.ppart?'<div class="xbar err">'+I("warn")+'Couldn\'t fill 2 fields: Business PAN/TAN and Website URL. Add them to submit.</div>':'')+(F.pret?'<div class="xbar warn">'+I("warn")+'Jio and Vi returned 2 fields. Correct them, then submit again.</div>':'')+'<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
+  if(st.k==="profile"){h=(F.ppart?'<div class="xbar err">'+I("warn")+'Couldn\'t fill 2 fields: Website URL and Sub Industry. Add them to submit.</div>':'')+(F.pret?'<div class="xbar warn">'+I("warn")+'Jio and Vi returned 2 fields. Correct them, then submit again.</div>':'')+'<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
     if(F.perr) h+='<div class="xbar err">'+I("warn")+'That wasn\'t saved. Try again.</div>';
     if(F.punk) h+='<div class="xbar info"><span class="spn"></span>Checking whether that was saved…</div>';
     foot(authRow(),primary(i))}
@@ -2006,7 +2007,7 @@ document.addEventListener("click",function(e){
   else if(a==="dkeep") hideDlg();
   else if(a==="dsave"){hideDlg(); F.snap=null; collapseCard(); toast("Your changes are saved")}
   else if(a==="ddiscard"){var o=JSON.parse(F.snap); PROFILE=o.P; PEOPLE=o.E; BRANDS=o.B; PARTNERS=o.G; TPLS=o.T; ALLOC=o.A; F.am=null; hideDlg(); F.snap=null; collapseCard(); toast("Changes discarded")}
-  else if(a==="xreview"){var v=el.dataset.v; F.face=null; if(v==="ret") F.pret=[0,2]; if(v==="tpart") F.tpart=true; refresh()}
+  else if(a==="xreview"){var v=el.dataset.v; F.face=null; if(v==="ret") F.pret=[4,5]; if(v==="tpart") F.tpart=true; refresh()}
   else if(a==="xretry"){var f=F.face; f.r='<button class="btn" disabled><span class="spn w"></span>Trying again…</button>'; refresh(); later(function(){F.face=null; refresh(); toast(STEPS[F.active].title+" is ready to review")},REDUCE?300:2200)}
   else if(a==="xself"||a==="xadd"){var kk=STEPS[F.active].k; F.face=null; if(kk==="team"){PEOPLE.splice(0); F.addU=true} if(kk==="brands"){BRANDS.splice(0); BRANDS.push({name:"New brand",hdr:"",logo:["NEW","","#1b4f9c"],lobs:["New line of business"]})} refresh(); later(expandCard,200)}
   else if(a==="xlater"){var ii=F.active; F.face=null; if(ii===1) F.teamLater=true; finishStep(function(){complete(ii,STEPS[ii].title+" saved for later")})}
