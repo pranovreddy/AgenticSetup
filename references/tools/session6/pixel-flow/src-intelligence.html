@@ -1011,42 +1011,49 @@ function coreState(dt){
   var k=Math.min(1,dt*5);
   CORE.Rs+=(CORE.R-CORE.Rs)*k; CORE.csy+=(CORE.cyT-CORE.csy)*k;
   CORE.vis+=(((vt&&CORE.R>0)?1:0)-CORE.vis)*Math.min(1,dt*3.5);
-  CORE.e+=(et-CORE.e)*Math.min(1,dt*2.5); CORE.kick*=Math.exp(-dt*2.2);
+  CORE.e+=(et-CORE.e)*Math.min(1,dt*2.5); CORE.kick*=Math.exp(-dt*1.4);
+  // angles are integrated so that a change of energy speeds the turn up gently instead of jumping
+  var ee=Math.min(1.2,CORE.e); CORE.ang=(CORE.ang||0)+dt*(.07+.07*ee); CORE.orbA=(CORE.orbA||0)+dt*(.3+.18*ee);
 }
 function drawOrb(){
   var S=cell*dpr; octx.setTransform(1,0,0,1,0,0); octx.clearRect(0,0,orb.width,orb.height);
   var v=CORE.vis; if(v<.01||CORE.Rs<1) return;
-  var tt=REDUCE?0:clock, e=Math.min(1.2,CORE.e+CORE.kick*.5), cx=CORE.cx*S, cy=CORE.csy*S, R=CORE.Rs*S;
+  var tt=REDUCE?0:clock, e=Math.min(1.2,CORE.e+CORE.kick*.22), cx=CORE.cx*S, cy=CORE.csy*S, R=CORE.Rs*S;
   // soft glow around the core
   var g=octx.createRadialGradient(cx,cy,R*.15,cx,cy,R*2.2); g.addColorStop(0,"rgba(215,230,255,"+(.26*v)+")"); g.addColorStop(.4,"rgba(130,175,255,"+(.09*v)+")"); g.addColorStop(1,"rgba(130,175,255,0)");
   octx.fillStyle=g; octx.fillRect(cx-R*2.3,cy-R*2.3,R*4.6,R*4.6);
   // the sphere: 440 small triangles turning in 3D, their surface rippling more the harder the agent works
-  var a=tt*(.2+.5*e), ca=Math.cos(a), sa=Math.sin(a), tl=.4+.1*Math.sin(tt*.23), ct=Math.cos(tl), st=Math.sin(tl);
+  var a=REDUCE?0:CORE.ang, ca=Math.cos(a), sa=Math.sin(a), tl=.4+.08*Math.sin(tt*.12), ct=Math.cos(tl), st=Math.sin(tl);
   var Bk=[new Path2D(),new Path2D(),new Path2D(),new Path2D(),new Path2D(),new Path2D()];
   function proj(i){var p=PTS[i], x1=p[0]*ca+p[2]*sa, z1=-p[0]*sa+p[2]*ca, y2=p[1]*ct-z1*st, z2=p[1]*st+z1*ct;
-    var n=Math.sin(p[0]*3.1+tt*1.7)+Math.sin(p[1]*2.7-tt*1.3)+Math.sin(p[2]*3.3+tt*1.1), rs=1+.025*Math.sin(tt*1.3)+(.03+.1*e)*n/3;
+    var n=Math.sin(p[0]*2.6+tt*.55)+Math.sin(p[1]*2.3-tt*.42)+Math.sin(p[2]*2.8+tt*.36), rs=1+.02*Math.sin(tt*.5)+(.02+.045*e)*n/3;
     return [cx+x1*R*rs, cy+y2*R*rs, (z2+1)/2]}
   for(var i=0;i<PTS.length;i++){var q=proj(i), d=q[2]; tri(Bk[Math.min(5,Math.floor(d*6))],q[0],q[1],S*(.2+.34*d)*(.85+.3*e),(i&1)?1:-1)}
   for(var b=0;b<6;b++){octx.fillStyle="rgba(255,255,255,"+(v*(.09+.085*b))+")"; octx.fill(Bk[b])}
+  // an inner shell turning the other way gives the sphere depth
+  var Ik=new Path2D(), ia=-a*1.6, ic=Math.cos(ia), is=Math.sin(ia);
+  for(var m2=0;m2<PTS.length;m2+=4){var p2=PTS[m2], x3=p2[0]*ic+p2[2]*is, z3=-p2[0]*is+p2[2]*ic, y3=p2[1]*ct-z3*st, d3=(p2[1]*st+z3*ct+1)/2;
+    if(d3>.35) tri(Ik,cx+x3*R*.5,cy+y3*R*.5,S*(.16+.18*d3),(m2&1)?1:-1)}
+  octx.fillStyle="rgba(215,230,255,"+(.5*v)+")"; octx.fill(Ik);
   // thinking: faint chords flicker between points on the surface
   if(e>.8&&!REDUCE){octx.strokeStyle="rgba(255,255,255,"+(.3*v*Math.min(1,(e-.8)*5))+")"; octx.lineWidth=Math.max(1,dpr); octx.beginPath();
-    var seed=Math.floor(tt*3);
+    var seed=Math.floor(tt*1.1);
     for(var c2=0;c2<6;c2++){var i1=Math.floor(hash(seed*7+c2)*PTS.length), i2=Math.floor(hash(seed*13+c2+5)*PTS.length), q1=proj(i1), q2=proj(i2);
       if(q1[2]>.45&&q2[2]>.45){octx.moveTo(q1[0],q1[1]); octx.lineTo(q2[0],q2[1])}}
     octx.stroke()}
   // a soft light at the centre, no mark: the core is just energy
-  var pr=R*(.3+.03*Math.sin(tt*2.2)+.05*e), hg=octx.createRadialGradient(cx,cy,0,cx,cy,pr*1.6);
+  var pr=R*(.3+.03*Math.sin(tt*.9)+.04*e), hg=octx.createRadialGradient(cx,cy,0,cx,cy,pr*1.6);
   hg.addColorStop(0,"rgba(255,255,255,"+(.32*v)+")"); hg.addColorStop(1,"rgba(255,255,255,0)"); octx.fillStyle=hg; octx.fillRect(cx-pr*2,cy-pr*2,pr*4,pr*4);
   // two orbits with a few bright nodes: the agent's attention moving around
   var Ob=new Path2D(), Nd=new Path2D();
-  for(var r=0;r<2;r++){var ra=R*(1.6+.34*r), rb=ra*(.3+.05*r), rt=(r?-.5:.35)+tt*.12*(r?-1:1)*(.6+e), cr=Math.cos(rt), sr=Math.sin(rt), dir=r?-1:1;
+  for(var r=0;r<2;r++){var ra=R*(1.6+.34*r), rb=ra*(.3+.05*r), rt=(r?-.5:.35)+tt*.03*(r?-1:1), cr=Math.cos(rt), sr=Math.sin(rt), dir=r?-1:1;
     for(var j=0;j<40;j++){var u=j/40*Math.PI*2, ex=Math.cos(u)*ra, ey=Math.sin(u)*rb; tri(Ob,cx+ex*cr-ey*sr,cy+ex*sr+ey*cr,S*.2,(j&1)?1:-1)}
-    for(var nn=0;nn<2;nn++){for(var tr=0;tr<5;tr++){var uu=tt*(.9+.6*e)*dir+nn*Math.PI-tr*.09*dir, ex2=Math.cos(uu)*ra, ey2=Math.sin(uu)*rb;
+    for(var nn=0;nn<2;nn++){for(var tr=0;tr<5;tr++){var uu=(REDUCE?0:CORE.orbA)*dir+nn*Math.PI-tr*.09*dir, ex2=Math.cos(uu)*ra, ey2=Math.sin(uu)*rb;
       tri(tr?Ob:Nd,cx+ex2*cr-ey2*sr,cy+ex2*sr+ey2*cr,S*(tr?.3:.52),dir)}}}
   octx.fillStyle="rgba(255,255,255,"+(.2*v)+")"; octx.fill(Ob); octx.fillStyle="rgba(255,255,255,"+(.75*v)+")"; octx.fill(Nd);
   // a ripple leaves the core whenever it has a new thought
-  CORE.pulses=CORE.pulses.filter(function(t0){return clock-t0<1.3});
-  CORE.pulses.forEach(function(t0){var age=(clock-t0)/1.25, rr=R*(1.1+1.7*age), P=new Path2D();
+  CORE.pulses=CORE.pulses.filter(function(t0){return clock-t0<2.3});
+  CORE.pulses.forEach(function(t0){var age=(clock-t0)/2.2, rr=R*(1.1+1.7*(1-Math.pow(1-age,2))), P=new Path2D();
     for(var j=0;j<46;j++){var u=j/46*Math.PI*2; tri(P,cx+Math.cos(u)*rr,cy+Math.sin(u)*rr*.9,S*.32,(j&1)?1:-1)}
     octx.fillStyle="rgba(255,255,255,"+((1-age)*.8*v)+")"; octx.fill(P)});
 }
