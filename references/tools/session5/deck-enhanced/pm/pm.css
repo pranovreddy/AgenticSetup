@@ -129,3 +129,8 @@ body.arc-mode [data-analyse] .cap,[data-analyse] .cap{ display:none!important; }
 .pm-q.fill{ top:auto!important; bottom:92px; left:50%; right:auto; transform:translateX(-50%); }
 /* left text goes back to the three-line ticker; pills live on the cards only */
 #pmPill{ display:none!important; }
+/* processing: less empty space under the card header */
+body.arc-mode .card.is-analysing .pane,body.is-working .card.is-analysing .pane{ top:62px!important; }
+body.arc-mode .card.is-analysing [data-analyse] .ld{ height:520px!important; }
+body.arc-mode .card.is-analysing [data-analyse] .ld{ margin-top:-46px!important; height:570px!important; }
+[data-review] .cap{ display:none!important; }

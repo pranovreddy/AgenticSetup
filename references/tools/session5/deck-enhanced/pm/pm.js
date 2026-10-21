@@ -44,3 +44,8 @@ setInterval(() => {
   if (S.profileFilling) { const f = $(".pf.is-filling label, .pf.is-filling .lab, .pf.is-filling b", card(0)), n = f ? f.textContent.replace("*", "").trim() : ""; const t = n ? `Filling in ${n}` : "Filling in your business profile"; pill.hidden = false; pill.dataset.t = "fill"; const x = $(".tx2", pill); if (x.textContent !== t) x.textContent = t; }
   else if (pill.dataset.t === "fill") { pill.hidden = true; pill.dataset.t = ""; }
 }, 250);
+/* the review (verification) animation gets the same query pill */
+setInterval(() => { const el = card(0), rv = el && $("[data-review]", el); if (!rv) return; const ln = $("[data-vline]", rv); let q = $(".pm-q.ver", rv);
+  if (!ln) { if (q) q.remove(); return; }
+  if (!q) { rv.insertAdjacentHTML("beforeend", `<div class="pm-q ver"><span class="qi">${typeof AI_MARK !== "undefined" ? AI_MARK : ""}</span><span class="qt"></span><span class="qd"><i></i><i></i><i></i></span></div>`); q = $(".pm-q.ver", rv); }
+  const t = ln.textContent.replace(/\s+/g, " ").trim(), tx = $(".qt", q); if (tx.dataset.v !== t) { tx.dataset.v = t; tx.textContent = t; tx.style.animation = "none"; void tx.offsetWidth; tx.style.animation = ""; } }, 250);
