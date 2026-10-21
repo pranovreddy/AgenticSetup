@@ -645,3 +645,5 @@ PM feedback file: the partly-prepared Business profile skips the typing animatio
 PM feedback file: success transition (green wash from the tick, ring pop, drawn tick, then headline, text, who/when, next step and button rise in turn); the fact chips are now one line of plain text; the card stays on the result 5.5 s (6.5 s for the profile) before moving on.
 
 PM feedback file: the 'Template mapping: 98 of 100' status bar is removed from the Brands review card (it stays on the Brands details page).
+
+PM feedback file: fixed a layout bug where the processing pane was position:relative (it pushed the scene 60px down and clipped the pill). The scene now starts at the top of the card body, fills the space above the pill, and the pill sits inside the card bottom. Template counts beside the LOBs on the Brands card are hidden.
