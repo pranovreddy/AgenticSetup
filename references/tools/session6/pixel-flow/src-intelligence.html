@@ -263,10 +263,10 @@ select.inp{height:36px;padding:0 8px}
 .cd-agent{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--s-blue);background:var(--s-soft);padding:5px 10px 5px 8px;border-radius:999px;margin-top:10px}
 .cd-agent img{width:13px;height:auto}
 .cd-conf{font-size:12.5px;color:var(--s-muted);margin-top:10px}
-.cd-asum{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px;font-size:14px;line-height:1.45;color:var(--s-ink2)}
+.cd-asum{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--s-ink2)}
 .card:not(.big):not(.isdoc) .cd-in{background:linear-gradient(180deg,#e6eeff 0,#f3f7ff 70px,rgba(255,255,255,0) 170px);border-radius:inherit}
 .cd-asum .cd-agent{margin-top:0;background:#fff;box-shadow:0 1px 2px rgba(30,70,170,.12)}.cd-asum .chipmini{margin:0}
-.cd-asum .t{flex:1 1 280px;min-width:0}
+.cd-asum .t{max-width:640px;padding-left:2px}
 .tdept{font-size:14px;color:var(--s-ink2)}.rolep{display:inline-block;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
 .cd-side{display:flex;align-items:center;gap:10px;flex:none;align-self:flex-start;margin-top:4px}
 .cd-sum{font-size:16px;line-height:1.6;color:var(--s-ink2);margin:10px 0 0}
@@ -1686,7 +1686,7 @@ function kvText(){var p=F.kv.ph, n=F.kv.rx||0; return {
 function fitScene(ld,box){var crop=ld.querySelector(".ld-crop"), fr=ld.querySelector("iframe"), bw=box[2]-box[0], bh=box[3]-box[1], s=Math.min((ld.clientWidth-24)/bw,(ld.clientHeight-20)/bh,1.5);
   crop.style.width=bw*s+"px"; crop.style.height=bh*s+"px"; crop.style.marginLeft=(-bw*s/2)+"px"; crop.style.marginTop=(-bh*s/2)+"px";
   fr.style.transform="translate("+(-box[0]*s)+"px,"+(-box[1]*s)+"px) scale("+s+")"}
-function kvPhase(p){if(!F.kv||F.kv.ph===p) return; F.kv.ph=p; var t=kvText(), c=$("card"), h=c.querySelector(".cd-hd h2"), sm=c.querySelector(".cd-asum"), cp=$("kvcap");
+function kvPhase(p){if(!F.kv||F.kv.ph===p) return; F.kv.ph=p; var t=kvText(), c=$("card"), h=c.querySelector(".cd-hd h2"), sm=c.querySelector(".cd-asum .t"), cp=$("kvcap");
   if(h) h.textContent=t[0]; if(sm) sm.textContent=t[1]; if(cp){cp.textContent=t[2]; cp.classList.remove("swap"); void cp.offsetWidth; cp.classList.add("swap")}
   if(p==="send") toast("Sent to Airtel, Jio, Vi and BSNL for review"); corePulse()}
 function kvStop(){if(!F.kv) return; clearInterval(F.kv.iv); clearTimeout(F.kv.to); if(F.kv.off) F.kv.off()}
@@ -1763,8 +1763,7 @@ function brandsBig(){
     b.lobs.map(function(l,li){return bLob(bi,li,l)}).join("")+'</div>'}).join("");
   var phone='<aside class="zphone"><p>A preview of what your customers see in their Consent Wallet.</p><div class="zdev"><div class="zdt"><span>10:28 am</span><span>5G</span></div><div class="zdh"><span class="zlg" style="background:#1f4e9b">'+esc((BRANDS[0]||{name:"H"}).name[0])+'</span><div><b>HDFC Bank Limited</b><small>Consents across '+BRANDS.length+' brands</small></div></div>'+
     BRANDS.map(function(b,bi){return '<div class="zdb"><div class="zdbh"><span class="zlg" style="background:'+BCOL[bi%4]+'">'+esc(initials(b.name))+'</span><div><b>'+esc(b.name)+'</b><small>'+b.lobs.length+' Opted In</small></div></div>'+b.lobs.slice(0,2).map(function(l){return '<div class="zdl"><b>'+esc(l)+'</b><span>PREFERRED CHANNELS</span><i>SMS</i><i>Calls</i></div>'}).join("")+'</div>'}).join("")+'</div></aside>';
-  return zbanner(ch?"You changed the draft, so it goes for review before it's set up. Templates wait until it's approved.":"Confirm the draft as it is and it's set up straight away, with no review.")+
-    '<div class="zent"><span class="zeic">'+I("build")+'</span><div><b>HDFC Bank Limited</b><small>'+BRANDS.length+' brands · '+lobs+' lines of business</small></div><span class="ztag brand">Enterprise</span></div>'+
+  return (ch?zbanner("You changed the draft, so it goes for review before it's set up. Templates wait until it's approved."):'')+
     '<div class="zmap'+(ch?' warn':'')+'">'+I(ch?"info":"check")+'<span>'+(ch?'Template mapping runs again after your changes are approved.':'Template mapping: '+(100-unmapped())+' of 100 templates are mapped to these lines of business.')+'</span><em>'+unmapped()+' unmapped</em></div>'+
     '<div class="zbgrid"><div class="zbmain"><div class="zbtop"><b>BRANDS <i>('+BRANDS.length+')</i></b><button class="zlk" data-a="addbrand">+ Add brand</button></div>'+cards+'</div>'+phone+'</div>';
 }
