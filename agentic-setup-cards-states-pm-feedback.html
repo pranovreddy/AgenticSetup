@@ -2298,6 +2298,13 @@ body.arc-mode .card.is-analysing [data-analyse] .ld-crop{ top:0!important; margi
 /* edit pages a little zoomed out */
 #deep{ zoom:.85; }
 .rdl-pre .rdl-k{ display:none!important; }
+.card [data-review] .panel-h:has([data-cn]){ display:none!important; }
+/* one border only: the card's own. No animated ring, no second outline */
+body:not(.phase-finale) .card::before,body:not(.phase-finale) .card::after{ display:none!important; }
+body.has-tband .card.is-focus .card-in,.card.is-focus .card-in{ box-shadow:0 40px 80px -44px rgba(30,60,170,.45)!important; border:1.5px solid rgba(120,150,230,.55)!important; }
+/* wider edit pages */
+.deep-content > .inner{ max-width:1400px!important; }
+.deep-content{ padding-left:32px!important; padding-right:32px!important; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -3055,7 +3062,7 @@ function layout() {
   }
   const [aw, ah] = dims(S.active);
   const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .24) : 0, TH = 46, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
-  let f = Math.max(0.42, Math.min(1.14, (S.phase === "review" ? innerHeight * .8 : r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
+  let f = Math.max(0.42, Math.min(1.14, (S.phase === "review" ? innerHeight * .85 : r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
     const off = i - S.active, a = Math.min(Math.abs(off), 4), dir = Math.sign(off);

@@ -653,3 +653,5 @@ PM feedback file: the edit (Details) pages are zoomed out to 85% (#deep zoom).
 PM feedback file: the '5 STEPS' label above the start-screen title is removed.
 
 PM feedback file: the card in focus in the processing ring is 16% bigger than the side cards (scale f*(1+.16*cc) in ringPaint).
+
+PM feedback file: review focus card is 85vh (was 80); the 'Suggested users · N shown · N selected' header is hidden on the Team card; edit pages are wider (content up to 1400px); one border only on cards (the animated conic ring is off and the card keeps a single 1.5px border).

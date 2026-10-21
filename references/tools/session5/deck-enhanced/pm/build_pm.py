@@ -67,6 +67,8 @@ z = h.index('</details>', a) + len('</details>')
 h = h[:a] + h[z:]
 # focus card in the ring is bigger
 sub("rotateY(${face}deg) rotateZ(0deg) scale(${f})`;", "rotateY(${face}deg) rotateZ(0deg) scale(${f * (1 + .16 * cc)})`;")
+# review focus card 85vh
+sub("S.phase === \"review\" ? innerHeight * .8 : r.height - 40", "S.phase === \"review\" ? innerHeight * .85 : r.height - 40")
 sub("window.__deck = { uxState,", js + "\nwindow.__deck = { uxState,")
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', f'<style id="pm-fb">{css}</style>\n<script>document.body.classList.add("dk-6","lt-1");</script>')
 (root / "agentic-setup-cards-states-pm-feedback.html").write_text(h)
