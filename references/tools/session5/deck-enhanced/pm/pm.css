@@ -1,0 +1,29 @@
+/* PM feedback */
+.prose a.on{ background:#dbe7ff; border-radius:4px; box-shadow:0 0 0 3px #dbe7ff; transition:background .25s; }
+.prose a{ transition:background .25s; }
+.closes{ height:auto!important; min-height:56px; padding:10px 20px 10px 12px!important; max-width:340px; align-items:flex-start!important; border-radius:26px!important; }
+.closes .s{ gap:2px; } .closes .cx{ display:block; margin-top:4px; font-size:13px; line-height:1.35; color:var(--muted); font-weight:500; max-width:240px; }
+.closes .ci{ margin-top:2px; }
+/* stack cards: sharper, larger text */
+body.all-closed .card .cardf, body.all-closed .card .cardf *{ -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision; }
+body.all-closed .cf-v b{ font-size:36px!important; font-weight:700; } body.all-closed .cf-v em{ font-size:19px!important; opacity:1!important; }
+body.all-closed .card{ filter:none!important; }
+/* ready screen: done and ready for one-click review */
+body.pm-ready .cardf{ box-shadow:0 0 0 3px rgba(34,197,94,.55),0 24px 40px -24px rgba(21,128,61,.6)!important; }
+body.pm-ready .cardf .cf-st.ux{ background:#d9f4e2!important; color:#15803d!important; font-weight:700; font-size:14px; height:30px; }
+.rdl-note{ display:flex; gap:8px; align-items:center; margin:-8px 0 18px; color:#15803d; font-weight:600; font-size:15px; } .rdl-note svg{ width:18px; height:18px; }
+/* team checkbox column */
+.ctbl th.ck,.ctbl td.ck{ width:44px; padding-left:14px; } .ctbl .ck input{ width:20px; height:20px; accent-color:#2563eb; cursor:pointer; }
+/* brands: proof and template status */
+.lobrow{ flex-wrap:wrap; } .lobrow .lm{ width:100%; display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:4px 0 6px; font-size:14px; }
+.lm .pf,.lm .tc{ display:inline-flex; gap:6px; align-items:center; border-radius:99px; padding:3px 10px; font-weight:600; }
+.lm .pf.ok{ background:#d9f4e2; color:#15803d; } .lm .pf.need{ background:#fcefcf; color:#8a4b06; } .lm .tc{ background:#eef2fb; color:#3b4763; } .lm .pf svg,.lm .tc svg{ width:14px; height:14px; }
+.lm label.attach{ cursor:pointer; text-decoration:underline; color:#1d4ed8; font-weight:600; } .lm input[type=file]{ display:none; }
+.blobs .lob i.lc{ font-style:normal; margin-left:8px; padding:0 7px; border-radius:99px; background:rgba(37,99,235,.12); color:#1d4ed8; font-weight:700; }
+.mapstat{ display:flex; gap:10px; align-items:center; padding:12px 16px; border-radius:12px; background:#eef3ff; color:#1e3a8a; font-weight:600; margin-top:12px; } .mapstat.warn{ background:#fdf0d5; color:#8a4b06; } .mapstat svg{ width:18px; height:18px; flex:none; } .mapstat span{ flex:1; } .mapstat em{ font-style:normal; background:#fff; border-radius:99px; padding:2px 10px; }
+
+body.all-closed:not(.pm-ready) .cardf .cf-st.ux{ display:none; }
+.lobrow{ display:grid!important; grid-template-columns:1fr auto; align-items:center; column-gap:8px; } .lobrow .lm{ grid-column:1 / -1; }
+.lm .pf,.lm .tc{ display:inline-flex!important; flex-direction:row!important; align-items:center; white-space:nowrap; width:auto; height:auto; }
+.lm .pf svg,.lm .tc svg{ width:14px!important; height:14px!important; flex:none; }
+.lobrow .x{ grid-column:2; grid-row:1; } .lobrow .inp{ grid-column:1; grid-row:1; }
