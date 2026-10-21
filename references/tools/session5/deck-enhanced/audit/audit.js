@@ -47,7 +47,7 @@ function auFocusSync() {
 function auDims(nat, sr, LPx) {
   const tb = document.body.classList.contains("has-tband");
   const w = Math.max(640, Math.min(940, Math.floor(sr.width - LPx - 56 - (tb ? 40 : 0))));
-  return [w, Math.round(Math.min(nat, innerHeight * .88))];
+  return [w, Math.round(Math.min(nat, innerHeight - 156))]; /* leaves room for the previous/next arrows */
 }
 /* edit pages: body text 15px or more, small capitals 13px or more */
 function auDeepFloor() {
@@ -74,7 +74,9 @@ setInterval(() => {
   if (v !== S.auVline) { S.auVline = v; tbSync(); }
   if (v === 2 && !S.auSent && !S.auSentT) S.auSentT = setTimeout(() => { if (S.cards[0].st !== "inreview") return; S.auSent = 1; toast("Sent to Airtel, Jio, Vi and BSNL for review"); tbSync(); }, RM ? 0 : 2600);
 }, 300);
-document.addEventListener("click", (e) => { if (!e.target.closest("[data-au-next]")) return; e.stopPropagation(); const n = firstOpen(); if (n >= 0) focusCard(n); else maybeFinale(); }, true);
+/* the "Next:" line on a success face works as a button (markup kept as div.pm-nx, which other layers match on) */
+const auNext = (e) => { const x = e.target.closest && e.target.closest(".card .pm-nx"); if (!x) return; if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return; e.preventDefault(); e.stopPropagation(); const n = firstOpen(); if (n >= 0) focusCard(n); else maybeFinale(); };
+document.addEventListener("click", auNext, true); document.addEventListener("keydown", auNext, true);
 
 /* M5 "What I did" ticks only what really finished */
 const _auAcc = heroAcc;
@@ -173,6 +175,38 @@ function auHeroFit() {
   document.body.classList.toggle("au-heroback", on);
 }
 
+
+/* ===== PM v30 scenarios, made to work with this copy ===== */
+/* template remap: start it only once Templates is on screen, and keep the loader up through re-renders
+   (in the PM build the loader is wiped by the next render, so it is never seen) */
+const AU_REMAP = '<div class="pm-remap ux-fail" role="status"><span class="pm-rsp"></span><h3>Mapping your templates again</h3><p>You removed a line of business, so I am mapping your templates again. This takes a moment.</p></div>';
+const auOnTpl = () => (S.phase === "review" && S.active === 4 && deep.hidden) || (!deep.hidden && deepI === 4);
+const _auRemap = pmRemap;
+pmRemap = function () { if (!auOnTpl() || isLocked(4)) return; _auRemap(); };
+function auRemapKeep() {
+  if (S.remapPending && !pmRemapOn && auOnTpl() && !isLocked(4)) pmRemap();
+  if (!pmRemapOn) return;
+  const hostC = $("[data-review] .r-body", card(4)); if (hostC && !$(".pm-remap", hostC)) { hostC.style.position = "relative"; hostC.insertAdjacentHTML("beforeend", AU_REMAP); }
+  if (!deep.hidden && deepI === 4) { const d = $(".deep-content", deep); if (d && !$(".pm-remap", d)) d.insertAdjacentHTML("beforeend", AU_REMAP); }
+}
+/* finale and side-card faces: partial KYC and brands still under review */
+const _auFace = faceHTML;
+faceHTML = function (i) {
+  const o = _auFace(i), c = S.cards[i], k = STEPS[i].key; let extra = "";
+  if (k === "profile" && c.st === "done" && c.telco && c.telco.ok < c.telco.total) extra = `Approved by ${c.telco.ok} of ${c.telco.total}`;
+  if (k === "brands" && c.st === "done" && S.bPend && S.bPend.open && S.bPend.type === "partial") extra = `${esc(STEPS[i].mini)} · ${S.bPend.nb + S.bPend.nl} in review`;
+  if (extra) o.html = o.html.replace(/(<span class="cf-res[^"]*">)[\s\S]*?(<\/span><\/div>)/, `$1${extra}$2`);
+  return o;
+};
+/* left text for a partly edited Brands step */
+function auBrandsHead() {
+  const p = S.bPend; if (S.phase !== "review" || S.active !== 2 || S.cards[2].st !== "done" || !p || !p.open || p.type !== "partial") return;
+  const t = `${pmPlural(p.nb, "brand")} and ${pmPlural(p.nl, "LOB")} are under review. The rest is set up, so you can carry on.`, a = $("#atTele");
+  if (a && a.textContent.trim() !== t) setAtTele(t);
+  const h = $("#hTitle"), ti = "Brands and LOBs are set up"; if (h && h.textContent.trim() !== ti) heroSet("#hTitle", ti);
+}
+setInterval(() => { auRemapKeep(); auBrandsHead(); }, 250);
+
 /* m9 offline pauses the agent too */
 const _auType = typeIntoField;
 typeIntoField = async function (el, text, duration) { while ($("#uxOff")?.classList.contains("on")) await sleep(300); return _auType(el, text, duration); };
@@ -204,6 +238,7 @@ setTimeout(() => {
 
 setInterval(() => {
   auUnlockKyc(); auFocusSync(); auHeadFix(); auHeroFit();
+  $$(".card .pm-nx:not([role])").forEach((x) => { x.setAttribute("role", "button"); x.tabIndex = 0; });
   cards().forEach((el) => { const b = $(".r-body", el); el.classList.toggle("au-more", !!b && b.scrollHeight - b.scrollTop - b.clientHeight > 6); });
   document.body.classList.toggle("au-off", !!$("#uxOff.on"));
   const rv = $("[data-review]", card(0)); let q = rv && $(".au-offq", rv);

@@ -24,7 +24,7 @@ sub('const MIN_FONT = 17;', 'const MIN_FONT = 14;')
 # M2 review text never shrinks below the floor: the card gets shorter (its body scrolls) instead of scaling down
 sub('return [940, Math.round(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12))];',
     'return auDims(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12), sr, LPx);')
-sub('(S.phase === "review" ? innerHeight * .85 : r.height - 40) / ah', '(S.phase === "review" ? innerHeight * .9 : r.height - 40) / ah')
+sub('(S.phase === "review" ? innerHeight * .85 : r.height - 40) / ah', '(S.phase === "review" ? innerHeight - 150 : r.height - 40) / ah')
 sub('#deep{ zoom:.85; }', '#deep{ zoom:1; }')
 # M3 one deadline: the finale clock uses the pill's end date, in real seconds
 sub('const closeAt = Date.now() + 30 * 864e5;', 'const closeAt = closeAt0;')
@@ -37,7 +37,6 @@ sub('const sig = [ph, i, cd.st, locked, filling, verifying, S.cards[pI].step, S.
     'const sig = [ph, i, cd.st, locked, filling, verifying, S.cards[pI].step, S.cards.map((x) => x.st).join(), S.auSent, S.auVline, cd.attn, cd.partly, cd.flag].join("|");')
 sub('toast("Submitted to the telecom operators for review")', 'S.auSent = 0')
 sub('if (nx >= 0) focusCard(nx); } }, RM ? 0 : 1600);', 'if (nx >= 0) focusCard(nx); } }, RM ? 0 : 6500);')
-sub('<div class="pm-nx">${esc(nx)}</div>', '<button type="button" class="pm-nx" data-au-next>${esc(nx)}</button>')
 # M6 GTM: accurate claim, one set of units, the terms can be read
 sub('<p class="r-p">${PARTNERS.length} partners sent rate cards. ${two ? "These two have the lowest rates across the three phases." : "Your selection, split evenly."}</p>',
     '<p class="r-p">${S.cards[i].partly ? `These are Karix\'s rates. The other partners appear here when their rate cards arrive.` : `${PARTNERS.length} partners sent rate cards. ${two ? "Karix has the lowest rate in every phase. Value First matches it on acquisition and adds enterprise SLA cover, so the volume is split between them." : "Your selection, split evenly."}`}</p>')

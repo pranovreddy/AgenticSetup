@@ -668,3 +668,11 @@ PM feedback file (pm5.js): partial KYC approval. Approved by at least one operat
 PM feedback file (pm6.js): while brands are under review the Templates card is shown in a lock-like state (blurred content, padlock, the review note) with 'Skip for now' (saves for later) and 'Continue anyway' (opens the mapping, approved LOBs only). Confirm mapping stays disabled until then.
 
 PM feedback file: the Prototype button and its menu moved to the top right; Previous and Next are two small arrow buttons without text, bottom right (#pmNav).
+
+Audit fixes copy rebuilt on PM feedback v30 (merged commit 8fedbe0 and the four PM commits before it). All seven changes in references/CHANGES-since-heuristics-prompt.md come through from the PM build. Compatibility fixes in audit.js and audit.css:
+- The remap loader is now visible. In the PM build it starts before Templates is on screen and the next render wipes it. The copy starts it when Templates (card or edit page) is showing and keeps the overlay through re-renders.
+- The finale card shows "Approved by 2 of 4" for partial KYC. faceHTML reads STEPS.mini, not doneMini. A partly edited Brands step shows "· N in review" on its face, and its left text says what is under review instead of "Nothing more to do here".
+- The "Next:" line keeps its div.pm-nx markup (pm4 and pm5 match on it) and is made clickable and keyboard-operable from JS.
+- Toasts are top-centre. The offline banner stops short of the top-right Prototype button. The review card is capped at innerHeight - 150 so it ends above the previous/next arrows (no overlap at 1280, 1440 or 1920).
+- The "You can change this later" note is sticky at the bottom of the card body, so it shows on scrolling cards.
+Checked: all 55 menu states with no page errors, the full real flow to the finale, and the keyboard.

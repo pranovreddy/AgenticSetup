@@ -2310,6 +2310,20 @@ body.phase-finale .ah-ok::before,body.phase-finale .ah-ok::after{ animation-iter
 body.phase-finale .finale p:first-of-type::before{ animation:none!important; }
 body.phase-finale .stamp,body.phase-finale .stamp::before,body.phase-finale .stamp::after,body.phase-finale .stamp *{ animation:none!important; }
 body.phase-finale .edge,body.phase-finale .edge::before,body.phase-finale .edge::after{ animation:none!important; }
+.pm-chg{ margin:12px 0 0; color:#566176; font-size:16px; text-align:center; }
+.pm-pend{ padding:10px 18px; border-radius:12px; background:#fdf0d5; color:#8a4b06; font-weight:600; font-size:16px; margin-top:6px; text-align:center; }
+.pm-remap{ background:rgba(255,255,255,.94)!important; color:#2563eb!important; } .pm-rsp{ width:34px; height:34px; border:4px solid #2563eb; border-right-color:transparent; border-radius:50%; animation:uxspin .9s linear infinite; }
+.pm-arrow{ position:fixed; z-index:60; display:inline-flex; align-items:center; gap:6px; height:44px; padding:0 18px; border-radius:99px; border:1px solid #cfdcf8; background:#fff; color:#1e3a8a; font:600 16px var(--font); cursor:pointer; box-shadow:0 10px 22px -14px rgba(37,99,235,.6); } .pm-arrow svg{ width:18px; height:18px; } .pm-arrow:disabled{ opacity:.4; cursor:default; } .pm-arrow:hover:not(:disabled){ background:#eef3ff; } .pm-arrow[hidden]{ display:none; }
+.pm-tl{ list-style:none; margin:8px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; width:min(480px,100%); }
+.pm-tl li{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; font-size:16px; } .pm-tl li b{ font-weight:700; } .pm-tl li span{ margin-left:auto; font-weight:600; } .pm-tl svg{ width:18px; height:18px; flex:none; }
+.pm-tl li.ok{ background:#e9f8ee; color:#15803d; } .pm-tl li.wait{ background:#fdf0d5; color:#8a4b06; }
+.pm-hold{ gap:10px; } .pm-hold small{ max-width:62ch; font-size:17px; line-height:1.55; color:#2c3753; } .pm-hold b{ font-size:21px; } .pm-hb{ display:flex; gap:10px; margin-top:8px; }
+
+.pm-nav{ position:fixed; right:max(18px,env(safe-area-inset-right,0px)); bottom:18px; z-index:60; display:flex; gap:8px; } .pm-nav[hidden]{ display:none; }
+.pm-nav .pm-arrow{ position:static; width:44px; height:44px; padding:0; justify-content:center; }
+/* Prototype button at the top right */
+.proto{ top:max(14px,env(safe-area-inset-top,0px))!important; bottom:auto!important; left:auto!important; right:max(18px,env(safe-area-inset-right,0px))!important; }
+.proto-menu{ top:42px!important; bottom:auto!important; left:auto!important; right:0!important; }
 </style>
 <style id="au-fix">/* ===== UI heuristics audit fixes ===== */
 /* C1 editable profile fields look and behave like inputs; an edited field says so */
@@ -2321,8 +2335,8 @@ body.phase-finale .edge,body.phase-finale .edge::before,body.phase-finale .edge:
 /* M3 one deadline on the finale */
 body.phase-finale #closes{ display:none!important; }
 /* M4 the "Next" line on a success face is a button */
-button.pm-nx{ border:0; font:inherit; cursor:pointer; }
-button.pm-nx:hover{ filter:brightness(.96); text-decoration:underline; }
+.card .pm-nx[role=button]{ cursor:pointer; }
+.card .pm-nx[role=button]:hover{ filter:brightness(.96); text-decoration:underline; }
 /* M5 unfinished agent steps */
 #hAcc .acc-trace li.au-warn{ color:#9a3412; }
 #hAcc .acc-trace li.au-warn svg{ color:#c2410c; background:#ffedd5!important; }
@@ -2352,10 +2366,10 @@ body.au-closed .ah-ok::before, body.au-closed .ah-ok::after{ display:none!import
 body.au-closed .finale p:first-of-type::before{ background:#94a3b8!important; box-shadow:none!important; }
 body.au-closed .fin-conf{ display:none!important; }
 #auReq{ margin-top:14px; }
-/* m1 toasts sit bottom-centre, clear of card headers and tabs */
-.toast{ top:auto!important; bottom:28px; right:auto!important; left:50%; transform:translate(-50%, 12px)!important; }
+/* m1 toasts sit top-centre, above the card, clear of the tabs, the Prototype button and the arrows */
+.toast{ top:12px!important; bottom:auto!important; right:auto!important; left:50%; transform:translate(-50%, -12px)!important; }
 .toast.on{ transform:translate(-50%, 0)!important; }
-body.deep-open .toast{ bottom:96px; }
+body.deep-open .toast{ top:76px!important; }
 /* m4 contrast: dimmed rows use a grey text colour, not opacity; chips use darker green and blue */
 tr.off td{ opacity:1!important; }
 tr.off td, tr.off td b, tr.off td small, tr.off .rolep{ color:#526077!important; }
@@ -2388,6 +2402,10 @@ body.phase-finale .cardf button{ min-height:28px; min-width:44px; }
 #deep .g-t th small{ color:#475569; }
 #deep .g-c em{ background:#dcfce7; color:#14532d; }
 #deep .t-pill.hi{ color:#14532d; } #deep .t-pill.md{ color:#7c2d12; }
+/* the Prototype button is now top right: the offline banner stops short of it */
+#uxOff{ right:132px!important; }
+/* the "You can change this later" note stays in view while the card body scrolls */
+.card .r-body .pm-chg{ position:sticky; bottom:0; z-index:2; margin-bottom:0; padding:10px 0 4px; background:linear-gradient(rgba(255,255,255,0), #fff 40%); }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -3145,7 +3163,7 @@ function layout() {
   }
   const [aw, ah] = dims(S.active);
   const AN = S.phase === "analyse", TB = document.body.classList.contains("has-tband"), LP = TB ? Math.min(400, r.width * .24) : 0, TH = 46, GAP = -118 + (AN ? 92 : 0) - (TB ? 64 : 0), ZS = 110, SC = [1, .7, .6, .52, .46], OP = [1, .62, .38, .2, .08];
-  let f = Math.max(0.42, Math.min(1.14, (S.phase === "review" ? innerHeight * .9 : r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
+  let f = Math.max(0.42, Math.min(1.14, (S.phase === "review" ? innerHeight - 150 : r.height - 40) / ah, (r.width - LP - (AN ? 220 : (S.phase === "review" ? 56 : 32)) - (TB ? (AN ? 32 : 40) : 0)) / aw));
   const proj = (i, a) => (dims(i)[0] * SC[a] * (a ? Math.cos(TH * Math.PI / 180) : 1)) / 2;
   all.forEach((el, i) => {
     const off = i - S.active, a = Math.min(Math.abs(off), 4), dir = Math.sign(off);
@@ -4802,7 +4820,7 @@ doneFace = function (i) {
   const F = { profile: ["7 fields filled", "Approved by 4 of 4 operators", "Logo added"], team: [`${n} people invited`, "Roles assigned", "Emails sent"], brands: [`${BRANDS.length} brands`, `${lobs} lines of business`, "Set up"], gtm: PARTNERS.filter((p) => p.picked).map((p) => p.name).concat(["Terms accepted"]), templates: ["98 of 100 mapped", "2 left for later", "Ready to send"] }[k];
   const nx = { profile: "Next: Team is open now", team: "Next: Brands and LOBs", brands: "Next: GTM partners and Templates are open", gtm: "Next: Templates", templates: "That was the last step. You can start migration." }[k];
   const who = c.who ? esc(c.who.name) : "Ravi Menon", ini = who.split(" ").map((w) => w[0]).join("").slice(0, 2);
-  const extra = `<p class="pm-ft">${esc(F.join(" · "))}</p><div class="pm-by"><i>${ini}</i><span>Done by <b>${who}</b> · ${esc(c.at || "just now")}</span></div><button type="button" class="pm-nx" data-au-next>${esc(nx)}</button>`;
+  const extra = `<p class="pm-ft">${esc(F.join(" · "))}</p><div class="pm-by"><i>${ini}</i><span>Done by <b>${who}</b> · ${esc(c.at || "just now")}</span></div><div class="pm-nx">${esc(nx)}</div>`;
   return out.replace(/<p>[\s\S]*?<\/p>/, extra);
 };
 /* partly prepared profile: no typing animation, cursor goes to the first field the agent couldn't fill */
@@ -4904,6 +4922,132 @@ document.addEventListener("dragover", (e) => { if (pmDrag && e.target.closest(".
 document.addEventListener("dragleave", (e) => { e.target.closest?.(".t-lb")?.classList.remove("drop"); });
 document.addEventListener("drop", (e) => { const b = e.target.closest(".t-lb[data-l]"); if (!pmDrag || !b) return; e.preventDefault(); const l = b.dataset.l; if (l !== "all") { const ids = S.tplSel.has(pmDrag) ? [...S.tplSel] : [pmDrag]; TPLS.forEach((t) => { if (ids.includes(t.id)) t.lob = l === "un" ? "" : l; }); S.dirty = true; S.tplSel.clear(); toast(`${ids.length} template${ids.length > 1 ? "s" : ""} moved to ${l === "un" ? "Unmapped" : l}`); } pmDrag = null; rerenderDeep(); });
 document.addEventListener("dragend", () => { pmDrag = null; $$(".t-lb.drop").forEach((x) => x.classList.remove("drop")); });
+/* ===== Brands approval scenarios, template mapping, next/previous, "change later" notes ===== */
+const pmCounts = () => { let nb = 0, nl = 0, tl = 0, rem = 0; BRANDS.forEach((b) => { if (brandIsNew(b)) nb++; b.lobs.forEach((l) => { tl++; if (lobIsNew(b, l)) nl++; }); }); JSON.parse(BRANDS0).forEach((o) => { const b = BRANDS.find((y) => y.name === o.name); o.lobs.forEach((l) => { if (!b || !b.lobs.includes(l)) rem++; }); }); return { nb, nl, tl, rem }; };
+const pmClassify = () => { const c = pmCounts(); if (!c.nb && !c.nl) return { ...c, type: c.rem ? "remove" : "none" }; return { ...c, type: c.nl === c.tl ? "all" : "partial" }; };
+const pmPlural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+const pmDecide = decide;
+decide = function (i, kind) {
+  if (STEPS[i].key !== "brands" || kind === "later" || !brandsChanged()) { if (STEPS[i].key === "brands") S.bPend = null; return pmDecide(i, kind); }
+  const cl = pmClassify(), c = S.cards[i], el = card(i); c.at = now(); S.bPend = { ...cl, open: cl.type !== "remove" };
+  if (cl.type === "remove") { S.remapPending = true; }
+  if (cl.type === "all") { c.st = "inreview"; toast("Brands and LOBs sent for review"); LOCK_COPY[4] = ["Waiting for Brands and LOBs approval", "Your brands and LOBs are with the telecom operators. Skip this step for now and map templates once they are approved. You can change it later at any time."]; setTimeout(pmApprove, 45000); }
+  else { c.st = "done"; toast(cl.type === "remove" ? "Brands and LOBs updated. Templates will be mapped again." : `Brands and LOBs saved. ${pmPlural(cl.nb, "brand")} and ${pmPlural(cl.nl, "LOB")} are under review.`); if (cl.type === "partial") setTimeout(pmApprove, 45000); }
+  el.classList.add("is-done-flash"); setTimeout(() => el.classList.remove("is-done-flash"), 1100);
+  renderReview(i); renderReview(4); setStatus(i); refreshLocks(); reviewHead();
+  if (!S.pmNoAdv) setTimeout(() => { const nx = firstOpen(i + 1); if (nx >= 0) focusCard(nx); else maybeFinale(); }, RM ? 0 : 5500);
+};
+function pmApprove() {
+  const p = S.bPend; if (!p || p.type === "none" || p.type === "remove" || p.done) return; p.done = true; p.open = false;
+  const c = S.cards[2]; if (c.st === "inreview") { c.st = "done"; c.at = now(); LOCK_COPY[4] = ["Opens after brands and LOBs are set up and partners are confirmed", "Templates are mapped to your lines of business, so they wait for that step."]; }
+  renderReview(2); renderReview(4); setStatus(2); setStatus(4); refreshLocks(); railSync(); faces();
+  const live = S.cards[4].st === "review" && !isLocked(4) && ((S.phase === "review" && S.active === 4) || (!deep.hidden && deepI === 4));
+  if (live) pmMapUpdated(); else toast("Brands and LOBs were approved. Template mapping is up to date.");
+}
+function pmMapUpdated() {
+  const bd = document.createElement("div"); bd.className = "dlg-bd";
+  bd.innerHTML = `<div class="dlg dlg3" role="dialog" aria-modal="true" aria-labelledby="dlgT"><span class="dlg-ic">${IC.check}</span><h3 id="dlgT">Your mapping was updated</h3><p>Your brands and LOBs were approved, so the templates were mapped again. Please check the mapping and confirm.</p><div class="row"><button class="btn btn-p" data-x="ok">Check mapping</button></div></div>`;
+  document.body.appendChild(bd); $('[data-x="ok"]', bd).focus(); bd.addEventListener("click", (e) => { if (e.target === bd || e.target.dataset.x === "ok") { bd.remove(); renderReview(4); if (!deep.hidden && deepI === 4) rerenderDeep(); } });
+  renderReview(4); if (!deep.hidden && deepI === 4) rerenderDeep();
+}
+/* the brands card says what is under review; all-edited is amber and not done */
+const _pmDone4 = doneFace;
+doneFace = function (i) {
+  let out = _pmDone4(i); const k = STEPS[i].key, c = S.cards[i], p = S.bPend;
+  if (k !== "brands" || !p) return out;
+  if (c.st === "inreview" && p.type === "all") return out.replace(/<h3>[\s\S]*?<\/h3>/, "<h3>Not done yet. Waiting for approval</h3>").replace(/<p>[\s\S]*?<\/p>/, `<p>All your brands and LOBs were edited or added, so they were sent for review. Please wait for approval. Template mapping is locked until then. GTM partners is still open.</p>`);
+  if (c.st === "done" && p.type === "partial" && p.open) return out.replace(/<div class="pm-nx">/, `<div class="pm-pend">${pmPlural(p.nb, "brand")} and ${pmPlural(p.nl, "LOB")} are under review. The rest is set up.</div><div class="pm-nx">`);
+  return out;
+};
+/* warning on the templates card and page while brands are under review; remap loader */
+function pmTplNote() { const p = S.bPend; return p && p.type === "partial" && p.open ? `${pmPlural(p.nb, "brand")} and ${pmPlural(p.nl, "LOB")} are still under review. We suggest you skip this step for now and map templates once they are approved. If you continue now, templates are mapped to the approved LOBs only. You can change the mapping later at any time.` : ""; }
+const _pmRR = renderReview;
+renderReview = function (i) {
+  _pmRR(i); const k = STEPS[i].key, c = S.cards[i], box = card(i) && $("[data-review] .r-body", card(i)); if (!box || (c.st !== "review" && c.st !== "ready")) return;
+  if (k === "templates" && pmTplNote() && !$(".pm-warn", box)) box.insertAdjacentHTML("afterbegin", `<p class="ux-note warn pm-warn">${uxI("attention")}${esc(pmTplNote())}</p>`);
+  if (k !== "profile" && !$(".pm-chg", box) && !$(".ux-face,.ux-ghost", box)) box.insertAdjacentHTML("beforeend", '<p class="pm-chg">You can change this later at any time.</p>');
+  if (k === "templates" && S.remapPending && !isLocked(4)) pmRemap();
+};
+let pmRemapOn = false;
+function pmRemap() {
+  if (pmRemapOn) return; pmRemapOn = true; const done = () => { S.remapPending = false; pmRemapOn = false; $$(".pm-remap").forEach((x) => x.remove()); const keep = new Set(BRANDS.flatMap((b) => b.lobs)); TPLS.forEach((t) => { if (t.lob && !keep.has(t.lob)) { t.lob = ""; t.lob0 = ""; } }); for (let k = TPL_LOBS.length - 1; k >= 0; k--) if (!keep.has(TPL_LOBS[k].lob)) TPL_LOBS.splice(k, 1); renderReview(4); if (!deep.hidden && deepI === 4) rerenderDeep(); toast("Templates were mapped again to your updated lines of business"); };
+  const html = `<div class="pm-remap ux-fail" role="status"><span class="pm-rsp"></span><h3>Mapping your templates again</h3><p>You removed a line of business, so I am mapping your templates again. This takes a moment.</p></div>`;
+  const hostC = $("[data-review] .r-body", card(4)); if (hostC) { hostC.style.position = "relative"; hostC.insertAdjacentHTML("beforeend", html); }
+  if (!deep.hidden && deepI === 4) { const d = $(".deep-content", deep); if (d) d.insertAdjacentHTML("beforeend", html); }
+  setTimeout(done, RM ? 200 : 4500);
+}
+const _pmRD = renderDeep;
+renderDeep = function () {
+  _pmRD(); const host = $(".deep-content .inner", deep); if (!host) return; const k = STEPS[deepI].key;
+  if (k === "templates" && pmTplNote() && !$(".pm-nbar", host)) host.insertAdjacentHTML("afterbegin", `<div class="ux-nbar warn pm-nbar">${uxI("attention")}<span>${esc(pmTplNote())}</span></div>`);
+  if (k === "templates" && S.remapPending) pmRemap();
+};
+/* menu states */
+const _pmUx4 = uxState;
+uxState = function (name) {
+  if (!name.startsWith("pm-")) { S.bPend = null; S.remapPending = false; return _pmUx4(name); }
+  uxReset(); S.bPend = null; S.remapPending = false; S.pmNoAdv = true; pmRemapOn = false; BRANDS.splice(0, BRANDS.length, ...JSON.parse(BRANDS0));
+  jump("review"); S.profileFilled = S.profileAuth = true;
+  S.cards[0].st = "done"; S.cards[1].st = "done"; S.cards[0].at = S.cards[1].at = now(); refreshLocks();
+  const edit = { "pm-all": () => BRANDS.forEach((b) => { b.name += " Ltd"; b.lobs = b.lobs.map((l) => l + " (new)"); }), "pm-partial": () => { BRANDS[0].lobs.push("Gold Loan"); BRANDS.push({ name: "HDFC Securities", hdr: "HDFCSE", lobs: ["Trading"] }); }, "pm-remove": () => BRANDS[0].lobs.splice(2, 1) }[name.replace(/-(warn|popup|lock|remap)$/, "")];
+  const kind = name.replace(/^pm-/, "");
+  setTimeout(() => {
+    STEPS.forEach((_, k) => { renderReview(k); setStatus(k); });
+    if (kind === "all" || kind === "partial" || kind === "remove" || kind === "partial-warn" || kind === "partial-popup" || kind === "all-lock" || kind === "remove-remap") {
+      S.cards[2].st = "review"; S.cards[3].st = (kind === "partial-warn" || kind === "partial-popup" || kind === "remove-remap") ? "done" : "review"; S.cards[3].at = now(); refreshLocks(); focusCard(2);
+      
+    }
+  }, 400);
+  setTimeout(() => {
+    const fn = { all: () => BRANDS.forEach((b) => { b.name += " Ltd"; b.lobs = b.lobs.map((l) => l + " (new)"); }), partial: () => { BRANDS[0].lobs.push("Gold Loan"); BRANDS.push({ name: "HDFC Securities", hdr: "HDFCSE", lobs: ["Trading"] }); }, remove: () => BRANDS[0].lobs.splice(2, 1) };
+    const key = kind.split("-")[0]; if (fn[key]) fn[key](); S.cards[2].st = "review"; decide(2, "accept");
+    if (kind === "all-lock") setTimeout(() => focusCard(4), 900);
+    if (kind === "partial-warn") setTimeout(() => focusCard(4), 900);
+    if (kind === "partial-popup") { setTimeout(() => focusCard(4), 900); setTimeout(pmApprove, 3500); }
+    if (kind === "remove-remap") setTimeout(() => focusCard(4), 900);
+  }, 1500);
+};
+/* previous / next: small arrows, bottom right, no text */
+document.body.insertAdjacentHTML("beforeend", `<div class="pm-nav" id="pmNav" hidden><button class="pm-arrow" id="pmPrev" type="button" aria-label="Previous step" title="Previous step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button><button class="pm-arrow" id="pmNext" type="button" aria-label="Next step" title="Next step"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button></div>`);
+$("#pmPrev").addEventListener("click", () => { if (S.active > 0) focusCard(S.active - 1); }); $("#pmNext").addEventListener("click", () => { if (S.active < 4) focusCard(S.active + 1); });
+setInterval(() => { const on = S.phase === "review" && deep.hidden && !$(".dlg-bd"); $("#pmNav").hidden = !on; if (!on) return; $("#pmPrev").disabled = S.active === 0; $("#pmNext").disabled = S.active === 4; }, 200);
+/* add scenario states to the Prototype menu */
+{ const m = $("#protoMenu"); if (m) { const items = [["All edited: amber, waiting", "pm-all"], ["All edited: templates locked", "pm-all-lock"], ["Partly edited: done, N under review", "pm-partial"], ["Partly edited: templates warning", "pm-partial-warn"], ["Approved while mapping: popup", "pm-partial-popup"], ["LOB removed: remapping", "pm-remove-remap"]]; const g = [...m.querySelectorAll(".pm-g")].find((x) => x.firstChild && /Brands and LOBs/.test(x.textContent)); if (g) g.insertAdjacentHTML("beforeend", items.map(([l, s]) => `<button data-state="${s}">${l}</button>`).join("")); } }
+/* ===== Partial KYC approval: at least one operator approved, so the step is done, but only partly ===== */
+const PM_TELCOS = ["Airtel", "Jio", "Vi", "BSNL"];
+const pmTelco = (ok) => ({ ok, total: PM_TELCOS.length, list: PM_TELCOS.map((n, k) => ({ n, a: k < ok })) });
+const _pmD5 = doneFace;
+doneFace = function (i) {
+  const out = _pmD5(i), c = S.cards[i];
+  if (STEPS[i].key !== "profile" || c.st !== "done" || !c.telco || c.telco.ok >= c.telco.total || !out.includes('class="done-face"')) return out;
+  const t = c.telco, list = `<ul class="pm-tl">${t.list.map((x) => `<li class="${x.a ? "ok" : "wait"}">${x.a ? IC.check : IC.clock}<b>${x.n}</b><span>${x.a ? "Approved" : "Still reviewing"}</span></li>`).join("")}</ul>`;
+  return out.replace(/<h3>[\s\S]*?<\/h3>/, `<h3>Approved by ${t.ok} of ${t.total} operators</h3>`)
+    .replace(/<p class="pm-ft">[\s\S]*?<\/p>/, `<p class="pm-ft">Your business profile is done. ${t.total - t.ok} operators are still reviewing it.</p>`)
+    .replace(/<div class="pm-nx">/, `${list}<div class="pm-pend">You can carry on. Messages go out only through the approved operators until the others approve.</div><div class="pm-nx">`);
+};
+/* left text, rail and finale card wording */
+setInterval(() => { const c = S.cards[0]; if (!c || c.st !== "done" || !c.telco || c.telco.ok >= c.telco.total) return; if (S.phase === "review" && S.active === 0) { const t = $("#atTele"); if (t && t.textContent.indexOf("Approved by") !== 0) t.textContent = `Approved by ${c.telco.ok} of ${c.telco.total} telecom operators. The others are still reviewing.`; const h = $("#hTitle"); if (h && /is done/.test(h.textContent)) h.textContent = "Business profile is partly approved"; } }, 300);
+const _pmMini = doneMini;
+doneMini = function (i) { const c = S.cards[i]; if (STEPS[i].key === "profile" && c.telco && c.telco.ok < c.telco.total && c.st === "done") return `Approved by ${c.telco.ok} of ${c.telco.total}`; return _pmMini(i); };
+const _pmUx5 = uxState;
+uxState = function (name) {
+  if (name !== "pm-kyc" && name !== "pm-kyc-all") return _pmUx5(name);
+  uxReset(); S.bPend = null; jump("review"); S.profileFilled = S.profileAuth = true;
+  setTimeout(() => { const c = S.cards[0]; c.st = "done"; c.at = now(); c.telco = pmTelco(name === "pm-kyc" ? 2 : 4); STEPS.forEach((_, k) => { renderReview(k); setStatus(k); }); refreshLocks(); railSync(); faces(); focusCard(0); }, 500);
+};
+{ const m = $("#protoMenu"); if (m) { const g = [...m.querySelectorAll(".pm-g")].find((x) => /^Business profile/.test(x.textContent.trim())); if (g) g.insertAdjacentHTML("beforeend", '<button data-state="pm-kyc">Approved by 2 of 4 operators</button>'); } }
+/* ===== Templates while brands are under review: a lock-like state with Skip or Continue anyway ===== */
+const _pmRR6 = renderReview;
+renderReview = function (i) {
+  _pmRR6(i); if (STEPS[i].key !== "templates") return; const el = card(i), box = el && $("[data-review] .r-body", el), c = S.cards[i];
+  if (!box || (c.st !== "review" && c.st !== "ready")) return; const note = pmTplNote();
+  if (!note) { S.tplProceed = false; return; }
+  $(".pm-warn", box)?.remove(); const foot = $("[data-review] .r-foot", el); const conf = foot && $("[data-act=accept]", foot);
+  if (S.tplProceed) { if (conf) conf.disabled = false; return; }
+  if (conf) conf.disabled = true;
+  if (!$(".pm-hold", box)) { box.style.position = "relative"; box.insertAdjacentHTML("beforeend", `<div class="ux-lockov pm-hold" role="status"><span class="lk">${uxI("locked")}</span><b>Your brands and LOBs are still under review</b><small>${esc(note)}</small><div class="pm-hb"><button class="btn btn-p" data-ux6="skip" type="button">Skip for now</button><button class="btn" data-ux6="go" type="button">Continue anyway</button></div></div>`); }
+};
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-ux6]"); if (!b) return; if (b.dataset.ux6 === "skip") return decide(4, "later"); S.tplProceed = true; renderReview(4); toast("Templates will be mapped to the approved LOBs only"); }, true);
 
 /* ===== UI heuristics audit fixes (references/audits/ui-heuristics-2026-10-21.md) ===== */
 /* C1 the business profile can be corrected once the agent has filled it */
@@ -4954,7 +5098,7 @@ function auFocusSync() {
 function auDims(nat, sr, LPx) {
   const tb = document.body.classList.contains("has-tband");
   const w = Math.max(640, Math.min(940, Math.floor(sr.width - LPx - 56 - (tb ? 40 : 0))));
-  return [w, Math.round(Math.min(nat, innerHeight * .88))];
+  return [w, Math.round(Math.min(nat, innerHeight - 156))]; /* leaves room for the previous/next arrows */
 }
 /* edit pages: body text 15px or more, small capitals 13px or more */
 function auDeepFloor() {
@@ -4981,7 +5125,9 @@ setInterval(() => {
   if (v !== S.auVline) { S.auVline = v; tbSync(); }
   if (v === 2 && !S.auSent && !S.auSentT) S.auSentT = setTimeout(() => { if (S.cards[0].st !== "inreview") return; S.auSent = 1; toast("Sent to Airtel, Jio, Vi and BSNL for review"); tbSync(); }, RM ? 0 : 2600);
 }, 300);
-document.addEventListener("click", (e) => { if (!e.target.closest("[data-au-next]")) return; e.stopPropagation(); const n = firstOpen(); if (n >= 0) focusCard(n); else maybeFinale(); }, true);
+/* the "Next:" line on a success face works as a button (markup kept as div.pm-nx, which other layers match on) */
+const auNext = (e) => { const x = e.target.closest && e.target.closest(".card .pm-nx"); if (!x) return; if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return; e.preventDefault(); e.stopPropagation(); const n = firstOpen(); if (n >= 0) focusCard(n); else maybeFinale(); };
+document.addEventListener("click", auNext, true); document.addEventListener("keydown", auNext, true);
 
 /* M5 "What I did" ticks only what really finished */
 const _auAcc = heroAcc;
@@ -5080,6 +5226,38 @@ function auHeroFit() {
   document.body.classList.toggle("au-heroback", on);
 }
 
+
+/* ===== PM v30 scenarios, made to work with this copy ===== */
+/* template remap: start it only once Templates is on screen, and keep the loader up through re-renders
+   (in the PM build the loader is wiped by the next render, so it is never seen) */
+const AU_REMAP = '<div class="pm-remap ux-fail" role="status"><span class="pm-rsp"></span><h3>Mapping your templates again</h3><p>You removed a line of business, so I am mapping your templates again. This takes a moment.</p></div>';
+const auOnTpl = () => (S.phase === "review" && S.active === 4 && deep.hidden) || (!deep.hidden && deepI === 4);
+const _auRemap = pmRemap;
+pmRemap = function () { if (!auOnTpl() || isLocked(4)) return; _auRemap(); };
+function auRemapKeep() {
+  if (S.remapPending && !pmRemapOn && auOnTpl() && !isLocked(4)) pmRemap();
+  if (!pmRemapOn) return;
+  const hostC = $("[data-review] .r-body", card(4)); if (hostC && !$(".pm-remap", hostC)) { hostC.style.position = "relative"; hostC.insertAdjacentHTML("beforeend", AU_REMAP); }
+  if (!deep.hidden && deepI === 4) { const d = $(".deep-content", deep); if (d && !$(".pm-remap", d)) d.insertAdjacentHTML("beforeend", AU_REMAP); }
+}
+/* finale and side-card faces: partial KYC and brands still under review */
+const _auFace = faceHTML;
+faceHTML = function (i) {
+  const o = _auFace(i), c = S.cards[i], k = STEPS[i].key; let extra = "";
+  if (k === "profile" && c.st === "done" && c.telco && c.telco.ok < c.telco.total) extra = `Approved by ${c.telco.ok} of ${c.telco.total}`;
+  if (k === "brands" && c.st === "done" && S.bPend && S.bPend.open && S.bPend.type === "partial") extra = `${esc(STEPS[i].mini)} · ${S.bPend.nb + S.bPend.nl} in review`;
+  if (extra) o.html = o.html.replace(/(<span class="cf-res[^"]*">)[\s\S]*?(<\/span><\/div>)/, `$1${extra}$2`);
+  return o;
+};
+/* left text for a partly edited Brands step */
+function auBrandsHead() {
+  const p = S.bPend; if (S.phase !== "review" || S.active !== 2 || S.cards[2].st !== "done" || !p || !p.open || p.type !== "partial") return;
+  const t = `${pmPlural(p.nb, "brand")} and ${pmPlural(p.nl, "LOB")} are under review. The rest is set up, so you can carry on.`, a = $("#atTele");
+  if (a && a.textContent.trim() !== t) setAtTele(t);
+  const h = $("#hTitle"), ti = "Brands and LOBs are set up"; if (h && h.textContent.trim() !== ti) heroSet("#hTitle", ti);
+}
+setInterval(() => { auRemapKeep(); auBrandsHead(); }, 250);
+
 /* m9 offline pauses the agent too */
 const _auType = typeIntoField;
 typeIntoField = async function (el, text, duration) { while ($("#uxOff")?.classList.contains("on")) await sleep(300); return _auType(el, text, duration); };
@@ -5111,6 +5289,7 @@ setTimeout(() => {
 
 setInterval(() => {
   auUnlockKyc(); auFocusSync(); auHeadFix(); auHeroFit();
+  $$(".card .pm-nx:not([role])").forEach((x) => { x.setAttribute("role", "button"); x.tabIndex = 0; });
   cards().forEach((el) => { const b = $(".r-body", el); el.classList.toggle("au-more", !!b && b.scrollHeight - b.scrollTop - b.clientHeight > 6); });
   document.body.classList.toggle("au-off", !!$("#uxOff.on"));
   const rv = $("[data-review]", card(0)); let q = rv && $(".au-offq", rv);

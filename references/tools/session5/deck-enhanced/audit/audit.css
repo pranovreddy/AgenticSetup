@@ -8,8 +8,8 @@
 /* M3 one deadline on the finale */
 body.phase-finale #closes{ display:none!important; }
 /* M4 the "Next" line on a success face is a button */
-button.pm-nx{ border:0; font:inherit; cursor:pointer; }
-button.pm-nx:hover{ filter:brightness(.96); text-decoration:underline; }
+.card .pm-nx[role=button]{ cursor:pointer; }
+.card .pm-nx[role=button]:hover{ filter:brightness(.96); text-decoration:underline; }
 /* M5 unfinished agent steps */
 #hAcc .acc-trace li.au-warn{ color:#9a3412; }
 #hAcc .acc-trace li.au-warn svg{ color:#c2410c; background:#ffedd5!important; }
@@ -39,10 +39,10 @@ body.au-closed .ah-ok::before, body.au-closed .ah-ok::after{ display:none!import
 body.au-closed .finale p:first-of-type::before{ background:#94a3b8!important; box-shadow:none!important; }
 body.au-closed .fin-conf{ display:none!important; }
 #auReq{ margin-top:14px; }
-/* m1 toasts sit bottom-centre, clear of card headers and tabs */
-.toast{ top:auto!important; bottom:28px; right:auto!important; left:50%; transform:translate(-50%, 12px)!important; }
+/* m1 toasts sit top-centre, above the card, clear of the tabs, the Prototype button and the arrows */
+.toast{ top:12px!important; bottom:auto!important; right:auto!important; left:50%; transform:translate(-50%, -12px)!important; }
 .toast.on{ transform:translate(-50%, 0)!important; }
-body.deep-open .toast{ bottom:96px; }
+body.deep-open .toast{ top:76px!important; }
 /* m4 contrast: dimmed rows use a grey text colour, not opacity; chips use darker green and blue */
 tr.off td{ opacity:1!important; }
 tr.off td, tr.off td b, tr.off td small, tr.off .rolep{ color:#526077!important; }
@@ -75,3 +75,7 @@ body.phase-finale .cardf button{ min-height:28px; min-width:44px; }
 #deep .g-t th small{ color:#475569; }
 #deep .g-c em{ background:#dcfce7; color:#14532d; }
 #deep .t-pill.hi{ color:#14532d; } #deep .t-pill.md{ color:#7c2d12; }
+/* the Prototype button is now top right: the offline banner stops short of it */
+#uxOff{ right:132px!important; }
+/* the "You can change this later" note stays in view while the card body scrolls */
+.card .r-body .pm-chg{ position:sticky; bottom:0; z-index:2; margin-bottom:0; padding:10px 0 4px; background:linear-gradient(rgba(255,255,255,0), #fff 40%); }
