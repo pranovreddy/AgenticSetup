@@ -7,6 +7,7 @@ Latest working file: `agentic-setup-cards-states-pm-feedback.html` (published ar
 2. `agentic-setup-cards-ux.html`: UI/UX audit fixes. Builder: `references/tools/session5/deck-enhanced/ux/build_ux.py`.
 3. `agentic-setup-cards-states.html`: Part 2 design gaps as live, forceable states. Builder: `.../states/build_states.py` (states.js, states.css).
 4. `agentic-setup-cards-states-pm-feedback.html`: the PM team's feedback, plus later comments. Builder: `.../pm/build_pm.py` (pm.js, pm2.js for Brands details, pm3.js for GTM and Templates details, pm.css).
+5. `agentic-setup-cards-audit-fixes.html`: fixes for the UI heuristics audit (`references/audits/ui-heuristics-2026-10-21.md`). Builder: `.../audit/build_audit.py` (audit.js, audit.css). Built from the PM feedback file, which stays untouched.
 Side files: `agentic-setup-gaps.html` (the 15-gap design sheet, builder in `.../gaps/`), `agentic-setup-C2P2.html` (standalone layout direction C2 with processing option P2).
 
 To change the latest file: edit `pm/pm.css`, `pm/pm*.js` or `pm/build_pm.py`, then run `python3 references/tools/session5/deck-enhanced/pm/build_pm.py` (it reads the states file and writes the pm-feedback file). Builders use `sub(old, new)` with an exact-once assertion, so a failed assert means the source text changed upstream.
