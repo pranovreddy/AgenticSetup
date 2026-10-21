@@ -89,7 +89,7 @@ function uxPartly(i, box) {
   if (k === "profile") {
     body.insertAdjacentHTML("afterbegin", `<p class="ux-note warn">${uxI("attention")}Couldn’t fill 2 fields: Business PAN/TAN and Website URL. Add them to submit.</p>`);
     const blank = () => { ["pc-pan", "pc-web"].forEach((id) => { const f = $("#" + id, box); if (f) { f.value = ""; f.placeholder = "Couldn’t fill this"; f.classList.add("inp-miss"); } }); const sb = $('.r-foot .btn-p', box); if (sb) sb.disabled = true; const ck = $("#pAuth", box); if (ck) { ck.checked = false; ck.disabled = true; } };
-    blank(); [300, 1200, 3000, 6000].forEach((t) => setTimeout(blank, t));
+    blank(); if (!S.pmSkipFill) [300, 1200, 3000, 6000].forEach((t) => setTimeout(blank, t));
   } else if (k === "gtm") body.insertAdjacentHTML("afterbegin", `<p class="ux-note">${uxI("info")}Only Karix has sent a rate card. It takes all the volume until another one arrives.</p>`);
   else if (k === "templates") { body.insertAdjacentHTML("afterbegin", `<p class="ux-note warn">${uxI("attention")}14 templates have no line of business yet. They don’t hold up migration.</p>`); const u = $(".tm div:last-child b", body); if (u) { u.textContent = "14"; u.style.color = "#c2410c"; } }
 }

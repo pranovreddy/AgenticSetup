@@ -78,3 +78,15 @@ doneFace = function (i) {
   const extra = `<div class="pm-fa">${F.map((x) => `<span>${IC.check}${esc(x)}</span>`).join("")}</div><div class="pm-by"><i>${ini}</i><span>Done by <b>${who}</b> · ${esc(c.at || "just now")}</span></div><div class="pm-nx">${esc(nx)}</div>`;
   return out.replace(/<p>[\s\S]*?<\/p>/, extra);
 };
+/* partly prepared profile: no typing animation, cursor goes to the first field the agent couldn't fill */
+const _pmFill = fillProfile;
+fillProfile = async function () {
+  if (!S.pmSkipFill) return _pmFill();
+  if (S.profileFilled || S.profileFilling) return;
+  const el = card(0); if (!el || S.cards[0].st !== "review") return;
+  $("[data-logo]", el)?.classList.add("is-in");
+  $$(".pf", el).forEach((row) => { const f = KYC.find((x) => x.k === row.dataset.k), inp = $(".pin", row); row.classList.remove("is-waiting", "is-filling"); row.classList.add("is-filled"); if (inp && f && !inp.classList.contains("inp-miss")) inp.value = f.v(); });
+  S.profileFilled = true; const pa = $("#pAuth", el); if (pa) pa.disabled = false;
+};
+const _pmUx = uxState;
+uxState = function (name) { S.pmSkipFill = name === "partly-profile" || name === "self-profile"; _pmUx(name); if (S.pmSkipFill) [1500, 2600].forEach((t) => setTimeout(() => { const f = $(".inp-miss", card(0)); if (f && document.activeElement !== f && !S.pmFocused) { f.removeAttribute("readonly"); f.removeAttribute("tabindex"); f.focus(); if (t > 1500) S.pmFocused = true; } }, t)); S.pmFocused = false; };
