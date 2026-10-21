@@ -19,7 +19,9 @@ sub('  profile: "Check the details and submit",', '  profile: "Change any field 
 sub('<span><b>I\'m authorised to submit this KYC, and it\'s accurate.</b><small>The company accepts responsibility for any false or misleading information.</small></span></label><button class="btn btn-p" data-act="accept" data-i="${i}" ${S.profileAuth && done ? "" : "disabled"}>Submit for approval</button>',
     '<span><b>I\'m authorised to submit this KYC, and it\'s accurate.</b><small>Airtel, Jio, Vi and BSNL will review these 7 fields. The company accepts responsibility for any false or misleading information.</small></span></label><button class="btn btn-p" data-act="accept" data-i="${i}" ${S.profileAuth && done ? "" : "disabled"}>Submit to telecom operators</button>')
 sub('${S.profileAuth ? "" : "disabled"}>Submit for approval<', '${S.profileAuth ? "" : "disabled"}>Submit to telecom operators<')
-# M2 review text never shrinks below 17px: the card gets shorter (its body scrolls) instead of scaling down
+# card text floor is 14px (user choice, was 17)
+sub('const MIN_FONT = 17;', 'const MIN_FONT = 14;')
+# M2 review text never shrinks below the floor: the card gets shorter (its body scrolls) instead of scaling down
 sub('return [940, Math.round(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12))];',
     'return auDims(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12), sr, LPx);')
 sub('(S.phase === "review" ? innerHeight * .85 : r.height - 40) / ah', '(S.phase === "review" ? innerHeight * .9 : r.height - 40) / ah')

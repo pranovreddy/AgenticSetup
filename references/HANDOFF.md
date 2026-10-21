@@ -21,7 +21,7 @@ Playwright with Chromium at `/opt/pw-browsers/chromium` (abort Google Fonts requ
 - No PR unless asked. Push to both branches after each change: `claude/optimistic-heisenberg-i0otau` and `claude/bold-mccarthy-bls1vj`.
 - Republish the artifact after each change, and add a note to `references/CONTEXT.md`.
 - Commit messages end with the Co-Authored-By and Claude-Session lines given in the session reminder.
-- Keep the review card text at 17px or more; the review focus card is 85vh tall; edit pages are zoomed to 85%.
+- Keep the review card text at 17px or more (14px in the audit-fixes copy); the review focus card is 85vh tall; edit pages are zoomed to 85%.
 
 ## Open items
 - Thread "use the cards from the previous version" (left text of the review stage) is waiting on the user's answer.
