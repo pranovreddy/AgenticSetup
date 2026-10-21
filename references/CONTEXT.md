@@ -637,3 +637,5 @@ PM feedback file: processing cards have less empty space under the header (pane 
 PM feedback file: the Sources accordion is removed from the left panel of the edit (Details) pages.
 
 PM feedback file: the Prototype menu is grouped by screen (Flow, Agreements, Agent text, Business profile, Team, Brands and LOBs, GTM partners, Templates, Finale, Whole screen), each a collapsible group with a count; a state still opens from one click (`__deck.uxState(name)`).
+
+PM feedback file: richer success face on the card (bigger tick with halo, 30px headline, green fact chips per step, who and when line with initials, a Next step line).

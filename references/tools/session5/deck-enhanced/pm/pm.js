@@ -66,3 +66,15 @@ setInterval(() => { const el = card(0), rv = el && $("[data-review]", el); if (!
   m.innerHTML = G.map(([t, it], gi) => `<details class="pm-g"${gi === 0 ? " open" : ""}><summary>${t}<i>${it.length}</i></summary>${it.map(([l, s]) => s.startsWith("j:") ? `<button data-jump="${s.slice(2)}">${l}</button>` : `<button data-state="${s}">${l}</button>`).join("")}</details>`).join("");
   m.addEventListener("click", (e) => { const b = e.target.closest("[data-state]"); if (b) { m.hidden = true; uxState(b.dataset.state); } });
 } }
+/* richer success face */
+const _pmDone = doneFace;
+doneFace = function (i) {
+  const out = _pmDone(i), c = S.cards[i], k = STEPS[i].key;
+  if (c.st !== "done" || c.attn || !out.includes('class="done-face"')) return out;
+  const n = PEOPLE.filter((p) => p.on).length, lobs = BRANDS.reduce((a, b) => a + b.lobs.length, 0);
+  const F = { profile: ["7 fields filled", "Approved by 4 of 4 operators", "Logo added"], team: [`${n} people invited`, "Roles assigned", "Emails delivered"], brands: [`${BRANDS.length} brands`, `${lobs} lines of business`, "Set up"], gtm: PARTNERS.filter((p) => p.picked).map((p) => p.name).concat(["Terms accepted"]), templates: ["98 of 100 mapped", "2 left for later", "Ready to send"] }[k];
+  const nx = { profile: "Next: Team is open now", team: "Next: Brands and LOBs", brands: "Next: GTM partners and Templates are open", gtm: "Next: Templates", templates: "That was the last step. You can start migration." }[k];
+  const who = c.who ? esc(c.who.name) : "Ravi Menon", ini = who.split(" ").map((w) => w[0]).join("").slice(0, 2);
+  const extra = `<div class="pm-fa">${F.map((x) => `<span>${IC.check}${esc(x)}</span>`).join("")}</div><div class="pm-by"><i>${ini}</i><span>Done by <b>${who}</b> · ${esc(c.at || "just now")}</span></div><div class="pm-nx">${esc(nx)}</div>`;
+  return out.replace(/<p>[\s\S]*?<\/p>/, extra);
+};
