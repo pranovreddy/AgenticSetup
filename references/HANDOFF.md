@@ -25,6 +25,7 @@ Playwright with Chromium at `/opt/pw-browsers/chromium` (abort Google Fonts requ
 ## Open items
 - Thread "use the cards from the previous version" (left text of the review stage) is waiting on the user's answer.
 - Thread "remove this" (cb95850f) was on the whole page; waiting for the user to point at the element.
+- Brands approval scenarios and template remapping are in pm4.js (see the last CONTEXT note).
 - Business profile "Do it yourself" path only blanks fields (no focus, animation still runs).
 - Preparation tiles ("Nothing found", "Couldn't prepare") are patched on the analysis card only; the ready-screen copy changes only for flagged steps in the real flow.
 - Card text can still look soft on some screens in the 3D start, ready and processing stacks.
