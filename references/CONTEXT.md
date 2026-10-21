@@ -619,3 +619,5 @@ PM feedback file: the Business profile verification animation scale cap lowered 
 PM feedback file: crisper card text. The open review card is drawn flat (no preserve-3d child layers, back face hidden) and the stage edge mask is off in review. The start, ready and processing stacks are still 3D, so their text can still look soft on some screens; larger text was applied there.
 
 PM feedback file: side-card text. Done side cards use the same large vertical label (52px, 28px sub-label) instead of the tiny horizontal text; side-card rotation 56 to 46 degrees so labels are less squeezed.
+
+PM feedback file: new Brands and LOBs details page (brand and LOB cards, promo examples, Consent Wallet phone preview, confirm checkbox), GTM compare table (Scrubbing group, BEST cells, dark Selected N bar with Accept & Set Allocation) and Templates mapping page (LOB list with counts, confidence pills, drag onto a LOB, pager). Source: pm2.js, pm3.js.

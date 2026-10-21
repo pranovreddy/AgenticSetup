@@ -3,7 +3,7 @@ import pathlib
 here = pathlib.Path(__file__).parent
 root = here.parents[4]
 h = (root / "agentic-setup-cards-states.html").read_text()
-css = (here / "pm.css").read_text(); js = (here / "pm.js").read_text()
+css = (here / "pm.css").read_text(); js = (here / "pm.js").read_text() + (here / "pm2.js").read_text() + (here / "pm3.js").read_text()
 
 def sub(old, new, n=1):
     global h
@@ -53,6 +53,14 @@ sub('w === "notopen" ? "OPENS IN" : "CLOSES IN"', 'w === "notopen" ? "MIGRATION 
 sub('ld.classList.contains("kv") ? 2 :', 'ld.classList.contains("kv") ? 1.5 :')
 # side cards: less rotation, so text is less squeezed
 sub("TH = 56,", "TH = 46,")
+# new Brands and LOBs details page
+sub('return { main: brandsBody(closed), action: `<button class="btn btn-p" data-dact="accept">${brandsChanged() ? "Send for review" : "Confirm brands"}</button>`, msg: "" };',
+    'return { main: pmBrandsBody(closed), action: `<button class="btn btn-p" data-dact="accept" ${S.pmOk ? "" : "disabled"}>Confirm &amp; continue \u2192</button>`, msg: `<label class="pm-ok"><input type="checkbox" id="pmOk" ${S.pmOk ? "checked" : ""}>I\'ve reviewed these details and confirm they\'re correct.</label>` };')
+# GTM select step: new compare table
+a = h.index('return bar + `<div class="panel"><div class="panel-h"><b>Compare partners</b><span>${sel.length} of ${PARTNERS.length} selected</span>')
+z = '</tbody></table></div></div>`;\n  }\n  const cols = PHASES;'
+b = h.index(z, a)
+h = h[:a] + 'return bar + pmGtmSelect(list, sel, best, closed, dis);\n  }\n  const cols = PHASES;' + h[b + len(z):]
 sub("window.__deck = { uxState,", js + "\nwindow.__deck = { uxState,")
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', f'<style id="pm-fb">{css}</style>\n<script>document.body.classList.add("dk-6","lt-1");</script>')
 (root / "agentic-setup-cards-states-pm-feedback.html").write_text(h)

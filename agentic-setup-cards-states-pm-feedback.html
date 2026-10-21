@@ -2184,6 +2184,59 @@ body.ph-review .card:not(.is-focus) .cardf, body.ph-review .card:not(.is-focus) 
 /* done side cards use the same large vertical label */
 body.v3b.ph-review .card.st-done:not(.is-focus) .cf-v,body.v3b.ph-review .card.st-later:not(.is-focus) .cf-v{ display:flex!important; }
 body.v3b.ph-review .card.st-done:not(.is-focus) .cf-mid,body.v3b.ph-review .card.st-later:not(.is-focus) .cf-mid,body.v3b.ph-review .card.st-done:not(.is-focus) .cf-bot{ display:none!important; }
+/* Brands and LOBs details */
+.pm-ban{ display:flex; gap:14px; align-items:center; padding:16px 20px; border-radius:14px; background:#eef3ff; border:1px solid #cfdcf8; color:#14233f; font-size:18px; font-weight:500; margin-bottom:14px; } .pm-ban svg{ width:30px; height:30px; color:#2563eb; flex:none; }
+.pm-grid{ display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:28px; align-items:start; margin-top:14px; } @media (max-width:1180px){ .pm-grid{ grid-template-columns:1fr; } .pm-ph{ display:none; } }
+.pm-bh{ display:flex; justify-content:space-between; align-items:center; padding:18px 24px; background:#fff; border:1px solid var(--line); border-radius:16px; margin-bottom:16px; } .pm-bh b{ font-size:19px; letter-spacing:.06em; color:#566176; } .pm-bh i{ font-style:normal; }
+.pm-lk{ border:0; background:none; color:#2563eb; font:600 17px var(--font); cursor:pointer; padding:6px 8px; }
+.pb-c{ background:#fff; border:1px solid var(--line); border-radius:20px; padding:18px; margin-bottom:16px; }
+.pb-h{ display:flex; align-items:center; gap:12px; padding:16px; border:1px solid var(--line); border-radius:16px; background:#fafbfe; flex-wrap:wrap; }
+.pb-lg{ width:54px; height:54px; border-radius:12px; color:#fff; display:grid; place-items:center; font-weight:700; font-size:20px; flex:none; }
+.pb-n{ border:0; background:transparent; font:700 24px var(--font); color:#0b1220; min-width:0; flex:1 1 150px; padding:4px 0; } .pb-n:focus{ outline:2px solid #2563eb; border-radius:6px; }
+.pm-tag{ display:inline-flex; align-items:center; height:28px; padding:0 12px; border-radius:99px; font-weight:600; font-size:15px; } .pm-tag.brand{ background:#ebe5ff; color:#5b3fc4; } .pm-tag.ai{ background:#eaf0ff; color:#2f4fb5; border:1px solid #c6d4fa; } .pm-tag.add{ background:#fcefcf; color:#8a4b06; }
+.pb-a,.pl-a{ display:flex; gap:8px; align-items:center; margin-left:auto; }
+.pm-ib{ width:44px; height:44px; border-radius:10px; border:1px solid var(--line-2); background:#fff; color:#3b4763; display:grid; place-items:center; cursor:pointer; } .pm-ib svg{ width:22px; height:22px; } .pm-ib:hover{ background:#f3f6fd; }
+.pb-l{ margin:14px 0 0 22px; padding-left:18px; border-left:2px dashed #c6d4fa; display:grid; gap:14px; }
+.pl-c{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:6px 16px 14px; }
+.pl-h{ display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1.5px dashed #cfdcf8; flex-wrap:wrap; } .pl-dr{ color:#9aa6c2; } .pl-dr svg{ width:18px; height:18px; }
+.pl-n{ border:0; background:transparent; font:600 21px var(--font); min-width:0; flex:1 1 140px; color:#0b1220; padding:4px 0; } .pl-n:focus{ outline:2px solid #2563eb; border-radius:6px; }
+.pl-b{ display:flex; gap:12px; align-items:flex-start; padding-top:12px; } .pl-i{ color:#2563eb; margin-top:3px; } .pl-i svg{ width:22px; height:22px; } .pl-b p{ margin:0; flex:1; color:#2c3753; font-size:17px; line-height:1.6; }
+.pm-pe{ display:inline-flex; gap:6px; align-items:center; border:1px solid #c6d4fa; background:#fff; color:#2563eb; border-radius:99px; height:40px; padding:0 14px; font:600 16px var(--font); cursor:pointer; white-space:nowrap; } .pm-pe svg{ width:16px; height:16px; }
+.pl-p{ display:flex; flex-wrap:wrap; gap:10px; padding:12px; margin-top:12px; border:1px solid #cfdcf8; border-radius:14px; } .pl-p span{ background:#e8f0ff; color:#14233f; border-radius:10px; padding:10px 16px; font-size:16px; font-weight:500; }
+.pm-ph{ position:sticky; top:12px; text-align:center; } .pm-ph p{ color:#566176; margin:0 0 12px; font-size:15px; }
+.ph-dev{ border:8px solid #4a5568; border-radius:42px; background:#f4f6fa; min-height:560px; overflow:hidden; text-align:left; }
+.ph-top{ display:flex; justify-content:space-between; padding:10px 22px 6px; font-weight:600; font-size:14px; background:#fff; }
+.ph-hd{ display:flex; gap:12px; align-items:center; background:#3b63ea; color:#fff; padding:14px 16px; } .ph-hd small{ display:block; opacity:.8; font-size:12px; } .ph-lg{ width:38px; height:38px; border-radius:10px; background:#fff; color:#1f4e9b; display:grid; place-items:center; font-weight:700; }
+.ph-bd{ padding:12px; display:grid; gap:10px; } .ph-b{ background:#fff; border-radius:12px; padding:10px; } .ph-bh{ display:flex; gap:10px; align-items:center; margin-bottom:8px; } .ph-bh small{ display:block; color:#6b7690; font-size:12px; } .ph-bi{ width:30px; height:30px; border-radius:8px; color:#fff; display:grid; place-items:center; font-weight:700; font-size:12px; }
+.ph-l{ display:flex; justify-content:space-between; gap:8px; padding:8px 4px; border-top:1px solid #eef1f7; font-size:13px; } .ph-l span{ display:block; font-size:10px; color:#6b7690; margin:4px 0 2px; } .ph-l i{ font-style:normal; font-size:10px; background:#eef1f7; border-radius:99px; padding:2px 8px; margin-right:4px; } .ph-l u{ width:34px; height:20px; border-radius:99px; background:#22c55e; flex:none; text-decoration:none; }
+.deep-foot .pm-ok{ display:inline-flex; gap:12px; align-items:center; font-size:18px; color:#14233f; cursor:pointer; } .deep-foot .pm-ok input{ width:22px; height:22px; accent-color:#2563eb; }
+.deep-foot [data-dact=accept]{ height:52px; padding:0 28px; font-size:18px; }
+/* GTM compare table */
+.g-pn{ background:#fff; border:1px solid var(--line); border-radius:18px; overflow:hidden; } .g-tools{ padding:18px 20px; } .g-tools .srch{ max-width:420px; } .g-tools input{ font-size:17px; }
+.g-wrap{ overflow-x:auto; } .g-t{ width:100%; border-collapse:collapse; min-width:860px; } .g-t th{ background:#f2f5fa; padding:14px 12px; text-align:center; color:#14233f; font-weight:600; } .g-t th b{ display:block; font:700 17px var(--mono, monospace); } .g-t th small{ display:block; font-size:14px; color:#6b7690; font-weight:500; margin-top:4px; }
+.g-t th.g-nm{ text-align:left; padding-left:30px; color:#566176; font-size:15px; letter-spacing:.06em; } .g-sc{ font-size:18px!important; border-bottom:1px solid #e4e9f3; } .g-sub th{ background:#fafbfe; }
+.g-t td{ padding:0; height:86px; text-align:center; border-top:1px solid #e8edf6; position:relative; } .g-t td.g-nm{ text-align:left; padding-left:30px; }
+.g-w{ display:flex; align-items:center; gap:14px; } .g-w b{ font-size:20px; } .g-w .mk{ width:44px; height:44px; border-radius:12px; font-size:19px; }
+.g-c b{ font:700 20px var(--mono, monospace); } .g-c.bst{ background:#e9f8ee; } .g-c em{ position:absolute; top:10px; right:12px; font-style:normal; font-size:12px; font-weight:700; letter-spacing:.06em; background:#d3f0dc; color:#15803d; border-radius:6px; padding:1px 8px; }
+.g-t tr.off td{ opacity:.7; }
+.deep-foot.pm-dark{ background:#0f1a36!important; color:#fff; border-radius:18px; margin:0 16px 14px; border:0; } .deep-foot.pm-dark .msg{ color:#fff; font-size:20px; } .deep-foot.pm-dark .btn.pm-clr{ background:#243252; color:#fff; border-color:#3b4b72; }
+/* templates mapping */
+.t-top{ display:flex; margin-bottom:12px; } .t-top .srch{ flex:1; max-width:480px; } .t-top input{ font-size:17px; }
+.t-grid{ display:grid; grid-template-columns:330px minmax(0,1fr); gap:20px; align-items:start; margin-top:14px; } @media (max-width:1100px){ .t-grid{ grid-template-columns:1fr; } }
+.t-side{ background:#fff; border:1px solid var(--line); border-radius:18px; overflow:hidden; } .t-side h5{ margin:0; padding:20px; display:flex; justify-content:space-between; font-size:15px; letter-spacing:.1em; color:#566176; border-bottom:1px solid var(--line); } .t-side h5 i{ font-style:normal; }
+.t-lb{ display:flex; gap:14px; align-items:center; width:100%; text-align:left; padding:16px 18px; border:0; border-bottom:1px solid #eef1f7; background:#fff; cursor:pointer; border-left:4px solid transparent; } .t-lb.on{ background:#e9f0ff; border-left-color:#2563eb; } .t-lb.drop{ background:#d9e6ff; outline:2px dashed #2563eb; }
+.t-lb b{ display:block; font-size:18px; } .t-lb u{ text-decoration:none; color:#566176; font-weight:600; } .t-lb small{ display:block; color:#566176; font-size:16px; margin-top:2px; } .t-lb s{ text-decoration:none; color:#9a5b0c; }
+.tl-lg{ width:44px; height:44px; border-radius:12px; color:#fff; display:grid; place-items:center; font-weight:700; font-size:15px; flex:none; } .tl-lg.un{ background:#e8edf6; color:#566176; }
+.t-main{ background:#fff; border:1px solid var(--line); border-radius:18px; overflow:hidden; } .t-h{ padding:18px 22px; border-bottom:1px solid var(--line); background:#fafbfe; font-size:18px; } .t-h u{ text-decoration:none; color:#566176; font-weight:600; font-size:16px; }
+.t-f{ display:flex; gap:12px; align-items:center; padding:14px 22px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+.t-chip{ border:0; background:#eef1f7; color:#14233f; border-radius:99px; height:46px; padding:0 20px; font:600 17px var(--font); cursor:pointer; } .t-chip i{ font-style:normal; opacity:.6; margin-left:8px; } .t-chip.on{ background:#0f1a36; color:#fff; }
+.t-r{ display:flex; gap:14px; align-items:center; padding:20px 22px; border-bottom:1px solid #eef1f7; cursor:grab; } .t-r.sel{ background:#f0f5ff; } .t-gr{ color:#9aa6c2; letter-spacing:-2px; font-weight:700; }
+.t-tx{ flex:1; min-width:0; } .t-tx b{ font-size:20px; } .t-tx code{ font:500 16px var(--mono, monospace); color:#6b7690; margin-left:8px; } .t-tx p{ margin:6px 0 0; color:#2c3753; font-size:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.t-pill{ display:inline-flex; gap:8px; align-items:center; border-radius:99px; height:38px; padding:0 16px; font-weight:600; font-size:16px; white-space:nowrap; } .t-pill i{ width:8px; height:8px; border-radius:50%; background:currentColor; } .t-pill.hi{ background:#d9f4e2; color:#15803d; } .t-pill.md{ background:#fcefcf; color:#8a4b06; } .t-pill.un{ background:#e8edf6; color:#566176; } .t-pill.ch{ background:#e1eaff; color:#1d4ed8; }
+.t-in{ color:#566176; } .t-in svg{ width:24px; height:24px; }
+.t-pg{ display:flex; justify-content:space-between; align-items:center; gap:14px; padding:16px 22px; flex-wrap:wrap; font-size:16px; color:#566176; } .t-pb{ display:flex; gap:8px; } .t-pb .pg{ min-width:46px; height:46px; border-radius:10px; border:1px solid var(--line-2); background:#fff; font:600 16px var(--font); padding:0 14px; } .t-pb .pg.on{ background:#0f1a36; color:#fff; } .t-pg select{ height:42px; border-radius:8px; border:1px solid var(--line-2); padding:0 10px; font-size:16px; margin-left:8px; }
+.pb-h .pb-a{ flex-wrap:nowrap; } .pm-lk{ white-space:nowrap; }
+.pb-h{ flex-wrap:nowrap!important; } .pb-n{ flex:1 1 60px!important; } .pb-h .pm-tag{ flex:none; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -4084,11 +4137,7 @@ function gtmBody(closed) {
   if (step === "select") {
     const q = S.gtmQuery.trim().toLowerCase(), list = PARTNERS.map((p, j) => [p, j]).filter(([p]) => !q || p.name.toLowerCase().includes(q));
     const cell = (p, r) => `<td class="${p.rates[r] === best[r] ? "bestc" : ""}">₹${p.rates[r].toFixed(2)}${p.rates[r] === best[r] ? `<span class="best">BEST</span>` : ""}</td>`;
-    return bar + `<div class="panel"><div class="panel-h"><b>Compare partners</b><span>${sel.length} of ${PARTNERS.length} selected</span>${closed ? "" : `<div class="r"><button class="lnk" data-dact="gclear">Clear</button></div>`}</div>
-      <div class="tools"><label class="srch">${SRCH}<input data-keep="gq" data-dq="gtm" aria-label="Search partners" placeholder="Search by GTM partner name" value="${esc(S.gtmQuery)}"></label></div>
-      <div class="tbl-wrap"><table class="tbl"><thead><tr><th style="width:44px"></th><th>Partner</th><th>Migration</th><th>Acquisition</th><th>Refresh</th><th>SMS scrub</th><th>Call scrub</th><th>RCS scrub</th></tr></thead><tbody>
-      ${list.map(([p, j]) => `<tr class="${p.picked ? "" : "off"}"><td>${cbx(`data-gp="${j}"`, p.picked, dis, "Select " + p.name)}</td><td><div class="who"><span class="mk ${p.tone}">${p.mark}</span><div><b>${esc(p.name)}</b><small>${esc(p.why)}</small></div></div></td>${["mig", "acq", "ref", "sms", "voice", "rcs"].map((r) => cell(p, r)).join("")}</tr>`).join("") || `<tr><td colspan="8"><div class="empty">No partner matches "${esc(S.gtmQuery)}".</div></td></tr>`}
-      </tbody></table></div></div>`;
+    return bar + pmGtmSelect(list, sel, best, closed, dis);
   }
   const cols = PHASES;
   return bar + `<div class="panel"><div class="panel-h"><b>Set distribution</b><span>How volume is split across the selected partners, per phase</span><label class="same">Assign same for all phases<span class="switch"><input type="checkbox" data-dact="asame" ${S.allocSame ? "checked" : ""} ${dis} aria-label="Assign same for all phases"><span></span></span></label></div>
@@ -4156,7 +4205,7 @@ function deepBody(k, closed) {
       ? { main: gtmBody(closed), action: `<button class="btn btn-p" data-dact="gnext" ${sel.length ? "" : "disabled"}>Continue to allocation</button>`, msg: "The agent chose these for the lowest rates. You can change the choice." }
       : { main: gtmBody(closed), action: `<button class="btn" data-dact="gback">Back</button><button class="btn btn-p" data-dact="accept" ${S.gtmTerms && allocOk() ? "" : "disabled"}>Confirm partners</button>`, msg: allocOk() ? "" : "Each phase must total 100%." };
   }
-  if (k === "brands") return { main: brandsBody(closed), action: `<button class="btn btn-p" data-dact="accept">${brandsChanged() ? "Send for review" : "Confirm brands"}</button>`, msg: "" };
+  if (k === "brands") return { main: pmBrandsBody(closed), action: `<button class="btn btn-p" data-dact="accept" ${S.pmOk ? "" : "disabled"}>Confirm &amp; continue →</button>`, msg: `<label class="pm-ok"><input type="checkbox" id="pmOk" ${S.pmOk ? "checked" : ""}>I've reviewed these details and confirm they're correct.</label>` };
   const ch = TPLS.some((t) => t.lob !== t.lob0);
   return { main: tplBody(closed), action: `<button class="btn btn-p" data-dact="accept">${ch ? "Send for review" : "Confirm mapping"}</button>`, msg: "" };
 }
@@ -4556,6 +4605,93 @@ function pmMapStat() {
   const un = 2, ok = 98, miss = BRANDS.reduce((a, b) => a + b.lobs.filter((l) => !pmTplCount(l)).length, 0), changed = brandsChanged();
   return `<div class="mapstat${changed || un ? " warn" : ""}">${uxI(changed ? "attention" : "done")}<span>${changed ? "Template mapping runs again after your changes are approved." : `Template mapping: ${ok} of 100 templates are mapped to these lines of business.`}</span><em>${un} unmapped</em>${miss ? `<em>${miss} new line${miss > 1 ? "s" : ""} without templates</em>` : ""}</div>`;
 }
+/* ===== Brands and LOBs details page, new design ===== */
+const PM_LOB = {
+  "Credit Cards": ["India's largest credit card issuer. Segment-aware reward and EMI messaging drives the highest consent opt-in rates across all banking LOBs.", ["Reward points offers", "Cashback alerts", "EMI conversion"]],
+  "Personal Loan": ["Life-stage product with high marketing volume. Salary-linked pre-approval and balance transfer campaigns drive strong EMI conversion.", ["Pre-approved loan offers", "Balance transfer campaigns"]],
+  "Home Loan": ["Long-tenure product with a steady enquiry flow. Rate change and top-up messages keep existing borrowers engaged.", ["Rate change alerts", "Top-up loan offers"]],
+  "Term Insurance": ["Protection product sold around life events. Renewal and cover increase reminders drive repeat consent.", ["Renewal reminders", "Cover increase offers"]],
+  "Savings Plans": ["Goal-based savings with regular contribution reminders and maturity nudges.", ["Premium due reminders", "Maturity nudges"]],
+  "Motor Insurance": ["Annual renewal product with strict reminder windows set by regulation.", ["Renewal reminders", "No-claim bonus offers"]],
+  "Health Insurance": ["High-intent product. Claim status and wellness messages drive opt-in.", ["Claim status updates", "Wellness programme offers"]],
+};
+const PM_COL = ["#1f4e9b", "#2f7d6e", "#5b3fc4", "#b4651f"];
+S.pmOpen = S.pmOpen || {}; S.pmCollapsed = S.pmCollapsed || {};
+const pmSvg = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const PM_ICO = { edit: '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/>', del: '<path d="M5 7h14M10 7V4.5h4V7M7 7l1 12.5h8L17 7M10 11v5M14 11v5"/>', chev: '<path d="m6 9 6 6 6-6"/>', up: '<path d="m6 15 6-6 6 6"/>', info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 7.8v.1"/>', drag: '<path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"/>' };
+function pmPhone() {
+  const rows = BRANDS.map((b, bi) => `<div class="ph-b"><div class="ph-bh"><span class="ph-bi" style="background:${PM_COL[bi % 4]}">${esc(b.name.split(" ").map((w) => w[0]).slice(0, 2).join(""))}</span><div><b>${esc(b.name)}</b><small>${b.lobs.length} Opted In</small></div></div>${b.lobs.slice(0, 2).map((l) => `<div class="ph-l"><div><b>${esc(l)}</b><span>PREFERRED CHANNELS</span><i>SMS</i><i>Calls</i></div><u></u></div>`).join("")}</div>`).join("");
+  return `<aside class="pm-ph"><p>A preview of what your customers see in their Consent Wallet.</p><div class="ph-dev"><div class="ph-top"><span>10:28 am</span><span>5G</span></div><div class="ph-hd"><span class="ph-lg">${esc(BRANDS[0] ? BRANDS[0].name[0] : "H")}</span><div><b>HDFC Bank Limited</b><small>Consents across ${BRANDS.length} brands</small></div></div><div class="ph-bd">${rows}</div></div></aside>`;
+}
+function pmBrandsBody(closed) {
+  const lobs = BRANDS.reduce((a, b) => a + b.lobs.length, 0), dis = closed ? "disabled" : "";
+  const cards = BRANDS.map((b, bi) => {
+    const nb = brandIsNew(b), col = S.pmCollapsed[bi];
+    const lobCards = b.lobs.map((l, li) => {
+      const info = PM_LOB[l], isNew = lobIsNew(b, l), key = `${bi}:${li}`, open = S.pmOpen[key], promos = info ? info[1] : [];
+      return `<div class="pl-c"><div class="pl-h"><span class="pl-dr">${pmSvg(PM_ICO.drag)}</span><input class="pl-n" data-lob="${key}" value="${esc(l)}" aria-label="Line of business name" ${dis}>${isNew ? '<span class="pm-tag add">Added by you</span>' : '<span class="pm-tag ai">AI suggested</span>'}<span class="pl-a"><button class="pm-ib" data-pmedit="lob:${key}" aria-label="Edit ${esc(l)}">${pmSvg(PM_ICO.edit)}</button>${closed ? "" : `<button class="pm-ib" data-dact="rmlob" data-b="${bi}" data-l="${li}" aria-label="Remove ${esc(l)}">${pmSvg(PM_ICO.del)}</button>`}</span></div>
+        <div class="pl-b"><span class="pl-i">${pmSvg(PM_ICO.info)}</span><p>${esc(info ? info[0] : "Added by you. Attach proof so it can be checked before it is set up.")}</p>${promos.length ? `<button class="pm-pe" data-pmpromo="${key}">Promo Examples ${pmSvg(open ? PM_ICO.up : PM_ICO.chev)}</button>` : ""}</div>
+        ${open && promos.length ? `<div class="pl-p">${promos.map((p) => `<span>${esc(p)}</span>`).join("")}</div>` : ""}
+        ${pmLobMeta(bi, li, l, closed)}</div>`;
+    }).join("");
+    return `<div class="pb-c"><div class="pb-h"><span class="pb-lg" style="background:${PM_COL[bi % 4]}">${esc(b.name.split(" ").map((w) => w[0]).slice(0, 2).join(""))}</span><input class="pb-n" data-bn="${bi}" value="${esc(b.name.toUpperCase())}" aria-label="Brand name" ${dis}><span class="pm-tag brand">Brand</span>${nb ? '<span class="pm-tag add">Added by you</span>' : '<span class="pm-tag ai">AI suggested</span>'}<span class="pb-a">${closed ? "" : `<button class="pm-lk" data-dact="addlob" data-b="${bi}">+ Add LOB</button>`}<button class="pm-ib" data-pmedit="brand:${bi}" aria-label="Edit ${esc(b.name)}">${pmSvg(PM_ICO.edit)}</button>${closed ? "" : `<button class="pm-ib" data-pmdelb="${bi}" aria-label="Remove ${esc(b.name)}">${pmSvg(PM_ICO.del)}</button>`}<button class="pm-ib" data-pmcol="${bi}" aria-label="${col ? "Expand" : "Collapse"}">${pmSvg(col ? PM_ICO.chev : PM_ICO.up)}</button></span></div>${col ? "" : `<div class="pb-l">${lobCards}</div>`}</div>`;
+  }).join("");
+  return `<div class="pm-ban">${pmSvg('<path d="M12 3.5l1.9 5.2 5.2 1.9-5.2 1.9L12 17.7l-1.9-5.2-5.2-1.9 5.2-1.9L12 3.5Z"/>')}<span>Based on your DLT headers and public sources, we've identified ${BRANDS.length} brands and ${lobs} LOBs for HDFC Bank Limited. Edit anything that is wrong, then confirm.</span></div>${pmMapStat()}
+    <div class="pm-grid"><div class="pm-main"><div class="pm-bh"><b>BRANDS <i>(${BRANDS.length})</i></b>${closed ? "" : '<button class="pm-lk" data-dact="addbrand">+ Add brand</button>'}</div>${cards}</div>${pmPhone()}</div>`;
+}
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("[data-pmedit],[data-pmpromo],[data-pmcol],[data-pmdelb]"); if (!t) return;
+  if (t.dataset.pmedit) { const [k, v] = t.dataset.pmedit.split(/:(.+)/); const inp = k === "brand" ? $(`[data-bn="${v}"]`, deep) : $(`[data-lob="${v}"]`, deep); if (inp) { inp.focus(); inp.select(); } return; }
+  if (t.dataset.pmpromo) { S.pmOpen[t.dataset.pmpromo] = !S.pmOpen[t.dataset.pmpromo]; return rerenderDeep(); }
+  if (t.dataset.pmcol) { S.pmCollapsed[t.dataset.pmcol] = !S.pmCollapsed[t.dataset.pmcol]; return rerenderDeep(); }
+  if (t.dataset.pmdelb) { S.dirty = true; BRANDS.splice(+t.dataset.pmdelb, 1); return rerenderDeep(); }
+}, true);
+document.addEventListener("change", (e) => { if (e.target.id === "pmOk") { S.pmOk = e.target.checked; const b = $(".deep-foot [data-dact=accept]", deep); if (b) b.disabled = !S.pmOk; } }, true);
+/* ===== GTM compare table and Templates mapping, new designs ===== */
+function pmGtmSelect(list, sel, best, closed, dis) {
+  const R = ["mig", "acq", "ref", "sms", "voice", "rcs"];
+  const cell = (p, r) => { const b = p.rates[r] === best[r]; return `<td class="g-c${b ? " bst" : ""}">${b ? '<em>BEST</em>' : ""}<b>₹${p.rates[r].toFixed(2)}</b></td>`; };
+  return `<div class="g-pn"><div class="g-tools"><label class="srch">${SRCH}<input data-keep="gq" data-dq="gtm" aria-label="Search partners" placeholder="Search by GTM partner name" value="${esc(S.gtmQuery)}"></label></div>
+    <div class="g-wrap"><table class="g-t"><thead><tr><th rowspan="2" class="g-nm">COMPARE PARTNERS ↓</th><th rowspan="2"><b>Migration</b><small>per consent</small></th><th rowspan="2"><b>Acquisition</b><small>per consent</small></th><th rowspan="2"><b>Refresh</b><small>yr / consent</small></th><th colspan="3" class="g-sc">Scrubbing</th></tr><tr class="g-sub"><th><b>SMS</b><small>/scrub</small></th><th><b>Voice</b><small>/scrub</small></th><th><b>RCS</b><small>/scrub</small></th></tr></thead><tbody>
+    ${list.map(([p, j]) => `<tr class="${p.picked ? "" : "off"}"><td class="g-nm"><span class="g-w">${cbx(`data-gp="${j}"`, p.picked, dis, "Select " + p.name)}<span class="mk ${p.tone}">${p.mark}</span><b>${esc(p.name)}</b></span></td>${R.map((r) => cell(p, r)).join("")}</tr>`).join("") || `<tr><td colspan="7"><div class="empty">No partner matches "${esc(S.gtmQuery)}".</div></td></tr>`}</tbody></table></div></div>`;
+}
+const _pmRd = renderDeep;
+renderDeep = function () {
+  _pmRd(); const f = $(".deep-foot", deep); if (!f) return;
+  const g = STEPS[deepI].key === "gtm" && S.gtmStep === "select";
+  f.classList.toggle("pm-dark", g);
+  if (g && !closedDeepNow()) { const sel = selPartners(); const m = $(".msg", f); if (m) m.textContent = `Selected ${sel.length}`; const b = $("[data-dact=gnext]", f); if (b) { b.insertAdjacentHTML("beforebegin", '<button class="btn pm-clr" data-dact="gclear">Clear</button>'); b.textContent = "Accept & Set Allocation"; } }
+};
+const closedDeepNow = () => ["done", "later", "inreview"].includes(S.cards[deepI].st);
+
+/* templates */
+const pmConf = (t) => { if (!t.lob) return ["Unmapped", "un"]; let h = 0; for (const ch of t.id) h = (h * 31 + ch.charCodeAt(0)) % 997; return t.c === "h" ? [`${92 + (h % 5)}% Confidence`, "hi"] : [`${71 + (h % 17)}% Confidence`, "md"]; };
+const pmLobStat = (l) => { const need = Math.round(l.n * 0.72); return [l.n, need]; };
+function tplBody(closed) {
+  const dis = closed ? "disabled" : "", rows = tplRows(), pages = Math.max(1, Math.ceil(rows.length / PER)); S.tplPage = Math.min(S.tplPage, pages - 1);
+  const shown = rows.slice(S.tplPage * PER, S.tplPage * PER + PER), allSel = shown.length && shown.every((t) => S.tplSel.has(t.id));
+  const cur = TPL_LOBS.find((l) => l.lob === S.tplLob), n = S.tplLob === "all" ? 100 : S.tplLob === "un" ? 2 : cur ? cur.n : rows.length, need = S.tplLob === "un" ? 2 : Math.round(n * 0.72), hi = n - need;
+  const title = S.tplLob === "all" ? "All templates" : S.tplLob === "un" ? "Unmapped" : S.tplLob;
+  const tile = (i) => `<span class="tl-lg" style="background:${PM_COL[i % 4]}">${esc(TPL_LOBS[i].lob.split(" ").map((w) => w[0]).slice(0, 2).join(""))}</span>`;
+  return `<div class="t-top"><label class="srch">${SRCH}<input data-keep="tq" data-dq="tpl" aria-label="Search promotional templates" placeholder="Search promotional templates" value="${esc(S.tplQuery)}"></label></div>
+    <div class="pm-ban"><span>A mapping change is only saved when you send the template for approval. Drag a template, or select several, to change their mapping.</span></div>
+    <div class="t-grid"><aside class="t-side"><h5>LINES OF BUSINESS <i>${TPL_LOBS.length}</i></h5>
+      <button class="t-lb${S.tplLob === "all" ? " on" : ""}" data-dact="tl" data-l="all"><span class="tl-lg" style="background:#566176">All</span><div><b>All templates</b><small>100 scanned · 98 suggested</small></div></button>
+      ${TPL_LOBS.map((l, i) => { const [a, b] = pmLobStat(l); return `<button class="t-lb${S.tplLob === l.lob ? " on" : ""}" data-dact="tl" data-l="${esc(l.lob)}">${tile(i)}<div><b>${esc(l.lob)} <u>· HDFC</u></b><small>${a} suggested · <s>${b} need review</s></small></div></button>`; }).join("")}
+      <button class="t-lb${S.tplLob === "un" ? " on" : ""}" data-dact="tl" data-l="un"><span class="tl-lg un">?</span><div><b>Unmapped</b><small>2 templates</small></div></button></aside>
+    <div class="t-main"><div class="t-h"><b>${esc(title)}</b><u> · HDFC BANK</u></div>
+      <div class="t-f"><span>${cbx('data-tall="1"', allSel, dis, "Select page")}</span>${[["all", "All", n], ["hi", "High confidence", hi], ["check", "Needs review", need]].map(([v, l, c]) => `<button class="t-chip${S.tplFilter === v ? " on" : ""}" data-dact="tf" data-f="${v}">${l} <i>${c}</i></button>`).join("")}</div>
+      ${S.tplSel.size && !closed ? `<div class="bulk"><b>${S.tplSel.size} selected</b><span>Assign a line of business to all of them</span><div class="r"><select class="sel" data-bulk="1" aria-label="Line of business for selected" style="height:36px;min-width:180px"><option value="">Choose…</option>${TPL_LOBS.map((l) => `<option>${esc(l.lob)}</option>`).join("")}</select><button class="btn" data-dact="tclear">Clear</button></div></div>` : ""}
+      ${shown.map((t) => { const [cl, ck] = pmConf(t), ch = t.lob !== t.lob0; return `<div class="t-r${S.tplSel.has(t.id) ? " sel" : ""}" ${closed ? "" : 'draggable="true"'} data-tdrag="${t.id}"><span>${cbx(`data-ts="${t.id}"`, S.tplSel.has(t.id), dis, "Select " + t.name)}</span><span class="t-gr">⋮⋮</span><div class="t-tx"><b>${esc(t.name)} <code>${t.id}</code></b><p title="${esc(t.text)}">${esc(t.text)}</p></div><span class="t-pill ${ch ? "ch" : ck}"><i></i>${ch ? "Changed" : cl}</span><span class="t-in" title="Matched by reading the message and the brand headers">${pmSvg(PM_ICO.info)}</span></div>`; }).join("") || `<div class="empty" style="padding:30px">No templates match.</div>`}
+      <div class="t-pg"><span>Rows per page <select disabled aria-label="Rows per page"><option>${PER}</option></select></span><span class="t-sh">Showing ${rows.length ? S.tplPage * PER + 1 : 0}–${S.tplPage * PER + shown.length} of ${rows.length}</span><div class="t-pb"><button class="pg" data-dact="tpg" data-d="-1" ${S.tplPage === 0 ? "disabled" : ""}>‹ Prev</button>${Array.from({ length: pages }, (_, k) => `<button class="pg${k === S.tplPage ? " on" : ""}" data-dact="tpg" data-p="${k}">${k + 1}</button>`).join("")}<button class="pg" data-dact="tpg" data-d="1" ${S.tplPage >= pages - 1 ? "disabled" : ""}>Next ›</button></div></div></div></div>`;
+}
+/* drag a template onto a line of business */
+let pmDrag = null;
+document.addEventListener("dragstart", (e) => { const r = e.target.closest("[data-tdrag]"); if (!r) return; pmDrag = r.dataset.tdrag; e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", pmDrag); } catch (er) { /* ignore */ } });
+document.addEventListener("dragover", (e) => { if (pmDrag && e.target.closest(".t-lb[data-l]")) { e.preventDefault(); e.target.closest(".t-lb").classList.add("drop"); } });
+document.addEventListener("dragleave", (e) => { e.target.closest?.(".t-lb")?.classList.remove("drop"); });
+document.addEventListener("drop", (e) => { const b = e.target.closest(".t-lb[data-l]"); if (!pmDrag || !b) return; e.preventDefault(); const l = b.dataset.l; if (l !== "all") { const ids = S.tplSel.has(pmDrag) ? [...S.tplSel] : [pmDrag]; TPLS.forEach((t) => { if (ids.includes(t.id)) t.lob = l === "un" ? "" : l; }); S.dirty = true; S.tplSel.clear(); toast(`${ids.length} template${ids.length > 1 ? "s" : ""} moved to ${l === "un" ? "Unmapped" : l}`); } pmDrag = null; rerenderDeep(); });
+document.addEventListener("dragend", () => { pmDrag = null; $$(".t-lb.drop").forEach((x) => x.classList.remove("drop")); });
 
 window.__deck = { uxState, opening, jump, S, focusCard, openDeep, refreshLocks, renderReview, setStatus, firstOpen };
 
