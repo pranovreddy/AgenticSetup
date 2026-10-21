@@ -263,7 +263,10 @@ select.inp{height:36px;padding:0 8px}
 .cd-agent{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--s-blue);background:var(--s-soft);padding:5px 10px 5px 8px;border-radius:999px;margin-top:10px}
 .cd-agent img{width:13px;height:auto}
 .cd-conf{font-size:12.5px;color:var(--s-muted);margin-top:10px}
-.cd-asum{margin:10px 0 12px;font-size:15px;line-height:1.5;color:var(--s-ink2);max-width:760px}
+.cd-asum{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 12px;padding:9px 14px 9px 9px;border-radius:12px;background:linear-gradient(90deg,#e8efff,#f5f8ff 70%);box-shadow:inset 0 0 0 1px #d6e2ff;font-size:14px;line-height:1.45;color:var(--s-ink)}
+.cd-asum .cd-agent{margin-top:0;background:#fff;box-shadow:0 1px 2px rgba(30,70,170,.12)}.cd-asum .chipmini{margin:0}
+.cd-asum .t{flex:1 1 280px;min-width:0}
+.cd-side{display:flex;align-items:center;gap:10px;flex:none;align-self:flex-start;margin-top:4px}
 .cd-sum{font-size:16px;line-height:1.6;color:var(--s-ink2);margin:10px 0 0}
 .lfacts{margin-top:16px;border-top:1px solid var(--s-line)}
 .lfacts>div{display:grid;grid-template-columns:170px 1fr auto;gap:16px;padding:13px 0;border-bottom:1px solid var(--s-line);font-size:15px;align-items:baseline}
@@ -1413,22 +1416,22 @@ function docCard(){
 }
 function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
-  var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>'+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
+  var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>', chips=st.attn?'<span class="chipmini amb">Needs a look</span>':'', p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
     p={title:heading(i),tog:'',body:d0.h+(st.k!=="profile"?'<p class="chg">You can change this later at any time.</p>':''),l:d0.l,r:d0.r}}
-  else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.')+'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>':
-      '<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button><button class="btn ghost" data-a="tlater">Do it later</button>';
-    p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:primary(i)}}
+  else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.'):
+      '<button class="btn ghost" data-a="tlater">Do it later</button>';
+    p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i)}}
   if(st.k==="profile"&&F.kv&&!CARD.big){var dn=F.kv.ph==="done";
-    kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span> <span class="chipmini '+(dn?'gr':'amb')+'">'+(dn?'Done':'In review')+'</span>';
+    chips='<span class="chipmini amb">In review</span>';
     p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="spn"></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
   if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="spn"></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
-  if(CARD.big) kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':'');
-  p.kick=kick; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
+  if(CARD.big) kick=STEPLINE(i);
+  p.kick=kick; p.chips=chips; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
 }
 function cardWrap(p){
-  return '<div class="cd-in"><div class="cd-hd"><div><small>'+p.kick+'</small>'+(p.sum?'<p class="cd-asum">'+esc(p.sum)+'</p>':'')+'<h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div>'+(p.l||p.r?'<div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div>':'')+(p.extra||'')+'</div>';
+  return '<div class="cd-in"><div class="cd-hd"><div>'+(p.sum?'<div class="cd-asum">'+p.kick+'<span class="t">'+esc(p.sum)+'</span></div>':'<small>'+p.kick+'</small>')+'<h2>'+esc(p.title)+'</h2></div>'+(p.chips||p.tog?'<div class="cd-side">'+(p.chips||'')+p.tog+'</div>':'')+'</div><div class="cd-bd">'+p.body+'</div>'+(p.l||p.r?'<div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div>':'')+(p.extra||'')+'</div>';
 }
 function railW(){return 24}
 function setSum(text){$("asumT").textContent=text}
@@ -1635,9 +1638,8 @@ function startKV(){
 }
 function okFace(){var t=new Date(), hm=t.getHours()%12||12, tm=hm+":"+String(t.getMinutes()).padStart(2,"0")+(t.getHours()<12?" am":" pm");
   return '<div class="okface"><span class="okt">'+I("check")+'</span><h3>Business profile approved</h3><p>7 fields filled · Approved by 4 of 4 operators · Logo added</p><div class="okby"><i>RM</i>Done by <b>Ravi Menon</b> · '+tm+'</div><button class="zlk" data-a="kvnext">Next: Team is open now</button></div>'}
-function kvDone(){if(!F.kv||F.kv.ph==="done") return; kvStop(); F.kv.ph="done"; F.status[0]="done"; renderCard(); toast("Business profile approved by 4 of 4 telecom operators"); corePulse();
-  drawProg({label:"Steps",items:STEPN,states:states(5,1,1)}); F.kv.next=later(kvNext,REDUCE?1500:5500)}
-function kvNext(){if(!F.kv) return; clearTimeout(F.kv.next); F.kv=null; F.status[1]="review"; hideCard(); later(function(){review(1)},420)}
+function kvDone(){if(!F.kv||F.kv.ph==="done") return; kvStop(); F.kv=null; hideCard(); later(function(){complete(0,"Business profile approved")},420)} // the approval shows on the blue field, like every other step
+function kvNext(){}
 
 /* left of an expanded card: the agent's summary on the blue field, between the logo rail and the Migration closes in pill */
 var BSUM={
@@ -1761,9 +1763,9 @@ function detailParts(i){
     h='<div class="tbar"><div class="chips" style="margin:0">'+
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
         return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label></div><div id="teamRows">'+teamRows()+'</div>';
-    foot('<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button><button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>'+adminNote(),primary(i))}
+    foot('<button class="btn ghost" data-a="later">Do it later</button><span class="ls">'+onPeople().length+' of '+PEOPLE.length+' selected</span>'+adminNote(),'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i))}
   if(st.k==="brands"){h='<div class="root"><div class="lbox ent"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><small class="rm">Enterprise</small><div class="rn" style="font-size:16px">HDFC Bank Limited</div><div class="rm">'+BRANDS.length+' brands · '+lobCount()+' lines of business</div></div></div><ul class="tree">'+BRANDS.map(function(br,bi){return '<li><div class="bn"><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><small>Brand · logo from website</small><b>'+esc(br.name)+'</b></div><span class="mono">'+br.hdr+'</span></div><div class="lobs">'+br.lobs.map(function(l,li){return '<span class="lob">'+esc(l)+'<button data-a="rmlob" data-b="'+bi+'" data-l="'+li+'" aria-label="Remove '+esc(l)+'">'+I("x")+'</button></span>'}).join("")+'</div></li>'}).join("")+'</ul>';
-    foot('<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+checkRow("bok",F.bok,"<b>I've reviewed these details and they're correct.</b>"),primary(i))}
+    foot(checkRow("bok",F.bok,"<b>I've reviewed these details and they're correct.</b>"),'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i))}
   if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
     h='<div class="row hd" style="grid-template-columns:'+c2+'"><span></span><span>Partner</span>'+PH.map(function(x){return '<span>'+x+'</span>'}).join("")+'<span>Why</span></div>'+PARTNERS.map(function(x,k){return '<div class="row" style="grid-template-columns:'+c2+';opacity:'+(x.pick?1:.7)+'"><span class="ck'+(x.pick?' on':'')+'" data-a="ptn" data-i="'+k+'">'+(x.pick?I("check"):'')+'</span><b>'+esc(x.name)+'</b>'+x.r.map(function(r){return '<span>₹'+r.toFixed(2)+'</span>'}).join("")+'<span class="rm">'+esc(x.why)+'</span></div>'}).join("")+
       '<div class="rn" style="margin-top:26px">Volume split by phase</div>'+(pk.length===2?PH.map(function(x,k){return '<div class="row" style="grid-template-columns:110px 1fr 200px"><span>'+x+'</span><div class="spl"><i style="width:'+ALLOC[k]+'%;background:#2563eb"></i><i style="width:'+(100-ALLOC[k])+'%;background:#9bb8ff"></i></div><span class="rm">'+esc(pk[0].name)+' '+ALLOC[k]+'% · '+esc(pk[1].name)+' '+(100-ALLOC[k])+'%</span></div>'}).join(""):'<div class="sh-sum">Choose exactly two partners to see the split.</div>');
