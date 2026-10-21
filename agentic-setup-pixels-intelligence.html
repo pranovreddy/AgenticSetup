@@ -262,6 +262,8 @@ select.inp{height:36px;padding:0 8px}
 .ast{position:relative;margin:0;font-size:15px;line-height:1.5;color:#0f1b3d;font-weight:500}
 .cd-agent{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--s-blue);background:var(--s-soft);padding:5px 10px 5px 8px;border-radius:999px;margin-top:10px}
 .cd-agent img{width:13px;height:auto}
+.cd-conf{font-size:12.5px;color:var(--s-muted);margin-top:10px}
+.cd-asum{margin:10px 0 12px;font-size:15px;line-height:1.5;color:var(--s-ink2);max-width:760px}
 .cd-sum{font-size:16px;line-height:1.6;color:var(--s-ink2);margin:10px 0 0}
 .lfacts{margin-top:16px;border-top:1px solid var(--s-line)}
 .lfacts>div{display:grid;grid-template-columns:170px 1fr auto;gap:16px;padding:13px 0;border-bottom:1px solid var(--s-line);font-size:15px;align-items:baseline}
@@ -526,6 +528,7 @@ body.bigcard .proto>button{color:var(--navy)!important;background:#fff!important
 canvas#orb{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none}
 .stage{top:54%}
 body[data-m=plan] .stage,body[data-m=ready] .stage{top:58%}
+body[data-m=proc] #sub{display:none}
 @media (max-height:760px){.stage{top:52%}body[data-m=plan] .stage,body[data-m=ready] .stage{top:56%}}
 .think{list-style:none;margin:18px auto 0;padding:0;width:min(640px,88vw);min-height:92px;text-align:center;display:grid;align-content:start;gap:7px}
 .think li{display:flex;gap:10px;align-items:flex-start;justify-content:center;font-size:14.5px;line-height:1.4;color:#fff;transition:opacity .5s ease}
@@ -1351,22 +1354,22 @@ function docCard(){
 }
 function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
-  var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>'+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
+  var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>'+(st.attn?' <span class="chipmini amb">Needs a look</span>':'')+'<span class="cd-conf">Confidence '+CONF[i]+'%</span>', p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
     p={title:heading(i),tog:'',body:d0.h+(st.k!=="profile"?'<p class="chg">You can change this later at any time.</p>':''),l:d0.l,r:d0.r}}
   else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.')+'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>':
       '<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button><button class="btn ghost" data-a="tlater">Do it later</button>';
     p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:primary(i)}}
-  p.kick=kick; return cardWrap(p);
+  p.kick=kick; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
 }
 function cardWrap(p){
-  return '<div class="cd-in"><div class="cd-hd"><div><small>'+p.kick+'</small><h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div><div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div></div>';
+  return '<div class="cd-in"><div class="cd-hd"><div><small>'+p.kick+'</small>'+(p.sum?'<p class="cd-asum">'+esc(p.sum)+'</p>':'')+'<h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div><div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div></div>';
 }
 function railW(){return 24}
 function setSum(text){$("asumT").textContent=text}
 function setConf(i){var c=CONF[i], el=$("asumC"); el.className="aconf"+(c<90?" amb":""); el.textContent='Confidence '+c+'%'}
-function asumOn(){return CARD.on&&!CARD.big&&F.mode==="review"}
+function asumOn(){return false} // the summary now sits inside the card, under the Agent summary chip
 function placeCard(){
   var A0=$("asum"), aOn=asumOn(), aH=0;
   var c=$("card"), r, x0=railW(), av=W-x0-24; // cards centre on the page; the stepper sits below them
