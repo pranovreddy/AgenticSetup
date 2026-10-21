@@ -49,6 +49,8 @@ sub("Matched by reading each message. The 2 unmapped don't hold up migration.", 
 # closes-in label
 sub('<em>Closes in</em>', '<em>Migration closes in</em>')
 sub('w === "notopen" ? "OPENS IN" : "CLOSES IN"', 'w === "notopen" ? "MIGRATION OPENS IN" : "MIGRATION CLOSES IN"')
+# verification animation a bit smaller
+sub('ld.classList.contains("kv") ? 2 :', 'ld.classList.contains("kv") ? 1.5 :')
 sub("window.__deck = { uxState,", js + "\nwindow.__deck = { uxState,")
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', f'<style id="pm-fb">{css}</style>\n<script>document.body.classList.add("dk-6","lt-1");</script>')
 (root / "agentic-setup-cards-states-pm-feedback.html").write_text(h)

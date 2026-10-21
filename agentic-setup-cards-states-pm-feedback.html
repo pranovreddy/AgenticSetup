@@ -2719,7 +2719,7 @@ function fitScene(ld, box) {
   const [x0, y0, x1, y1] = box, bw = x1 - x0, bh = y1 - y0;
   const sk = document.body.classList.contains("stack-mode");
   const W0 = sk ? 892 : (ld.clientWidth || AW - 40), H0 = sk ? 400 : (ld.clientHeight || 300);
-  const s = Math.min((W0 - (document.body.classList.contains("arc-mode") ? 8 : 24)) / bw, (H0 - 20) / bh, ld.classList.contains("kv") ? 2 : document.body.classList.contains("arc-mode") ? 1.5 : 1.1);
+  const s = Math.min((W0 - (document.body.classList.contains("arc-mode") ? 8 : 24)) / bw, (H0 - 20) / bh, ld.classList.contains("kv") ? 1.5 : document.body.classList.contains("arc-mode") ? 1.5 : 1.1);
   crop.style.width = `${bw * s}px`; crop.style.height = `${bh * s}px`;
   crop.style.marginLeft = `${(-bw * s) / 2}px`; crop.style.marginTop = `${(-bh * s) / 2}px`;
   fr.style.transform = `translate(${-x0 * s}px, ${-y0 * s}px) scale(${s})`;

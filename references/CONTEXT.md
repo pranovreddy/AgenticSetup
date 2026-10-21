@@ -613,3 +613,5 @@ States prototype: the centre-card Preparing chip is removed too (Ready and Prepa
 Closes-in pill label is 'Migration closes in' (and 'Migration opens in') in the PM feedback file.
 
 Closes-in context line shows only on hover or focus (PM feedback file); the pill is 56px at rest.
+
+PM feedback file: the Business profile verification animation scale cap lowered from 2 to 1.5.
