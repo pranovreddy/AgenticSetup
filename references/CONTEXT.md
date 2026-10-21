@@ -678,3 +678,5 @@ Audit fixes copy rebuilt on PM feedback v30 (merged commit 8fedbe0 and the four 
 Checked: all 55 menu states with no page errors, the full real flow to the finale, and the keyboard.
 
 Audit fixes copy: the backdrop behind the left agent text now covers the full height of the column (#tband::before, fading out over its last 72px), not just the text block, so side cards are covered top to bottom (artifact comment).
+
+Audit fixes copy: the ring cards turn rigidly with the circle (rotateY = their angle on the ring). Before, the angle was compressed by .6 and flipped at 90 degrees so text always faced the viewer, which caused a snap of about 100 degrees. Past 90 degrees the card shows the back of its blue face, mirrored (.au-back hides .card-in and makes .cardf backface-visible). The largest step between 100 ms samples in the processing ring is now 25 degrees, down from 100. This applies to the ready and processing rings (artifact comment).

@@ -95,6 +95,9 @@ sub('any time from settings.` : "Every step is done and your migration window is
 
 # a pre-existing console error: "Review and submit" has data-ux but no step index
 sub('const i = +b.dataset.i, act = b.dataset.ux, c = S.cards[i], k = STEPS[i].key;', 'const i = +b.dataset.i; if (!STEPS[i]) return; const act = b.dataset.ux, c = S.cards[i], k = STEPS[i].key;')
+# ring: cards turn rigidly with the circle (no turning back toward the viewer); behind the circle the blue face shows mirrored
+sub('const face = (Math.abs(a) <= 90 ? a : a - 180 * Math.sign(a)) * .6, tl', 'const face = a, tl')
+sub('el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3));', 'el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3)); el.classList.toggle("au-back", Math.abs(a) > 90);')
 sub("window.__deck = { uxState,", js + "\nwindow.__deck = { uxState,")
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', f'<style id="au-fix">{css}</style>\n<script>document.body.classList.add("dk-6","lt-1");</script>')
 sub('<title>Agentic Setup Cards</title>', '<title>Agentic Setup Audit Fixes</title>')

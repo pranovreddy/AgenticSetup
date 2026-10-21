@@ -80,3 +80,7 @@ body.phase-finale .cardf button{ min-height:28px; min-width:44px; }
 #uxOff{ right:132px!important; }
 /* the "You can change this later" note stays in view while the card body scrolls */
 .card .r-body .pm-chg{ position:sticky; bottom:0; z-index:2; margin-bottom:0; padding:10px 0 4px; background:linear-gradient(rgba(255,255,255,0), #fff 40%); }
+/* ring: the card turns as one object; past 90 degrees you see the back of its blue face, mirrored */
+body.v3b.arc-mode .card.au-back .card-in{ visibility:hidden!important; }
+body.v3b.arc-mode .card.au-back .cardf{ backface-visibility:visible!important; -webkit-backface-visibility:visible!important; }
+body:not(.arc-mode) .card.au-back .card-in{ visibility:visible; }

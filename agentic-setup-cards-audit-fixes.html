@@ -2407,6 +2407,10 @@ body.phase-finale .cardf button{ min-height:28px; min-width:44px; }
 #uxOff{ right:132px!important; }
 /* the "You can change this later" note stays in view while the card body scrolls */
 .card .r-body .pm-chg{ position:sticky; bottom:0; z-index:2; margin-bottom:0; padding:10px 0 4px; background:linear-gradient(rgba(255,255,255,0), #fff 40%); }
+/* ring: the card turns as one object; past 90 degrees you see the back of its blue face, mirrored */
+body.v3b.arc-mode .card.au-back .card-in{ visibility:hidden!important; }
+body.v3b.arc-mode .card.au-back .cardf{ backface-visibility:visible!important; -webkit-backface-visibility:visible!important; }
+body:not(.arc-mode) .card.au-back .card-in{ visibility:visible; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -3021,9 +3025,9 @@ function ringPaint() {
   all.forEach((el, i) => {
     let d = i - RING.pos; d = (((d + 2.5) % 5) + 5) % 5 - 2.5;
     const a = d * 72, ar = a * Math.PI / 180, ca = Math.cos(ar), sa = Math.sin(ar);
-    const face = (Math.abs(a) <= 90 ? a : a - 180 * Math.sign(a)) * .6, tl = Math.abs(RING_TILT) * Math.PI / 180;
+    const face = a, tl = Math.abs(RING_TILT) * Math.PI / 180;
     const w0 = Math.min(1, Math.abs(d) / .6), flip = RING.idle ? 180 : 180 * w0 * w0 * (3 - 2 * w0), cc = RING.idle ? 0 : Math.max(0, (.28 - Math.abs(d)) / .28);
-    el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3));
+    el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3)); el.classList.toggle("au-back", Math.abs(a) > 90);
     size(el, cw, ch);
     /* the circle is seen from slightly above: depth moves a card up or down, the card itself stays upright */
     const zz = R * ca * f * Math.cos(tl), ps = 1500 / (1500 - zz);
