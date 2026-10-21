@@ -1282,7 +1282,7 @@ function cardWrap(p){
 }
 function railW(){return 24}
 function setSum(text){$("asumT").textContent=text}
-function setConf(i){var c=CONF[i], el=$("asumC"); el.className="aconf"+(c<90?" amb":""); el.innerHTML='<i style="--w:'+c+'%"></i>Confidence '+c+'%'}
+function setConf(i){var c=CONF[i], el=$("asumC"); el.className="aconf"+(c<90?" amb":""); el.textContent='Confidence '+c+'%'}
 function asumOn(){return CARD.on&&!CARD.big&&F.mode==="review"}
 function placeCard(){
   var A0=$("asum"), aOn=asumOn(), aH=0;
