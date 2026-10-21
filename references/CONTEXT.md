@@ -684,3 +684,9 @@ Audit fixes copy: the ring cards turn rigidly with the circle (rotateY = their a
 Audit fixes copy (artifact comments): card content is zoomed to 12/14 ([data-review] zoom .8572), so the smallest card text is 12px and the rest scales in proportion (body 13px, names 13.7px, headlines 19px). Card heights shrink by the same factor (AU_Z in auDims). The Business profile card puts the logo in a left column beside the fields instead of on its own row, and the card is shorter (natural height x .86).
 
 Audit fixes copy (artifact comment): on locked cards the content behind the lock message is blurred by 7px (filter on .r-body and .r-foot when the pane has .lock-face), and the lock face background is lighter (55%).
+
+Audit fixes copy:
+- Ring: perspective-origin is centred on the ring (--au-px = LPa/2) and the x offset no longer divides by ps, so both side cards stick out the same (80px each, was 99/61).
+- Business profile review card is 820 wide (others 940).
+- The "STEP n OF 5" label is 14px and vertically centred on the card title.
+- Telco check animation: each operator tile gets a blue reply badge one by one (neutral, no pass or fail), the pill counts "Responses received from n of 4 operators", the left text says "Responses received", and verifyProfile waits (auTelcoHold) until all 4 are in, plus 1.8 s on the completed state.

@@ -95,3 +95,7 @@ body:not(.arc-mode) .card.au-back .card-in{ visibility:visible; }
 .pane:has(> .lock-face) > .r-body, .pane:has(> .lock-face) > .r-foot{ filter:blur(7px); }
 .lock-face{ background:rgba(250,251,255,.55)!important; }
 .ux-lockov{ -webkit-backdrop-filter:blur(10px)!important; backdrop-filter:blur(10px)!important; }
+/* ring view centred on the ring itself */
+body.arc-mode .stage{ perspective-origin:calc(50% + var(--au-px, 0px)) 42%!important; }
+/* step label: 14px, centred on the card title line */
+.card .c-head .c-n{ font-size:14px!important; line-height:1!important; top:50%!important; bottom:auto!important; transform:translateY(-50%)!important; }

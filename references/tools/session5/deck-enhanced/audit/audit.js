@@ -45,9 +45,9 @@ function auFocusSync() {
 
 /* M2 review cards keep their text at 17px or more: the card is narrower or shorter (its body scrolls) instead of smaller */
 const AU_Z = .8572; /* matches the [data-review] zoom in audit.css; the 70px card header is not zoomed */
-function auDims(nat, sr, LPx) {
+function auDims(nat, sr, LPx, key) {
   const tb = document.body.classList.contains("has-tband");
-  const w = Math.max(640, Math.min(940, Math.floor(sr.width - LPx - 56 - (tb ? 40 : 0))));
+  const w = Math.max(640, Math.min(key === "profile" ? 820 : 940, Math.floor(sr.width - LPx - 56 - (tb ? 40 : 0)))); /* profile card a little narrower */
   return [w, Math.round(Math.min(nat * AU_Z + 70 * (1 - AU_Z), innerHeight - 156))]; /* leaves room for the previous/next arrows */
 }
 /* edit pages: body text 15px or more, small capitals 13px or more */
@@ -64,6 +64,7 @@ function auDeepFloor() {
 
 /* M4 the profile's status line follows the real sequence: checking, sending, with the operators */
 function auVerifyHead() {
+  if (S.auVline === 3) return ["Responses received", "All 4 telecom operators have replied about your business profile. Finishing up."];
   if (S.auSent) return ["With the telecom operators", "Airtel, Jio, Vi and BSNL are reviewing your business profile. This takes a few minutes. Team opens once they approve it."];
   if (S.auVline === 2) return ["Sending to the telecom operators", "Your business profile is going to Airtel, Jio, Vi and BSNL for approval."];
   return ["Checking your profile before it's sent", "I'm matching your KYC against trusted sources. Then it goes to the telecom operators for review."];
@@ -71,7 +72,7 @@ function auVerifyHead() {
 setInterval(() => {
   const c0 = S.cards[0]; if (!c0) return;
   if (c0.st !== "inreview") { S.auVline = 0; S.auSent = 0; clearTimeout(S.auSentT); S.auSentT = 0; return; }
-  const ln = $("[data-vline]", card(0)), v = ln && /Sending/.test(ln.textContent) ? 2 : 1;
+  const ln = $("[data-vline]", card(0)), v = S.auTelcoDone ? 3 : ln && /Sending|Responses/.test(ln.textContent) ? 2 : 1;
   if (v !== S.auVline) { S.auVline = v; tbSync(); }
   if (v === 2 && !S.auSent && !S.auSentT) S.auSentT = setTimeout(() => { if (S.cards[0].st !== "inreview") return; S.auSent = 1; toast("Sent to Airtel, Jio, Vi and BSNL for review"); tbSync(); }, RM ? 0 : 2600);
 }, 300);
@@ -207,6 +208,27 @@ function auBrandsHead() {
   const h = $("#hTitle"), ti = "Brands and LOBs are set up"; if (h && h.textContent.trim() !== ti) heroSet("#hTitle", ti);
 }
 setInterval(() => { auRemapKeep(); auBrandsHead(); }, 250);
+
+/* telco check: each operator tile shows when its response has come in (no pass or fail), then the scene holds on all four */
+const AU_RX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>';
+const AU_TELCO_CSS = ".telco .au-rx{position:absolute;right:-8px;top:-8px;width:26px;height:26px;border-radius:50%;background:#2563eb;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 3px #fff,0 6px 14px -6px rgba(37,99,235,.7);transform:scale(0);transition:transform .4s cubic-bezier(.2,1.4,.4,1)}.telco .au-rx svg{width:14px;height:14px}.telco.au-got .au-rx{transform:scale(1)}.telco .au-rl{position:absolute;left:-10px;right:-10px;bottom:-26px;text-align:center;font:600 12px/1 Inter,system-ui,sans-serif;color:#1d4ed8;opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .3s}.telco.au-got .au-rl{opacity:1;transform:none}.telco.au-got{box-shadow:0 0 0 2px #93b4f5,0 10px 24px -14px rgba(37,99,235,.6)!important}";
+function auTelcoTick() {
+  if (S.cards[0].st !== "inreview") { S.auTelcoT0 = 0; S.auTelcoDone = false; return; }
+  const fr = $(".card .kv iframe"), d = fr && fr.contentDocument; if (!d) return;
+  const tiles = [...d.querySelectorAll(".telco")]; if (tiles.length !== 4) return;
+  if (!d.getElementById("au-tc")) d.head.insertAdjacentHTML("beforeend", `<style id="au-tc">${AU_TELCO_CSS}</style>`);
+  tiles.forEach((t) => { if (!t.querySelector(".au-rx")) t.insertAdjacentHTML("beforeend", `<i class="au-rx" title="Response received">${AU_RX}</i>`); });
+  if (!S.auTelcoT0) S.auTelcoT0 = performance.now();
+  const el = RM ? 1e9 : performance.now() - S.auTelcoT0, n = tiles.filter((t, k) => { const on = el > 1600 + k * 750; t.classList.toggle("au-got", on); return on; }).length;
+  const ln = $("[data-vline]", card(0)); if (ln && n) { const tx = n < 4 ? `Responses received from ${n} of 4 operators` : "Responses received from all 4 operators"; if (ln.textContent !== tx) ln.textContent = tx; }
+  if (n === 4 && !S.auTelcoDone) { S.auTelcoDone = true; S.auVline = 3; tbSync(); }
+}
+setInterval(auTelcoTick, 100);
+async function auTelcoHold(run) {
+  if (RM) return; const t0 = performance.now();
+  while (run === S.runId && !S.auTelcoDone && performance.now() - t0 < 7000) await sleep(150);
+  if (S.auTelcoDone) await sleep(1800);
+}
 
 /* m9 offline pauses the agent too */
 const _auType = typeIntoField;

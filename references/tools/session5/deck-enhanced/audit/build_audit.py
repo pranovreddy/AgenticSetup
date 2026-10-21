@@ -23,7 +23,7 @@ sub('${S.profileAuth ? "" : "disabled"}>Submit for approval<', '${S.profileAuth 
 sub('const MIN_FONT = 17;', 'const MIN_FONT = 14;')
 # M2 review text never shrinks below the floor: the card gets shorter (its body scrolls) instead of scaling down
 sub('return [940, Math.round(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12))];',
-    'return auDims(base * (STEPS[i].key === "profile" ? .86 : STEPS[i].key === "brands" ? 1.32 : 1.12), sr, LPx);')
+    'return auDims(base * (STEPS[i].key === "profile" ? .86 : STEPS[i].key === "brands" ? 1.32  : 1.12), sr, LPx, STEPS[i].key);')
 sub('(S.phase === "review" ? innerHeight * .85 : r.height - 40) / ah', '(S.phase === "review" ? innerHeight - 150 : r.height - 40) / ah')
 sub('#deep{ zoom:.85; }', '#deep{ zoom:1; }')
 # M3 one deadline: the finale clock uses the pill's end date, in real seconds
@@ -98,6 +98,11 @@ sub('const i = +b.dataset.i, act = b.dataset.ux, c = S.cards[i], k = STEPS[i].ke
 # ring: cards turn rigidly with the circle (no turning back toward the viewer); behind the circle the blue face shows mirrored
 sub('const face = (Math.abs(a) <= 90 ? a : a - 180 * Math.sign(a)) * .6, tl', 'const face = a, tl')
 sub('el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3));', 'el.style.setProperty("--flip", `${flip.toFixed(1)}deg`); el.style.setProperty("--cc", cc.toFixed(3)); el.classList.toggle("au-back", Math.abs(a) > 90);')
+# ring: the 3D viewpoint is centred on the ring (not the screen), so both side cards show the same amount
+sub('translate3d(${R * sa * f + g.LPa / 2 / ps}px', 'translate3d(${R * sa * f + g.LPa / 2}px')
+sub('const g = ringGeom(), { r, cw, ch, R, f } = g, all = cards();', 'const g = ringGeom(), { r, cw, ch, R, f } = g, all = cards(); stage.style.setProperty("--au-px", `${g.LPa / 2}px`);')
+# telco check: hold the scene until every operator's response has come in
+sub('await runScene(ld, "kycv", KV_BOX, run, setCap, ".chk-scroll{left:390px !important}", 24000);', 'await runScene(ld, "kycv", KV_BOX, run, setCap, ".chk-scroll{left:390px !important}", 24000); await auTelcoHold(run);')
 sub("window.__deck = { uxState,", js + "\nwindow.__deck = { uxState,")
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', f'<style id="au-fix">{css}</style>\n<script>document.body.classList.add("dk-6","lt-1");</script>')
 sub('<title>Agentic Setup Cards</title>', '<title>Agentic Setup Audit Fixes</title>')
