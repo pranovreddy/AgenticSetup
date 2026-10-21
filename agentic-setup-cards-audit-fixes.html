@@ -2411,6 +2411,13 @@ body.phase-finale .cardf button{ min-height:28px; min-width:44px; }
 body.v3b.arc-mode .card.au-back .card-in{ visibility:hidden!important; }
 body.v3b.arc-mode .card.au-back .cardf{ backface-visibility:visible!important; -webkit-backface-visibility:visible!important; }
 body:not(.arc-mode) .card.au-back .card-in{ visibility:visible; }
+/* card text scale: smallest text 12px, everything else in proportion (12/14 of the 14px-floor sizes) */
+.card [data-review]{ zoom:.8572; }
+/* profile card: the logo sits in a column beside the fields, not on its own row */
+.card .r-body:has(> .kyc-top){ display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:28px; align-content:start; }
+.card .r-body > .kyc-top{ grid-row:1 / span 6; margin:6px 0 0!important; }
+.card .r-body:has(> .kyc-top) > :not(.kyc-top){ grid-column:2; }
+.card .r-body:has(> .kyc-top) > .pform{ margin-top:6px; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">
@@ -3088,7 +3095,7 @@ function dims(i) {
     if (S.phase !== "review") return [1000, base];
     const sr = stage.getBoundingClientRect(), LPx = document.body.classList.contains("has-tband") ? Math.min(400, sr.width * .24) : 0;
     const fw = Math.max(0.42, Math.min(1.14, (sr.width - LPx - 56 - (document.body.classList.contains("has-tband") ? 40 : 0)) / 940));
-    return auDims(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12), sr, LPx);
+    return auDims(base * (STEPS[i].key === "profile" ? .86 : STEPS[i].key === "brands" ? 1.32 : 1.12), sr, LPx);
   }
   return [CW, CH];
 }
@@ -5100,10 +5107,11 @@ function auFocusSync() {
 }
 
 /* M2 review cards keep their text at 17px or more: the card is narrower or shorter (its body scrolls) instead of smaller */
+const AU_Z = .8572; /* matches the [data-review] zoom in audit.css; the 70px card header is not zoomed */
 function auDims(nat, sr, LPx) {
   const tb = document.body.classList.contains("has-tband");
   const w = Math.max(640, Math.min(940, Math.floor(sr.width - LPx - 56 - (tb ? 40 : 0))));
-  return [w, Math.round(Math.min(nat, innerHeight - 156))]; /* leaves room for the previous/next arrows */
+  return [w, Math.round(Math.min(nat * AU_Z + 70 * (1 - AU_Z), innerHeight - 156))]; /* leaves room for the previous/next arrows */
 }
 /* edit pages: body text 15px or more, small capitals 13px or more */
 function auDeepFloor() {

@@ -23,7 +23,7 @@ sub('${S.profileAuth ? "" : "disabled"}>Submit for approval<', '${S.profileAuth 
 sub('const MIN_FONT = 17;', 'const MIN_FONT = 14;')
 # M2 review text never shrinks below the floor: the card gets shorter (its body scrolls) instead of scaling down
 sub('return [940, Math.round(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12))];',
-    'return auDims(base * (STEPS[i].key === "profile" ? 1.15 : STEPS[i].key === "brands" ? 1.32 : 1.12), sr, LPx);')
+    'return auDims(base * (STEPS[i].key === "profile" ? .86 : STEPS[i].key === "brands" ? 1.32 : 1.12), sr, LPx);')
 sub('(S.phase === "review" ? innerHeight * .85 : r.height - 40) / ah', '(S.phase === "review" ? innerHeight - 150 : r.height - 40) / ah')
 sub('#deep{ zoom:.85; }', '#deep{ zoom:1; }')
 # M3 one deadline: the finale clock uses the pill's end date, in real seconds

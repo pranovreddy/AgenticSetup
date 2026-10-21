@@ -44,10 +44,11 @@ function auFocusSync() {
 }
 
 /* M2 review cards keep their text at 17px or more: the card is narrower or shorter (its body scrolls) instead of smaller */
+const AU_Z = .8572; /* matches the [data-review] zoom in audit.css; the 70px card header is not zoomed */
 function auDims(nat, sr, LPx) {
   const tb = document.body.classList.contains("has-tband");
   const w = Math.max(640, Math.min(940, Math.floor(sr.width - LPx - 56 - (tb ? 40 : 0))));
-  return [w, Math.round(Math.min(nat, innerHeight - 156))]; /* leaves room for the previous/next arrows */
+  return [w, Math.round(Math.min(nat * AU_Z + 70 * (1 - AU_Z), innerHeight - 156))]; /* leaves room for the previous/next arrows */
 }
 /* edit pages: body text 15px or more, small capitals 13px or more */
 function auDeepFloor() {

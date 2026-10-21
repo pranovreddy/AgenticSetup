@@ -84,3 +84,10 @@ body.phase-finale .cardf button{ min-height:28px; min-width:44px; }
 body.v3b.arc-mode .card.au-back .card-in{ visibility:hidden!important; }
 body.v3b.arc-mode .card.au-back .cardf{ backface-visibility:visible!important; -webkit-backface-visibility:visible!important; }
 body:not(.arc-mode) .card.au-back .card-in{ visibility:visible; }
+/* card text scale: smallest text 12px, everything else in proportion (12/14 of the 14px-floor sizes) */
+.card [data-review]{ zoom:.8572; }
+/* profile card: the logo sits in a column beside the fields, not on its own row */
+.card .r-body:has(> .kyc-top){ display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:28px; align-content:start; }
+.card .r-body > .kyc-top{ grid-row:1 / span 6; margin:6px 0 0!important; }
+.card .r-body:has(> .kyc-top) > :not(.kyc-top){ grid-column:2; }
+.card .r-body:has(> .kyc-top) > .pform{ margin-top:6px; }
