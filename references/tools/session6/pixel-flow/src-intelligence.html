@@ -1351,7 +1351,7 @@ function docCard(){
 }
 function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
-  var i=F.active, st=STEPS[i], kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
+  var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>'+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
     p={title:heading(i),tog:'',body:d0.h+(st.k!=="profile"?'<p class="chg">You can change this later at any time.</p>':''),l:d0.l,r:d0.r}}
