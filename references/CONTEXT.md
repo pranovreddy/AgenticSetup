@@ -649,3 +649,5 @@ PM feedback file: the 'Template mapping: 98 of 100' status bar is removed from t
 PM feedback file: fixed a layout bug where the processing pane was position:relative (it pushed the scene 60px down and clipped the pill). The scene now starts at the top of the card body, fills the space above the pill, and the pill sits inside the card bottom. Template counts beside the LOBs on the Brands card are hidden.
 
 PM feedback file: the edit (Details) pages are zoomed out to 85% (#deep zoom).
+
+PM feedback file: the '5 STEPS' label above the start-screen title is removed.

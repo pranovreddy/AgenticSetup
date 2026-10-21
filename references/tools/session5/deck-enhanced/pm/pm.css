@@ -160,3 +160,4 @@ body.arc-mode .card.is-analysing [data-analyse] .ld-crop{ top:0!important; margi
 .blobs .lob i.lc{ display:none!important; }
 /* edit pages a little zoomed out */
 #deep{ zoom:.85; }
+.rdl-pre .rdl-k{ display:none!important; }
