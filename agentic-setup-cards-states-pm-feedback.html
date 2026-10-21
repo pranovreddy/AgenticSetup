@@ -3692,8 +3692,8 @@ function renderReviewBase(i) {
   if (k === "templates") {
     const lock = false, changed = TPLS.some((t) => t.lob !== t.lob0);
     const sample = [...TPLS.filter((t) => t.c === "m"), ...TPLS.filter((t) => t.c === "h"), ...TPLS.filter((t) => !t.lob)].slice(0, 6);
-    body = `${editBanner("templates")}<h3 class="r-h">98 of 100 templates have a line of business ${editTag("templates")}</h3>
-      <p class="r-p">Matched by reading each message. The 2 unmapped don't hold up migration.</p>
+    body = `${editBanner("templates")}<h3 class="r-h">98% of your 100 templates are mapped to a line of business ${editTag("templates")}</h3>
+      <p class="r-p">I read each message to find its line of business. For 2 of them I couldn't find a suitable match. You can review the matched ones and the unmapped ones, and they don't hold up migration.</p>
       <div class="panel cpanel"><div class="tstats"><div class="ring"><span>98%</span></div><div class="tm"><div><b>100</b><span>Scanned</span></div><div><b>27</b><span><i style="background:var(--blue)"></i>High confidence</span></div><div><b>71</b><span><i style="background:#8FB0FF"></i>To check</span></div><div><b>2</b><span><i style="background:rgba(11,18,32,.25)"></i>Unmapped</span></div></div></div></div>
       <div class="lobsum"><div class="lobsum-h"><b>Templates per line of business</b><span>Open Details to read and change each one</span></div>
       ${TPL_LOBS.map((l) => `<div class="lobsum-r"><span class="ln">${esc(l.lob)}</span><div class="bar"><i style="width:${Math.round(l.n / 22 * 100)}%"></i></div><b>${l.n}</b></div>`).join("")}
