@@ -455,11 +455,11 @@ canvas#orb{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:1
 .stage{top:54%}
 body[data-m=plan] .stage,body[data-m=ready] .stage{top:58%}
 @media (max-height:760px){.stage{top:52%}body[data-m=plan] .stage,body[data-m=ready] .stage{top:56%}}
-.think{list-style:none;margin:18px auto 0;padding:0;width:min(580px,86vw);min-height:92px;text-align:left;display:grid;align-content:start;gap:7px}
+.think{list-style:none;margin:18px auto 0;padding:0;width:min(580px,86vw);min-height:30px;text-align:left;display:grid;align-content:start}
 .think li{display:grid;grid-template-columns:16px 1fr auto;gap:11px;align-items:start;font-size:14.5px;line-height:1.4;color:#fff;transition:opacity .5s ease}
-.think li:nth-last-child(3){opacity:.42}
-.think li:nth-last-child(2){opacity:.72}
-.think li.new{animation:thIn .55s cubic-bezier(.2,.8,.2,1)}
+.think li span:after{content:"";display:inline-block;width:1.5px;height:1em;margin-left:2px;vertical-align:-2px;background:rgba(255,255,255,.85);opacity:0}
+.think li.typing span:after{opacity:1;animation:thCur 1s steps(2) infinite}
+@keyframes thCur{50%{opacity:0}}
 @keyframes thIn{from{opacity:0;transform:translateY(8px)}to{transform:none}}
 .think li i{position:relative;width:14px;height:14px;border-radius:50%;margin-top:3px;border:1.5px solid rgba(255,255,255,.55);box-sizing:border-box;transition:all .35s}
 .think li.cur i{border-color:#fff;background:rgba(255,255,255,.22);animation:thPing 1.5s infinite}
@@ -584,7 +584,7 @@ var SCENES = [
   {id:"sources", dur:6.2, kick:"Reading sources · each one once", line:"Scanning your sources",
    subs:["DLT registration","GSTIN","MCA","Company website","Trademark registry","Partner rate cards"], subPre:"Now scanning: ",
    done:"All sources read. Every step is built from these.", grp:"src", prog:0, progSubs:true,
-   log:[[.5,"DLT: entity, address, 3 sender headers, 100 templates"],[1.7,"GSTIN: PAN AAACH2702H is active and matches the DLT entity",0,"99%"],[2.9,"MCA: HDFC Bank Limited, a public limited company",0,"99%"],[3.9,"Website: banking and financial services",0,"94%"],[4.8,"Rate cards: 4 partners, 3 phases each"]]},
+   log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.5,"GSTIN: PAN AAACH2702H is active and matches the DLT entity",0,"99%"],[2.7,"MCA: HDFC Bank Limited, a public limited company",0,"99%"],[3.9,"Website: banking and financial services",0,"94%"],[5.0,"Rate cards: 4 partners, 3 phases each"]]},
   {id:"form",  dur:6.2, kick:"Step 1 of 5 · Business profile · from DLT, GSTIN, MCA and website", line:"Filling in your business profile",
    sub:"0 of 7 fields filled", grp:"step", prog:0,
    log:[[.3,"Legal name and entity type come straight from MCA",0,"99%"],[1.9,"Address from DLT, PAN from GSTIN: both agree",0,"98%"],[3.5,"Industry read from your website",0,"94%"],[5.1,"All 7 fields filled, none left blank"]]},
@@ -998,7 +998,7 @@ function background(){
 
 
 /* ======================= the agent core: a sphere of logo triangles with a pinwheel at its heart ======================= */
-var PTS=[]; (function(){var NP=440; for(var i=0;i<NP;i++){var y=1-2*(i+.5)/NP, r=Math.sqrt(1-y*y), ph=i*2.399963; PTS.push([Math.cos(ph)*r,y,Math.sin(ph)*r])}})();
+var PTS=[]; (function(){var NP=230; for(var i=0;i<NP;i++){var y=1-2*(i+.5)/NP, r=Math.sqrt(1-y*y), ph=i*2.399963; PTS.push([Math.cos(ph)*r,y,Math.sin(ph)*r])}})();
 function tri(P,x,y,s,dir){P.moveTo(x-dir*s*.5,y-s*.58); P.lineTo(x+dir*s*.55,y); P.lineTo(x-dir*s*.5,y+s*.58); P.closePath()}
 function coreState(dt){
   var vt=0, et=.3, m=F.mode;
@@ -1028,11 +1028,11 @@ function drawOrb(){
   function proj(i){var p=PTS[i], x1=p[0]*ca+p[2]*sa, z1=-p[0]*sa+p[2]*ca, y2=p[1]*ct-z1*st, z2=p[1]*st+z1*ct;
     var n=Math.sin(p[0]*2.6+tt*.55)+Math.sin(p[1]*2.3-tt*.42)+Math.sin(p[2]*2.8+tt*.36), rs=1+.02*Math.sin(tt*.5)+(.02+.045*e)*n/3;
     return [cx+x1*R*rs, cy+y2*R*rs, (z2+1)/2]}
-  for(var i=0;i<PTS.length;i++){var q=proj(i), d=q[2]; tri(Bk[Math.min(5,Math.floor(d*6))],q[0],q[1],S*(.2+.34*d)*(.85+.3*e),(i&1)?1:-1)}
+  for(var i=0;i<PTS.length;i++){var q=proj(i), d=q[2]; tri(Bk[Math.min(5,Math.floor(d*6))],q[0],q[1],S*(.2+.3*d)*(.85+.2*e),(i&1)?1:-1)}
   for(var b=0;b<6;b++){octx.fillStyle="rgba(255,255,255,"+(v*(.09+.085*b))+")"; octx.fill(Bk[b])}
   // an inner shell turning the other way gives the sphere depth
   var Ik=new Path2D(), ia=-a*1.6, ic=Math.cos(ia), is=Math.sin(ia);
-  for(var m2=0;m2<PTS.length;m2+=4){var p2=PTS[m2], x3=p2[0]*ic+p2[2]*is, z3=-p2[0]*is+p2[2]*ic, y3=p2[1]*ct-z3*st, d3=(p2[1]*st+z3*ct+1)/2;
+  for(var m2=0;m2<PTS.length;m2+=3){var p2=PTS[m2], x3=p2[0]*ic+p2[2]*is, z3=-p2[0]*is+p2[2]*ic, y3=p2[1]*ct-z3*st, d3=(p2[1]*st+z3*ct+1)/2;
     if(d3>.35) tri(Ik,cx+x3*R*.5,cy+y3*R*.5,S*(.16+.18*d3),(m2&1)?1:-1)}
   octx.fillStyle="rgba(215,230,255,"+(.5*v)+")"; octx.fill(Ik);
   // thinking: faint chords flicker between points on the surface
@@ -1044,18 +1044,10 @@ function drawOrb(){
   // a soft light at the centre, no mark: the core is just energy
   var pr=R*(.3+.03*Math.sin(tt*.9)+.04*e), hg=octx.createRadialGradient(cx,cy,0,cx,cy,pr*1.6);
   hg.addColorStop(0,"rgba(255,255,255,"+(.32*v)+")"); hg.addColorStop(1,"rgba(255,255,255,0)"); octx.fillStyle=hg; octx.fillRect(cx-pr*2,cy-pr*2,pr*4,pr*4);
-  // two orbits with a few bright nodes: the agent's attention moving around
-  var Ob=new Path2D(), Nd=new Path2D();
-  for(var r=0;r<2;r++){var ra=R*(1.6+.34*r), rb=ra*(.3+.05*r), rt=(r?-.5:.35)+tt*.03*(r?-1:1), cr=Math.cos(rt), sr=Math.sin(rt), dir=r?-1:1;
-    for(var j=0;j<40;j++){var u=j/40*Math.PI*2, ex=Math.cos(u)*ra, ey=Math.sin(u)*rb; tri(Ob,cx+ex*cr-ey*sr,cy+ex*sr+ey*cr,S*.2,(j&1)?1:-1)}
-    for(var nn=0;nn<2;nn++){for(var tr=0;tr<5;tr++){var uu=(REDUCE?0:CORE.orbA)*dir+nn*Math.PI-tr*.09*dir, ex2=Math.cos(uu)*ra, ey2=Math.sin(uu)*rb;
-      tri(tr?Ob:Nd,cx+ex2*cr-ey2*sr,cy+ex2*sr+ey2*cr,S*(tr?.3:.52),dir)}}}
-  octx.fillStyle="rgba(255,255,255,"+(.2*v)+")"; octx.fill(Ob); octx.fillStyle="rgba(255,255,255,"+(.75*v)+")"; octx.fill(Nd);
   // a ripple leaves the core whenever it has a new thought
   CORE.pulses=CORE.pulses.filter(function(t0){return clock-t0<2.3});
-  CORE.pulses.forEach(function(t0){var age=(clock-t0)/2.2, rr=R*(1.1+1.7*(1-Math.pow(1-age,2))), P=new Path2D();
-    for(var j=0;j<46;j++){var u=j/46*Math.PI*2; tri(P,cx+Math.cos(u)*rr,cy+Math.sin(u)*rr*.9,S*.32,(j&1)?1:-1)}
-    octx.fillStyle="rgba(255,255,255,"+((1-age)*.8*v)+")"; octx.fill(P)});
+  CORE.pulses.forEach(function(t0){var age=(clock-t0)/2.2, rr=R*(1.05+.9*(1-Math.pow(1-age,2)));
+    octx.strokeStyle="rgba(255,255,255,"+((1-age)*.22*v)+")"; octx.lineWidth=Math.max(1,dpr); octx.beginPath(); octx.arc(cx,cy,rr,0,7); octx.stroke()});
 }
 
 function frame(now){
@@ -1165,14 +1157,21 @@ var STARTS=[];(function(){var s=0;SCENES.forEach(function(x){STARTS.push(s);s+=x
 function sceneAt(t){for(var i=SCENES.length-1;i>=0;i--)if(t>=STARTS[i])return i;return 0}
 function proc(at){F.mode="proc"; F.procT0=clock-(at||0); F.procI=-1; procTick()}
 function phaseOf(s,lt){return s.id==="intro"?"Planning":s.id==="sources"?"Observing":(lt/s.dur<.38?"Reasoning":"Drafting")}
-/* one line of the agent's reasoning: the newest is live, older ones tick over to done */
-function addThought(e){
-  var ul=$("think"); if(!ul||ul.dataset.s!==(SCENES[F.procI]||{}).id) return false;
-  var prev=ul.lastElementChild; if(prev){prev.classList.remove("cur","new"); prev.classList.add("done")}
-  var li=document.createElement("li"); li.className="cur new"+(e[2]?" amb":"");
-  li.innerHTML="<i></i><span>"+esc(e[1])+"</span>"+(e[3]?"<em>"+e[3]+"</em>":"");
-  ul.appendChild(li); while(ul.children.length>3) ul.removeChild(ul.firstChild);
-  corePulse(); return true;
+/* one line of the agent's reasoning at a time: it types in, stays, then types out before the next */
+var TYPE_CPS=80, ERASE_CPS=170;
+function thoughtTick(sc,lt){
+  var ul=$("think"); if(!ul||ul.dataset.s!==sc.id) return;
+  var L=sc.log, n=-1; for(var q=0;q<L.length;q++) if(lt>=L[q][0]) n=q;
+  var li=ul.firstElementChild;
+  if(n<0){if(li) li.style.visibility="hidden"; return}
+  var e=L[n], txt=e[1], d=lt-e[0], typed=Math.min(txt.length,Math.floor(d*TYPE_CPS)), full=typed>=txt.length;
+  if(n+1<L.length){var out=txt.length/ERASE_CPS, left=L[n+1][0]-lt; if(left<out) typed=Math.max(0,Math.floor(txt.length*left/out)), full=false}
+  if(!li){li=document.createElement("li"); li.innerHTML="<i></i><span></span><em></em>"; ul.appendChild(li)}
+  li.style.visibility="visible";
+  if(li.dataset.n!==""+n){li.dataset.n=n; corePulse(); li.className=e[2]?"amb":""; li.lastChild.textContent=e[3]?e[3]+"%":""}
+  li.classList.toggle("done",full); li.classList.toggle("cur",!full); li.classList.toggle("typing",!full);
+  li.lastChild.style.opacity=full&&e[3]?1:0;
+  if(li.dataset.t!==""+typed){li.dataset.t=typed; li.children[1].textContent=txt.slice(0,typed)}
 }
 function procTick(){
   var pt=clock-F.procT0, i=sceneAt(pt), s=SCENES[i], lt=pt-STARTS[i];
@@ -1187,7 +1186,7 @@ function procTick(){
       if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(SRC.length,k0,k0)})}}}
   if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:OK+s.done}); if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(SRC.length,-1,SRC.length)})}
   var ph=phaseOf(s,lt); if(ph!==F.phase){F.phase=ph; $("statusTxt").textContent=ph; corePulse()}
-  if(s.log){var nl=0; for(var q=0;q<s.log.length;q++) if(lt>=s.log[q][0]) nl++; while(F.logN<nl){if(!addThought(s.log[F.logN])) break; F.logN++}}
+  if(s.log) thoughtTick(s,lt);
   if(s.id==="form"){var c=0; for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
     var txt=c===7?OK+"7 of 7 fields filled":c+" of 7 fields filled";
     if(F.subState!==txt){F.subState=txt; said.sub=txt; $("sub").innerHTML='<span class="w" style="--d:0ms">'+txt+'</span>'; $("sub").classList.add("in")}}
