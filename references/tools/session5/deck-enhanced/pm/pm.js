@@ -28,3 +28,8 @@ function pmMapStat() {
   const un = 2, ok = 98, miss = BRANDS.reduce((a, b) => a + b.lobs.filter((l) => !pmTplCount(l)).length, 0), changed = brandsChanged();
   return `<div class="mapstat${changed || un ? " warn" : ""}">${uxI(changed ? "attention" : "done")}<span>${changed ? "Template mapping runs again after your changes are approved." : `Template mapping: ${ok} of 100 templates are mapped to these lines of business.`}</span><em>${un} unmapped</em>${miss ? `<em>${miss} new line${miss > 1 ? "s" : ""} without templates</em>` : ""}</div>`;
 }
+/* task ticker becomes one pill whose text changes */
+setInterval(() => { const box = $("#hTasks"); if (!box) return; if (!box.classList.contains("pm-hide")) box.classList.add("pm-hide"); let pill = $("#pmPill"); if (!pill) { box.insertAdjacentHTML("afterend", '<div class="pm-pill" id="pmPill" hidden><i class="sp2"></i><span class="tx2"></span></div>'); pill = $("#pmPill"); }
+  const f = $("li.focus .tx", box), txt = f ? f.textContent : ""; if (!txt) { pill.hidden = true; pill.dataset.t = ""; return; } pill.hidden = false; if (pill.dataset.t !== txt) { pill.dataset.t = txt; const t = $(".tx2", pill); t.textContent = txt; t.style.animation = "none"; void t.offsetWidth; t.style.animation = ""; } }, 250);
+/* crisp text: once the cards stop moving, drop their transitions so they are redrawn at the final size */
+{ let tm = 0; const still = () => document.body.classList.add("pm-still"); new MutationObserver(() => { document.body.classList.remove("pm-still"); clearTimeout(tm); tm = setTimeout(still, 1100); }).observe(stage, { attributes: true, attributeFilter: ["style"], subtree: true }); tm = setTimeout(still, 1500); }

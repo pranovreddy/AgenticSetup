@@ -625,3 +625,5 @@ PM feedback file: new Brands and LOBs details page (brand and LOB cards, promo e
 PM feedback file: closes-in pill hugs its content (207px) and widens on hover (314px) to show the migration context.
 
 PM feedback file: the reading highlight on the agreement summary is lighter (8% blue).
+
+PM feedback file: (1) the 2.2px blur on non-focus cards during processing is removed, plus the stage edge mask and card backdrop filter; cards drop transitions once they stop moving; (2) the 3-line task ticker under the agent text is one pill with changing text (#pmPill).
