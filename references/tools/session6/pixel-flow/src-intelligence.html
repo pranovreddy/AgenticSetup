@@ -341,6 +341,36 @@ select.inp{height:36px;padding:0 8px}
 .zpg{min-width:30px;height:30px;border:1px solid #d9e0ec;border-radius:8px;background:#fff;cursor:pointer;font:600 13px Inter,sans-serif}.zpg.on{background:var(--s-blue);border-color:var(--s-blue);color:#fff}.zpg:disabled{opacity:.4;cursor:default}
 .zempty{padding:20px;text-align:center;color:var(--s-muted)}
 @media (max-width:900px){.zbgrid,.zsplit{grid-template-columns:1fr}.zadd{grid-template-columns:1fr 1fr}.ztr{grid-template-columns:28px 120px 1fr 130px}}
+
+.kyc{display:grid;grid-template-columns:120px minmax(0,1fr);gap:22px;margin-top:6px}
+.kyc-lab{display:block;font-size:13px;color:var(--s-muted);margin-bottom:8px}
+.kyc-logo{width:112px;height:112px;border-radius:16px;border:1px solid var(--s-line);display:grid;place-items:center;background:#fff;box-shadow:0 8px 22px -14px rgba(20,40,90,.35);transition:opacity .4s,transform .5s cubic-bezier(.2,1.3,.4,1)}
+.kyc-logo img{width:84px;height:84px;object-fit:contain}.kyc-logo.wait{opacity:.15;transform:scale(.9)}
+.kyc .fgrid{margin-top:0}
+.fd .req{font-style:normal;color:#dc2626}
+.pin{position:relative}.pin .chev{position:absolute;right:12px;top:50%;width:16px;height:16px;margin-top:-8px;fill:none;stroke:var(--s-muted);stroke-width:2;pointer-events:none}
+.fd.wait .inp{background:#f1f4f9;border-color:#f1f4f9}.fd.wait .chev{opacity:.4}
+.fd.typing .inp{border-color:var(--s-blue);box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+.cd-in{position:relative}
+.fillpill{position:absolute;left:50%;bottom:86px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:8px 16px 8px 10px;border-radius:999px;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 0 0 1px rgba(150,180,230,.45),0 14px 30px -16px rgba(30,70,170,.5);font-size:13.5px;color:var(--s-ink);white-space:nowrap;z-index:3}
+.fillpill b{font-weight:600}
+.spn{width:16px;height:16px;border-radius:50%;background:conic-gradient(from 0deg,var(--s-blue),#93b4f5,var(--s-blue));-webkit-mask:radial-gradient(circle,transparent 4px,#000 5px);mask:radial-gradient(circle,transparent 4px,#000 5px);animation:spnr 1s linear infinite;flex:none}
+@keyframes spnr{to{transform:rotate(360deg)}}
+.dots{display:flex;gap:3px}.dots b{width:4px;height:4px;border-radius:50%;background:var(--s-blue);animation:dt 1.2s infinite}.dots b:nth-child(2){animation-delay:.2s}.dots b:nth-child(3){animation-delay:.4s}
+@keyframes dt{0%,100%{opacity:.25}50%{opacity:1}}
+.kvw{position:relative;height:420px;margin:4px -12px 0}
+.ld{position:absolute;inset:0 0 56px;overflow:hidden;background:#fff}
+.ld-crop{position:absolute;left:50%;top:50%;overflow:hidden}
+.ld-crop iframe{position:absolute;left:0;top:0;width:720px;height:360px;border:0;transform-origin:0 0;background:#fff}
+.kvcap{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:8px 18px 8px 10px;border-radius:999px;background:#fff;box-shadow:0 0 0 1px rgba(150,180,230,.45),0 12px 26px -16px rgba(30,70,170,.45);font-size:13.5px;font-weight:600;color:var(--s-ink);white-space:nowrap}
+.kvcap .t.swap{animation:thIn .45s cubic-bezier(.2,.8,.2,1)}
+.okface{display:grid;justify-items:center;text-align:center;padding:40px 0 34px}
+.okt{width:72px;height:72px;border-radius:50%;background:var(--s-gsoft);color:var(--s-green);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(15,138,95,.07);animation:okIn .7s cubic-bezier(.2,1.4,.4,1)}
+.okt .i{width:34px;height:34px;stroke-width:2.4}
+@keyframes okIn{from{transform:scale(.4);opacity:0}}
+.okface h3{margin:22px 0 6px;font-size:24px}.okface p{margin:0;color:var(--s-muted);font-size:14.5px}
+.okby{display:flex;align-items:center;gap:8px;margin:16px 0 10px;font-size:14px;color:var(--s-ink2)}.okby i{width:26px;height:26px;border-radius:50%;background:#eaf0ff;color:var(--s-blue);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
+@media (prefers-reduced-motion: reduce){.spn,.dots b,.okt{animation:none}}
 .lmore{font-size:14px;color:var(--s-muted);margin-top:8px}
 .lneed{display:flex;gap:10px;margin-top:18px;font-size:15px;line-height:1.5;color:var(--s-ink2)}
 .lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
@@ -615,7 +645,7 @@ body[data-m=proc] #sub{display:none}
 <div class="card on" id="cardM" aria-hidden="true"></div>
 <div class="app" id="app" aria-hidden="true"></div>
 <div class="tcard" id="tcard" role="dialog" aria-modal="true" aria-labelledby="tcTitle"></div>
-<div class="closes" id="closes" aria-live="off"><span class="ci"><svg class="i"><use href="#i-swap"/></svg></span><span><small>Closes in</small><b class="cdv">30d 00h 00m</b></span></div>
+<div class="closes" id="closes" aria-live="off"><span class="ci"><svg class="i"><use href="#i-swap"/></svg></span><span><small>Migration closes in</small><b class="cdv">30d 00h 00m</b></span></div>
 <div class="proto"><div class="pm" id="pm"></div><button id="pmb" type="button">Prototype</button></div>
 <script>
 (function(){
@@ -1193,7 +1223,7 @@ function say(o,quiet){
 }
 function drawProg(p){
   var st=p.states||[];
-  $("prog").innerHTML=(p.label?'<em>'+p.label+'</em>':'')+'<ol>'+p.items.map(function(l,i){var c=st[i]||"";
+  $("prog").innerHTML=(p.label&&p.label!=="Steps"?'<em>'+p.label+'</em>':'')+'<ol>'+p.items.map(function(l,i){var c=st[i]||"";
     return (i?'<b class="'+(c==="dn"||c==="on"?"dn":"")+'"></b>':'')+'<li class="'+c+'"><i>'+(c==="dn"?I("check"):i+1)+'</i><span class="lbl">'+esc(l)+'</span></li>'}).join("")+'</ol>';
 }
 function states(n,cur,doneUpTo){var a=[];for(var i=0;i<n;i++)a.push(i<doneUpTo?"dn":i===cur?"on":"");return a}
@@ -1280,14 +1310,19 @@ function review(i){
   F.mode="review"; F.active=i; var st=STEPS[i];
   show("blank");
   say({kick:"",line:"",sub:"",extra:"",status:["Needs you",st.attn?"attn":"still"], prog:{label:"Steps",items:STEPN,states:states(5,i,i)}});
-  later(function(){showCard()},REDUCE?0:260);
+  var fill=i===0&&!F.pfDone&&!REDUCE; if(i===0) F.pfDone=true; if(fill) F.pf={k:-1,n:0};
+  later(function(){showCard(); if(fill) later(fillStep,900)},REDUCE?0:260);
 }
 function heading(i){var k=STEPS[i].k;
+  if(k==="profile"&&F.kv) return kvText()[0];
+  if(k==="profile"&&F.pf) return "I'm filling in your business profile";
   if(k==="brands") return BRANDS.length+" brands and "+lobCount()+" lines of business";
   if(k==="gtm"){var pk0=picked(); return pk0.length===2?pk0[0].name+" and "+pk0[1].name+", split by phase":"Choose two partners"}
   if(k==="templates") return (100-unmapped())+"% of your 100 templates are mapped to a line of business";
   return STEPS[i].rh}
 function subline(i){var k=STEPS[i].k, u=unmapped();
+  if(k==="profile"&&F.kv) return kvText()[1];
+  if(k==="profile"&&F.pf) return "Typing in what I found on DLT, GSTIN, MCA and your website.";
   if(k==="templates") return "I read each message to find its line of business. "+(u?"For "+u+" of them I could not find a suitable match.":"You set the rest yourself.");
   return STEPS[i].rs}
 function facts(rows){return '<div class="facts">'+rows.map(function(r){return '<div><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b>'+(r[2]?'<em>'+esc(r[2])+'</em>':'<i></i>')+'</div>'}).join("")+'</div>'}
@@ -1303,7 +1338,7 @@ function checkRow(a,on,html){return '<div class="auth" data-a="'+a+'"><span clas
 function adminNote(){var n=PEOPLE.filter(function(p){return p.on&&p.role===2}).length; return n?'<span class="ls">'+n+(n===1?' person gets':' people get')+' Super Admin (full access).</span>':''}
 function primary(i){
   var k=STEPS[i].k;
-  if(k==="profile") return '<button class="btn" data-a="submit"'+(F.auth?'':' disabled')+'>Submit to telecom operators</button>';
+  if(k==="profile") return '<button class="btn" data-a="submit"'+(F.auth&&!F.pf?'':' disabled')+'>Submit to telecom operators</button>';
   if(k==="team"){var n=onPeople().length; return '<button class="btn" data-a="invites"'+(n?'':' disabled')+'>Send '+n+' invite'+(n===1?'':'s')+'</button>'}
   if(k==="brands") return '<button class="btn" data-a="brands"'+(F.bok?'':' disabled')+'>'+(brandsChanged()?'Send for review':'Confirm brands')+'</button>';
   if(k==="gtm") return '<button class="btn" data-a="gtm"'+(picked().length===2&&F.gt?'':' disabled')+'>Confirm partners</button>';
@@ -1354,17 +1389,21 @@ function docCard(){
 }
 function cardHTML(){
   if(F.mode==="gate") return cardWrap(docCard());
-  var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>'+(st.attn?' <span class="chipmini amb">Needs a look</span>':'')+'<span class="cd-conf">Confidence '+CONF[i]+'%</span>', p;
+  var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>'+(st.attn?' <span class="chipmini amb">Needs a look</span>':''), p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
     p={title:heading(i),tog:'',body:d0.h+(st.k!=="profile"?'<p class="chg">You can change this later at any time.</p>':''),l:d0.l,r:d0.r}}
   else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.')+'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>':
       '<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button><button class="btn ghost" data-a="tlater">Do it later</button>';
     p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:primary(i)}}
+  if(st.k==="profile"&&F.kv&&!CARD.big){var dn=F.kv.ph==="done";
+    kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span> <span class="chipmini '+(dn?'gr':'amb')+'">'+(dn?'Done':'In review')+'</span>';
+    p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="spn"></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
+  if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="spn"></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
   p.kick=kick; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
 }
 function cardWrap(p){
-  return '<div class="cd-in"><div class="cd-hd"><div><small>'+p.kick+'</small>'+(p.sum?'<p class="cd-asum">'+esc(p.sum)+'</p>':'')+'<h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div><div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div></div>';
+  return '<div class="cd-in"><div class="cd-hd"><div><small>'+p.kick+'</small>'+(p.sum?'<p class="cd-asum">'+esc(p.sum)+'</p>':'')+'<h2>'+esc(p.title)+'</h2></div>'+p.tog+'</div><div class="cd-bd">'+p.body+'</div>'+(p.l||p.r?'<div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div>':'')+(p.extra||'')+'</div>';
 }
 function railW(){return 24}
 function setSum(text){$("asumT").textContent=text}
@@ -1375,7 +1414,7 @@ function placeCard(){
   var c=$("card"), r, x0=railW(), av=W-x0-24; // cards centre on the page; the stepper sits below them
   if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
-  else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML; var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
+  else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML.replace(/<iframe[\s\S]*?<\/iframe>/g,""); var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
     if(aOn){A0.style.width=w+"px"; setSum(subline(F.active)); setConf(F.active); aH=A0.offsetHeight}
     var top=aOn?Math.max(aH-2,(H-h)/2+(aH-22)/2-14):Math.max(64,(H-h)/2-18); if(aOn) h=Math.min(h,H-top-88);
     r={l:x0+(av-w)/2,t:top,w:w,h:h}}
@@ -1383,7 +1422,8 @@ function placeCard(){
   A0.classList.toggle("on",aOn); if(aOn){A0.style.top=(r.t-aH+22)+"px"; A0.style.left=r.l+"px"}
   placeStatus();
 }
-function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
+function renderCard(){if(F.kv&&F.kv.ph!=="done"&&$("card").querySelector(".kv iframe")){placeCard(); return} // a redraw would restart the scene
+  $("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
   c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard(); syncPts()}
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
@@ -1449,7 +1489,7 @@ function appHTML(){
   var close=new Date(Date.now()+30*864e5), d=function(n){return new Date(close.getTime()+n*864e5)};
   var st=[["Upload & Submit","closes "+fmtD(close),1],["Consent Notification",fmtD(d(1),1),0],["Consent Based Scrubbing",fmtD(d(11),1),0]];
   return '<aside class="nav"><div class="lg"><img src="'+LOGO+'" alt="">DigiConsent</div>'+NAV.map(function(sec,si){return '<div class="nsec" data-sec="'+si+'"><h6>'+sec[0]+'</h6>'+sec[1].map(function(it){return '<button class="nit'+(it[1]==="Migration"?' on':'')+'">'+I(it[0])+it[1]+'</button>'}).join("")+'</div>'}).join("")+
-    '<div class="closes inapp"><span class="ci">'+I("swap")+'</span><span><small>Closes in</small><b class="cdv"></b></span></div><div class="me" style="margin-top:0"><div class="av">RM</div><div><div class="rn">Ravi Menon</div><div class="rm">HDFC Bank Limited</div></div></div></aside>'+
+    '<div class="closes inapp"><span class="ci">'+I("swap")+'</span><span><small>Migration closes in</small><b class="cdv"></b></span></div><div class="me" style="margin-top:0"><div class="av">RM</div><div><div class="rn">Ravi Menon</div><div class="rm">HDFC Bank Limited</div></div></div></aside>'+
     '<div class="main"><div class="pg">'+
     '<h2>Consent Migration</h2><p>Migrate your legacy consent records into DigiConsent, validated, verified and notified to users in one guided flow.</p>'+
     '<div class="stages">'+st.map(function(x,k){return (k?'<span class="sep">'+I("arrow")+'</span>':'')+'<div class="stg'+(x[2]?' on':'')+'"><i>'+(k+1)+'</i><div><b>'+x[0]+'</b><span>'+x[1]+'</span></div></div>'}).join("")+'</div>'+
@@ -1486,7 +1526,11 @@ var SHEET=null;
 function openSheet(kind){SHEET=kind; F.readEnd=false; renderSheet(); $("shBody").scrollTop=0; $("sheet").classList.add("on"); $("sheet").setAttribute("aria-hidden","false"); $("scrim").classList.add("on"); if(kind==="doc") later(checkEnd,600)}
 function closeSheet(){SHEET=null; $("sheet").classList.remove("on"); $("sheet").setAttribute("aria-hidden","true"); $("scrim").classList.remove("on")}
 function sheetFoot(l,r){$("shFoot").innerHTML='<div>'+(l||'')+'</div><div style="display:flex;gap:10px">'+(r||'')+'</div>'}
-function fd(l,v,tag,wide,id){return '<div class="fd'+(wide?" w2":"")+'"><label>'+esc(l)+'</label><input class="inp" value="'+esc(v)+'" data-f="'+id+'"></div>'}
+var SEL_F=[1,5,6];
+function fd(l,v,tag,wide,id){ // while the agent fills the profile, later fields wait empty and the current one is typed in
+  var st="", val=v, pf=id===+id&&F.pf;
+  if(pf){if(id>F.pf.k){st=" wait"; val=""} else if(id===F.pf.k){st=" typing"; val=v.slice(0,F.pf.n)}}
+  return '<div class="fd'+(wide?" w2":"")+st+'"><label>'+esc(l)+' <i class="req">*</i></label><div class="pin"><input class="inp" value="'+esc(val)+'" data-f="'+id+'"'+(F.pf?' readonly tabindex="-1"':'')+'>'+(SEL_F.indexOf(id)>=0?'<svg class="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>':'')+'</div></div>'}
 function renderSheet(){
   var b=$("shBody"), top=b.scrollTop, h="";
   if(SHEET==="doc"){var d=DOCS[F.doc];
@@ -1505,6 +1549,62 @@ function teamRows(){
     (rows.length?rows.map(function(r){var x=r[0],k=r[1];return '<div class="row" style="grid-template-columns:'+tcols()+';opacity:'+(x.on?1:.55)+'"><span class="ck'+(x.on?' on':'')+'" data-a="ptog" data-i="'+k+'">'+(x.on?I("check"):'')+'</span><div style="display:flex;gap:12px;align-items:center;min-width:0"><div class="av">'+x.i+'</div><div style="min-width:0"><div class="rn">'+esc(x.name)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis">'+esc(x.title)+'</div><div class="rm" style="overflow:hidden;text-overflow:ellipsis;font-size:12px">'+esc(x.email)+'</div></div></div><span class="rm" style="font-size:13.5px">'+esc(x.mob)+'</span><select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select><select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+(CARD.big?'<button class="zx" data-a="rmp" data-i="'+k+'" aria-label="Remove '+esc(x.name)+'">'+I("x")+'</button>':'')+'</div>'}).join("")
      :'<div class="empty">No people match your search. <button class="btn ghost" data-a="tclear">Clear search</button></div>');
 }
+
+
+/* ======================= business profile: the agent types it in, then the telco check plays in the card (from the audit-fixes prototype) ======================= */
+__LOADERJS__
+function fillStep(){
+  if(!F.pf||F.mode!=="review"||F.active!==0) return;
+  if(F.pf.k<0){F.pf.k=0; F.pf.n=0; patchFill(); later(fillStep,420); return}
+  var v=PROFILE[F.pf.k][1], sel=SEL_F.indexOf(F.pf.k)>=0;
+  F.pf.n=sel?v.length:Math.min(v.length,F.pf.n+Math.max(1,Math.ceil(v.length/16)));
+  patchFill();
+  if(F.pf.n<v.length){later(fillStep,42); return}
+  if(F.pf.k===PROFILE.length-1){later(function(){F.pf=null; refresh()},600); return}
+  later(function(){if(!F.pf) return; F.pf.k++; F.pf.n=0; patchFill(); later(fillStep,160)},sel?520:260);
+}
+function patchFill(){var c=$("card"), k=F.pf?F.pf.k:99;
+  c.querySelectorAll("[data-f]").forEach(function(inp){var id=+inp.dataset.f, d=inp.closest(".fd"), v=PROFILE[id][1];
+    d.classList.toggle("wait",id>k); d.classList.toggle("typing",id===k); inp.value=id>k?"":id===k?v.slice(0,F.pf.n):v});
+  var lg=c.querySelector(".kyc-logo"); if(lg) lg.classList.toggle("wait",k<0);
+  var f=$("fillf"); if(f) f.textContent=k<0?"your logo":PROFILE[k][0]}
+var KV_BOX=[10,20,570,340];
+var AU_RX='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>';
+var AU_TELCO_CSS=".telco .au-rx{position:absolute;right:-8px;top:-8px;width:26px;height:26px;border-radius:50%;background:#2563eb;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 3px #fff,0 6px 14px -6px rgba(37,99,235,.7);transform:scale(0);transition:transform .4s cubic-bezier(.2,1.4,.4,1)}.telco .au-rx svg{width:14px;height:14px}.telco.au-got .au-rx{transform:scale(1)}.telco.au-got{box-shadow:0 0 0 2px #93b4f5,0 10px 24px -14px rgba(37,99,235,.6)}";
+function kvText(){var p=F.kv.ph, n=F.kv.rx||0; return {
+  check:["Checking your profile before it's sent","I'm matching your KYC against trusted sources. Then it goes to the telecom operators for review.","Checking your business details"],
+  send:["Sending to the telecom operators","Your business profile is going to Airtel, Jio, Vi and BSNL for approval.","Sending it to telecom operators for approval"],
+  rx:["Responses received","All 4 telecom operators have replied about your business profile. Finishing up.",n<4?"Responses received from "+n+" of 4 operators":"Responses received from all 4 operators"],
+  done:["Business profile is done","Nothing more to do here.",""]}[p]}
+function fitScene(ld,box){var crop=ld.querySelector(".ld-crop"), fr=ld.querySelector("iframe"), bw=box[2]-box[0], bh=box[3]-box[1], s=Math.min((ld.clientWidth-24)/bw,(ld.clientHeight-20)/bh,1.5);
+  crop.style.width=bw*s+"px"; crop.style.height=bh*s+"px"; crop.style.marginLeft=(-bw*s/2)+"px"; crop.style.marginTop=(-bh*s/2)+"px";
+  fr.style.transform="translate("+(-box[0]*s)+"px,"+(-box[1]*s)+"px) scale("+s+")"}
+function kvPhase(p){if(!F.kv||F.kv.ph===p) return; F.kv.ph=p; var t=kvText(), c=$("card"), h=c.querySelector(".cd-hd h2"), sm=c.querySelector(".cd-asum"), cp=$("kvcap");
+  if(h) h.textContent=t[0]; if(sm) sm.textContent=t[1]; if(cp){cp.textContent=t[2]; cp.classList.remove("swap"); void cp.offsetWidth; cp.classList.add("swap")}
+  if(p==="send") toast("Sent to Airtel, Jio, Vi and BSNL for review"); corePulse()}
+function kvStop(){if(!F.kv) return; clearInterval(F.kv.iv); clearTimeout(F.kv.to); if(F.kv.off) F.kv.off()}
+function startKV(){
+  F.kv={ph:"check",rx:0}; F.status[0]="verifying"; renderCard();
+  var fr=$("card").querySelector(".kv iframe"); if(!fr||REDUCE){kvDone(); return}
+  var ld=fr.closest(".ld"); fitScene(ld,KV_BOX);
+  var on=function(e){if(!F.kv||e.source!==fr.contentWindow||!e.data||!e.data.agLoader) return; if(e.data.step>=2&&F.kv.ph==="check") kvPhase("send")};
+  addEventListener("message",on); F.kv.off=function(){removeEventListener("message",on)};
+  fr.srcdoc=loaderDoc("kycv",".chk-scroll{left:390px !important}");
+  F.kv.iv=setInterval(function(){ // each operator tile gets a reply badge, one by one, then the scene holds on all four
+    var d=fr.contentDocument; if(!d||!F.kv) return; var tiles=[].slice.call(d.querySelectorAll(".telco")); if(tiles.length!==4) return;
+    if(!d.getElementById("au-tc")) d.head.insertAdjacentHTML("beforeend",'<style id="au-tc">'+AU_TELCO_CSS+'</style>');
+    tiles.forEach(function(t){if(!t.querySelector(".au-rx")) t.insertAdjacentHTML("beforeend",'<i class="au-rx" title="Response received">'+AU_RX+'</i>')});
+    if(!F.kv.t0){F.kv.t0=performance.now(); if(F.kv.ph==="check") kvPhase("send")}
+    var el=performance.now()-F.kv.t0, n=tiles.filter(function(t,k){var g=el>1600+k*750; t.classList.toggle("au-got",g); return g}).length;
+    if(n&&n!==F.kv.rx){F.kv.rx=n; if(F.kv.ph!=="rx") kvPhase("rx"); var cp=$("kvcap"); if(cp) cp.textContent=kvText()[2]}
+    if(n===4&&!F.kv.fin){F.kv.fin=1; setTimeout(kvDone,1800)}},100);
+  F.kv.to=setTimeout(kvDone,30000);
+}
+function okFace(){var t=new Date(), hm=t.getHours()%12||12, tm=hm+":"+String(t.getMinutes()).padStart(2,"0")+(t.getHours()<12?" am":" pm");
+  return '<div class="okface"><span class="okt">'+I("check")+'</span><h3>Business profile approved</h3><p>7 fields filled · Approved by 4 of 4 operators · Logo added</p><div class="okby"><i>RM</i>Done by <b>Ravi Menon</b> · '+tm+'</div><button class="zlk" data-a="kvnext">Next: Team is open now</button></div>'}
+function kvDone(){if(!F.kv||F.kv.ph==="done") return; kvStop(); F.kv.ph="done"; F.status[0]="done"; renderCard(); toast("Business profile approved by 4 of 4 telecom operators"); corePulse();
+  drawProg({label:"Steps",items:STEPN,states:states(5,1,1)}); F.kv.next=later(kvNext,REDUCE?1500:5500)}
+function kvNext(){if(!F.kv) return; clearTimeout(F.kv.next); F.kv=null; F.status[1]="review"; hideCard(); later(function(){review(1)},420)}
 
 /* ======================= the full pages behind "View and edit" (from the audit-fixes prototype) ======================= */
 var RDESC=["Can approve consent policies","Can manage brands and campaigns","Full access, manages users","Can view everything, no changes"];
@@ -1612,7 +1712,7 @@ function bigParts(i){var k=STEPS[i].k, h, l="", r;
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
   if(CARD.big&&st.k!=="profile") return bigParts(i);
-  if(st.k==="profile"){h='<div class="lslot"><div class="lbox"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div><div><div class="rn">Enterprise logo</div><div class="rm">Found on your website</div></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div>';
+  if(st.k==="profile"){h='<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+HDFC_LOGO+'" alt="HDFC Bank logo"></div></div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
     foot(authRow(),primary(i))}
   if(st.k==="team"){
     h='<div class="tbar"><div class="chips" style="margin:0">'+
@@ -1658,11 +1758,12 @@ document.addEventListener("click",function(e){
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
   else if(a==="collapse") collapseCard();
-  else if(a==="auth"){F.auth=!F.auth; refresh()}
+  else if(a==="auth"){if(F.pf) return; F.auth=!F.auth; refresh()}
+  else if(a==="kvnext"){kvNext()}
   else if(a==="bok"){F.bok=!F.bok; refresh()}
   else if(a==="gterms"){F.gt=!F.gt; refresh()}
   else if(a==="tlater") finishStep(function(){complete(4,"Templates saved for later")});
-  else if(a==="submit"){if(F.auth) finishStep(verify)}
+  else if(a==="submit"){if(F.auth&&!F.pf){if(CARD.big){collapseCard(); later(startKV,600)} else startKV()}}
   else if(a==="ptog"){PEOPLE[i].on=!PEOPLE[i].on; refresh()}
   else if(a==="invites"){F.teamLater=false; finishStep(function(){complete(1,"Invites sent")})}
   else if(a==="later"){F.teamLater=true; finishStep(function(){complete(1,"Team saved for later")})}
@@ -1725,7 +1826,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 /* ======================= prototype jumps ======================= */
 function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
