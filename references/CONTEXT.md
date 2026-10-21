@@ -633,3 +633,5 @@ PM feedback file: processing cards drop the bottom 'N of N' bar; an AI query pil
 PM feedback file: the left text is back to the three-line ticker (the left pill is hidden); pills live on the cards only, at the bottom of the card (AI query pill while processing, Filling in pill on the profile review).
 
 PM feedback file: processing cards have less empty space under the header (pane top 62px, scene lifted); the review (verification) animation on Business profile also has the query pill at the bottom and no step bar.
+
+PM feedback file: the Sources accordion is removed from the left panel of the edit (Details) pages.

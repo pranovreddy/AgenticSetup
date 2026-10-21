@@ -4116,7 +4116,7 @@ function renderDeep() {
         <p class="aside-p" style="--k:2">${esc(ASIDE_P[s.key])}</p>
         <div class="acc" style="--k:3">
           <details><summary>What was checked${IC.chev}</summary><div class="ab"><ol>${s.checks.map((x) => `<li><i>${IC.check}</i>${esc(x[1])}</li>`).join("")}</ol></div></details>
-          <details><summary>Sources${IC.chev}</summary><div class="ab"><div style="display:flex;flex-wrap:wrap;gap:6px">${s.sources.map((x) => `<span class="src-tag">${esc(x)}</span>`).join("")}</div></div></details>
+          
           <details open><summary>What happens next${IC.chev}</summary><div class="ab">${esc(ASIDE_NEXT[s.key])}</div></details>
         </div>
       </aside>
