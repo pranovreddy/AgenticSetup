@@ -379,7 +379,8 @@ select.inp{height:36px;padding:0 8px}
 .tmeter{display:flex;gap:2px;height:6px}.tmeter i{border-radius:3px}
 .tnums{display:flex;gap:14px;font-size:12.5px;color:var(--s-muted);white-space:nowrap}.tnums b{color:var(--s-ink);font-size:13.5px}.tnums .rv b{color:var(--s-amber)}
 .lpts{list-style:none;counter-reset:p;margin:16px 0 0;padding:0;display:grid;gap:12px;font-size:15px;line-height:1.5;color:var(--s-ink)}
-.lpts li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:4px}
+.lpts li{counter-increment:p;display:grid;grid-template-columns:28px 1fr;gap:4px;cursor:pointer;padding:8px 10px;margin:-8px -10px;border-radius:10px;transition:background .25s,box-shadow .25s}
+.lpts li:hover{background:#f4f7fd}.lpts li.on{background:#e9f0ff;box-shadow:inset 3px 0 var(--s-blue)}.lpts li.on:before{background:var(--s-blue);color:#fff}
 .lpts li:before{content:counter(p);font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);margin-top:1px}
 .lavs{display:flex;gap:8px;margin-top:18px}
 .lavs span{width:42px;height:42px;border-radius:50%;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center;font-size:12.5px;font-weight:600;transition:opacity .3s}
@@ -1342,9 +1343,9 @@ function docCard(){
   var d=DOCS[F.doc], kick="Before we begin · agreement "+(F.doc+1)+" of 2";
   return {kick:kick,title:d.name,
     tog:CARD.big?'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Exit full page</button>':'<button class="btn ghost cd-tog" data-a="details">'+I("max")+'Full page</button>',
-    body:'<div class="dgrid"><aside class="dsum"><div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ol>'+
+    body:'<div class="dgrid"><aside class="dsum"><div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x,k){return '<li data-a="pt" data-k="'+k+'" tabindex="0">'+esc(x)+'</li>'}).join("")+'</ol>'+
       '<div class="lneed"><span>This summary is only a guide. What you accept is the full text of the document.</span></div></aside>'+
-      '<div class="dtext"><div class="doc">'+d.sections.map(function(s){return '<h4>'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div></div></div>',
+      '<div class="dtext"><div class="doc">'+d.sections.map(function(s,si){return '<h4 data-sec="'+si+'">'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div></div></div>',
     l:'<span class="ls">'+(F.readEnd?'You have reached the end.':'Read to the end of the text to accept.')+'</span>',
     r:'<button class="btn" data-a="accdoc"'+(F.readEnd?'':' disabled')+'>Accept '+esc(d.name)+'</button>'};
 }
@@ -1380,7 +1381,7 @@ function placeCard(){
   placeStatus();
 }
 function renderCard(){$("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
-  c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard()}
+  c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard(); syncPts()}
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
 function hideCard(){CARD.on=false; $("card").classList.remove("on"); $("asum").classList.remove("on"); placeStatus()}
@@ -1630,7 +1631,13 @@ function detailParts(i){
 }
 function checkEnd(){var b=$("shBody"); if(SHEET==="doc"&&!F.readEnd&&b.scrollTop+b.clientHeight>=b.scrollHeight-24){F.readEnd=true; renderSheet()}}
 $("shBody").addEventListener("scroll",checkEnd);
-function checkCardEnd(){var bd=$("card").querySelector(".dtext"); if(F.mode==="gate"&&!F.readEnd&&bd&&bd.scrollTop+bd.clientHeight>=bd.scrollHeight-24){F.readEnd=true; renderCard()}}
+/* the summary points follow the text: the one whose section is on screen is lit, and a click scrolls to its section */
+var SUMSEC=[[2,3,9],[1,2,3]];
+function secTop(bd,k){var h=bd.querySelector('h4[data-sec="'+SUMSEC[F.doc][k]+'"]'); return h?h.getBoundingClientRect().top-bd.getBoundingClientRect().top:1e9}
+function syncPts(){var bd=$("card").querySelector(".dtext"); if(F.mode!=="gate"||!bd) return; var cur=-1;
+  for(var k=0;k<SUMSEC[F.doc].length;k++) if(secTop(bd,k)<=70) cur=k;
+  $("card").querySelectorAll(".lpts li").forEach(function(li,k){li.classList.toggle("on",k===cur)})}
+function checkCardEnd(){syncPts(); var bd=$("card").querySelector(".dtext"); if(F.mode==="gate"&&!F.readEnd&&bd&&bd.scrollTop+bd.clientHeight>=bd.scrollHeight-24){F.readEnd=true; renderCard()}}
 $("card").addEventListener("scroll",checkCardEnd,true);
 
 /* ======================= events ======================= */
@@ -1643,6 +1650,7 @@ document.addEventListener("click",function(e){
     finishStep(function(){
     if(F.doc===0) gate(1);
     else{F.mode="pass"; show("blank"); say({kick:"Before we begin",line:"Both agreements accepted",sub:OK+"Next: what happens now",extra:"",status:["Agreements accepted","done"],prog:{label:"Agreements",items:DOCS.map(function(x){return x.name}),states:["dn","dn"]}}); later(plan,2200)}})}
+  else if(a==="pt"){var bd=$("card").querySelector(".dtext"), k=+el.dataset.k; if(bd){bd.scrollTo({top:bd.scrollTop+secTop(bd,k)-12,behavior:REDUCE?"auto":"smooth"})}}
   else if(a==="start") proc(0);
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
