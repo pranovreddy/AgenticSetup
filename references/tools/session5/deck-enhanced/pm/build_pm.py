@@ -30,7 +30,7 @@ sub('ti = "Verifying your business profile";', 'ti = "Sent to the telecom operat
 sub("su = \"I'm checking this with telecom operators\";", 'su = "Your business profile is with the telecom operators for review. This takes a few minutes. Team opens once they approve it.";')
 sub('toast("Business profile submitted")', 'toast("Submitted to the telecom operators for review")')
 # 11 more time on the result
-sub('RM ? 0 : (k === "profile" ? 2200 : 1300)', 'RM ? 0 : (k === "profile" ? 5200 : 3800)')
+sub('RM ? 0 : (k === "profile" ? 2200 : 1300)', 'RM ? 0 : (k === "profile" ? 6500 : 5500)')
 sub('t.classList.remove("on"), 2600)', 't.classList.remove("on"), 5200)')
 # 12 What I did open by default
 sub('accOpen: -1', 'accOpen: 0')

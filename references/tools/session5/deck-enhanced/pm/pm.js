@@ -75,7 +75,7 @@ doneFace = function (i) {
   const F = { profile: ["7 fields filled", "Approved by 4 of 4 operators", "Logo added"], team: [`${n} people invited`, "Roles assigned", "Emails delivered"], brands: [`${BRANDS.length} brands`, `${lobs} lines of business`, "Set up"], gtm: PARTNERS.filter((p) => p.picked).map((p) => p.name).concat(["Terms accepted"]), templates: ["98 of 100 mapped", "2 left for later", "Ready to send"] }[k];
   const nx = { profile: "Next: Team is open now", team: "Next: Brands and LOBs", brands: "Next: GTM partners and Templates are open", gtm: "Next: Templates", templates: "That was the last step. You can start migration." }[k];
   const who = c.who ? esc(c.who.name) : "Ravi Menon", ini = who.split(" ").map((w) => w[0]).join("").slice(0, 2);
-  const extra = `<div class="pm-fa">${F.map((x) => `<span>${IC.check}${esc(x)}</span>`).join("")}</div><div class="pm-by"><i>${ini}</i><span>Done by <b>${who}</b> · ${esc(c.at || "just now")}</span></div><div class="pm-nx">${esc(nx)}</div>`;
+  const extra = `<p class="pm-ft">${esc(F.join(" · "))}</p><div class="pm-by"><i>${ini}</i><span>Done by <b>${who}</b> · ${esc(c.at || "just now")}</span></div><div class="pm-nx">${esc(nx)}</div>`;
   return out.replace(/<p>[\s\S]*?<\/p>/, extra);
 };
 /* partly prepared profile: no typing animation, cursor goes to the first field the agent couldn't fill */
