@@ -168,3 +168,8 @@ body.has-tband .card.is-focus .card-in,.card.is-focus .card-in{ box-shadow:0 40p
 /* wider edit pages */
 .deep-content > .inner{ max-width:1400px!important; }
 .deep-content{ padding-left:32px!important; padding-right:32px!important; }
+/* finale: the pulse plays once, then stops */
+body.phase-finale .ah-ok::before,body.phase-finale .ah-ok::after{ animation-iteration-count:1!important; animation-fill-mode:both!important; }
+body.phase-finale .finale p:first-of-type::before{ animation:none!important; }
+body.phase-finale .stamp,body.phase-finale .stamp::before,body.phase-finale .stamp::after,body.phase-finale .stamp *{ animation:none!important; }
+body.phase-finale .edge,body.phase-finale .edge::before,body.phase-finale .edge::after{ animation:none!important; }
