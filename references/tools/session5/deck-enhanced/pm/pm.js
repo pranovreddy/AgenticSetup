@@ -49,3 +49,20 @@ setInterval(() => { const el = card(0), rv = el && $("[data-review]", el); if (!
   if (!ln) { if (q) q.remove(); return; }
   if (!q) { rv.insertAdjacentHTML("beforeend", `<div class="pm-q ver"><span class="qi">${typeof AI_MARK !== "undefined" ? AI_MARK : ""}</span><span class="qt"></span><span class="qd"><i></i><i></i><i></i></span></div>`); q = $(".pm-q.ver", rv); }
   const t = ln.textContent.replace(/\s+/g, " ").trim(), tx = $(".qt", q); if (tx.dataset.v !== t) { tx.dataset.v = t; tx.textContent = t; tx.style.animation = "none"; void tx.offsetWidth; tx.style.animation = ""; } }, 250);
+/* ===== Prototype menu grouped by screen and card ===== */
+{ const m = $("#protoMenu"); if (m) {
+  const G = [
+    ["Flow", [["Agent analysis", "j:analyse"], ["Ready for review", "j:ready"], ["Review cards", "j:review"], ["Finale", "j:finale"], ["Restart from agreements", "j:restart"]]],
+    ["Agreements", [["Accepted", "gate-accepted"], ["Can’t be loaded", "gate-fail"], ["Acceptance refused", "gate-refused"]]],
+    ["Agent text on the left", [["Waiting", "msg-wait"], ["GTM waiting", "msg-gtm"], ["Welcome back", "msg-back"], ["After a decision", "msg-next"]]],
+    ["Business profile", [["Done, who and when", "done-profile"], ["Needs attention", "attention-profile"], ["Partly prepared", "partly-profile"], ["Save failed", "err-profile"], ["Result unknown", "unk-profile"]]],
+    ["Team", [["Nothing found", "nothing-team"], ["Couldn’t prepare, first try", "fail-team"], ["Couldn’t prepare, after two tries", "fail2-team"], ["In review", "inreview-team"], ["Do it later", "later-team"], ["Details: nothing found", "notice-team-nothing"], ["Details: done by someone else", "notice-team-someone"], ["Details: stays editable", "notice-team-team"], ["Save changes dialog", "dialog-team"], ["Save dialog, read-only", "dialog-team-ro"], ["Done by someone else, on the card", "conc-card"], ["Done by someone else, on the page", "conc-deep"]]],
+    ["Brands and LOBs", [["Nothing found", "nothing-brands"], ["Couldn’t prepare", "fail-brands"], ["Details: no suggestion prepared", "notice-brands-noprep"], ["Details: suggestion arrived late", "notice-brands-late"], ["Details: save failed", "derr-brands"], ["Save changes dialog", "dialog-brands"]]],
+    ["GTM partners", [["No rate cards, locked", "norate-gtm"], ["Partly prepared", "partly-gtm"], ["Save changes dialog", "dialog-gtm"]]],
+    ["Templates", [["Nothing found", "nothing-templates"], ["Trying again", "busy-templates"], ["Needs attention", "attention-templates"], ["Partly prepared", "partly-templates"], ["Save changes dialog", "dialog-templates"]]],
+    ["Finale", [["Skipped steps", "fin-skipped"], ["Window not open yet", "fin-notopen"], ["Window open", "fin-open"], ["Window closed", "fin-closed"]]],
+    ["Whole screen", [["Offline", "offline-x"], ["Deck failed to load", "loadfail-deck"], ["Card failed to load", "loadfail-card"], ["Details failed to load", "loadfail-deep"], ["Locked card opens", "conc-unlock"]]],
+  ];
+  m.innerHTML = G.map(([t, it], gi) => `<details class="pm-g"${gi === 0 ? " open" : ""}><summary>${t}<i>${it.length}</i></summary>${it.map(([l, s]) => s.startsWith("j:") ? `<button data-jump="${s.slice(2)}">${l}</button>` : `<button data-state="${s}">${l}</button>`).join("")}</details>`).join("");
+  m.addEventListener("click", (e) => { const b = e.target.closest("[data-state]"); if (b) { m.hidden = true; uxState(b.dataset.state); } });
+} }

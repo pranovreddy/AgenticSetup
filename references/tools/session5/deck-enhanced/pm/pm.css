@@ -134,3 +134,6 @@ body.arc-mode .card.is-analysing .pane,body.is-working .card.is-analysing .pane{
 body.arc-mode .card.is-analysing [data-analyse] .ld{ height:520px!important; }
 body.arc-mode .card.is-analysing [data-analyse] .ld{ margin-top:-46px!important; height:570px!important; }
 [data-review] .cap{ display:none!important; }
+.proto-menu{ width:280px!important; max-height:78vh; overflow:auto; padding:6px!important; }
+.pm-g{ border-bottom:1px solid #eef1f7; } .pm-g summary{ display:flex; justify-content:space-between; align-items:center; padding:10px 10px; font:600 13px var(--font); color:#14233f; cursor:pointer; list-style:none; border-radius:8px; } .pm-g summary::-webkit-details-marker{ display:none; } .pm-g summary:hover{ background:#f3f5fa; } .pm-g summary i{ font-style:normal; font-weight:500; font-size:12px; color:#6b7690; background:#eef1f7; border-radius:99px; padding:1px 8px; }
+.pm-g[open] summary{ color:#2563eb; } .pm-g button{ display:block; width:100%; padding:7px 10px 7px 20px!important; font-size:13px!important; }

@@ -635,3 +635,5 @@ PM feedback file: the left text is back to the three-line ticker (the left pill 
 PM feedback file: processing cards have less empty space under the header (pane top 62px, scene lifted); the review (verification) animation on Business profile also has the query pill at the bottom and no step bar.
 
 PM feedback file: the Sources accordion is removed from the left panel of the edit (Details) pages.
+
+PM feedback file: the Prototype menu is grouped by screen (Flow, Agreements, Agent text, Business profile, Team, Brands and LOBs, GTM partners, Templates, Finale, Whole screen), each a collapsible group with a count; a state still opens from one click (`__deck.uxState(name)`).
