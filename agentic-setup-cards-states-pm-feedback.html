@@ -2169,6 +2169,12 @@ body.all-closed:not(.pm-ready) .cardf .cf-st.ux{ display:none; }
 .closes .cx{ max-height:0; opacity:0; margin-top:0; overflow:hidden; transition:max-height .3s var(--ease),opacity .25s,margin .3s; }
 .closes:hover .cx,.closes:focus-within .cx,.closes:focus .cx{ max-height:80px; opacity:1; margin-top:4px; }
 .closes{ pointer-events:auto; }
+/* crisp text: the open review card is drawn flat, with no 3D child layers */
+body.ph-review .card.is-focus{ transform-style:flat!important; will-change:auto!important; }
+body.ph-review .card.is-focus .card-in{ transform:none!important; backface-visibility:visible!important; -webkit-backface-visibility:visible!important; }
+body.ph-review .card.is-focus .cardf{ display:none!important; }
+body.ph-review .card.is-focus *{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+body.ph-review .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
 </style>
 <script>document.body.classList.add("dk-6","lt-1");</script>
 <main class="deck" id="deck">

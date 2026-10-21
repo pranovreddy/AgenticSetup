@@ -615,3 +615,5 @@ Closes-in pill label is 'Migration closes in' (and 'Migration opens in') in the 
 Closes-in context line shows only on hover or focus (PM feedback file); the pill is 56px at rest.
 
 PM feedback file: the Business profile verification animation scale cap lowered from 2 to 1.5.
+
+PM feedback file: crisper card text. The open review card is drawn flat (no preserve-3d child layers, back face hidden) and the stage edge mask is off in review. The start, ready and processing stacks are still 3D, so their text can still look soft on some screens; larger text was applied there.
