@@ -371,6 +371,29 @@ select.inp{height:36px;padding:0 8px}
 .okface h3{margin:22px 0 6px;font-size:24px}.okface p{margin:0;color:var(--s-muted);font-size:14.5px}
 .okby{display:flex;align-items:center;gap:8px;margin:16px 0 10px;font-size:14px;color:var(--s-ink2)}.okby i{width:26px;height:26px;border-radius:50%;background:#eaf0ff;color:var(--s-blue);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
 @media (prefers-reduced-motion: reduce){.spn,.dots b,.okt{animation:none}}
+
+.bigsum{position:fixed;left:0;top:0;bottom:0;z-index:6;display:none;pointer-events:none}
+.bigsum.on{display:block;background:linear-gradient(180deg,rgba(24,64,200,.72),rgba(30,80,220,.5));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+body.bigsplit .card.big .cd-ft{padding-right:140px}
+body.bigsplit #prog{opacity:0;pointer-events:none}
+.bs-in{position:absolute;left:28px;right:30px;top:150px;bottom:96px;overflow:auto;pointer-events:auto;color:#fff;scrollbar-width:none}
+.bs-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12.5px;font-weight:600;letter-spacing:.02em}
+.bs-chip img{width:16px;height:16px;border-radius:50%;background:#fff;padding:2px}
+.bs-in h3{margin:16px 0 10px;font-size:22px;line-height:1.25;font-weight:600}
+.bs-in>p{margin:0 0 18px;font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.82)}
+.bs-acc{border-top:1px solid rgba(255,255,255,.2);padding:12px 0}
+.bs-acc:last-child{border-bottom:1px solid rgba(255,255,255,.2)}
+.bs-acc summary{cursor:pointer;list-style:none;font-size:14.5px;font-weight:600;display:flex;align-items:baseline;gap:8px}
+.bs-acc summary::-webkit-details-marker{display:none}
+.bs-acc summary:after{content:"";margin-left:auto;width:7px;height:7px;border:solid rgba(255,255,255,.75);border-width:0 1.6px 1.6px 0;transform:rotate(-135deg);align-self:center}
+.bs-acc:not([open]) summary:after{transform:rotate(45deg)}
+.bs-acc summary em{font-style:normal;font-weight:400;font-size:12.5px;color:rgba(255,255,255,.65)}
+.bs-acc ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.bs-acc li{display:flex;gap:10px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.88)}
+.bs-acc li .i{width:18px;height:18px;padding:3px;box-sizing:border-box;border-radius:50%;background:#fff;color:var(--deep);stroke-width:3;flex:none}
+.bs-acc p{margin:10px 0 0;font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.82)}
+body.bigsplit .card.big{border-radius:26px 0 0 26px}
+html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[data-px=light] .bs-acc p,html[data-px=light] .bs-acc li{color:var(--s-ink2)}
 .lmore{font-size:14px;color:var(--s-muted);margin-top:8px}
 .lneed{display:flex;gap:10px;margin-top:18px;font-size:15px;line-height:1.5;color:var(--s-ink2)}
 .lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
@@ -548,10 +571,10 @@ html[data-px=azure] .prog li.on i,html[data-px=azure] .prog li.dn i{color:var(--
 html[data-px=azure] .closes:not(.inapp) small{color:#fff}
 
 /* a full-page card is white: keep the corner pills readable on it, in every theme */
-body.bigcard .brand,body.bigcard .closes:not(.inapp){background:#fff!important;border-color:#dfe6f3!important;color:var(--s-ink)!important;box-shadow:0 8px 24px rgba(30,70,170,.16)!important}
-body.bigcard .brand .bl{background:#eef3ff!important}
-body.bigcard .closes:not(.inapp) .ci{background:#eef1f7!important;color:#5b6b8c!important}
-body.bigcard .closes:not(.inapp) small{color:#7a88a6!important}
+body.bigcard:not(.bigsplit) .brand,body.bigcard:not(.bigsplit) .closes:not(.inapp){background:#fff!important;border-color:#dfe6f3!important;color:var(--s-ink)!important;box-shadow:0 8px 24px rgba(30,70,170,.16)!important}
+body.bigcard:not(.bigsplit) .brand .bl{background:#eef3ff!important}
+body.bigcard:not(.bigsplit) .closes:not(.inapp) .ci{background:#eef1f7!important;color:#5b6b8c!important}
+body.bigcard:not(.bigsplit) .closes:not(.inapp) small{color:#7a88a6!important}
 body.bigcard .proto>button{color:var(--navy)!important;background:#fff!important;border:1px solid #d5ddec!important;box-shadow:0 6px 18px rgba(30,70,170,.14)}
 
 /* ===== Intelligence version: the agent core, its reasoning trace and confidence ===== */
@@ -643,6 +666,7 @@ body[data-m=proc] #sub{display:none}
 <div class="asum" id="asum" aria-live="polite"><div class="ahd"><img src="__LOGO__" alt=""><span>Agent summary</span><span class="aconf" id="asumC"></span></div><div class="abd"><p class="ast" id="asumT"></p></div></div>
 <section class="card" id="card" aria-label="Step review"></section>
 <div class="card on" id="cardM" aria-hidden="true"></div>
+<aside class="bigsum" id="bigsum" aria-label="Agent summary"></aside>
 <div class="app" id="app" aria-hidden="true"></div>
 <div class="tcard" id="tcard" role="dialog" aria-modal="true" aria-labelledby="tcTitle"></div>
 <div class="closes" id="closes" aria-live="off"><span class="ci"><svg class="i"><use href="#i-swap"/></svg></span><span><small>Migration closes in</small><b class="cdv">30d 00h 00m</b></span></div>
@@ -1400,6 +1424,7 @@ function cardHTML(){
     kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span> <span class="chipmini '+(dn?'gr':'amb')+'">'+(dn?'Done':'In review')+'</span>';
     p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="spn"></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
   if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="spn"></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
+  if(CARD.big) kick=STEPLINE(i)+(st.attn?' <span class="chipmini amb">Needs a look</span>':'');
   p.kick=kick; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
 }
 function cardWrap(p){
@@ -1412,7 +1437,9 @@ function asumOn(){return false} // the summary now sits inside the card, under t
 function placeCard(){
   var A0=$("asum"), aOn=asumOn(), aH=0;
   var c=$("card"), r, x0=railW(), av=W-x0-24; // cards centre on the page; the stepper sits below them
-  if(CARD.big) r={l:0,t:0,w:W,h:H};
+  var split=CARD.big&&F.mode==="review"; document.body.classList.toggle("bigsplit",split); $("bigsum").classList.toggle("on",split);
+  if(split){var LW=Math.round(Math.max(300,Math.min(380,W*.26))); r={l:LW,t:0,w:W-LW,h:H}; $("bigsum").style.width=LW+"px"}
+  else if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
   else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML.replace(/<iframe[\s\S]*?<\/iframe>/g,""); var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
     if(aOn){A0.style.width=w+"px"; setSum(subline(F.active)); setConf(F.active); aH=A0.offsetHeight}
@@ -1423,6 +1450,7 @@ function placeCard(){
   placeStatus();
 }
 function renderCard(){if(F.kv&&F.kv.ph!=="done"&&$("card").querySelector(".kv iframe")){placeCard(); return} // a redraw would restart the scene
+  if(CARD.big&&F.mode==="review") $("bigsum").innerHTML=bigSum(F.active);
   $("card").classList.toggle("isdoc",F.mode==="gate"); var c=$("card"), sel=".dtext,.cd-bd", bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"), top=bd?bd.scrollTop:0;
   c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard(); syncPts()}
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
@@ -1606,6 +1634,16 @@ function kvDone(){if(!F.kv||F.kv.ph==="done") return; kvStop(); F.kv.ph="done"; 
   drawProg({label:"Steps",items:STEPN,states:states(5,1,1)}); F.kv.next=later(kvNext,REDUCE?1500:5500)}
 function kvNext(){if(!F.kv) return; clearTimeout(F.kv.next); F.kv=null; F.status[1]="review"; hideCard(); later(function(){review(1)},420)}
 
+/* left of an expanded card: the agent's summary on the blue field, between the logo rail and the Migration closes in pill */
+var BSUM={
+  team:["Found 6 people and suggested a role for each","Each person has a suggested role. Add people, change a role, or skip this step.",["Looked up your DLT registration","Found people on record","Matched a role to each person","Suggested people to invite"],"Invites go out by email. Brands and LOBs open next, whether you invite or skip."],
+  brands:["Drafted 3 brands and 7 lines of business","Confirm the draft as it is and it's set up straight away. Any change goes for review.",["Read your DLT headers and entities","Grouped them into brands","Created lines of business","Refined the drafts"],"GTM partners open next. Templates open once your brands and lines of business are set up."],
+  gtm:["Chose Karix and Value First, with volume split by phase","Karix and Value First have the lowest rates. Change the choice or the split if you want.",["Read partner requests","Compared rates for each phase","Chose the best combination","Set allocation across phases","Prepared the summary"],"Accepting includes the rate card terms. Templates open next."],
+  templates:["Suggested a line of business for 98 of 100 templates","A line of business is suggested for 98 of 100 templates. 2 still need mapping.",["Read your templates","Suggested a line of business for each","Marked how confident each suggestion is"],"Templates you map are sent for approval. The 2 unmapped ones don't hold up migration."]};
+function bigSum(i){var b=BSUM[STEPS[i].k]; if(!b) return "";
+  return '<div class="bs-in"><span class="bs-chip"><img src="'+LOGO+'" alt="">Agent summary</span><h3>'+esc(b[0])+'</h3><p>'+esc(b[1])+'</p>'+
+    '<details class="bs-acc" open><summary>What I did <em>'+b[2].length+' steps</em></summary><ul>'+b[2].map(function(x){return '<li>'+I("check")+esc(x)+'</li>'}).join("")+'</ul></details>'+
+    '<details class="bs-acc" open><summary>What happens next</summary><p>'+esc(b[3])+'</p></details></div>'}
 /* ======================= the full pages behind "View and edit" (from the audit-fixes prototype) ======================= */
 var RDESC=["Can approve consent policies","Can manage brands and campaigns","Full access, manages users","Can view everything, no changes"];
 var SCRUB={Karix:[.38,.32,.44],"Value First":[.4,.35,.48],Tata:[.41,.36,.5],"Route Mobile":[.42,.38,.52]};
