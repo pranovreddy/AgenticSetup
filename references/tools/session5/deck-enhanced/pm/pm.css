@@ -104,3 +104,5 @@ body.v3b.ph-review .card.st-done:not(.is-focus) .cf-mid,body.v3b.ph-review .card
 .closes{ width:fit-content!important; }
 .closes .cx{ width:0; max-width:0; transition:max-height .3s var(--ease),opacity .25s,margin .3s,width .3s var(--ease),max-width .3s var(--ease); }
 .closes:hover .cx,.closes:focus-within .cx,.closes:focus .cx{ width:240px; max-width:240px; }
+/* subtler reading highlight */
+.prose a.on{ background:rgba(37,99,235,.08)!important; box-shadow:0 0 0 2px rgba(37,99,235,.08)!important; border-radius:3px; }

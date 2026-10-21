@@ -623,3 +623,5 @@ PM feedback file: side-card text. Done side cards use the same large vertical la
 PM feedback file: new Brands and LOBs details page (brand and LOB cards, promo examples, Consent Wallet phone preview, confirm checkbox), GTM compare table (Scrubbing group, BEST cells, dark Selected N bar with Accept & Set Allocation) and Templates mapping page (LOB list with counts, confidence pills, drag onto a LOB, pager). Source: pm2.js, pm3.js.
 
 PM feedback file: closes-in pill hugs its content (207px) and widens on hover (314px) to show the migration context.
+
+PM feedback file: the reading highlight on the agreement summary is lighter (8% blue).
