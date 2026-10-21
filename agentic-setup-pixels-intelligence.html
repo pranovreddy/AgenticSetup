@@ -717,8 +717,8 @@ function measure(){
 var CORE={vis:0,e:.3,kick:0,R:0,Rs:0,cx:0,cyT:0,csy:0,pulses:[]};
 function layoutCore(){
   var chipTop=parseFloat($("status").style.top); if(isNaN(chipTop)) chipTop=H*.36;
-  var top=8.8, R=Math.min(5.6,(chipTop/cell-1.5-top)/2);
-  CORE.R=R>=2.7?R:0; CORE.cx=L.cx; CORE.cyT=top+Math.max(R,2.7);
+  var top=8.8, R=Math.min(3.7,(chipTop/cell-1.5-top)/2);
+  CORE.R=R>=2.2?R:0; CORE.cx=L.cx; CORE.cyT=chipTop/cell-1.6-Math.max(R,2.2)*.95;
   if(!CORE.Rs){CORE.Rs=CORE.R; CORE.csy=CORE.cyT}
 }
 function corePulse(){if(REDUCE) return; CORE.pulses.push(clock); if(CORE.pulses.length>4) CORE.pulses.shift(); CORE.kick=1}
@@ -1018,7 +1018,7 @@ function drawOrb(){
   var v=CORE.vis; if(v<.01||CORE.Rs<1) return;
   var tt=REDUCE?0:clock, e=Math.min(1.2,CORE.e+CORE.kick*.5), cx=CORE.cx*S, cy=CORE.csy*S, R=CORE.Rs*S;
   // soft glow around the core
-  var g=octx.createRadialGradient(cx,cy,R*.15,cx,cy,R*2.2); g.addColorStop(0,"rgba(215,230,255,"+(.42*v)+")"); g.addColorStop(.4,"rgba(130,175,255,"+(.16*v)+")"); g.addColorStop(1,"rgba(130,175,255,0)");
+  var g=octx.createRadialGradient(cx,cy,R*.15,cx,cy,R*2.2); g.addColorStop(0,"rgba(215,230,255,"+(.26*v)+")"); g.addColorStop(.4,"rgba(130,175,255,"+(.09*v)+")"); g.addColorStop(1,"rgba(130,175,255,0)");
   octx.fillStyle=g; octx.fillRect(cx-R*2.3,cy-R*2.3,R*4.6,R*4.6);
   // the sphere: 440 small triangles turning in 3D, their surface rippling more the harder the agent works
   var a=tt*(.2+.5*e), ca=Math.cos(a), sa=Math.sin(a), tl=.4+.1*Math.sin(tt*.23), ct=Math.cos(tl), st=Math.sin(tl);
@@ -1027,27 +1027,23 @@ function drawOrb(){
     var n=Math.sin(p[0]*3.1+tt*1.7)+Math.sin(p[1]*2.7-tt*1.3)+Math.sin(p[2]*3.3+tt*1.1), rs=1+.025*Math.sin(tt*1.3)+(.03+.1*e)*n/3;
     return [cx+x1*R*rs, cy+y2*R*rs, (z2+1)/2]}
   for(var i=0;i<PTS.length;i++){var q=proj(i), d=q[2]; tri(Bk[Math.min(5,Math.floor(d*6))],q[0],q[1],S*(.2+.34*d)*(.85+.3*e),(i&1)?1:-1)}
-  for(var b=0;b<6;b++){octx.fillStyle="rgba(255,255,255,"+(v*(.14+.13*b))+")"; octx.fill(Bk[b])}
+  for(var b=0;b<6;b++){octx.fillStyle="rgba(255,255,255,"+(v*(.09+.085*b))+")"; octx.fill(Bk[b])}
   // thinking: faint chords flicker between points on the surface
   if(e>.8&&!REDUCE){octx.strokeStyle="rgba(255,255,255,"+(.3*v*Math.min(1,(e-.8)*5))+")"; octx.lineWidth=Math.max(1,dpr); octx.beginPath();
     var seed=Math.floor(tt*3);
     for(var c2=0;c2<6;c2++){var i1=Math.floor(hash(seed*7+c2)*PTS.length), i2=Math.floor(hash(seed*13+c2+5)*PTS.length), q1=proj(i1), q2=proj(i2);
       if(q1[2]>.45&&q2[2]>.45){octx.moveTo(q1[0],q1[1]); octx.lineTo(q2[0],q2[1])}}
     octx.stroke()}
-  // the heart: six wedges forming a pinwheel, like the DigiConsent mark
-  var pr=R*(.27+.035*Math.sin(tt*2.2)+.05*e), rot=-tt*(.5+.8*e), hg=octx.createRadialGradient(cx,cy,0,cx,cy,pr*1.7);
-  hg.addColorStop(0,"rgba(255,255,255,"+(.75*v)+")"); hg.addColorStop(1,"rgba(255,255,255,0)"); octx.fillStyle=hg; octx.fillRect(cx-pr*2,cy-pr*2,pr*4,pr*4);
-  octx.fillStyle="rgba(255,255,255,"+(.96*v)+")"; octx.beginPath();
-  for(var k=0;k<6;k++){var an=rot+k*Math.PI/3;
-    octx.moveTo(cx+Math.cos(an)*pr*.3,cy+Math.sin(an)*pr*.3); octx.lineTo(cx+Math.cos(an-.4)*pr,cy+Math.sin(an-.4)*pr); octx.lineTo(cx+Math.cos(an+.4)*pr,cy+Math.sin(an+.4)*pr); octx.closePath()}
-  octx.fill();
+  // a soft light at the centre, no mark: the core is just energy
+  var pr=R*(.3+.03*Math.sin(tt*2.2)+.05*e), hg=octx.createRadialGradient(cx,cy,0,cx,cy,pr*1.6);
+  hg.addColorStop(0,"rgba(255,255,255,"+(.32*v)+")"); hg.addColorStop(1,"rgba(255,255,255,0)"); octx.fillStyle=hg; octx.fillRect(cx-pr*2,cy-pr*2,pr*4,pr*4);
   // two orbits with a few bright nodes: the agent's attention moving around
   var Ob=new Path2D(), Nd=new Path2D();
-  for(var r=0;r<2;r++){var ra=R*(1.7+.38*r), rb=ra*(.3+.05*r), rt=(r?-.5:.35)+tt*.12*(r?-1:1)*(.6+e), cr=Math.cos(rt), sr=Math.sin(rt), dir=r?-1:1;
+  for(var r=0;r<2;r++){var ra=R*(1.6+.34*r), rb=ra*(.3+.05*r), rt=(r?-.5:.35)+tt*.12*(r?-1:1)*(.6+e), cr=Math.cos(rt), sr=Math.sin(rt), dir=r?-1:1;
     for(var j=0;j<40;j++){var u=j/40*Math.PI*2, ex=Math.cos(u)*ra, ey=Math.sin(u)*rb; tri(Ob,cx+ex*cr-ey*sr,cy+ex*sr+ey*cr,S*.2,(j&1)?1:-1)}
     for(var nn=0;nn<2;nn++){for(var tr=0;tr<5;tr++){var uu=tt*(.9+.6*e)*dir+nn*Math.PI-tr*.09*dir, ex2=Math.cos(uu)*ra, ey2=Math.sin(uu)*rb;
       tri(tr?Ob:Nd,cx+ex2*cr-ey2*sr,cy+ex2*sr+ey2*cr,S*(tr?.3:.52),dir)}}}
-  octx.fillStyle="rgba(255,255,255,"+(.3*v)+")"; octx.fill(Ob); octx.fillStyle="rgba(255,255,255,"+(.95*v)+")"; octx.fill(Nd);
+  octx.fillStyle="rgba(255,255,255,"+(.2*v)+")"; octx.fill(Ob); octx.fillStyle="rgba(255,255,255,"+(.75*v)+")"; octx.fill(Nd);
   // a ripple leaves the core whenever it has a new thought
   CORE.pulses=CORE.pulses.filter(function(t0){return clock-t0<1.3});
   CORE.pulses.forEach(function(t0){var age=(clock-t0)/1.25, rr=R*(1.1+1.7*age), P=new Path2D();
