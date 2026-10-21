@@ -1,0 +1,76 @@
+<!doctype html><meta charset="utf-8"><title>Pixels in the app</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;font-family:Inter,"Helvetica Neue",Arial,sans-serif;background:#f4f6fb;color:#0f1b3d;position:relative}
+canvas{position:absolute;display:block}
+#side{left:0;top:0;width:248px;height:900px}
+#band{left:248px;top:0;width:1192px;height:300px}
+.side{position:absolute;left:0;top:0;width:248px;height:900px;color:#fff;padding:20px 14px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;padding:0 6px 22px}
+.logo i{width:26px;height:26px;border-radius:7px;background:#fff;display:grid;place-items:center}
+.grp{font-size:11px;letter-spacing:.12em;opacity:.6;padding:16px 10px 6px}
+.nit{display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:9px;font-size:14.5px;opacity:.88}
+.nit:before{content:"";width:14px;height:14px;border-radius:4px;border:1.6px solid currentColor;opacity:.8}
+.nit.on{background:#fff;color:#0b37c9;opacity:1;font-weight:600}
+.pill{position:absolute;left:14px;right:14px;bottom:84px;border-radius:99px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:9px 14px;font-size:11px;letter-spacing:.08em}
+.pill b{display:block;font-size:14px;letter-spacing:0;margin-top:2px}
+.me{position:absolute;left:14px;bottom:18px;display:flex;align-items:center;gap:10px;font-size:13px}
+.me i{width:34px;height:34px;border-radius:50%;background:#fff;color:#0b37c9;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:12px}
+.main{position:absolute;left:248px;top:0;width:1192px;height:900px;padding:34px 44px}
+.hd h1{font-size:34px;letter-spacing:-.03em;color:#fff;font-weight:650}
+.hd p{margin-top:8px;color:rgba(255,255,255,.88);font-size:16px;max-width:620px;line-height:1.5}
+.agent{position:absolute;right:44px;top:34px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:6px 16px 6px 8px;color:#fff;font-size:14px;font-weight:600;backdrop-filter:blur(8px)}
+.agent canvas{position:static;width:34px;height:34px}
+.steps{margin-top:70px;background:#fff;border-radius:16px;box-shadow:0 20px 40px -24px rgba(20,40,120,.45);display:grid;grid-template-columns:repeat(3,1fr);padding:18px 22px;gap:18px}
+.st{display:flex;align-items:center;gap:12px;font-size:14px}.st i{width:28px;height:28px;border-radius:50%;background:#e8eefc;color:#2554e6;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:13px}
+.st.on i{background:#2554e6;color:#fff}.st b{display:block;font-size:15px}.st span{font-family:ui-monospace,monospace;font-size:12px;color:#5b6b8c}
+.empty{margin-top:22px;background:#fff;border-radius:16px;box-shadow:0 18px 36px -26px rgba(20,40,120,.4);height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;position:relative;overflow:hidden}
+.empty canvas{position:static;width:74px;height:74px}
+.empty h3{font-size:22px;letter-spacing:-.02em}.empty p{color:#5b6b8c;font-size:15px;max-width:520px;line-height:1.5}
+.btn{margin-top:8px;background:#2554e6;color:#fff;border-radius:10px;height:42px;padding:0 22px;display:inline-flex;align-items:center;font-weight:600;font-size:15px;box-shadow:0 12px 24px -12px rgba(37,84,230,.8)}
+.csv{margin-top:22px;background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 18px 36px -26px rgba(20,40,120,.4);display:grid;grid-template-columns:1fr 1fr;gap:34px;font-size:14.5px}
+.csv h4{font-size:12px;letter-spacing:.12em;color:#5b6b8c;grid-column:1/-1}
+.csv div div{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid #e6ebf3}
+.csv em{font-style:normal;font-family:ui-monospace,monospace;color:#5b6b8c;font-size:13px}
+.note{position:absolute;z-index:5;background:#0f1b3d;color:#fff;font-size:13px;padding:8px 12px;border-radius:10px;max-width:250px;line-height:1.4;box-shadow:0 14px 30px -14px rgba(5,10,40,.7)}
+.note:before{content:"";position:absolute;width:10px;height:10px;background:#0f1b3d;transform:rotate(45deg)}
+.n1{left:14px;top:590px;width:220px}.n1:before{left:30px;top:-4px}
+.n2{left:760px;top:112px;width:300px}.n2:before{left:-4px;top:-0px;display:none}
+.n3{left:1010px;top:300px;width:260px}.n3:before{left:-4px;top:28px}
+</style>
+<canvas id="side" width="496" height="1800"></canvas><canvas id="band" width="2384" height="600"></canvas>
+<div class="side">
+ <div class="logo"><i><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 2l10 6-10 6z" fill="#0b37c9"/></svg></i>DigiConsent</div>
+ <div class="grp">WORKSPACE</div><div class="nit">Home</div><div class="nit">Manage Assets</div><div class="nit">Brands &amp; LOBs</div><div class="nit">Promo Template Mapping</div>
+ <div class="grp">OPERATE</div><div class="nit on">Migration</div><div class="nit">Approvals</div><div class="nit">Integrations</div><div class="nit">Consent Acquisition</div><div class="nit">GTM Partners</div>
+ <div class="grp">ANALYSE</div><div class="nit">Reports</div><div class="nit">Insights</div>
+ <div class="pill">MIGRATION CLOSES IN<b>29d 23h 59m</b></div>
+ <div class="me"><i>RM</i><span>Ravi Menon<br><small style="opacity:.7">HDFC Bank Limited</small></span></div>
+</div>
+<div class="agent"><canvas id="blob" width="68" height="68"></canvas>Agent is ready to help</div>
+<div class="main">
+ <div class="hd"><h1>Consent Migration</h1><p>Upload, validated, verified and notified to users in one guided flow. The agent checks every row and fixes what it can.</p></div>
+ <div class="steps"><div class="st on"><i>1</i><div><b>Consent Upload</b><span>Open now</span></div></div><div class="st"><i>2</i><div><b>Consent Notification</b><span>21 Nov 2026</span></div></div><div class="st"><i>3</i><div><b>Consent Based Scrubbing</b><span>01 Dec 2026</span></div></div></div>
+ <div class="empty"><canvas id="blob2" width="148" height="148"></canvas><h3>No consents uploaded yet</h3><p>Upload a CSV with consent records. The agent will validate it and resolve errors automatically.</p><span class="btn">New Upload</span></div>
+ <div class="csv"><h4>CSV FORMAT</h4><div><div>Customer Mobile Number *<em>10 digit</em></div><div>Consent Collection Date *<em>YYYY-MM-DD</em></div></div><div><div>Consent Validity Date<em>YYYY-MM-DD</em></div><div>Channel Preference<em>SMS/Voice</em></div></div></div>
+</div>
+<div class="note n1">The onboarding blue field continues in the sidebar. Triangles fade out toward the bottom, so the nav stays calm.</div>
+<div class="note n2">The same pixel field becomes the page header. It fades into the page, so content sits on a clean surface.</div>
+<div class="note n3">The same agent blob marks every place the agent helps, including the empty state.</div>
+<script>
+function tri(P,x,y,s,d){P.moveTo(x-d*s*.5,y-s*.58);P.lineTo(x+d*s*.55,y);P.lineTo(x-d*s*.5,y+s*.58);P.closePath()}
+function field(id,w,h,step,fadeFn,base){var c=document.getElementById(id),x=c.getContext("2d");x.scale(2,2);
+  var g=x.createLinearGradient(0,0,w,h);g.addColorStop(0,"#0a2fb5");g.addColorStop(1,"#0b3fd6");x.fillStyle=g;x.fillRect(0,0,w,h);
+  for(var j=0;j<h/step;j++)for(var i=0;i<w/step;i++){var px=i*step+(j%2)*step/2,py=j*step,f=fadeFn(px,py);if(f<=0)continue;
+   var P=new Path2D();tri(P,px,py,6+4*f,(i+j)%2?1:-1);x.fillStyle="rgba(255,255,255,"+(.07+.22*f).toFixed(3)+")";x.fill(P)}}
+field("side",248,900,22,function(x,y){return Math.max(0,1-y/760)*(.4+.6*Math.abs(Math.sin(x*.05+y*.03)))});
+field("band",1192,300,22,function(x,y){return Math.max(0,1-y/260)*(.35+.65*Math.abs(Math.sin(x*.012+y*.04)))*(1-x/2200)});
+// mask band to fade into page
+var b=document.getElementById("band");b.style.cssText+=";width:1192px;height:300px;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%)";
+function blob(id,sz,col){var c=document.getElementById(id),x=c.getContext("2d");x.scale(2,2);var R=sz*.38,cx=sz/2,cy=sz/2,N=900,P=[new Path2D(),new Path2D(),new Path2D()];
+ for(var i=0;i<N;i++){var u=(i+.5)/N,ph=Math.acos(1-2*u),th=Math.PI*(1+Math.sqrt(5))*i,px=Math.sin(ph)*Math.cos(th),py=Math.cos(ph),pz=Math.sin(ph)*Math.sin(th),z=(pz+1)/2;
+  if(i%2)continue;tri(P[Math.min(2,Math.floor(z*3))],cx+px*R,cy+py*R,1.4+1.6*z*(sz/40),(i&2)?1:-1)}
+ col.forEach(function(f,k){x.fillStyle=f;x.fill(P[k])})}
+blob("blob",34,["rgba(255,255,255,.45)","rgba(255,255,255,.75)","rgba(255,255,255,1)"]);
+blob("blob2",74,["rgba(59,98,227,.25)","rgba(59,98,227,.55)","rgba(59,98,227,.95)"]);
+</script>
