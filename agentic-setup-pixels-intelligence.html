@@ -264,7 +264,7 @@ select.inp{height:36px;padding:0 8px}
 .cd-agent img{width:13px;height:auto}
 .cd-conf{font-size:12.5px;color:var(--s-muted);margin-top:10px}
 .cd-asum{display:flex;align-items:center;gap:12px;margin:10px 0 4px;padding-left:12px;border-left:3px solid #4f6ef0;font-size:14.5px;line-height:1.5;color:var(--s-ink2)}
-.cd-ai{flex:none;width:52px;height:52px;border-radius:50%;background:none;display:grid;place-items:center;box-shadow:none}.cd-ai .mblob{width:52px;height:52px;display:block}
+.cd-ai{flex:none;width:40px;height:40px;border-radius:50%;background:none;display:grid;place-items:center;box-shadow:none}.cd-ai .mblob{width:40px;height:40px;display:block}
 .card:not(.big):not(.isdoc) .cd-in{background:radial-gradient(120% 220px at 0 0,rgba(120,160,255,.28),rgba(120,160,255,0) 70%),radial-gradient(80% 180px at 100% 0,rgba(160,130,255,.14),rgba(160,130,255,0) 70%),linear-gradient(180deg,#dbe6ff 0,#eaf1ff 90px,rgba(255,255,255,0) 230px);border-radius:inherit}
 .cd-asum .cd-agent{margin-top:0;background:#fff;box-shadow:0 1px 2px rgba(30,70,170,.12)}.cd-asum .chipmini{margin:0}
 .cd-asum .t{max-width:680px}
@@ -1272,8 +1272,8 @@ function drawMini(){var cs=document.querySelectorAll("canvas.mblob"); if(!cs.len
   cs.forEach(function(c){var w=c.clientWidth, h=c.clientHeight; if(!w) return; var d=Math.min(2,dpr||1);
     if(c.width!==w*d){c.width=w*d; c.height=h*d} var x=c.getContext("2d"); x.setTransform(d,0,0,d,0,0); x.clearRect(0,0,w,h);
     var cx=w/2, cy=h/2, R=Math.min(w,h)*.4, Bk=[new Path2D(),new Path2D(),new Path2D()];
-    for(var i=0;i<PTS.length;i+=1){var p=PTS[i], x1=p[0]*ca+p[2]*sa, z1=-p[0]*sa+p[2]*ca, y2=p[1]*ct-z1*st, z2=(p[1]*st+z1*ct+1)/2,
-      n=Math.sin(p[0]*2.6+tt*.8)+Math.sin(p[1]*2.3-tt*.6), rs=1+.06*n/2; tri(Bk[Math.min(2,Math.floor(z2*3))],cx+x1*R*rs,cy+y2*R*rs,2+2.4*z2,(i&2)?1:-1)}
+    for(var i=0;i<PTS.length;i+=5){var p=PTS[i], x1=p[0]*ca+p[2]*sa, z1=-p[0]*sa+p[2]*ca, y2=p[1]*ct-z1*st, z2=(p[1]*st+z1*ct+1)/2,
+      n=Math.sin(p[0]*2.6+tt*.8)+Math.sin(p[1]*2.3-tt*.6), rs=1+.06*n/2; tri(Bk[Math.min(2,Math.floor(z2*3))],cx+x1*R*rs,cy+y2*R*rs,3.6+3.2*z2,(i&2)?1:-1)}
     ["rgba(59,98,227,.35)","rgba(59,98,227,.7)","rgba(37,84,230,1)"].forEach(function(f,k){x.fillStyle=f; x.fill(Bk[k])});
     var g=x.createRadialGradient(cx,cy,0,cx,cy,R*.6); g.addColorStop(0,"rgba(120,160,255,.45)"); g.addColorStop(1,"rgba(120,160,255,0)"); x.fillStyle=g; x.fillRect(0,0,w,h)})}
 function frame(now){
