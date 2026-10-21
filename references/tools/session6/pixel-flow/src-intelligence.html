@@ -468,6 +468,10 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .tst-bar{display:flex;gap:2px;height:7px;border-radius:999px;overflow:hidden;background:#e6ebf5;margin-top:6px}.tst-bar i{display:block;background:#7ea2f0}.tst-bar i+i{background:#c5d7fb}
 .tst-k{display:flex;gap:14px;margin-top:8px;font-size:12.5px;color:var(--s-muted);white-space:nowrap}.tst-k span{display:flex;align-items:center;gap:5px}.tst-k i{width:7px;height:7px;border-radius:50%;background:#7ea2f0}.tst-k i.l{background:#c5d7fb}.tst-k b{color:var(--s-ink)}
 @media (max-width:900px){.tst{grid-template-columns:1fr 1fr}.tst-c{border-left:0;padding:10px 0}}
+.prog li.go{cursor:pointer;pointer-events:auto;border-radius:999px;padding:2px 8px 2px 2px;margin:-2px -8px -2px -2px;transition:background .2s}
+.prog li.go:hover{background:rgba(255,255,255,.16)}.prog li.go:hover .lbl{text-decoration:underline;text-underline-offset:3px}
+.prog li.viewing{background:rgba(255,255,255,.2)}
+.xovby{color:var(--s-ink2)!important;margin:14px 0 0!important}.xovby i{background:#eaf0ff!important;color:var(--s-blue)!important}
 .lmore{font-size:14px;color:var(--s-muted);margin-top:8px}
 .lneed{display:flex;gap:10px;margin-top:18px;font-size:15px;line-height:1.5;color:var(--s-ink2)}
 .lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
@@ -1328,7 +1332,7 @@ function say(o,quiet){
 function drawProg(p){
   var st=p.states||[];
   $("prog").innerHTML=(p.label&&p.label!=="Steps"?'<em>'+p.label+'</em>':'')+'<ol>'+p.items.map(function(l,i){var c=st[i]||"";
-    return (i?'<b class="'+(c==="dn"||c==="on"?"dn":"")+'"></b>':'')+'<li class="'+c+'"><i>'+(c==="dn"?I("check"):i+1)+'</i><span class="lbl">'+esc(l)+'</span></li>'}).join("")+'</ol>';
+    return (i?'<b class="'+(c==="dn"||c==="on"?"dn":"")+'"></b>':'')+'<li class="'+c+(c==="dn"&&p.label==="Steps"?' go" data-a="stepov" data-i="'+i+'" title="See what happened in '+esc(l)+'"':'"')+'><i>'+(c==="dn"?I("check"):i+1)+'</i><span class="lbl">'+esc(l)+'</span></li>'}).join("")+'</ol>';
 }
 function states(n,cur,doneUpTo){var a=[];for(var i=0;i<n;i++)a.push(i<doneUpTo?"dn":i===cur?"on":"");return a}
 
@@ -1581,7 +1585,7 @@ function verify(){
   later(function(){complete(0,"Business profile approved")},5800);
 }
 /* a step is done: the ring closes, then the next one opens */
-function complete(i,title){F.face=null; F.ro=false; F.notice=null;
+function complete(i,title){F.doneAt=F.doneAt||{}; if(!F.doneAt[i]) F.doneAt[i]=nowTime(); F.face=null; F.ro=false; F.notice=null;
   closeSheet(); F.status[i]="done"; F.mode="pass"; show("pass");
   var nx=i<4?"Next: "+STEPS[i+1].title:"Next: your migration window";
   say({kick:STEPLINE(i), line:title, sub:OK+nx, extra:i===0&&/approved/.test(title)?opsList(4):"", status:["Step done","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
@@ -1865,6 +1869,22 @@ function didList(k,sp){var L=didOf(k).slice(), out=[]; L.forEach(function(x,j){
     else if(j<sp.ok) out.push('<li>'+I("check")+esc(x)+'</li>');
     else out.push('<li class="wait"><i></i>'+esc(x)+'</li>')});
   return '<div class="xdid"><b>What I did <em>'+(sp.ok+" of "+L.length+" done")+'</em></b><ul>'+out.join("")+'</ul></div>'}
+function nowTime(){var t=new Date(), h=t.getHours()%12||12; return h+":"+String(t.getMinutes()).padStart(2,"0")+(t.getHours()<12?" am":" pm")}
+/* a finished step, opened again from the stepper: what happened, who did it, and a way back */
+var OV={profile:["Business profile approved",function(){return ["7 fields filled","Approved by 4 of 4 operators","Logo added"]},"Approved by all 4 telecom operators. Nothing more to do here."],
+  team:["Invites sent",function(){return F.teamLater?["Saved for later","Nothing sent yet"]:[onPeople().length+" people invited","Roles assigned","Emails sent"]},"Your team gets an email invite to DigiConsent."],
+  brands:["Brands and LOBs set up",function(){return [BRANDS.length+" brands",lobCount()+" lines of business","Set up"]},"Your brands and lines of business are set up."],
+  gtm:["Partners confirmed",function(){return picked().map(function(p){return p.name}).concat(["Terms accepted"])},"Volume is split between the chosen partners, phase by phase."],
+  templates:["Templates sent for approval",function(){return [(100-unmapped())+" of 100 mapped",unmapped()+" left for later","Sent for approval"]},"Template mapping is with the operators for approval."]};
+function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=(i===1&&F.teamLater)||F.status[i]==="later";
+  F.ovRet=F.ovRet!=null?F.ovRet:{mode:F.mode,i:F.active}; F.active=i;
+  setFace(i,{ov:1,chip:later?["Do it later","vi"]:["Done","gr"],head:later?st.title+" is saved for later":st.title+" is done",sum:o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
+    h:later?st.title+" saved for later":o[0],p:o[1]().join(" · "),
+    extra:'<div class="okby xovby"><i>RM</i>Done by <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',did:{ok:didOf(st.k).length},
+    l:st.k!=="profile"?B("xview",I("max")+"View","ghost"):'',r:B("ovback",F.ovRet.mode==="review"?"Back to "+STEPS[F.ovRet.i].title:"Back")});
+  if(F.mode!=="review"){F.mode="review"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["Step done","done"]}); showCard()} else refresh();
+  var stx=F.status.map(function(x){return x==="done"||x==="later"?"dn":""}); stx[i]="on"; drawProg({label:"Steps",items:STEPN,states:stx}); markOv(i)}
+function markOv(i){var li=document.querySelectorAll("#prog li"); li.forEach(function(e,k){e.classList.toggle("viewing",k===i)})}
 function setFace(i,f){F.face=f; f.i=i}
 function faceParts(i){var f=F.face, k=STEPS[i].k;
   var body='<div class="xface"><span class="xic '+(f.tone||"")+'">'+(f.spin?'<span class="spn"></span>':I(f.icon||"warn"))+'</span><h3>'+esc(f.h)+'</h3><p>'+esc(f.p)+'</p>'+(f.extra||'')+(f.btn?'<div class="xbtns">'+f.btn+'</div>':'')+'</div>'+(f.did?didList(k,f.did):'');
@@ -2044,6 +2064,8 @@ document.addEventListener("click",function(e){
   else if(a==="xdl") toast("Terms of Use downloaded as a PDF");
   else if(a==="xreq") toast("Request sent to your account manager");
   else if(a==="xonline") offline(false);
+  else if(a==="stepov"){if(["review","final","pass"].indexOf(F.mode)>=0&&!F.kv&&!CARD.big) stepOverview(+el.dataset.i)}
+  else if(a==="ovback"){var r=F.ovRet; F.ovRet=null; F.face=null; F.ro=false; if(r&&r.mode==="review"){F.active=r.i; review(r.i)} else {hideCard(); final()}}
   else if(a==="logout"){jump("gate"); toast("You're logged out. Sign in again to carry on.")}
   else if(a==="auth"){if(F.pf) return; F.auth=!F.auth; refresh()}
   else if(a==="kvnext"){kvNext()}
@@ -2115,7 +2137,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 /* ======================= prototype jumps ======================= */
 function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
