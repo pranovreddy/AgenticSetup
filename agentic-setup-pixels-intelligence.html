@@ -455,6 +455,19 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .fly .who{display:flex;flex-direction:column;line-height:1.3;padding:8px 0;border-block:1px solid #e6edf8}.fly .who strong{font-size:14px;color:var(--s-ink)}.fly .who span{font-size:12px;color:var(--s-muted)}
 .fly .logout{height:38px;border:0;border-radius:12px;background:#f1f5fd;color:var(--s-ink2);display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 13px Inter,sans-serif;cursor:pointer;transition:background .2s,color .2s}
 .fly .logout:hover{background:#e6eeff;color:var(--s-ink)}.fly .logout svg{width:15px;height:15px}
+.tst{display:grid;grid-template-columns:118px 1fr 1.35fr 1fr;align-items:center;gap:0;margin-top:14px;padding:16px 18px;border:1px solid var(--s-line);border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(20,40,90,.04)}
+.tst-d{position:relative;width:104px;height:104px}.tst-d svg{width:100%;height:100%;transform:rotate(-90deg)}
+.tst-d circle{fill:none;stroke-width:13}.tst-d .bg{stroke:#e6ebf5}.tst-d .fg{stroke:#3b62e3;stroke-linecap:butt;transition:stroke-dasharray .6s}
+.tst-d span{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.tst-d b{font-size:19px;color:var(--s-ink)}.tst-d small{font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--s-ink2);font-weight:600}
+.tst-c{padding:2px 18px;border-left:1px solid var(--s-line);min-width:0}.tst-d+.tst-c{border-left:0}
+.tst-c em{display:flex;align-items:center;gap:7px;font-style:normal;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--s-muted);font-weight:600}
+.tst-c em .dt{width:9px;height:9px;border-radius:50%;background:#3b62e3}.tst-c em .dt.l{background:#dfe6f6}
+.tst-c em .ic{margin-left:auto;color:#3b62e3;display:grid}.tst-c em .ic .i,.tst-c em .ic svg{width:20px;height:20px}.tst-c em .ic svg{fill:none;stroke:currentColor;stroke-width:2}
+.tst-c>b{display:block;font-size:30px;line-height:1.15;margin:8px 0 4px;color:var(--s-ink)}.tst-c>b sup{font-size:13px;vertical-align:baseline;margin-left:4px;color:var(--s-ink2);font-weight:600}
+.tst-c>small{display:flex;align-items:center;gap:5px;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--s-muted);font-weight:600}.tst-c .inf{display:grid;cursor:help}.tst-c .inf .i{width:13px;height:13px}
+.tst-bar{display:flex;gap:2px;height:7px;border-radius:999px;overflow:hidden;background:#e6ebf5;margin-top:6px}.tst-bar i{display:block;background:#7ea2f0}.tst-bar i+i{background:#c5d7fb}
+.tst-k{display:flex;gap:14px;margin-top:8px;font-size:12.5px;color:var(--s-muted);white-space:nowrap}.tst-k span{display:flex;align-items:center;gap:5px}.tst-k i{width:7px;height:7px;border-radius:50%;background:#7ea2f0}.tst-k i.l{background:#c5d7fb}.tst-k b{color:var(--s-ink)}
+@media (max-width:900px){.tst{grid-template-columns:1fr 1fr}.tst-c{border-left:0;padding:10px 0}}
 .lmore{font-size:14px;color:var(--s-muted);margin-top:8px}
 .lneed{display:flex;gap:10px;margin-top:18px;font-size:15px;line-height:1.5;color:var(--s-ink2)}
 .lneed:before{content:"";width:3px;border-radius:3px;background:var(--s-blue);flex:none}
@@ -701,6 +714,7 @@ body[data-m=proc] #sub{display:none}
 <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4.5 15v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3"/></symbol>
 <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M4.5 15v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3"/></symbol>
 <symbol id="i-swap" viewBox="0 0 24 24"><path d="M5 9h13l-3.5-3.5M19 15H6l3.5 3.5"/></symbol>
+<symbol id="i-wand" viewBox="0 0 24 24"><path d="m4 20 10-10"/><path d="m12.5 8.5 3 3"/><path d="M16 3.5v3M14.5 5h3M20 9v2.5M18.75 10.25h2.5M8 4v2M7 5h2"/></symbol>
 <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4 2.8 20h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol>
 <symbol id="i-mark" viewBox="0 0 24 24"><path d="M7 4h10v16l-5-3.5L7 20z"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
@@ -1437,15 +1451,19 @@ function primary(i){
   if(k==="gtm") return '<button class="btn" data-a="gtm"'+((picked().length===2||F.gpart)&&F.gt?'':' disabled')+'>Confirm partners</button>';
   return '<button class="btn" data-a="tpl">Send '+(100-unmapped())+' for approval</button>';
 }
+/* template mapping at a glance: donut, total, suggested (with confidence split), unsuggested */
+function tStat(un){var tot=100, sg=tot-un, rv=Math.min(71,sg), hi=Math.max(0,sg-rv), C=2*Math.PI*42, pc=Math.round(sg/tot*100);
+  return '<section class="tst"><div class="tst-d"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="bg"/><circle cx="50" cy="50" r="42" class="fg" style="stroke-dasharray:'+(C*sg/tot)+' '+C+'"/></svg><span><b>'+pc+'%</b><small>Suggested</small></span></div>'+
+    '<div class="tst-c"><em>Total scanned</em><b>'+tot+'</b><small>Templates</small></div>'+
+    '<div class="tst-c"><em><i class="dt"></i>Suggested<span class="ic">'+I("wand")+'</span></em><b>'+sg+'<sup>'+pc+'%</sup></b><div class="tst-bar"><i style="flex:'+hi+'"></i><i style="flex:'+rv+'"></i></div><div class="tst-k"><span><i></i><b>'+hi+'</b> high conf.</span><span><i class="l"></i><b>'+rv+'</b> need review</span></div></div>'+
+    '<div class="tst-c"><em><i class="dt l"></i>Unsuggested<span class="ic ban"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg></span></em><b>'+un+'<sup>'+(100-pc)+'%</sup></b><small>Manual mapping <span class="inf" title="Templates the agent couldn\'t match. Map them yourself in View and edit.">'+I("info")+'</span></small></div></section>'}
 function tplSummary(){
   var un=F.tpart?14:unmapped(), mapped=100-un, review=71, sure=Math.max(0,mapped-review), pct=mapped;
   var ring='<span class="tring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" pathLength="100"/><circle class="on" cx="18" cy="18" r="15.5" pathLength="100" style="stroke-dasharray:'+pct+' 100"/></svg><b>'+pct+'%</b></span>';
   var seg=function(n,c){return n?'<i class="'+c+'" style="flex:'+n+'"></i>':''};
   var mx=22, rows=TLOBS.map(function(l){return '<div class="lobr"><span>'+esc(l[0])+'</span><i><b style="width:'+Math.round(l[1]/mx*100)+'%"></b></i><em>'+l[1]+'</em></div>'}).join("")+
     '<div class="lobr un"><span>Not mapped</span><i><b style="width:'+Math.round(un/mx*100)+'%"></b></i><em>'+un+'</em></div>';
-  return (F.tpart?'<div class="xbar err">'+I("warn")+'14 templates have no line of business yet. They don\'t hold up migration.</div>':'')+'<section class="thero"><div class="thead">'+ring+'<div><b>100 scanned</b><span>'+mapped+' mapped to a line of business</span></div></div>'+
-    '<div class="tbar2">'+seg(sure,"hi")+seg(Math.min(review,mapped),"rv")+seg(un,"un")+'</div>'+
-    '<div class="tkey"><span class="hi"><i></i><b>'+sure+'</b> high confidence</span><span class="rv"><i></i><b>'+Math.min(review,mapped)+'</b> need review</span><span class="un"><i></i><b>'+un+'</b> unmapped</span></div></section>'+
+  return (F.tpart?'<div class="xbar err">'+I("warn")+'14 templates have no line of business yet. They don\'t hold up migration.</div>':'')+tStat(un)+
     '<p class="tlh">Templates per line of business</p><div class="lobl">'+rows+'</div>'+(un?'<p class="chg" style="margin-top:6px">71 need review. Check them first, or send them as they are. The '+un+' with no line of business do not hold up migration.</p>':'');
 }
 function profOk(){return PROFILE.every(function(x){return String(x[1]).trim()})}
@@ -1819,7 +1837,7 @@ function tplBig(){
   var selN=Object.keys(F.tsel).filter(function(k){return F.tsel[k]}).length, allSel=shown.length&&shown.every(function(r){return F.tsel[r[1]]});
   var tot=F.lobf==="all"?100:F.lobf==="un"?un:tplCount(F.lobf);
   return zbanner("A mapping change is only saved when you send it for approval. Templates without a line of business don't hold up migration.")+
-    '<div class="zpanel zstat"><span class="tring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" pathLength="100"/><circle class="on" cx="18" cy="18" r="15.5" pathLength="100" style="stroke-dasharray:'+(100-un)+' 100"/></svg><b>'+(100-un)+'%</b></span><div><b>100</b><span>Templates scanned</span></div><div><b>'+(100-un)+'</b><span>Suggested</span></div><div><b>'+un+'</b><span>Unmapped</span></div></div>'+
+    tStat(un)+
     '<div class="zsplit"><aside class="zlobs"><h5><span>Lines of business</span><span>'+TLOBS.length+'</span></h5><button class="zlb'+(F.lobf==="all"?' on':'')+'" data-a="lobf" data-v="all">All templates<i>100</i></button>'+
     TLOBS.map(function(l){return '<button class="zlb'+(F.lobf===l[0]?' on':'')+'" data-a="lobf" data-v="'+esc(l[0])+'">'+esc(l[0])+'<i>'+l[1]+'</i></button>'}).join("")+'<button class="zlb'+(F.lobf==="un"?' on':'')+'" data-a="lobf" data-v="un">Unmapped<i>'+un+'</i></button></aside>'+
     '<div class="zpanel zgrow"><div class="zph"><b>'+(F.lobf==="all"?"All templates":F.lobf==="un"?"Unmapped":esc(F.lobf))+'</b><span>Showing '+shown.length+' of '+tot+' (sample)</span><span class="zr zfs">'+[["all","All"],["hi","High confidence"],["m","Needs review"]].map(function(f){return '<button class="fc'+(F.tcf===f[0]?' on':'')+'" data-a="tcf" data-v="'+f[0]+'">'+f[1]+'</button>'}).join("")+'</span></div>'+
