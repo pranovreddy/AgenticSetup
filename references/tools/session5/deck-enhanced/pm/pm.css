@@ -117,3 +117,11 @@ body.v3b.ph-review .card.st-done:not(.is-focus) .cf-mid,body.v3b.ph-review .card
 .pm-pill.done .sp2{ animation:none; border:0; background:#16a34a; width:16px; height:16px; }
 body.pm-still .card,body.pm-still .card-in,body.pm-still .cardf{ transition:none!important; }
 body.arc-mode .card:not(.is-focus){ filter:none!important; }
+/* processing: no bottom bar, an AI query pill with changing text between the orb and the scene */
+body.arc-mode [data-analyse] .cap,[data-analyse] .cap{ display:none!important; }
+[data-analyse]{ position:relative; }
+.pm-q{ position:absolute; left:50%; top:43%; transform:translate(-50%,-50%); z-index:6; display:inline-flex; align-items:center; gap:10px; max-width:92%; height:46px; padding:0 20px 0 8px; border-radius:99px; background:linear-gradient(180deg,#fff,#f1f5ff); box-shadow:0 0 0 1px rgba(37,99,235,.28),0 14px 28px -16px rgba(37,99,235,.7); color:#14233f; font-weight:600; font-size:16px; white-space:nowrap; }
+.pm-q .qi{ width:30px; height:30px; border-radius:50%; background:radial-gradient(circle at 34% 28%,#8cc0ff,#2554e0); display:grid; place-items:center; flex:none; } .pm-q .qi svg{ width:16px; height:16px; color:#fff; animation:atspin 6s linear infinite; }
+.pm-q .qt{ overflow:hidden; text-overflow:ellipsis; animation:pmSwap .45s var(--ease); } .pm-q .qd{ display:inline-flex; gap:3px; } .pm-q .qd i{ width:5px; height:5px; border-radius:50%; background:#2563eb; opacity:.3; animation:pmDot 1s infinite; } .pm-q .qd i:nth-child(2){ animation-delay:.18s; } .pm-q .qd i:nth-child(3){ animation-delay:.36s; } @keyframes pmDot{ 50%{ opacity:1; } }
+.pm-q{ top:40%!important; }
+.pm-q.fill{ top:18px!important; left:auto; right:22px; transform:none; }

@@ -627,3 +627,5 @@ PM feedback file: closes-in pill hugs its content (207px) and widens on hover (3
 PM feedback file: the reading highlight on the agreement summary is lighter (8% blue).
 
 PM feedback file: (1) the 2.2px blur on non-focus cards during processing is removed, plus the stage edge mask and card backdrop filter; cards drop transitions once they stop moving; (2) the 3-line task ticker under the agent text is one pill with changing text (#pmPill).
+
+PM feedback file: processing cards drop the bottom 'N of N' bar; an AI query pill with changing text sits between the orb and the scene (.pm-q). The Business profile review shows a 'Filling in <field>' pill on the card while the agent types, as well as in the left text.

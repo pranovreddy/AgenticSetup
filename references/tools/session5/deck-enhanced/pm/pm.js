@@ -33,3 +33,14 @@ setInterval(() => { const box = $("#hTasks"); if (!box) return; if (!box.classLi
   const f = $("li.focus .tx", box), txt = f ? f.textContent : ""; if (!txt) { pill.hidden = true; pill.dataset.t = ""; return; } pill.hidden = false; if (pill.dataset.t !== txt) { pill.dataset.t = txt; const t = $(".tx2", pill); t.textContent = txt; t.style.animation = "none"; void t.offsetWidth; t.style.animation = ""; } }, 250);
 /* crisp text: once the cards stop moving, drop their transitions so they are redrawn at the final size */
 { let tm = 0; const still = () => document.body.classList.add("pm-still"); new MutationObserver(() => { document.body.classList.remove("pm-still"); clearTimeout(tm); tm = setTimeout(still, 1100); }).observe(stage, { attributes: true, attributeFilter: ["style"], subtree: true }); tm = setTimeout(still, 1500); }
+/* AI query pill inside each analysing card; autofill pill on the profile review */
+setInterval(() => {
+  $$(".card", stage).forEach((el) => { const ln = $("[data-line]", el), host = $("[data-analyse]", el); if (!host) return; let q = $(".pm-q", host);
+    if (!ln || !$(".ld", host)) { if (q) q.remove(); return; }
+    if (!q) { host.insertAdjacentHTML("beforeend", `<div class="pm-q"><span class="qi">${typeof AI_MARK !== "undefined" ? AI_MARK : ""}</span><span class="qt"></span><span class="qd"><i></i><i></i><i></i></span></div>`); q = $(".pm-q", host); }
+    const t = ln.textContent.replace(/\s+/g, " ").trim(), tx = $(".qt", q); if (tx.dataset.v !== t) { tx.dataset.v = t; tx.textContent = t; tx.style.animation = "none"; void tx.offsetWidth; tx.style.animation = ""; } });
+  { const rv = $("[data-review]", card(0)); let f = rv && $(".pm-q.fill", rv); if (S.profileFilling && rv) { const cur = $(".pf.is-filling label, .pf.is-filling .lab", rv), n = cur && cur.firstChild ? cur.firstChild.textContent.replace("*", "").trim() : ""; const t = n ? `Filling in ${n}` : "Filling in your business profile"; if (!f) { rv.insertAdjacentHTML("afterbegin", `<div class="pm-q fill"><span class="qi">${typeof AI_MARK !== "undefined" ? AI_MARK : ""}</span><span class="qt"></span><span class="qd"><i></i><i></i><i></i></span></div>`); f = $(".pm-q.fill", rv); } const x = $(".qt", f); if (x.textContent !== t) x.textContent = t; } else if (f) f.remove(); }
+  const pill = $("#pmPill"); if (!pill) return;
+  if (S.profileFilling) { const f = $(".pf.is-filling label, .pf.is-filling .lab, .pf.is-filling b", card(0)), n = f ? f.textContent.replace("*", "").trim() : ""; const t = n ? `Filling in ${n}` : "Filling in your business profile"; pill.hidden = false; pill.dataset.t = "fill"; const x = $(".tx2", pill); if (x.textContent !== t) x.textContent = t; }
+  else if (pill.dataset.t === "fill") { pill.hidden = true; pill.dataset.t = ""; }
+}, 250);
