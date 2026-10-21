@@ -651,3 +651,5 @@ PM feedback file: fixed a layout bug where the processing pane was position:rela
 PM feedback file: the edit (Details) pages are zoomed out to 85% (#deep zoom).
 
 PM feedback file: the '5 STEPS' label above the start-screen title is removed.
+
+PM feedback file: the card in focus in the processing ring is 16% bigger than the side cards (scale f*(1+.16*cc) in ringPaint).

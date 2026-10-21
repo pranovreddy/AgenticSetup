@@ -2918,7 +2918,7 @@ function ringPaint() {
     size(el, cw, ch);
     /* the circle is seen from slightly above: depth moves a card up or down, the card itself stays upright */
     const zz = R * ca * f * Math.cos(tl), ps = 1500 / (1500 - zz);
-    el.style.transform = `translate3d(${R * sa * f + g.LPa / 2 / ps}px, ${g.cy + R * ca * f * Math.sin(tl)}px, ${zz}px) rotateY(${face}deg) rotateZ(0deg) scale(${f})`;
+    el.style.transform = `translate3d(${R * sa * f + g.LPa / 2 / ps}px, ${g.cy + R * ca * f * Math.sin(tl)}px, ${zz}px) rotateY(${face}deg) rotateZ(0deg) scale(${f * (1 + .16 * cc)})`;
     el.style.setProperty("--o", ca < 0 ? .86 : 1); el.style.opacity = 1; el.style.zIndex = 20 + Math.round(ca * 10);
     el.classList.remove("is-far", "is-right", "is-clickable");
     if (Math.abs(d) < pd) { pd = Math.abs(d); prim = i; }

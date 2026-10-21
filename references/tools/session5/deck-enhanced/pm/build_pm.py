@@ -65,6 +65,8 @@ h = h[:a] + 'return bar + pmGtmSelect(list, sel, best, closed, dis);\n  }\n  con
 a = h.index('<details><summary>Sources${IC.chev}</summary>')
 z = h.index('</details>', a) + len('</details>')
 h = h[:a] + h[z:]
+# focus card in the ring is bigger
+sub("rotateY(${face}deg) rotateZ(0deg) scale(${f})`;", "rotateY(${face}deg) rotateZ(0deg) scale(${f * (1 + .16 * cc)})`;")
 sub("window.__deck = { uxState,", js + "\nwindow.__deck = { uxState,")
 sub('<script>document.body.classList.add("dk-6","lt-1");</script>', f'<style id="pm-fb">{css}</style>\n<script>document.body.classList.add("dk-6","lt-1");</script>')
 (root / "agentic-setup-cards-states-pm-feedback.html").write_text(h)
