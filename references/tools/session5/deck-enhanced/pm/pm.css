@@ -110,7 +110,6 @@ body.v3b.ph-review .card.st-done:not(.is-focus) .cf-mid,body.v3b.ph-review .card
 .stage{ -webkit-mask-image:none!important; mask-image:none!important; }
 .card-in{ -webkit-backdrop-filter:none!important; backdrop-filter:none!important; }
 /* task ticker as one pill with changing text */
-#hTasks.pm-hide{ display:none!important; }
 .pm-pill{ display:inline-flex; align-items:center; gap:10px; max-width:100%; height:44px; padding:0 18px 0 14px; border-radius:99px; background:#fff; box-shadow:0 0 0 1px rgba(37,99,235,.22),0 10px 22px -16px rgba(37,99,235,.6); color:#14233f; font-weight:600; font-size:16px; margin-top:14px; }
 .pm-pill .sp2{ width:14px; height:14px; border:2.5px solid #2563eb; border-right-color:transparent; border-radius:50%; animation:uxspin .8s linear infinite; flex:none; }
 .pm-pill .tx2{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; animation:pmSwap .45s var(--ease); } @keyframes pmSwap{ from{ opacity:0; transform:translateY(6px); } }
@@ -125,3 +124,8 @@ body.arc-mode [data-analyse] .cap,[data-analyse] .cap{ display:none!important; }
 .pm-q .qt{ overflow:hidden; text-overflow:ellipsis; animation:pmSwap .45s var(--ease); } .pm-q .qd{ display:inline-flex; gap:3px; } .pm-q .qd i{ width:5px; height:5px; border-radius:50%; background:#2563eb; opacity:.3; animation:pmDot 1s infinite; } .pm-q .qd i:nth-child(2){ animation-delay:.18s; } .pm-q .qd i:nth-child(3){ animation-delay:.36s; } @keyframes pmDot{ 50%{ opacity:1; } }
 .pm-q{ top:40%!important; }
 .pm-q.fill{ top:18px!important; left:auto; right:22px; transform:none; }
+/* pills at the bottom of the card */
+.pm-q{ top:auto!important; bottom:22px; left:50%; transform:translateX(-50%); }
+.pm-q.fill{ top:auto!important; bottom:92px; left:50%; right:auto; transform:translateX(-50%); }
+/* left text goes back to the three-line ticker; pills live on the cards only */
+#pmPill{ display:none!important; }
