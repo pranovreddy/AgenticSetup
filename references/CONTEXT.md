@@ -643,3 +643,5 @@ PM feedback file: richer success face on the card (bigger tick with halo, 30px h
 PM feedback file: the partly-prepared Business profile skips the typing animation and puts the cursor in the first field the agent couldn't fill (PAN/TAN); typed text is kept. Also the 'Do it yourself' path is not covered.
 
 PM feedback file: success transition (green wash from the tick, ring pop, drawn tick, then headline, text, who/when, next step and button rise in turn); the fact chips are now one line of plain text; the card stays on the result 5.5 s (6.5 s for the profile) before moving on.
+
+PM feedback file: the 'Template mapping: 98 of 100' status bar is removed from the Brands review card (it stays on the Brands details page).

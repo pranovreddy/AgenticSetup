@@ -3797,7 +3797,7 @@ function renderReviewBase(i) {
     const lobs = BRANDS.reduce((a, b) => a + b.lobs.length, 0);
     body = `${editBanner("brands")}<h3 class="r-h">${BRANDS.length} brands and ${lobs} lines of business ${editTag("brands")}</h3>
       <p class="r-p">Drafted from your DLT headers. Confirm as drafted and they're set up straight away. Any change goes for review.</p>
-      ${pmMapStat()}<div class="ent2 cent"><div class="ent2-h"><span class="eic">${IC.build}</span><div><b>HDFC Bank Limited</b><br><span class="sm">${BRANDS.length} brands · ${lobs} lines of business</span></div><span class="pill">Enterprise</span></div>
+      <div class="ent2 cent"><div class="ent2-h"><span class="eic">${IC.build}</span><div><b>HDFC Bank Limited</b><br><span class="sm">${BRANDS.length} brands · ${lobs} lines of business</span></div><span class="pill">Enterprise</span></div>
       <ul class="htree btree">${BRANDS.map((b, k) => `<li class="hb-brand"><div class="bnode"><span class="bmark t${k % 4}">${esc(b.name.split(" ").map((w) => w[0]).slice(0, 2).join(""))}</span><div class="bmeta"><b>${esc(b.name)}${brandIsNew(b) ? `<span class="newtag">New</span>` : ""}</b><small>${b.lobs.length} lines of business</small></div></div>
         <div class="blobs">${b.lobs.map((l) => `<span class="lob${lobIsNew(b, l) ? " newlob" : ""}">${esc(l)}${pmTplCount(l) ? `<i class="lc">${pmTplCount(l)}</i>` : ""}</span>`).join("")}</div></li>`).join("")}</ul></div>
       ${whatIDid(i)}`;

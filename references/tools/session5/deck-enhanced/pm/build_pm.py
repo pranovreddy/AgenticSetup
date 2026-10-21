@@ -41,7 +41,7 @@ sub('<tr><td colspan="3"><div class="empty">No one matches.', '<tr><td colspan="
 # 13 and 14 brands: proof and template status
 sub('<input class="inp" aria-label="Line of business" data-lob="${bi}:${li}" value="${esc(l)}" ${dis}>', '<input class="inp" aria-label="Line of business" data-lob="${bi}:${li}" value="${esc(l)}" ${dis}>${pmLobMeta(bi, li, l, closed)}')
 sub('<span class="lob${lobIsNew(b, l) ? " newlob" : ""}">${esc(l)}</span>', '<span class="lob${lobIsNew(b, l) ? " newlob" : ""}">${esc(l)}${pmTplCount(l) ? `<i class="lc">${pmTplCount(l)}</i>` : ""}</span>')
-sub('<div class="ent2 cent">', '${pmMapStat()}<div class="ent2 cent">')
+pass
 sub('<div class="bgrid">${BRANDS.map((b, bi) => `<div class="bcard">', '${pmMapStat()}<div class="bgrid">${BRANDS.map((b, bi) => `<div class="bcard">')
 # 15 templates card text
 sub('<h3 class="r-h">98 of 100 templates have a line of business ${editTag("templates")}</h3>', '<h3 class="r-h">98% of your 100 templates are mapped to a line of business ${editTag("templates")}</h3>')
