@@ -2127,7 +2127,11 @@ document.addEventListener("click",function(e){
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
   else if(a==="dl"){var d=DOCS[F.doc], txt=d.name+"\n"+"=".repeat(d.name.length)+"\n\n"+d.sections.map(function(s){return s[0]+"\n"+String(s[1]).replace(/<[^>]+>/g,"")}).join("\n\n")+"\n";
-    try{var u=URL.createObjectURL(new Blob([txt],{type:"text/plain"})), l=document.createElement("a"); l.href=u; l.download=d.name.replace(/\s+/g,"-").toLowerCase()+".txt"; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u)},2000); toast("Downloading "+d.name)}catch(e){toast("Download isn't available here")}}
+    var fname=d.name.replace(/\s+/g,"-").toLowerCase()+".txt";
+    (window.claude&&claude.use?claude.use("downloads"):Promise.resolve(null)).then(function(dl){
+      if(dl){dl.save({filename:fname,data:txt}).then(function(){toast("Saved "+fname)},function(e){if(e&&e.code!=="declined") toast("Download isn't available here")}); return}
+      try{var u=URL.createObjectURL(new Blob([txt],{type:"text/plain"})), l=document.createElement("a"); l.href=u; l.download=fname; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u)},2000); toast("Downloading "+d.name)}catch(e){toast("Download isn't available here")}
+    }).catch(function(){toast("Download isn't available here")})}
   else if(a==="collapse"){if(CARD.big&&F.mode==="review"&&F.snap&&!F.ro&&snapNow()!==F.snap) saveDlg(); else collapseCard()}
   else if(a==="dkeep") hideDlg();
   else if(a==="dsave"){hideDlg(); F.snap=null; collapseCard(); toast("Your changes are saved")}
