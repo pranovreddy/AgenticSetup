@@ -1693,8 +1693,12 @@ function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; document.body
 function hideCard(){CARD.on=false; $("card").classList.remove("on"); $("asum").classList.remove("on"); placeStatus()}
 function expandCard(){var c=$("card"); if(CARD.big) return; F.snap=snapNow(); c.classList.add("swap");
   later(function(){CARD.big=true; document.body.classList.add("bigcard"); c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
+/* coming back from "add it yourself" with nothing added: show the same "nothing found" card as before */
+function restoreNf(){var f=F.nfFace; if(!f) return; F.nfFace=null; var k=STEPS[F.active].k;
+  var empty=k==="team"?!PEOPLE.length:k==="brands"?BRANDS.every(function(b){return !b.hdr&&b.name==="New brand"&&b.lobs.length<=1}):false;
+  if(empty){F.face=f; F.addU=false; if(k==="team") PEOPLE.splice(0)}}
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
-  later(function(){CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
+  later(function(){restoreNf(); CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},280)},170)}
 /* finishing a step: the card comes back to its summary size, then gives way to the agent */
 function finishStep(fn){
   if(CARD.big){collapseCard(); later(function(){hideCard(); later(fn,380)},800)}
@@ -2240,7 +2244,7 @@ document.addEventListener("click",function(e){
   else if(a==="ddiscard"){var o=JSON.parse(F.snap); PROFILE=o.P; PEOPLE=o.E; BRANDS=o.B; PARTNERS=o.G; TPLS=o.T; ALLOC=o.A; F.am=null; hideDlg(); F.snap=null; collapseCard(); toast("Changes discarded")}
   else if(a==="xreview"){var v=el.dataset.v; F.face=null; if(v==="ret") F.pret=[4,5]; if(v==="tpart") F.tpart=true; refresh()}
   else if(a==="xretry"){var f=F.face; f.r='<button class="btn" disabled><span class="spn w"></span>Trying again…</button>'; refresh(); later(function(){F.face=null; refresh(); toast(STEPS[F.active].title+" is ready to review")},REDUCE?300:2200)}
-  else if(a==="xself"||a==="xadd"){var kk=STEPS[F.active].k; F.face=null; if(kk==="team"){PEOPLE.splice(0); F.addU=true} if(kk==="brands"){BRANDS.splice(0); BRANDS.push({name:"New brand",hdr:"",logo:["NEW","","#1b4f9c"],lobs:["New line of business"]})} refresh(); later(expandCard,200)}
+  else if(a==="xself"||a==="xadd"){var kk=STEPS[F.active].k; F.nfFace=F.face; F.face=null; if(kk==="team"){PEOPLE.splice(0); F.addU=true} if(kk==="brands"){BRANDS.splice(0); BRANDS.push({name:"New brand",hdr:"",logo:["NEW","","#1b4f9c"],lobs:["New line of business"]})} refresh(); later(expandCard,200)}
   else if(a==="xlater"){var ii=F.active; F.face=null; if(ii===1) F.teamLater=true; finishStep(function(){complete(ii,STEPS[ii].title+" saved for later")})}
   else if(a==="xview"){F.ro=true; expandCard()}
   else if(a==="ovshow"){F.ovShow=F.ovShow||{}; F.ovShow[F.active]=!F.ovShow[F.active]; refresh()}
@@ -2339,7 +2343,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 /* ======================= prototype jumps ======================= */
 function resetData(){F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
