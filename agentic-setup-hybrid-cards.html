@@ -812,7 +812,7 @@ body[data-m=proc] .think{min-height:98px;max-height:none;height:98px;padding:8px
   -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 8px,#000 calc(100% - 4px),transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 8px,#000 calc(100% - 4px),transparent 100%)}
 body[data-m=proc] .think li{line-height:1.45}
 /* the scene: a fixed frame, each loader is cropped to what it draws and centred in it */
-.hyL{display:none;position:relative;margin:14px auto 0;pointer-events:none;text-shadow:none;transition:height .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1)}
+.hyL{display:none;position:relative;left:50%;transform:translateX(-50%);margin:14px 0 0;pointer-events:none;text-shadow:none;transition:height .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1)}
 body[data-m=proc] .hyL{display:block}
 .hyL:before{content:"";position:absolute;left:-10%;right:-10%;top:-14%;bottom:-14%;border-radius:50%;
   background:radial-gradient(closest-side,rgba(170,205,255,.26),rgba(120,165,255,.10) 55%,rgba(120,165,255,0));animation:hyGlow 7s ease-in-out infinite}
