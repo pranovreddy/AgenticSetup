@@ -1739,7 +1739,7 @@ function cardHTML(){
   if(st.k==="profile"&&F.kv&&!CARD.big){var dn=F.kv.ph==="done";
     chips='<span class="chipmini amb">In review</span>';
     p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
-  if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="spn"></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
+  if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
   if(st.k==="templates"&&F.tov&&!CARD.big){p.body='<div class="xovw"><div class="xblur">'+p.body+'</div>'+tplOverlay()+'</div>'; p.r=p.r.replace('data-a="tpl"','data-a="tpl" disabled'); if(F.tov==="lock"){chips='<span class="chipmini sl">Locked</span>'; p.title="Templates"}}
   if(CARD.big) kick=STEPLINE(i);
   p.kick=kick; p.chips=chips; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
@@ -1916,7 +1916,7 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
 
 function fillStep(){
   if(!F.pf||F.mode!=="review"||F.active!==0) return;
-  var pill=document.querySelector("#card .fillpill > span");
+  var pill=document.querySelector("#card .fillpill > span:last-of-type");
   if(F.offline){if(pill&&!F.pfPause){F.pfPause=1; pill.innerHTML="Paused while you're offline"} later(fillStep,400); return}
   if(F.pfPause){F.pfPause=0; if(pill) pill.innerHTML='Filling in <b id="fillf"></b>'; patchFill()}
   if(F.pf.k<0){F.pf.k=0; F.pf.n=0; patchFill(); later(fillStep,420); return}
