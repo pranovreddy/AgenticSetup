@@ -277,6 +277,7 @@ select.inp{height:36px;padding:0 8px}
 .lfacts b{font-weight:600}
 .lfacts em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
 .rp{margin:2px 0 0;font-size:14.5px;line-height:1.5;color:var(--s-ink2)}
+.rcnote{margin:16px auto 0;max-width:520px;font-size:14.5px;opacity:.88;line-height:1.5}
 .rcrow{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:15px;opacity:.92}.rcrow .spn{width:16px;height:16px;border:2.5px solid #fff;border-right-color:transparent;border-radius:50%;animation:rcspin .9s linear infinite}@keyframes rcspin{to{transform:rotate(360deg)}}
 .chg{display:flex;align-items:center;gap:10px;margin:14px 0 4px;padding:10px 14px;border-radius:12px;background:#eef3ff;border:1px solid #d3e0fb;color:#1e3a8a;font-size:14px;font-weight:500;line-height:1.4}.chg svg{width:18px;height:18px;flex:none;color:var(--s-blue)}
 .card .auth u{text-decoration:underline;text-underline-offset:2px}
@@ -1468,7 +1469,7 @@ function recalc(kind,then){
   F.mode="msg"; show("blank"); hideCard();
   say({kick:"Onboarding Agent",line:b?"Recalculating your brands and LOBs":"Mapping your templates again",
     sub:b?"You changed your business profile, so I am recalculating your brands and lines of business.":"You changed your brands and lines of business, so I am mapping your templates again.",
-    extra:'<div class="rcrow"><span class="spn w"></span>'+(b?"Checking the new details against your DLT headers":"Matching each template to your updated lines of business")+'</div>',
+    extra:'<div class="rcrow"><span class="spn w"></span>'+(b?"Checking the new details against your DLT headers":"Matching each template to your updated lines of business")+'</div>'+(b?'':'<p class="rcnote">This takes about 5 minutes. You can skip it for now and do it later from the product.</p><div class="acts"><button class="btn ghost" data-a="rcskip">Skip for now</button></div>'),
     status:["Recalculating","still"],prog:{label:"Steps",items:STEPN,states:states(5,b?2:4,b?2:4)}});
   corePulse();
   later(function(){F[b?"rcB":"rcT"]=true; then()},REDUCE?600:4800);
@@ -1574,7 +1575,7 @@ var CARD={on:false,big:false};
 function docCard(){
   var d=DOCS[F.doc], kick="Before we begin · agreement "+(F.doc+1)+" of 2";
   return {kick:kick,title:d.name,
-    tog:CARD.big?'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Exit full page</button>':'<span class="cd-togs"><button class="btn ghost dlbtn" data-a="dl" title="Download '+esc(d.name)+'" aria-label="Download '+esc(d.name)+'"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg></button><button class="btn ghost cd-tog" data-a="details">'+I("max")+'Full page</button></span>',
+    tog:CARD.big?'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Exit full page</button>':'<span class="cd-togs"><button class="btn ghost dlbtn" data-a="dl" title="Download '+esc(d.name)+'" aria-label="Download '+esc(d.name)+'"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg></button></span>',
     body:'<div class="dgrid"><aside class="dsum"><div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x,k){return '<li data-a="pt" data-k="'+k+'" tabindex="0">'+esc(x)+'</li>'}).join("")+'</ol>'+
       '<div class="lneed"><span>This summary is only a guide. What you accept is the full text of the document.</span></div></aside>'+
       (F.gx==="fail"?'<div class="dtext"><div class="xface xtall"><span class="xic or">'+I("warn")+'</span><h3>Couldn\'t load this document</h3><p>Check your connection, then try again.</p><div class="xbtns">'+B("xgretry","Try again")+'</div></div></div></div>':'<div class="dtext"><div class="doc">'+d.sections.map(function(s,si){return '<h4 data-sec="'+si+'">'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div></div></div>'),
@@ -1987,7 +1988,7 @@ function xBig(i,o){ // notices, read-only, failures and save errors on the full 
 function tplOverlay(){var t=F.tov;
   if(t==="lock") return '<div class="xov"><span class="xic sl">'+I("lock")+'</span><h3>Waiting for Brands and LOBs approval</h3><p>Your brands and LOBs are with the telecom operators. Skip this step for now and map templates once they are approved. You can change it later at any time.</p></div>';
   if(t==="hold") return '<div class="xov"><span class="xic">'+I("lock")+'</span><h3>Your brands and LOBs are still under review</h3><p>2 brands and 4 LOBs are still under review. We suggest you skip this step for now and map templates once they are approved. If you continue now, templates are mapped to the approved LOBs only. You can change the mapping later at any time.</p><div class="xbtns">'+B("xskip","Skip for now")+B("xcont","Continue anyway","ghost")+'</div></div>';
-  if(t==="remap") return '<div class="xov"><span class="xic"><span class="spn"></span></span><h3>Mapping your templates again</h3><p>You removed a line of business, so I am mapping your templates again. This takes a moment.</p></div>';
+  if(t==="remap") return '<div class="xov"><span class="xic"><span class="spn"></span></span><h3>Mapping your templates again</h3><p>You removed a line of business, so I am mapping your templates again. This takes about 5 minutes. You can skip it for now and do it later.</p><div class="xbtns">'+B("xskip","Skip for now","ghost")+'</div></div>';
   return ""}
 /* a finished step is shown on the blue field, like the rest of the journey */
 function opsList(n){return '<div class="xops">'+["Airtel","Jio","Vi","BSNL"].map(function(o,k){return k<n?'<span class="aok">'+I("check")+'<b>'+o+'</b>Approved</span>':'<span class="wt">'+I("clock")+'<b>'+o+'</b>Still reviewing</span>'}).join("")+'</div>'}
@@ -2142,6 +2143,7 @@ document.addEventListener("click",function(e){
   else if(a==="xlater"){var ii=F.active; F.face=null; if(ii===1) F.teamLater=true; finishStep(function(){complete(ii,STEPS[ii].title+" saved for later")})}
   else if(a==="xview"){F.ro=true; expandCard()}
   else if(a==="ovshow"){F.ovShow=F.ovShow||{}; F.ovShow[F.active]=!F.ovShow[F.active]; refresh()}
+  else if(a==="rcskip"){clearLater(); F.rcT=true; F.status[4]="later"; complete(4,"Template mapping saved for later")}
   else if(a==="ovedit"){F.ro=STEPS[F.active].k==="profile"; expandCard()}
   else if(a==="xgo"){goStep(+el.dataset.v)}
   else if(a==="xdeck") jump("ready");
