@@ -264,6 +264,9 @@ select.inp{height:36px;padding:0 8px}
 .cd-agent img{width:13px;height:auto}
 .cd-conf{font-size:12.5px;color:var(--s-muted);margin-top:10px}
 .cd-asum{display:flex;align-items:center;gap:12px;margin:10px 0 4px;padding-left:12px;border-left:3px solid #4f6ef0;font-size:14.5px;line-height:1.5;color:var(--s-ink2)}
+.hh{}
+#holdhint{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(8px);padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.95);color:#1f3fae;font:600 13px Inter,system-ui,sans-serif;box-shadow:0 10px 24px -12px rgba(20,50,150,.55);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:60}#holdhint.on{opacity:1;transform:translateX(-50%)}
+.kvai{flex:none;width:30px;height:30px;display:grid;place-items:center}.kvai .mblob{width:28px;height:28px;display:block}
 .cd-ai{flex:none;width:44px;height:44px;border-radius:50%;background:none;display:grid;place-items:center;box-shadow:none}.cd-ai .mblob{width:40px;height:40px;display:block}
 .card:not(.big):not(.isdoc) .cd-in{background:radial-gradient(120% 220px at 0 0,rgba(120,160,255,.28),rgba(120,160,255,0) 70%),radial-gradient(80% 180px at 100% 0,rgba(160,130,255,.14),rgba(160,130,255,0) 70%),linear-gradient(180deg,#dbe6ff 0,#eaf1ff 90px,rgba(255,255,255,0) 230px);border-radius:inherit}
 .cd-asum .cd-agent{margin-top:0;background:#fff;box-shadow:0 1px 2px rgba(30,70,170,.12)}.cd-asum .chipmini{margin:0}
@@ -400,7 +403,7 @@ select.inp{height:36px;padding:0 8px}
 .okt .i{width:34px;height:34px;stroke-width:2.4}
 @keyframes okIn{from{transform:scale(.4);opacity:0}}
 .okface h3{margin:22px 0 6px;font-size:24px}.okface p{margin:0;color:var(--s-muted);font-size:14.5px}
-.okby{display:flex;align-items:center;gap:8px;margin:16px 0 10px;font-size:14px;color:var(--s-ink2)}.okby i{width:26px;height:26px;border-radius:50%;background:#eaf0ff;color:var(--s-blue);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
+.okby{display:flex;align-items:center;gap:8px;margin:16px 0 10px;font-size:14px;color:var(--s-ink2)}.okby i{flex:none;aspect-ratio:1;width:26px;height:26px;border-radius:50%;background:#eaf0ff;color:var(--s-blue);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
 @media (prefers-reduced-motion: reduce){.spn,.dots b,.okt{animation:none}}
 
 .bigsum{position:fixed;left:0;top:0;bottom:0;z-index:6;display:none;pointer-events:none}
@@ -476,7 +479,7 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .xdlg-c h3{margin:14px 0 6px;font-size:19px}.xdlg-c p{margin:0;font-size:14px;line-height:1.55;color:var(--s-ink2)}.xdlg-c .xbtns{justify-content:flex-end}
 .xoff{position:fixed;top:16px;left:50%;transform:translate(-50%,-90px);z-index:30;display:flex;align-items:center;gap:10px;padding:10px 18px;border:0;border-radius:999px;background:#101b3d;color:#fff;font:500 13.5px Inter,sans-serif;cursor:pointer;box-shadow:0 14px 34px -12px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.2,.9,.2,1)}
 .xoff.on{transform:translate(-50%,0)}.xoff i{width:8px;height:8px;border-radius:50%;background:#f59e0b}.xoff span{opacity:.6;margin-left:6px;font-size:12px}
-.xby{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;color:rgba(255,255,255,.85)}.xby i{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
+.xby{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;color:rgba(255,255,255,.85)}.xby i{flex:none;aspect-ratio:1;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
 .xamb{margin:16px auto 0;max-width:460px;padding:10px 14px;border-radius:12px;background:rgba(255,210,122,.18);color:#ffe2a8;font-size:14px;line-height:1.45}
 .xops{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:8px;justify-content:center;margin-top:18px}
 .xops span{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.12);font-size:13px;color:rgba(255,255,255,.8)}.xops b{color:#fff;margin-right:auto}
@@ -686,7 +689,7 @@ html[data-px=azure] .prog li.on i,html[data-px=azure] .prog li.dn i{color:var(--
 html[data-px=azure] .closes:not(.inapp) small{color:#fff}
 
 /* a full-page card is white: keep the corner pills readable on it, in every theme */
-body.bigcard:not(.bigsplit) .brand,body.bigcard:not(.bigsplit) .closes:not(.inapp){background:#fff!important;border-color:#dfe6f3!important;color:var(--s-ink)!important;box-shadow:0 8px 24px rgba(30,70,170,.16)!important}
+body.bigcard:not(.bigsplit) .brand,body.bigcard:not(.bigsplit) .closes:not(.inapp){background:#fff!important;border:1.5px solid #9fb3dd!important;color:var(--s-ink)!important;box-shadow:0 0 0 3px rgba(37,99,235,.08),0 8px 24px rgba(30,70,170,.16)!important}
 body.bigcard:not(.bigsplit) .brand .bl{background:#eef3ff!important}
 body.bigcard:not(.bigsplit) .closes:not(.inapp) .ci{background:#eef1f7!important;color:#5b6b8c!important}
 body.bigcard:not(.bigsplit) .closes:not(.inapp) small{color:#7a88a6!important}
@@ -1385,8 +1388,12 @@ function states(n,cur,doneUpTo){var a=[];for(var i=0;i<n;i++)a.push(i<doneUpTo?"
 
 /* timers that die when the user jumps */
 var timers=[];
-function later(f,ms,keep){var id=setTimeout(f,ms); if(!keep) timers.push(id); return id}
-function clearLater(){timers.forEach(clearTimeout); timers=[]}
+var HOLD=null; // after a Prototype jump, timed changes wait here until the next click
+function later(f,ms,keep){if(HOLD&&ms>1600){HOLD.push([f,ms,keep]); holdHint(true); return -1} var id=setTimeout(f,ms); if(!keep) timers.push(id); return id}
+function clearLater(){timers.forEach(clearTimeout); timers=[]; if(HOLD) HOLD.length=0; holdHint(false)}
+function holdHint(on){var e=document.getElementById("holdhint"); if(!e){e=document.createElement("div"); e.id="holdhint"; e.textContent="Click anywhere to continue"; document.body.appendChild(e)} e.classList.toggle("on",!!on&&HOLD&&HOLD.length>0)}
+function holdRelease(){var q=HOLD; HOLD=null; holdHint(false); if(q) q.forEach(function(t){later(t[0],t[1],t[2])})}
+document.addEventListener("click",function(e){if(HOLD&&!e.target.closest("#pm,#pmb")) holdRelease()},true);
 function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove("on")},2600)}
 
 /* ======================= flow ======================= */
@@ -1599,7 +1606,7 @@ function cardHTML(){
     p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i)}}
   if(st.k==="profile"&&F.kv&&!CARD.big){var dn=F.kv.ph==="done";
     chips='<span class="chipmini amb">In review</span>';
-    p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="spn"></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
+    p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
   if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="spn"></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
   if(st.k==="templates"&&F.tov&&!CARD.big){p.body='<div class="xovw"><div class="xblur">'+p.body+'</div>'+tplOverlay()+'</div>'; p.r=p.r.replace('data-a="tpl"','data-a="tpl" disabled'); if(F.tov==="lock"){chips='<span class="chipmini sl">Locked</span>'; p.title="Templates"}}
   if(CARD.big) kick=STEPLINE(i);
@@ -2244,11 +2251,11 @@ function jump(w){
     '</details>'+XMENU.map(function(g){return '<details class="pmg"><summary>'+g[0]+'<i>'+g[1].length+'</i></summary>'+g[1].map(function(x){return '<button data-x="'+x[1]+'">'+x[0]+'</button>'}).join("")+'</details>'}).join("")+
     '<details class="pmg"><summary>Display</summary><button data-j="glyph">Pixels: use arrows</button><button data-j="pause">Pause motion</button></details>';
   $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on")};
-  pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); XS[x.dataset.x](); return}
+  pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); HOLD=[]; XS[x.dataset.x](); return}
     var b=e.target.closest("[data-j]"); if(!b) return; var j=b.dataset.j;
     if(j==="glyph"){GLYPH=GLYPH==="tri"?"arrow":"tri"; b.textContent=GLYPH==="tri"?"Pixels: use arrows":"Pixels: use triangles"; makeSprites(); return}
     if(j==="pause"){paused=!paused; b.textContent=paused?"Play motion":"Pause motion"; return}
-    pm.classList.remove("on"); jump(j)};
+    pm.classList.remove("on"); HOLD=[]; jump(j)};
 })();
 
 var CLOSE_AT=Date.now()+30*864e5;
