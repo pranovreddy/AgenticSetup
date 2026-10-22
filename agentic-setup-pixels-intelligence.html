@@ -277,11 +277,19 @@ select.inp{height:36px;padding:0 8px}
 .lfacts b{font-weight:600}
 .lfacts em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
 .rp{margin:2px 0 0;font-size:14.5px;line-height:1.5;color:var(--s-ink2)}
+.rcrow{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:15px;opacity:.92}.rcrow .spn{width:16px;height:16px;border:2.5px solid #fff;border-right-color:transparent;border-radius:50%;animation:rcspin .9s linear infinite}@keyframes rcspin{to{transform:rotate(360deg)}}
 .chg{display:flex;align-items:center;gap:10px;margin:14px 0 4px;padding:10px 14px;border-radius:12px;background:#eef3ff;border:1px solid #d3e0fb;color:#1e3a8a;font-size:14px;font-weight:500;line-height:1.4}.chg svg{width:18px;height:18px;flex:none;color:var(--s-blue)}
 .card .auth u{text-decoration:underline;text-underline-offset:2px}
 .cd-ft .ls{max-width:300px;line-height:1.35}
+.gpc:not(.off){box-shadow:0 18px 34px -26px rgba(37,84,230,.55);border-color:#c6d6fa;background:linear-gradient(180deg,#fff 0,#f3f7ff 100%)}
+.gpc .gav{background:linear-gradient(160deg,#6f95ff,#2554e6);color:#fff;box-shadow:0 0 0 3px #fff,0 6px 12px -6px rgba(37,84,230,.7)}.gpc.off .gav{background:#e4e9f5;color:#5b6b8c;box-shadow:0 0 0 3px #f5f6fa}
+.gt span{display:flex;align-items:center;justify-content:space-between;gap:6px}.gt u{text-decoration:none;font-size:11px;font-weight:700;color:#0f8a5f;background:#e1f5ec;border-radius:99px;padding:1px 7px}
+.gt b{font-size:20px;letter-spacing:-.02em}.gt.bst{background:#e9f0ff;border-color:#bcd0fb}
+.gsp{margin:14px 0 0;padding:14px 16px;border:1.5px solid #d8e2f5;border-radius:18px;background:#fff}.gsp h6{margin:0 0 10px;font-size:13.5px;color:var(--s-muted);font-weight:650}
+.gsr{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:12px;margin-top:8px;font-size:14px;font-weight:600;color:var(--s-ink2)}
+.gbar{display:flex;height:28px;border-radius:99px;overflow:hidden;background:#e9eef9}.gbar i{display:flex;align-items:center;padding:0 12px;background:linear-gradient(90deg,#3b6cf0,#2554e6);color:#fff;font-style:normal;font-size:12.5px;white-space:nowrap;overflow:hidden}.gbar i.v{background:linear-gradient(90deg,#8fb0ff,#6f95ff)}.gbar b{font-weight:650}
 .gcount{margin:14px 0 10px;font-size:14.5px;color:var(--s-muted)}.gcount b{font-size:17px;color:var(--s-ink)}
-.gsel{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.gsel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
 .gpc{border:1.5px solid #d8e2f5;border-radius:18px;padding:14px 16px;background:linear-gradient(180deg,#fff,#f8faff)}
 .gpc.off{border-style:dashed;border-color:#cfd6e6;background:#f5f6fa;margin-top:10px}
 .gph{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left}.gph.tg{cursor:pointer}
@@ -290,11 +298,11 @@ select.inp{height:36px;padding:0 8px}
 .gstat{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:#9aa6bd}.gstat i{width:8px;height:8px;border-radius:50%;background:#aab4c8}.gstat.on{color:#2f8a5f}.gstat.on i{background:#2f8a5f}
 .gchev{width:20px;height:20px;margin-left:4px;color:#3b4763}
 .gpc h6{margin:12px 0 2px;font-size:13.5px;color:var(--s-muted);font-weight:650}.gpc p{margin:0 0 10px;font-size:15px;line-height:1.5;color:var(--s-ink)}
-.gt3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gt3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .gt{border:1.5px solid #dbe5f8;border-radius:12px;padding:8px 10px;background:#fff}.gt.bst{background:#eef3ff;border-color:#c6d6fa}
 .gt span{display:block;font-size:13px;color:var(--s-muted)}.gt b{display:flex;align-items:center;gap:6px;font-size:19px;font-weight:650;margin-top:2px}.gt.bst b{color:var(--s-blue)}.gt b svg{width:14px;height:14px;color:#3b4763}
 .gt em{display:block;font-style:normal;font-size:14px;font-weight:600;color:var(--s-blue);margin-top:4px}
-.gsc{display:flex;flex-wrap:nowrap;gap:6px 12px;align-items:baseline;border-top:1px solid #e3e9f6;margin-top:10px;padding-top:9px;font-size:13px;white-space:nowrap;color:var(--s-muted)}.gsc>b{color:var(--s-ink2);font-weight:650}.gsc span b{color:var(--s-ink);font-weight:650}
+.gsc{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;border-top:1px solid #e3e9f6;margin-top:10px;padding-top:9px;font-size:13px;color:var(--s-muted)}.gsc>b{color:var(--s-ink2);font-weight:650}.gsc span b{color:var(--s-ink);font-weight:650}
 .gdiv{display:flex;align-items:center;gap:12px;margin:16px 0 0;font-size:14px;font-weight:650;color:var(--s-ink2)}.gdiv:after{content:"";flex:1;height:1px;background:#d8e2f5}
 .gtmh{display:flex;align-items:baseline;gap:10px;margin:18px 0 6px;font-size:14.5px}.gtmh span{font-size:12.5px;color:var(--s-muted)}
 .gr{display:grid;gap:14px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--s-line)}
@@ -1444,6 +1452,24 @@ function ready(){
 
 /* 4 · review: a white card in the middle of the field holds the summary and the decision;
    See details grows it to full page, Show summary or finishing the step brings it back */
+/* reruns happen only after an edit: a profile change recalculates brands, a brands change remaps templates */
+function profEdited(){return PROFILE.some(function(r,k){return String(r[1])!==String(origP(k))})}
+function recalc(kind,then){
+  var b=kind==="brands";
+  F.mode="msg"; show("blank"); hideCard();
+  say({kick:"Onboarding Agent",line:b?"Recalculating your brands and LOBs":"Mapping your templates again",
+    sub:b?"You changed your business profile, so I am recalculating your brands and lines of business.":"You changed your brands and lines of business, so I am mapping your templates again.",
+    extra:'<div class="rcrow"><span class="spn w"></span>'+(b?"Checking the new details against your DLT headers":"Matching each template to your updated lines of business")+'</div>',
+    status:["Recalculating","still"],prog:{label:"Steps",items:STEPN,states:states(5,b?2:4,b?2:4)}});
+  corePulse();
+  later(function(){F[b?"rcB":"rcT"]=true; then()},REDUCE?600:4800);
+}
+var _review0=review;
+review=function(i){
+  if(i===0){F.rcB=F.rcT=false}
+  if(i===2&&!F.rcB&&profEdited()) return recalc("brands",function(){_review0(2)});
+  if(i===4&&!F.rcT&&brandsChanged()) return recalc("templates",function(){_review0(4)});
+  return _review0(i)};
 function review(i){
   F.mode="review"; F.active=i; var st=STEPS[i];
   show("blank");
@@ -1516,6 +1542,7 @@ function gtmCard(){if(F.gpart) return gpartCard();
   var c='<div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners selected</div><div class="gsel">'+
     sel.map(function(p){return '<div class="gpc">'+head(p,'<span class="gstat on"><i></i>Selected</span>')+'<h6>Why it was chosen</h6><p>'+esc(p.why)+'</p>'+tiles(p,true)+'</div>'}).join("")+'</div>';
   var rest=PARTNERS.filter(function(p){return !p.pick});
+  if(sel.length===2) c+='<div class="gsp"><h6>Volume split by phase</h6>'+PH.map(function(x,k){var a=ALLOC[k];return '<div class="gsr"><span>'+x+'</span><div class="gbar"><i style="width:'+a+'%"><b>'+esc(sel[0].name)+' '+a+'%</b></i><i class="v" style="width:'+(100-a)+'%"><b>'+esc(sel[1].name)+' '+(100-a)+'%</b></i></div></div>'}).join("")+'</div>';
   if(rest.length) c+='<div class="gdiv"><span>Not selected</span></div>'+rest.map(function(p){var o=F2[p.name];
     return '<div class="gpc off'+(o?' open':'')+'">'+'<button class="gph tg" data-a="gexp" data-v="'+esc(p.name)+'" aria-expanded="'+(!!o)+'"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b><span class="gstat"><i></i>Not selected</span><svg class="i gchev" viewBox="0 0 24 24"><path d="'+(o?"m6 15 6-6 6 6":"m6 9 6 6 6-6")+'"/></svg></button>'+
       (o?'<h6>Why it was not chosen</h6><p>'+esc(p.why)+'</p>'+tiles(p,false):'')+'</div>'}).join("");
@@ -1976,6 +2003,8 @@ var XS={
   "partly-profile":function(){rStep(0,function(){F.ppart=true; PROFILE[4][1]=""; PROFILE[6][1]=""})},
   "err-profile":function(){rStep(0,function(){F.auth=true; F.perr=true})},
   "unk-profile":function(){rStep(0,function(){F.auth=true; F.punk=true; later(function(){F.punk=false; toast("It was saved. Sending it to the telecom operators."); startKV()},5200)})},
+  "rc-brands":function(){jump("plan"); later(function(){PROFILE[3][1]="AAACH2702X"; goStep(1); later(function(){complete(1,"Team saved")},300)},500)},
+  "rc-tpl":function(){jump("plan"); later(function(){BRANDS[0].lobs.push("Gold Loan"); goStep(3); later(function(){complete(3,"Partners confirmed")},300)},500)},
   "pm-kyc":function(){jump("plan"); later(function(){doneScreen(0,{chip:"Partly approved",line:"Approved by 2 of 4 operators",sub:"Your business profile is done. 2 operators are still reviewing it.",
     extra:opsList(2)+'<div class="xamb">You can carry on. Messages go out only through the approved operators until the others approve.</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
   "nothing-team":function(){rStep(1,function(){setFace(1,{head:"Nothing found for Team",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no people to suggest",p:"Your DLT registration has no contact list we can read. Add the people who should get access.",did:{ok:3,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:B("xlater","Do it later","ghost")})})},
@@ -2028,9 +2057,9 @@ function failFace(i,tries){var st=STEPS[i];
 function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
 var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
   ["Agent messages",[["Waiting","msg-wait"],["GTM waiting","msg-gtm"],["Welcome back","msg-back"],["After a decision","msg-next"]]],
-  ["Business profile",[["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Result unknown","unk-profile"],["Approved by 2 of 4 operators","pm-kyc"]]],
+  ["Business profile",[["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Result unknown","unk-profile"],["Approved by 2 of 4 operators","pm-kyc"]]],
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["In review","inreview-team"],["Do it later","later-team"],["Details: nothing found","notice-team-nothing"],["Details: done by someone else","notice-team-someone"],["Details: stays editable","notice-team-team"],["Save changes dialog","dialog-team"],["Save dialog, read-only","dialog-team-ro"],["Done by someone else, on the card","conc-card"],["Done by someone else, on the page","conc-deep"]]],
-  ["Brands and LOBs",[["Nothing found","nothing-brands"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: suggestion arrived late","notice-brands-late"],["Details: save failed","derr-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["Approved while mapping: popup","pm-partial-popup"],["LOB removed: remapping","pm-remove-remap"]]],
+  ["Brands and LOBs",[["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: suggestion arrived late","notice-brands-late"],["Details: save failed","derr-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["Approved while mapping: popup","pm-partial-popup"],["LOB removed: remapping","pm-remove-remap"]]],
   ["GTM partners",[["No rate cards, locked","norate-gtm"],["Partly prepared","partly-gtm"],["Save changes dialog","dialog-gtm"]]],
   ["Templates",[["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Needs attention","attention-templates"],["Partly prepared","partly-templates"],["Save changes dialog","dialog-templates"]]],
   ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
