@@ -415,22 +415,22 @@ select.inp{height:36px;padding:0 8px}
 body.bigsplit .card.big .cd-ft{padding-right:140px}
 body.bigsplit #prog{opacity:0;pointer-events:none}
 body.bigsplit .brand{background:transparent!important;border:1px solid rgba(255,255,255,.55)!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.bs-in{position:absolute;left:28px;right:30px;top:150px;bottom:96px;overflow:auto;pointer-events:auto;color:#fff;scrollbar-width:none}
-.bs-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12.5px;font-weight:600;letter-spacing:.02em}
+.bs-in{position:absolute;left:24px;right:24px;top:150px;bottom:96px;overflow:auto;pointer-events:auto;color:#fff;scrollbar-width:none}
+.bs-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 11px 5px 7px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:600;letter-spacing:.02em}
 .bs-chip img{width:16px;height:16px;border-radius:50%;background:#fff;padding:2px}
-.bs-in h3{margin:16px 0 10px;font-size:22px;line-height:1.25;font-weight:600}
-.bs-in>p{margin:0 0 18px;font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.82)}
+.bs-in h3{margin:14px 0 8px;font-size:18px;line-height:1.25;font-weight:600}
+.bs-in>p{margin:0 0 14px;font-size:13px;line-height:1.55;color:rgba(255,255,255,.82)}
 .bs-acc{border-top:1px solid rgba(255,255,255,.2);padding:12px 0}
 .bs-acc:last-child{border-bottom:1px solid rgba(255,255,255,.2)}
-.bs-acc summary{cursor:pointer;list-style:none;font-size:14.5px;font-weight:600;display:flex;align-items:baseline;gap:8px}
+.bs-acc summary{cursor:pointer;list-style:none;font-size:13px;font-weight:600;display:flex;align-items:baseline;gap:8px}
 .bs-acc summary::-webkit-details-marker{display:none}
 .bs-acc summary:after{content:"";margin-left:auto;width:7px;height:7px;border:solid rgba(255,255,255,.75);border-width:0 1.6px 1.6px 0;transform:rotate(-135deg);align-self:center}
 .bs-acc:not([open]) summary:after{transform:rotate(45deg)}
 .bs-acc summary em{font-style:normal;font-weight:400;font-size:12.5px;color:rgba(255,255,255,.65)}
 .bs-acc ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
-.bs-acc li{display:flex;gap:10px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.88)}
+.bs-acc li{display:flex;gap:9px;align-items:center;font-size:12.5px;color:rgba(255,255,255,.88)}
 .bs-acc li .i{width:18px;height:18px;padding:3px;box-sizing:border-box;border-radius:50%;background:#fff;color:var(--deep);stroke-width:3;flex:none}
-.bs-acc p{margin:10px 0 0;font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.82)}
+.bs-acc p{margin:8px 0 0;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.82)}
 body.bigsplit .card.big{border-radius:26px 0 0 26px}
 html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[data-px=light] .bs-acc p,html[data-px=light] .bs-acc li{color:var(--s-ink2)}
 
@@ -1678,7 +1678,7 @@ function placeCard(){
   var A0=$("asum"), aOn=asumOn(), aH=0;
   var c=$("card"), r, x0=railW(), av=W-x0-24; // cards centre on the page; the stepper sits below them
   var split=CARD.big&&F.mode==="review"; document.body.classList.toggle("bigsplit",split); $("bigsum").classList.toggle("on",split);
-  if(split){var LW=Math.round(Math.max(300,Math.min(380,W*.26))); r={l:LW,t:0,w:W-LW,h:H}; $("bigsum").style.width=LW+"px"}
+  if(split){var LW=Math.round(Math.max(260,Math.min(320,W*.22))); r={l:LW,t:0,w:W-LW,h:H}; $("bigsum").style.width=LW+"px"}
   else if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
   else{var w=Math.min(F.mode==="review"&&STEPS[F.active].k==="team"?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML.replace(/<iframe[\s\S]*?<\/iframe>/g,""); var h=Math.min(m.offsetHeight,H-140); m.innerHTML="";
