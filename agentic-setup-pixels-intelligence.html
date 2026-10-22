@@ -544,6 +544,7 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .pmg summary{cursor:pointer;list-style:none;padding:8px 12px;font:600 12.5px Inter,sans-serif;color:var(--s-muted);letter-spacing:.02em;display:flex;align-items:center;gap:8px;border-radius:8px}
 .pmg summary::-webkit-details-marker{display:none}.pmg summary:hover{background:var(--s-soft)}.pmg summary i{font-style:normal;font-weight:500;margin-left:auto;font-size:11.5px;background:#eef1f6;padding:1px 8px;border-radius:999px}
 .pmg button{padding-left:22px!important}
+.pmq{position:sticky;top:-6px;z-index:2;background:#fff;padding:6px 6px 8px;margin:-6px -6px 4px}.pmq input{width:100%;box-sizing:border-box;height:34px;padding:0 12px;border:1px solid #d9e0ee;border-radius:10px;font:400 13.5px Inter,sans-serif;color:#0f1b3d;outline:none;background:#f7f9fd}.pmq input:focus{border-color:#2563eb;background:#fff}
 .brand .fly{position:absolute;left:calc(100% + 10px);top:0;min-width:260px;padding:14px;border-radius:20px;background:rgba(255,255,255,.97);box-shadow:0 0 0 1px rgba(196,214,245,.9) inset,0 22px 44px -20px rgba(15,35,90,.45);display:flex;flex-direction:column;gap:10px;text-align:left;opacity:0;transform:translateX(-6px);pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,.9,.2,1)}
 .brand:hover .fly,.brand:focus-within .fly{opacity:1;transform:none;pointer-events:auto}
 .brand:hover,.brand:focus-within{z-index:45}
@@ -2462,7 +2463,12 @@ function jump(w){
   pm.innerHTML='<details class="pmg" open><summary>Flow</summary>'+[["login","Login"],["gate","Agreements"],["plan","Setup plan"],["proc","AI processing"],["ready","Ready for review"],["r0","Review: Business profile"],["r1","Review: Team"],["r2","Review: Brands and LOBs"],["r3","Review: GTM partners"],["r4","Review: Templates"],["final","Finished"],["app","Migration + walkthrough"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
     '</details>'+XMENU.map(function(g){return '<details class="pmg"><summary>'+g[0]+'<i>'+g[1].length+'</i></summary>'+g[1].map(function(x){return '<button data-x="'+x[1]+'">'+x[0]+'</button>'}).join("")+'</details>'}).join("")+
     '<details class="pmg"><summary>Display</summary><button data-j="glyph">Pixels: use arrows</button><button data-j="pause">Pause motion</button></details>';
-  $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on")};
+  pm.insertAdjacentHTML("afterbegin",'<div class="pmq"><input id="pmq" type="search" placeholder="Search states" autocomplete="off" aria-label="Search states"></div>');
+  $("pmq").addEventListener("input",function(){var q=this.value.trim().toLowerCase();
+    [].forEach.call(pm.querySelectorAll("details.pmg"),function(g){var any=false;
+      [].forEach.call(g.querySelectorAll("button"),function(b){var m=!q||b.textContent.toLowerCase().indexOf(q)>=0||g.firstElementChild.textContent.toLowerCase().indexOf(q)>=0; b.style.display=m?"":"none"; if(m) any=true});
+      g.style.display=any?"":"none"; if(q) g.open=any})});
+  $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on"); if(pm.classList.contains("on")) setTimeout(function(){try{$("pmq").focus({preventScroll:true})}catch(x){}},30)};
   pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); HOLD=[]; XS[x.dataset.x](); return}
     var b=e.target.closest("[data-j]"); if(!b) return; var j=b.dataset.j;
     if(j==="glyph"){GLYPH=GLYPH==="tri"?"arrow":"tri"; b.textContent=GLYPH==="tri"?"Pixels: use arrows":"Pixels: use triangles"; makeSprites(); return}
