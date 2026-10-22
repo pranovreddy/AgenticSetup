@@ -1381,6 +1381,8 @@ function say(o,quiet){
 }
 function drawProg(p){
   var st=p.states||[];
+  if(p.label==="Agreements"){$("prog").innerHTML=""; $("prog").style.display="none"; return}
+  $("prog").style.display="";
   $("prog").innerHTML=(p.label&&p.label!=="Steps"?'<em>'+p.label+'</em>':'')+'<ol>'+p.items.map(function(l,i){var c=st[i]||"";
     return (i?'<b class="'+(c==="dn"||c==="on"?"dn":"")+'"></b>':'')+'<li class="'+c+(c==="dn"&&p.label==="Steps"?' go" data-a="stepov" data-i="'+i+'" title="See what happened in '+esc(l)+'"':'"')+'><i>'+(c==="dn"?I("check"):i+1)+'</i><span class="lbl">'+esc(l)+'</span></li>'}).join("")+'</ol>';
 }
