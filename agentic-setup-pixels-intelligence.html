@@ -434,6 +434,13 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .xic.or{background:#fff1e6;color:#c2410c;box-shadow:0 0 0 8px rgba(194,65,12,.06)}.xic.amb{background:var(--s-asoft);color:var(--s-amber)}.xic.gr{background:var(--s-gsoft);color:var(--s-green)}
 .xic.vi{background:#f1ecff;color:#6d28d9}.xic.sl{background:#eef1f6;color:#475569;box-shadow:0 0 0 8px rgba(71,85,105,.05)}
 .xbtns{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.xopts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px auto 0;max-width:520px;text-align:left}
+.xopt{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1.5px solid #d3e0fb;border-radius:14px;background:#fff;cursor:pointer;font:inherit;color:var(--s-ink);transition:border-color .15s,box-shadow .15s}
+.xopt:hover{border-color:var(--s-blue);box-shadow:0 10px 22px -16px rgba(37,84,230,.6)}.xopt.on{background:#eef3ff;border-color:var(--s-blue)}
+.xoi{flex:none;width:36px;height:36px;border-radius:10px;background:#e6edff;color:var(--s-blue);display:grid;place-items:center}.xoi svg{width:18px;height:18px}
+.xopt b{display:block;font-size:15px}.xopt small{display:block;font-size:13px;color:var(--s-muted);margin-top:2px}
+.xovdata{margin:16px auto 0;max-width:520px;text-align:left;padding:14px 16px;border:1px solid var(--s-line);border-radius:14px;background:#fbfcff}
+.xovdata .chg,.xovdata .lneed,.xovdata .auth{display:none}
 .xdid{margin:6px auto 0;max-width:420px;padding:14px 16px;border:1px solid var(--s-line);border-radius:12px;font-size:13.5px}
 .xdid b{display:block;margin-bottom:8px;font-size:13.5px}.xdid em{font-style:normal;font-weight:400;color:var(--s-muted);margin-left:6px}
 .xdid ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.xdid li{display:flex;gap:8px;align-items:center;color:var(--s-ink2)}
@@ -1948,14 +1955,18 @@ function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=(i===1&&F.teamLater)
   F.ovRet=F.ovRet!=null?F.ovRet:{mode:F.mode,i:F.active}; F.active=i;
   setFace(i,{ov:1,chip:later?["Do it later","vi"]:["Done","gr"],head:later?st.title+" is saved for later":st.title+" is done",sum:o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
     h:later?st.title+" saved for later":o[0],p:o[1]().join(" · "),
-    extra:'<div class="okby xovby"><i>RM</i>Done by <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',did:{ok:didOf(st.k).length},
-    l:st.k!=="profile"?B("xview",I("max")+"View","ghost"):'',r:B("ovback",F.ovRet.mode==="review"?"Back to "+STEPS[F.ovRet.i].title:"Back")});
+    extra:'<div class="okby xovby"><i>RM</i>Done by <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',
+    l:'',r:''});
   if(F.mode!=="review"){F.mode="review"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["Step done","done"]}); showCard()} else refresh();
   var stx=F.status.map(function(x){return x==="done"||x==="later"?"dn":""}); stx[i]="on"; drawProg({label:"Steps",items:STEPN,states:stx}); markOv(i)}
+function ovOpts(i){var st=STEPS[i], on=F.ovShow&&F.ovShow[i], edit=st.k!=="profile";
+  return '<div class="xopts"><button class="xopt'+(on?' on':'')+'" data-a="ovshow" aria-expanded="'+(!!on)+'"><span class="xoi">'+I("file")+'</span><span><b>What happened</b><small>See the data from this step</small></span></button>'+
+    '<button class="xopt" data-a="ovedit"><span class="xoi">'+I(edit?"max":"max")+'</span><span><b>'+(edit?"Edit":"View")+'</b><small>'+(edit?"Open the full page and change it":"Open the full page")+'</small></span></button></div>'+
+    (on?'<div class="xovdata">'+cardSummary(i)+'</div>':'')}
 function markOv(i){var li=document.querySelectorAll("#prog li"); li.forEach(function(e,k){e.classList.toggle("viewing",k===i)})}
 function setFace(i,f){F.face=f; f.i=i}
 function faceParts(i){var f=F.face, k=STEPS[i].k;
-  var body='<div class="xface"><span class="xic '+(f.tone||"")+'">'+(f.spin?'<span class="spn"></span>':I(f.icon||"warn"))+'</span><h3>'+esc(f.h)+'</h3><p>'+esc(f.p)+'</p>'+(f.extra||'')+(f.btn?'<div class="xbtns">'+f.btn+'</div>':'')+'</div>'+(f.did?didList(k,f.did):'');
+  var body='<div class="xface"><span class="xic '+(f.tone||"")+'">'+(f.spin?'<span class="spn"></span>':I(f.icon||"warn"))+'</span><h3>'+esc(f.h)+'</h3><p>'+esc(f.p)+'</p>'+(f.extra||'')+(f.btn?'<div class="xbtns">'+f.btn+'</div>':'')+(f.ov?ovOpts(i):'')+'</div>';
   return {kick:'<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>',chips:f.chip?'<span class="chipmini '+f.chip[1]+'">'+f.chip[0]+'</span>':'',sum:f.sum,title:f.head,tog:'',body:body,l:f.l||'',r:f.r||''}}
 function B(a,label,cls,v){return '<button class="btn'+(cls?" "+cls:"")+'" data-a="'+a+'"'+(v!=null?' data-v="'+v+'"':'')+'>'+label+'</button>'}
 function showDlg(o){var d=$("xdlg"); d.innerHTML='<div class="xdlg-c" role="dialog" aria-modal="true"><span class="xic '+(o.tone||"amb")+'">'+I(o.icon||"info")+'</span><h3>'+esc(o.title)+'</h3><p>'+esc(o.text)+'</p><div class="xbtns">'+o.btns+'</div></div>'; d.classList.add("on"); var b=d.querySelector(".btn:last-child"); if(b) b.focus()}
@@ -2124,6 +2135,8 @@ document.addEventListener("click",function(e){
   else if(a==="xself"||a==="xadd"){var kk=STEPS[F.active].k; F.face=null; if(kk==="team"){PEOPLE.splice(0); F.addU=true} if(kk==="brands"){BRANDS.splice(0); BRANDS.push({name:"New brand",hdr:"",logo:["NEW","","#1b4f9c"],lobs:["New line of business"]})} refresh(); later(expandCard,200)}
   else if(a==="xlater"){var ii=F.active; F.face=null; if(ii===1) F.teamLater=true; finishStep(function(){complete(ii,STEPS[ii].title+" saved for later")})}
   else if(a==="xview"){F.ro=true; expandCard()}
+  else if(a==="ovshow"){F.ovShow=F.ovShow||{}; F.ovShow[F.active]=!F.ovShow[F.active]; refresh()}
+  else if(a==="ovedit"){F.ro=STEPS[F.active].k==="profile"; expandCard()}
   else if(a==="xgo"){goStep(+el.dataset.v)}
   else if(a==="xdeck") jump("ready");
   else if(a==="xdretry"){F.dfail=false; refresh()}
