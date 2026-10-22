@@ -485,6 +485,9 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .xops{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:8px;justify-content:center;margin-top:18px}
 .xops span{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.12);font-size:13px;color:rgba(255,255,255,.8)}.xops b{color:#fff;margin-right:auto}
 .ok.nfw{background:var(--amber)!important}
+.ovtel{display:inline-flex;align-items:center;gap:8px;margin:12px 0 0;padding:6px 14px;border-radius:999px;font-size:14px;background:#e3f6ec;color:#0f6b4a}.ovtel.part{background:#fff1d6;color:#9a5b05}.ovtel .i{width:15px;height:15px}
+.tpanel{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:#f6f8fc;box-shadow:inset 0 0 0 1px #e3e9f4}.tph{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px}.tph span{color:var(--s-muted);font-size:13px}
+.tpr{display:grid;grid-template-columns:28px 1fr auto auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid #e8edf6;font-size:14px}.tpr:first-of-type{border-top:0}.tpr small{color:var(--s-muted);font-size:12.5px;min-width:110px;text-align:right}.tpr em{font-style:normal;font-weight:600;font-size:12.5px;padding:3px 10px;border-radius:999px}.tpr.tpa em{background:#e3f6ec;color:#0f6b4a}.tpr.tpw em{background:#fff1d6;color:#9a5b05}.tpd{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#e3f6ec;color:#0f6b4a}.tpr.tpw .tpd{background:#fff1d6;color:#9a5b05}.tpd .i{width:13px;height:13px}
 .xops.xwide{grid-template-columns:repeat(2,minmax(0,230px))}
 .xcountline{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}.xcountline span{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600}.xcountline .a{background:#e3f6ec;color:#0f6b4a}.xcountline .r{background:#fff1d6;color:#9a5b05}.xcountline .n{background:#fde7e1;color:#b13a1d}
 .xcounts{margin-bottom:12px}.xitems{display:grid;gap:6px;margin-bottom:14px}.xit{display:grid;grid-template-columns:1.1fr 1.4fr auto;gap:10px;align-items:center;padding:9px 14px;border-radius:12px;background:#f6f8fc;font-size:14px}.xit b{font-weight:600}.xit span{color:var(--s-muted)}.xit em{font-style:normal;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px}.xit.xa em{background:#e3f6ec;color:#0f6b4a}.xit.xr em{background:#fff1d6;color:#9a5b05}.xit.xn em{background:#fde7e1;color:#b13a1d}.xit.xa{opacity:.85}
@@ -2003,17 +2006,21 @@ function didList(k,sp){var L=didOf(k).slice(), out=[]; L.forEach(function(x,j){
   return '<div class="xdid"><b>What I did <em>'+(sp.ok+" of "+L.length+" done")+'</em></b><ul>'+out.join("")+'</ul></div>'}
 function nowTime(){var t=new Date(), h=t.getHours()%12||12; return h+":"+String(t.getMinutes()).padStart(2,"0")+(t.getHours()<12?" am":" pm")}
 /* a finished step, opened again from the stepper: what happened, who did it, and a way back */
-var OV={profile:["Business profile approved",function(){return ["7 fields filled","Approved by 4 of 4 operators","Logo added"]},"Approved by all 4 telecom operators. Nothing more to do here."],
+var OV={profile:["Business profile approved",function(){return ["7 fields filled","Logo added"]},function(){return "Approved by "+(opsN()===4?"all 4 telecom operators. Nothing more to do here.":opsN()+" of 4 telcos. The others are still reviewing, and you can carry on.")}],
   team:["Invites sent",function(){return F.teamLater?["Saved for later","Nothing sent yet"]:[onPeople().length+" people invited","Roles assigned","Emails sent"]},"Your team gets an email invite to DigiConsent."],
   brands:["Brands and LOBs set up",function(){return [BRANDS.length+" brands",lobCount()+" lines of business","Set up"]},"Your brands and lines of business are set up."],
   gtm:["Partners confirmed",function(){return picked().map(function(p){return p.name}).concat(["Terms accepted"])},"Volume is split between the chosen partners, phase by phase."],
   templates:["Templates sent for approval",function(){return [(100-unmapped())+" of 100 mapped",unmapped()+" left for later","Sent for approval"]},"Template mapping is with the operators for approval."]};
+function ovMove(){var r=F.ovRet, c=r&&r.mode==="review"?r.i:-1; return c>=0&&STEPS[c]?'<button class="btn" data-a="ovback">Move to '+esc(STEPS[c].title)+I("arrow")+'</button>':'<button class="btn ghost" data-a="ovback">Back</button>'}
+function opsN(){return F.opsA==null?4:F.opsA}
+function telcoPanel(){var n=opsN(), d=["14 Oct, 11:42","14 Oct, 12:05","14 Oct, 12:20","14 Oct, 12:31"];
+  return '<div class="tpanel"><div class="tph"><b>Telco approval</b><span>'+n+' of 4 approved</span></div>'+["Airtel","Jio","Vi","BSNL"].map(function(o,k){return '<div class="tpr '+(k<n?"tpa":"tpw")+'"><span class="tpd">'+I(k<n?"check":"clock")+'</span><b>'+o+'</b><em>'+(k<n?"Approved":"Still reviewing")+'</em><small>'+(k<n?d[k]:"Usually a few hours")+'</small></div>'}).join("")+'</div>'}
 function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=(i===1&&F.teamLater)||F.status[i]==="later";
   F.ovRet=F.ovRet!=null?F.ovRet:{mode:F.mode,i:F.active}; F.active=i;
-  setFace(i,{ov:1,chip:later?["Do it later","vi"]:["Done","gr"],head:later?st.title+" is saved for later":st.title+" is done",sum:o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
+  setFace(i,{ov:1,chip:later?["Do it later","vi"]:["Done","gr"],head:later?st.title+" is saved for later":st.title+" is done",sum:typeof o[2]==="function"?o[2]():o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
     h:later?st.title+" saved for later":o[0],p:o[1]().join(" · "),
-    extra:'<div class="okby xovby"><i>RM</i>Done by <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',
-    l:'',r:''});
+    extra:(st.k==="profile"&&!later?'<div class="ovtel '+(opsN()===4?"all":"part")+'">'+I(opsN()===4?"check":"clock")+'<b>'+opsN()+' of 4 telcos approved</b></div>':'')+'<div class="okby xovby"><i>RM</i>Done by <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',
+    btn:ovMove(),l:'',r:''});
   if(F.mode!=="review"){F.mode="review"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["Step done","done"]}); showCard()} else refresh();
   var stx=F.status.map(function(x){return x==="done"||x==="later"?"dn":""}); stx[i]="on"; drawProg({label:"Steps",items:STEPN,states:stx}); markOv(i)}
 function ovOpts(i){var st=STEPS[i], edit=st.k!=="profile";
@@ -2074,7 +2081,10 @@ var XS={
   "unk-profile":function(){rStep(0,function(){F.auth=true; F.punk=true; later(function(){F.punk=false; toast("It was saved. Sending it to the telecom operators."); startKV()},5200)})},
   "rc-brands":function(){jump("plan"); PROFILE[3][1]="AAACH2702X"; goStep(2)},
   "rc-tpl":function(){jump("plan"); BRANDS[0].lobs.push("Gold Loan"); goStep(4)},
-  "pm-kyc":function(){jump("plan"); later(function(){doneScreen(0,{chip:"Partly approved",line:"Approved by 2 of 4 operators",sub:"Your business profile is done. 2 operators are still reviewing it.",
+  "ov-profile-4":function(){jump("plan"); later(function(){goStep(1); later(function(){stepOverview(0)},400)},300)},
+  "ov-profile-2":function(){jump("plan"); F.opsA=2; later(function(){goStep(1); later(function(){stepOverview(0)},400)},300)},
+  "ov-team":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; goStep(2); later(function(){stepOverview(1)},400)},300)},
+  "pm-kyc":function(){jump("plan"); F.opsA=2; later(function(){doneScreen(0,{chip:"Partly approved",line:"Approved by 2 of 4 operators",sub:"Your business profile is done. 2 operators are still reviewing it.",
     extra:opsList(2)+'<div class="xamb">You can carry on. Messages go out only through the approved operators until the others approve.</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
   "nothing-team":function(){rStep(1,function(){setFace(1,{head:"Nothing found for Team",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no people to suggest",p:"Your DLT registration has no contact list we can read. Add the people who should get access.",did:{ok:3,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:B("xlater","Do it later","ghost")})})},
   "fail-team":function(){rStep(1,function(){setFace(1,failFace(1,1))})},
@@ -2126,7 +2136,7 @@ function failFace(i,tries){var st=STEPS[i];
 function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
 var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
   ["Agent messages",[["Waiting","msg-wait"],["GTM waiting","msg-gtm"],["Welcome back","msg-back"],["After a decision","msg-next"]]],
-  ["Business profile",[["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Result unknown","unk-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Approved by 2 of 4 operators","pm-kyc"]]],
+  ["Business profile",[["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Result unknown","unk-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Approved by 2 of 4 operators","pm-kyc"],["Completed: view, 4 of 4 telcos","ov-profile-4"],["Completed: view, 2 of 4 telcos","ov-profile-2"],["Completed Team: move to current step","ov-team"]]],
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["In review","inreview-team"],["Do it later","later-team"],["Details: nothing found","notice-team-nothing"],["Details: done by someone else","notice-team-someone"],["Details: stays editable","notice-team-team"],["Save changes dialog","dialog-team"],["Save dialog, read-only","dialog-team-ro"],["Done by someone else, on the card","conc-card"],["Done by someone else, on the page","conc-deep"]]],
   ["Brands and LOBs",[["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: suggestion arrived late","notice-brands-late"],["Details: save failed","derr-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["Approved while mapping: popup","pm-partial-popup"],["LOB removed: remapping","pm-remove-remap"]]],
   ["GTM partners",[["No rate cards, locked","norate-gtm"],["Partly prepared","partly-gtm"],["Save changes dialog","dialog-gtm"]]],
@@ -2171,10 +2181,10 @@ XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Retu
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
   if(CARD.big&&st.k!=="profile") return xBig(i,bigParts(i));
-  if(st.k==="profile"){h=(F.plock?'<div class="xbar err">'+I("warn")+'<span><b>Couldn\'t find 3 fields that can\'t be edited here:</b> Legal Entity Name, Registered Address and Business PAN/TAN. You can\'t move forward until they are updated in DLT. '+(F.plock===2?'I checked DLT again and they are still empty. ':'')+'Update them in DLT, then retry here.</span></div>':'')+(F.ppart?'<div class="xbar err">'+I("warn")+'Couldn\'t fill 2 fields: Website URL and Sub Industry. Add them to submit.</div>':'')+(F.pret?'<div class="xbar warn">'+I("warn")+'Jio and Vi returned 2 fields. Correct them, then submit again.</div>':'')+'<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+(F.logo||HDFC_LOGO)+'" alt="Enterprise logo"></div>'+(F.pf?'':'<label class="kyc-edit">'+I("upload")+'Change logo<input type="file" accept="image/*" data-c="logo"></label>'+(F.logo?'<span class="xedt">Edited</span>':''))+'</div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
+  if(st.k==="profile"){h=(F.ro?telcoPanel():'')+(F.plock?'<div class="xbar err">'+I("warn")+'<span><b>Couldn\'t find 3 fields that can\'t be edited here:</b> Legal Entity Name, Registered Address and Business PAN/TAN. You can\'t move forward until they are updated in DLT. '+(F.plock===2?'I checked DLT again and they are still empty. ':'')+'Update them in DLT, then retry here.</span></div>':'')+(F.ppart?'<div class="xbar err">'+I("warn")+'Couldn\'t fill 2 fields: Website URL and Sub Industry. Add them to submit.</div>':'')+(F.pret?'<div class="xbar warn">'+I("warn")+'Jio and Vi returned 2 fields. Correct them, then submit again.</div>':'')+'<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+(F.logo||HDFC_LOGO)+'" alt="Enterprise logo"></div>'+((F.pf||F.ro)?'':'<label class="kyc-edit">'+I("upload")+'Change logo<input type="file" accept="image/*" data-c="logo"></label>'+(F.logo?'<span class="xedt">Edited</span>':''))+'</div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
     if(F.perr) h+='<div class="xbar err">'+I("warn")+'That wasn\'t saved. Try again.</div>';
     if(F.punk) h+='<div class="xbar info"><span class="spn"></span>Checking whether that was saved…</div>';
-    foot(authRow(),primary(i))}
+    if(F.ro) foot('',B("collapse","Back to cards","ghost")); else foot(authRow(),primary(i))}
   if(st.k==="team"){
     h='<div class="tbar"><div class="chips" style="margin:0">'+
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
@@ -2327,7 +2337,7 @@ addEventListener("keydown",function(e){
 addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0) tourGo(TS)});
 
 /* ======================= prototype jumps ======================= */
-function resetData(){SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function resetData(){F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
