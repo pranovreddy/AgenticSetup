@@ -1942,10 +1942,8 @@ function startKV(){
   fr.srcdoc=loaderDoc("kycv",".chk-scroll{left:390px !important}");
   F.kv.iv=setInterval(function(){ // each operator tile gets a reply badge, one by one, then the scene holds on all four
     var d=fr.contentDocument; if(!d||!F.kv) return; var tiles=[].slice.call(d.querySelectorAll(".telco")); if(tiles.length!==4) return;
-    if(!d.getElementById("au-tc")) d.head.insertAdjacentHTML("beforeend",'<style id="au-tc">'+AU_TELCO_CSS+'</style>');
-    tiles.forEach(function(t){if(!t.querySelector(".au-rx")) t.insertAdjacentHTML("beforeend",'<i class="au-rx" title="Response received">'+AU_RX+'</i>')});
     if(!F.kv.t0){F.kv.t0=performance.now(); if(F.kv.ph==="check") kvPhase("send")}
-    var el=performance.now()-F.kv.t0, n=tiles.filter(function(t,k){var g=el>1600+k*750; t.classList.toggle("au-got",g); return g}).length;
+    var el=performance.now()-F.kv.t0, n=[0,1,2,3].filter(function(k){return el>1600+k*750}).length; // the scene just keeps loading; progress shows in the chip text only
     if(n&&n!==F.kv.rx){F.kv.rx=n; if(F.kv.ph!=="rx") kvPhase("rx"); var cp=$("kvcap"); if(cp) cp.textContent=kvText()[2]}
     if(n===4&&!F.kv.fin){F.kv.fin=1; setTimeout(kvDone,1800)}},100);
   F.kv.to=setTimeout(kvDone,30000);
