@@ -1549,7 +1549,7 @@ function gtmCard(){if(F.gpart) return gpartCard();
   var c='<div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners selected</div><div class="gsel">'+
     sel.map(function(p){return '<div class="gpc">'+head(p,'<span class="gstat on"><i></i>Selected</span>')+'<h6>Why it was chosen</h6><p>'+esc(p.why)+'</p>'+tiles(p,true)+'</div>'}).join("")+'</div>';
   var rest=PARTNERS.filter(function(p){return !p.pick});
-  if(sel.length===2) c+='<div class="gsp"><h6>Volume split by phase</h6>'+PH.map(function(x,k){var a=ALLOC[k];return '<div class="gsr"><span>'+x+'</span><div class="gbar"><i style="width:'+a+'%"><b>'+esc(sel[0].name)+' '+a+'%</b></i><i class="v" style="width:'+(100-a)+'%"><b>'+esc(sel[1].name)+' '+(100-a)+'%</b></i></div></div>'}).join("")+'</div>';
+  if(false&&sel.length===2) c+='<div class="gsp"><h6>Volume split by phase</h6>'+PH.map(function(x,k){var a=ALLOC[k];return '<div class="gsr"><span>'+x+'</span><div class="gbar"><i style="width:'+a+'%"><b>'+esc(sel[0].name)+' '+a+'%</b></i><i class="v" style="width:'+(100-a)+'%"><b>'+esc(sel[1].name)+' '+(100-a)+'%</b></i></div></div>'}).join("")+'</div>';
   if(rest.length) c+='<div class="gdiv"><span>Not selected</span></div>'+rest.map(function(p){var o=F2[p.name];
     return '<div class="gpc off'+(o?' open':'')+'">'+'<button class="gph tg" data-a="gexp" data-v="'+esc(p.name)+'" aria-expanded="'+(!!o)+'"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b><span class="gstat"><i></i>Not selected</span><svg class="i gchev" viewBox="0 0 24 24"><path d="'+(o?"m6 15 6-6 6 6":"m6 9 6 6 6-6")+'"/></svg></button>'+
       (o?'<h6>Why it was not chosen</h6><p>'+esc(p.why)+'</p>'+tiles(p,false):'')+'</div>'}).join("");
