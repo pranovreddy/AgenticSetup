@@ -1432,12 +1432,14 @@ var STARTS=[];(function(){var s=0;SCENES.forEach(function(x){STARTS.push(s);s+=x
 function sceneAt(t){for(var i=SCENES.length-1;i>=0;i--)if(t>=STARTS[i])return i;return 0}
 /* processing runs where a source or step finds nothing: the agent says so, in amber, and moves on */
 var NF=null, NFLAB={sources:"Website",team:"Team",brands:"Brands and LOBs",gtm:"GTM partners",tpl:"Templates"};
-var NFV={sources:{log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.5,"GSTIN: PAN AAACH2702H is active and matches the DLT entity",0,"99%"],[2.7,"MCA: HDFC Bank Limited, a public limited company",0,"99%"],[3.9,"Website: nothing found for this company",1],[5.0,"Rate cards: 4 partners, 3 phases each"]],done:"5 of 6 sources read. No website found."},
-  team:{log:[[.4,"No people are named on your DLT record",1],[1.9,"GSTIN and MCA have no contacts either",1],[3.3,"Nothing to suggest, so you will add people yourself"]],done:"No people found. You can add them yourself."},
-  brands:{log:[[.4,"No sender headers found on your DLT record",1],[1.9,"Nothing to group into brands",1],[3.3,"I can't suggest brands. You can add them yourself"]],done:"No brands found to suggest."},
-  gtm:{log:[[.4,"Looking for rate cards from 4 partners"],[1.9,"No partner has sent a rate card yet",1],[3.3,"I can't compare or split volume yet. This step opens when one arrives"]],done:"No rate cards yet. This step opens when one arrives."},
-  tpl:{log:[[.4,"Looking for your templates on DLT"],[2.3,"Your DLT account has no templates yet",1],[4.3,"Nothing to map. You can add templates later"]],done:"No templates found to map."}};
-function nfScene(s){if(NF&&s.id===NF){var o=NFV[NF],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
+var NFV={sources:{log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.5,"GSTIN: PAN AAACH2702H is active and matches the DLT entity",0,"99%"],[2.7,"MCA: HDFC Bank Limited, a public limited company",0,"99%"],[3.4,"Checking your company website..."],[4.2,"Website: not found",1],[5.0,"Rate cards: 4 partners, 3 phases each"]],done:"5 of 6 sources read. No website found."},
+  sourcesAll:{log:[[.3,"Checking DLT registration..."],[1.0,"DLT registration: not found",1],[1.7,"Checking GSTIN..."],[2.4,"GSTIN: not found",1],[3.1,"Checking MCA and your website..."],[3.8,"MCA and website: not found",1],[4.5,"Checking partner rate cards..."],[5.2,"Rate cards: not found",1]],done:"No sources found. I have nothing to read."},
+  form:{log:[[.3,"Checking GSTIN, MCA and your website..."],[1.6,"Business details: not found",1],[3.2,"Nothing to fill in. You will enter the profile yourself"]],done:"Nothing found to fill in."},
+  team:{log:[[.4,"Checking your DLT record for people..."],[1.4,"DLT record: not found",1],[2.4,"Checking GSTIN and MCA contacts..."],[3.4,"GSTIN and MCA contacts: not found",1],[4.4,"Nothing to suggest, so you will add people yourself"]],done:"No people found. You can add them yourself."},
+  brands:{log:[[.4,"Checking your DLT sender headers..."],[1.4,"Sender headers: not found",1],[2.6,"Nothing to group into brands"],[3.8,"I can't suggest brands. You can add them yourself"]],done:"No brands found to suggest."},
+  gtm:{log:[[.4,"Checking rate cards from 4 partners..."],[1.4,"Rate cards: not found",1],[3.0,"I can't compare or split volume yet. This step opens when one arrives"]],done:"No rate cards yet. This step opens when one arrives."},
+  tpl:{log:[[.4,"Checking your DLT account for templates..."],[1.6,"Templates: not found",1],[3.6,"Nothing to map. You can add templates later"]],done:"No templates found to map."}};
+function nfScene(s){var key=NF==="all"?(s.id==="sources"?"sourcesAll":s.id):NF; if(NF&&(NF==="all"?NFV[key]:s.id===NF)){var o=NFV[key],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
 function proc(at){F.mode="proc"; F.procT0=clock-(at||0); F.procI=-1; procTick()}
 function phaseOf(s,lt){return s.id==="intro"?"Planning":s.id==="sources"?"Observing":(lt/s.dur<.38?"Reasoning":"Drafting")}
 /* one line of the agent's reasoning at a time: it types in, stays, then types out before the next */
@@ -1471,14 +1473,14 @@ function procTick(){
   if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:(s.nf?NFW:OK)+s.done}); if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(SRC.length,-1,SRC.length)})}
   var ph=phaseOf(s,lt); if(ph!==F.phase){F.phase=ph; $("statusTxt").textContent=ph; corePulse()}
   if(s.log) thoughtTick(s,lt);
-  if(s.id==="form"){var c=0; for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
-    var txt=c===7?OK+"7 of 7 fields filled":c+" of 7 fields filled";
+  if(s.id==="form"){var c=0; if(!s.nf) for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
+    var txt=s.nf?"Nothing found to fill in":c===7?OK+"7 of 7 fields filled":c+" of 7 fields filled";
     if(F.subState!==txt){F.subState=txt; said.sub=txt; $("sub").innerHTML='<span class="w" style="--d:0ms">'+txt+'</span>'; $("sub").classList.add("in")}}
 }
 function ready(){
   F.mode="ready"; show("done");
   say({kick:"Onboarding Agent", line:"All done. Have a look?", sub:"I've filled everything in. Go through it one part at a time and confirm what looks right.",
-    extra:(NF?'<div class="three"><span>'+OK+'4 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>'+NFLAB[NF]+': nothing found</span></div>':'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>')+
+    extra:(NF==="all"?'<div class="three"><span><span class="ok" style="background:var(--amber)"></span>Nothing found for any step</span></div>':NF?'<div class="three"><span>'+OK+'4 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>'+NFLAB[NF]+': nothing found</span></div>':'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>')+
       '<div class="acts"><button class="btn" data-a="go0">Review your business profile'+I("arrow")+'</button></div>',
     status:["Ready for your review","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
 }
@@ -2132,7 +2134,8 @@ XS["gap-tpl-review"]=function(){rStep(4,function(){setFace(4,{chip:["In review",
 XS["gap-tpl-partial"]=function(){rStep(4,function(){setFace(4,{chip:["Partly approved","amb"],head:"Some templates were not approved",sum:"30 approved, 12 not approved.",icon:"warn",tone:"or",h:"30 approved · 12 not approved",p:"Fix the 12 and resubmit. Only changed templates are resubmitted.",extra:'<div class="xcountline"><span class="a">30 approved</span><span class="n">12 not approved</span></div>',btn:B("xreview","Review the 12","ghost","tpart")})})};
 XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",icon:"lock",title:"Your organisation isn't eligible",text:"An operator has blacklisted your organisation, so setup is paused on every screen. Still available: Contact support, Log out, and your signed agreements.",btns:B("xagree","Signed agreements","ghost")+B("xlogout","Log out","ghost")+B("xsupport","Contact support")})},REDUCE?700:1700)};
 [["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
-XMENU.push(["AI processing: nothing found",[["Sources: website not found","nf-sources"],["Team: no people found","nf-team"],["Brands: no sender headers","nf-brands"],["GTM: no rate cards","nf-gtm"],["Templates: none found","nf-tpl"]]]);
+XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
+XMENU.push(["AI processing: nothing found",[["All steps: nothing found","nf-all"],["Sources: website not found","nf-sources"],["Team: no people found","nf-team"],["Brands: no sender headers","nf-brands"],["GTM: no rate cards","nf-gtm"],["Templates: none found","nf-tpl"]]]);
 XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Return mid-preparation","gap-return-prep"],["Ready on return","gap-return-ready"],["Ready, some not prepared","gap-ready-partial"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
