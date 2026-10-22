@@ -280,6 +280,22 @@ select.inp{height:36px;padding:0 8px}
 .chg{margin:16px 0 0;font-size:13px;color:var(--s-muted)}
 .card .auth u{text-decoration:underline;text-underline-offset:2px}
 .cd-ft .ls{max-width:300px;line-height:1.35}
+.gcount{margin:14px 0 10px;font-size:14.5px;color:var(--s-muted)}.gcount b{font-size:17px;color:var(--s-ink)}
+.gsel{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.gpc{border:1.5px solid #d8e2f5;border-radius:18px;padding:14px 16px;background:linear-gradient(180deg,#fff,#f8faff)}
+.gpc.off{border-style:dashed;border-color:#cfd6e6;background:#f5f6fa;margin-top:10px}
+.gph{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left}.gph.tg{cursor:pointer}
+.gph b{font-size:18px;font-weight:650}.gpc.off .gph b{color:#3b4763}
+.gav{flex:none;width:38px;height:38px;border-radius:50%;background:#dde7ff;color:var(--s-blue);display:grid;place-items:center;font:700 15px Inter,sans-serif;font-style:normal;box-shadow:0 0 0 3px #fff}
+.gstat{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:#9aa6bd}.gstat i{width:8px;height:8px;border-radius:50%;background:#aab4c8}.gstat.on{color:#2f8a5f}.gstat.on i{background:#2f8a5f}
+.gchev{width:20px;height:20px;margin-left:4px;color:#3b4763}
+.gpc h6{margin:12px 0 2px;font-size:13.5px;color:var(--s-muted);font-weight:650}.gpc p{margin:0 0 10px;font-size:15px;line-height:1.5;color:var(--s-ink)}
+.gt3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gt{border:1.5px solid #dbe5f8;border-radius:12px;padding:8px 10px;background:#fff}.gt.bst{background:#eef3ff;border-color:#c6d6fa}
+.gt span{display:block;font-size:13px;color:var(--s-muted)}.gt b{display:flex;align-items:center;gap:6px;font-size:19px;font-weight:650;margin-top:2px}.gt.bst b{color:var(--s-blue)}.gt b svg{width:14px;height:14px;color:#3b4763}
+.gt em{display:block;font-style:normal;font-size:14px;font-weight:600;color:var(--s-blue);margin-top:4px}
+.gsc{display:flex;flex-wrap:nowrap;gap:6px 12px;align-items:baseline;border-top:1px solid #e3e9f6;margin-top:10px;padding-top:9px;font-size:13px;white-space:nowrap;color:var(--s-muted)}.gsc>b{color:var(--s-ink2);font-weight:650}.gsc span b{color:var(--s-ink);font-weight:650}
+.gdiv{display:flex;align-items:center;gap:12px;margin:16px 0 0;font-size:14px;font-weight:650;color:var(--s-ink2)}.gdiv:after{content:"";flex:1;height:1px;background:#d8e2f5}
 .gtmh{display:flex;align-items:baseline;gap:10px;margin:18px 0 6px;font-size:14.5px}.gtmh span{font-size:12.5px;color:var(--s-muted)}
 .gr{display:grid;gap:14px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--s-line)}
 .gr.hd{padding:6px 4px;font-size:12.5px;font-weight:600;color:var(--s-muted)}
@@ -781,7 +797,7 @@ var ROLES=["Regulatory / Legal","Business Admin","Super Admin","Viewer"];
 var DEPTS=["Legal & Compliance","Risk & Audit","Marketing","Technology","Finance Operations","Operations"];
 var PEOPLE=[["AK","Anita Kulkarni","anita.kulkarni@hdfc.com","Legal & Compliance",0],["MI","Meera Iyer","meera.iyer@hdfc.com","Legal & Compliance",0],["AM","Arjun Menon","arjun.menon@hdfc.com","Risk & Audit",0],["SP","Sanjay Prabhu","sanjay.prabhu@hdfc.com","Marketing",1],["KR","Kavya Reddy","kavya.reddy@hdfc.com","Marketing",1],["DN","Divya Nair","divya.nair@hdfc.com","Technology",2]].map(function(p,k){return {title:["VP, Legal & Compliance","Compliance Manager","Head of Risk and Audit","Head of Marketing Operations","Digital Campaigns Lead","Senior Manager, Technology"][k],i:p[0],name:p[1],email:p[2],dept:p[3],role:p[4],on:true,mob:["+91 98201 44120","+91 98330 21675","+91 99200 58314","+91 98670 30942","+91 97690 11823","+91 98192 76450"][k]}});
 var BRANDS=[{name:"HDFC Bank",hdr:"HDFCBK",logo:["HDFC","BANK","#004c8f"],lobs:["Credit Cards","Personal Loan","Home Loan"]},{name:"HDFC Life",hdr:"HDFCLI",logo:["HDFC","LIFE","#1b4f9c"],lobs:["Term Insurance","Savings Plans"]},{name:"HDFC ERGO",hdr:"HDFCER",logo:["HDFC","ERGO","#d7262b"],lobs:["Motor Insurance","Health Insurance"]}];
-var PARTNERS=[{name:"Karix",pick:true,r:[.75,1.2,.6],why:"Lowest rates on migration and refresh."},{name:"Value First",pick:true,r:[.8,1.2,.7],why:"Ties on acquisition at ₹1.20, with stronger enterprise SLA cover."},{name:"Tata",pick:false,r:[.82,1.28,.68],why:"Close on refresh, higher on migration and acquisition."},{name:"Route Mobile",pick:false,r:[.88,1.35,.72],why:"Above the chosen pair on every phase."}];
+var PARTNERS=[{name:"Karix",pick:true,r:[.75,1.2,.6],why:"Lowest rates on migration and refresh.",s:[.38,.32,.44]},{name:"Value First",pick:true,r:[.8,1.2,.7],why:"Ties on acquisition at ₹1.20, with stronger enterprise SLA cover.",s:[.4,.35,.48]},{name:"Tata",pick:false,r:[.82,1.28,.68],why:"Close on refresh, higher on migration and acquisition.",s:[.41,.36,.5]},{name:"Route Mobile",pick:false,r:[.88,1.35,.72],why:"Above the chosen pair on every phase.",s:[.42,.38,.52]}];
 var PH=["Migration","Acquisition","Refresh"], ALLOC=[60,50,65];
 /* per line of business: brand and how many of its suggestions need a second look */
 var TLOB_META={"Credit Cards":["HDFC Bank",6],"Personal Loan":["HDFC Bank",5],"Home Loan":["HDFC Bank",4],"Term Insurance":["HDFC Life",3],"Health Insurance":["HDFC ERGO",4],"Motor Insurance":["HDFC ERGO",2],"Savings Plans":["HDFC Life",2]};
@@ -1492,12 +1508,18 @@ function gpartCard(){var c='minmax(0,1.5fr) repeat(3,minmax(70px,.5fr))';
     PARTNERS.map(function(p,k){return '<div class="gr'+(k?' off':' pick')+'" style="grid-template-columns:'+c+'"><span class="gw"><i class="mk">'+p.name[0]+'</i><span><b>'+esc(p.name)+(k?'':'<em>Chosen</em>')+'</b><small>'+(k?'No rate card yet':esc(p.why))+'</small></span></span>'+
       p.r.map(function(r){return '<span class="n'+(k?'':' bst')+'">'+(k?'—':'₹'+r.toFixed(2)+'<small>100%</small>')+'</span>'}).join("")+'</div>'}).join("")+'</div>'}
 function gtmCard(){if(F.gpart) return gpartCard();
-  var sel=picked(), best=PH.map(function(_,k){return Math.min.apply(null,PARTNERS.map(function(p){return p.r[k]}))});
-  var c='minmax(0,1.5fr) repeat(3,minmax(70px,.5fr))';
-  return '<div class="gtmh"><b>Compare partners</b><span>'+sel.length+' of '+PARTNERS.length+' chosen · ₹ per consent (refresh: per consent a year) and share of volume</span></div>'+
-    '<div class="gtmt"><div class="gr hd" style="grid-template-columns:'+c+'"><span>Partner</span>'+PH.map(function(x){return '<span class="n">'+x+'</span>'}).join("")+'</div>'+
-    PARTNERS.map(function(p){return '<div class="gr'+(p.pick?' pick':' off')+'" style="grid-template-columns:'+c+'"><span class="gw"><i class="mk">'+p.name[0]+'</i><span><b>'+esc(p.name)+(p.pick?'<em>Chosen</em>':'')+'</b><small>'+esc(p.why)+'</small></span></span>'+
-      p.r.map(function(r,k){return '<span class="n'+(r===best[k]?' bst':'')+'">₹'+r.toFixed(2)+(p.pick&&sel.length===2?'<small>'+(p===sel[0]?ALLOC[k]:100-ALLOC[k])+'%</small>':'')+'</span>'}).join("")+'</div>'}).join("")+'</div>';
+  var sel=picked(), best=PH.map(function(_,k){return Math.min.apply(null,PARTNERS.map(function(p){return p.r[k]}))}), F2=F.gexp||(F.gexp={});
+  function tiles(p,isSel){return '<div class="gt3">'+PH.map(function(x,k){var b=p.r[k]===best[k]&&isSel, sh=isSel&&sel.length===2?(p===sel[0]?ALLOC[k]:100-ALLOC[k]):0;
+    return '<div class="gt'+(b?' bst':'')+'"><span>'+x+'</span><b>'+(b?I("check"):"")+'₹'+p.r[k].toFixed(2)+'</b>'+(sh?'<em>'+sh+'%</em>':'')+'</div>'}).join("")+'</div>'+
+    '<div class="gsc"><b>Scrubbing</b>'+["SMS","Call","RCS"].map(function(x,k){return '<span>'+x+' <b>₹'+p.s[k].toFixed(2)+'</b></span>'}).join("")+'</div>'}
+  function head(p,right){return '<div class="gph"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b>'+right+'</div>'}
+  var c='<div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners selected</div><div class="gsel">'+
+    sel.map(function(p){return '<div class="gpc">'+head(p,'<span class="gstat on"><i></i>Selected</span>')+'<h6>Why it was chosen</h6><p>'+esc(p.why)+'</p>'+tiles(p,true)+'</div>'}).join("")+'</div>';
+  var rest=PARTNERS.filter(function(p){return !p.pick});
+  if(rest.length) c+='<div class="gdiv"><span>Not selected</span></div>'+rest.map(function(p){var o=F2[p.name];
+    return '<div class="gpc off'+(o?' open':'')+'">'+'<button class="gph tg" data-a="gexp" data-v="'+esc(p.name)+'" aria-expanded="'+(!!o)+'"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b><span class="gstat"><i></i>Not selected</span><svg class="i gchev" viewBox="0 0 24 24"><path d="'+(o?"m6 15 6-6 6 6":"m6 9 6 6 6-6")+'"/></svg></button>'+
+      (o?'<h6>Why it was not chosen</h6><p>'+esc(p.why)+'</p>'+tiles(p,false):'')+'</div>'}).join("");
+  return c;
 }
 function cardSummary(i){
   var st=STEPS[i], h='';
@@ -2102,6 +2124,7 @@ document.addEventListener("click",function(e){
   else if(a==="tf"){F.tf=+el.dataset.v; refresh()}
   else if(a==="tclear"){F.tq=""; F.tf=-1; refresh()}
   else if(a==="lobf"){F.lobf=el.dataset.v; F.tpage=0; refresh()}
+  else if(a==="gexp"){F.gexp=F.gexp||{}; F.gexp[el.dataset.v]=!F.gexp[el.dataset.v]; refresh()}
   else if(a==="tt"){F.tt=el.dataset.v; refresh()}
   else if(a==="auopen"){F.addU=true; refresh()}
   else if(a==="aucancel"){F.addU=false; refresh()}
