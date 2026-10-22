@@ -2137,7 +2137,7 @@ var XS={
 function failFace(i,tries){var st=STEPS[i];
   return {chip:["Needs attention","or"],head:st.title+" couldn't be prepared",sum:tries>1?"Two tries didn't work. You can fill this step in yourself.":"The agent couldn't read what it needs. Try again in a moment.",tone:"or",
     h:tries>1?"Still couldn't prepare this step":"Couldn't prepare this step",p:tries>1?"Two tries didn't work. You can fill this step in yourself.":"The agent couldn't read what it needs for this step. Try again in a moment.",
-    did:{ok:1,bad:didOf(st.k)[1]+": couldn't finish"},l:i===3?'':B("xlater","Do it later","ghost"),r:tries>1?B("xretry","Try again","ghost")+B("xself","Do it yourself"):B("xretry","Try again")}}
+    did:{ok:1,bad:didOf(st.k)[1]+": couldn't finish"},l:i===3?'':B("xadd","Add manually","ghost"),r:tries>1?B("xretry","Try again","ghost")+B("xself","Do it yourself"):B("xretry","Try again")}}
 function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
 var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
   ["Agent messages",[["Waiting","msg-wait"],["GTM waiting","msg-gtm"],["Welcome back","msg-back"],["After a decision","msg-next"]]],
