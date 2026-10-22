@@ -802,18 +802,29 @@ body[data-m=proc] #sub{display:none}
 </style>
 <script>/* pick this page's look with an attribute of our own: the artifact viewer sets data-theme on <html> itself, which must not change it */document.documentElement.setAttribute("data-px","")</script>
 <style id="hybrid-css">
-/* hybrid approach: the pixel field stays, the agent-loader scene sits under the steps, no blob on top */
-body[data-m=proc] .stage{top:96px;transform:translateX(-50%)}
-.stage{transition:top .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
-body[data-m=proc] .extra{min-height:110px}
-body[data-m=proc] .think{min-height:92px;max-height:92px;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 34%);mask-image:linear-gradient(180deg,transparent 0,#000 34%)}
-.hyL{display:none;position:relative;margin:6px auto 0;pointer-events:none;text-shadow:none;transition:height .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1);
-  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
+/* hybrid approach: the pixel field stays, the agent-loader scene sits under the steps, no blob on top.
+   The whole block (status, headline, steps, scene) is centred on the page. */
+body[data-m=proc] .stage{top:calc(50% + 22px)}
+.stage{transition:top .7s cubic-bezier(.2,.8,.2,1)}
+body[data-m=proc] .extra{min-height:116px}
+/* steps: three rows at most, newer ones scroll in from below */
+body[data-m=proc] .think{min-height:98px;max-height:none;height:98px;padding:8px 0;gap:10px;box-sizing:border-box;overflow:hidden;transition:height .45s cubic-bezier(.2,.8,.2,1);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 8px,#000 calc(100% - 4px),transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 8px,#000 calc(100% - 4px),transparent 100%)}
+body[data-m=proc] .think li{line-height:1.45}
+/* the scene: a fixed frame, each loader is cropped to what it draws and centred in it */
+.hyL{display:none;position:relative;margin:14px auto 0;pointer-events:none;text-shadow:none;transition:height .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1)}
 body[data-m=proc] .hyL{display:block}
-.hyF{position:absolute;inset:0;opacity:0;filter:blur(6px);transform:translateY(8px);transition:opacity .8s ease,filter .8s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.hyL:before{content:"";position:absolute;left:-10%;right:-10%;top:-14%;bottom:-14%;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(170,205,255,.26),rgba(120,165,255,.10) 55%,rgba(120,165,255,0));animation:hyGlow 7s ease-in-out infinite}
+.hyL:after{content:"";position:absolute;left:18%;right:18%;bottom:-6%;height:16%;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(4,24,120,.28),rgba(4,24,120,0));filter:blur(6px)}
+@keyframes hyGlow{0%,100%{opacity:.55;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
+.hyF{position:absolute;inset:0;z-index:1;opacity:0;filter:blur(8px);transform:translateY(10px) scale(.965);
+  transition:opacity .9s ease,filter .9s ease,transform 1.1s cubic-bezier(.2,.8,.2,1)}
 .hyF.on{opacity:1;filter:none;transform:none}
-.hyF iframe{position:absolute;left:0;top:0;width:720px;border:0;background:transparent;transform-origin:0 0;transform:scale(var(--hs,1))}
-@media (prefers-reduced-motion:reduce){.stage,.hyL,.hyF{transition:none}}
+.hyF.off{opacity:0;filter:blur(6px);transform:translateY(-6px) scale(1.02);transition-duration:.6s}
+.hyF iframe{position:absolute;left:0;top:0;border:0;background:transparent;transform-origin:0 0;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.stage,.hyL,.hyF,.hyF iframe,body[data-m=proc] .think{transition:none}.hyL:before{animation:none}}
 </style>
 </head>
 <body>
@@ -1594,8 +1605,18 @@ function thoughtTick(sc,lt){
     li.style.opacity=last?1:(k===n-1?.72:.45);
     if(li.dataset.t!==""+typed){li.dataset.t=typed; li.children[1].textContent=e[1].slice(0,typed)}
   }
-  ul.scrollTop=ul.scrollHeight
+  thinkScroll(ul)
 }
+/* the steps show three rows at most: the box grows to fit them (a long one may wrap), newer rows glide up into view */
+function thinkScroll(ul){var ks=ul.children, n=ks.length, cs=getComputedStyle(ul), gap=parseFloat(cs.rowGap)||0, pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom), h=0;
+  for(var q=Math.max(0,n-3);q<n;q++) h+=ks[q].offsetHeight;
+  var one=ks[0]?ks[0].offsetHeight:20, H=Math.max(pad+3*one+2*gap, pad+h+Math.max(0,Math.min(n,3)-1)*gap);
+  if(Math.abs((parseFloat(ul.style.height)||0)-H)>.5){ul.style.height=H+"px"; if(F.mode==="proc"){hyFit(); later(measure,650,true)}}
+  var tgt=Math.max(0,ul.scrollHeight-H), cur=ul.scrollTop;
+  var st=ul.scrollTop=REDUCE||Math.abs(tgt-cur)<.6?tgt:cur+(tgt-cur)*thinkK(), v0=st+parseFloat(cs.paddingTop)-1, v1=st+H-parseFloat(cs.paddingBottom)+1;
+  for(var q=0;q<n;q++){var li=ks[q], t=li.offsetTop-ul.offsetTop, b=t+li.offsetHeight, f=clamp((Math.min(b,v1)-Math.max(t,v0))/li.offsetHeight,0,1), base=q===n-1?1:q===n-2?.72:.45;
+    li.style.opacity=(base*f*f*f).toFixed(3)}}
+function thinkK(){var t=performance.now(), d=Math.min(.1,(t-(thinkK.t||t))/1000); thinkK.t=t; return 1-Math.exp(-d*11)} // frame-rate independent glide
 function procTick(){
   var pt=clock-F.procT0, i=sceneAt(pt), s=nfScene(SCENES[i]), lt=pt-STARTS[i];
   if(s.err&&lt>=ERRV[s.id].at){errHalt(s,i); return}
@@ -1611,6 +1632,7 @@ function procTick(){
   if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:(s.nf?NFW:OK)+s.done}); if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(SRC.length,-1,SRC.length)})}
   var ph=phaseOf(s,lt); if(ph!==F.phase){F.phase=ph; $("statusTxt").textContent=ph; corePulse()}
   if(s.log) thoughtTick(s,lt);
+  placeStatus();
   if(s.id==="form"){var c=0; if(!s.nf) for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
     var txt=s.nf?"Nothing found to fill in":c===7?OK+"7 of 7 fields filled":c+" of 7 fields filled";
     if(F.subState!==txt){F.subState=txt; said.sub=txt; $("sub").innerHTML='<span class="w" style="--d:0ms">'+txt+'</span>'; $("sub").classList.add("in")}}
@@ -1985,27 +2007,47 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
 }
 
 /* ======================= hybrid: the agent-loader scene under the processing steps ======================= */
+/* loader, speed, and the part of its 720-wide stage it actually draws in [x0,y0,x1,y1] (some scenes spill past the stage edge) */
 var HYMAP={sources:["kyc",1.3],form:["kyc",1.3],team:["team",1.8],brands:["brand",1.8],gtm:["gtm",1.8],tpl:["match",1.8]};
-var HY_CSS=".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{color:rgba(255,255,255,.88) !important}";
-var HY={id:null,cur:null,hb:360};
-function hyDoc(id,K){return loaderDoc(id,HY_CSS).replace("var K=1.7,","var K="+K+",").replace("(ms / 1.7)","(ms / "+K+")")}
+var HYBOX={kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
+var HY_P=56, HY_BW=720, HY_BH=330, HY_ZMAX=1.15; // padding round the stage inside the frame, then the scene frame in base px
+var HY_CSS=".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{color:rgba(255,255,255,.9) !important}"+
+  /* colours that were made for a light page: the source tag on a field, the white blob's glow, the faint circuit traces */
+  ".fld-tag{color:#fff !important;background:rgba(255,255,255,.18) !important;border-color:rgba(255,255,255,.3) !important}"+
+  ".blob.on-dark .mark{box-shadow:0 6px 16px -4px rgba(6,24,110,.55),0 0 0 6px rgba(255,255,255,.2),0 0 26px rgba(255,255,255,.35) !important}"+
+  ".traces path,.traces circle{stroke:rgba(255,255,255,.14) !important;fill:none}"+
+  ".fld.missing .fld-box{border-color:rgba(255,255,255,.55) !important;background:rgba(255,255,255,.08) !important}"+
+  /* the stage keeps its own size (so the loader's maths is untouched) and sits in a padded, unclipped page */
+  "html.embed,html.embed body{height:100%}html.embed main{height:100%;padding:0 !important;display:flex;align-items:center;justify-content:center}"+
+  "html.embed .loader{width:auto !important}html.embed .stage-wrap{flex:none;width:720px !important;height:var(--hyH) !important;max-height:none !important;min-height:0 !important;aspect-ratio:auto !important}"+
+  ".stage{contain:none !important}.copy{position:absolute !important;left:0;top:0}";
+var HY={id:null,cur:null,s:1};
+function hyDoc(id,K){var h=id==="brand"?460:360;
+  return loaderDoc(id,HY_CSS.replace("var(--hyH)",h+"px")).replace("var K=1.7,","var K="+K+",").replace("(ms / 1.7)","(ms / "+K+")")
+    .replace("opts.onDark && 'on-dark'","'on-dark'")} // every agent blob uses the loaders' white on-dark look
 function hyScene(s){var m=HYMAP[s.id]; hyShow(m&&!s.nf&&!s.err?m:null)}
 function hyShow(m){
   var box=$("hyL"), id=m?m[0]:null; if(!box||id===HY.id) return;
   HY.id=id; var old=HY.cur; HY.cur=null;
-  if(old){old.classList.remove("on"); setTimeout(function(){old.remove()},900)}
-  if(!id){HY.hb=360; return}
-  HY.hb=id==="brand"?460:360;
-  var w=document.createElement("div"), fr=document.createElement("iframe"); w.className="hyF";
-  fr.setAttribute("aria-hidden","true"); fr.tabIndex=-1; fr.title="The agent at work"; fr.style.height=HY.hb+"px";
+  if(old){old.classList.remove("on"); old.classList.add("off"); setTimeout(function(){old.remove()},900)}
+  if(!id) return;
+  var h=id==="brand"?460:360, w=document.createElement("div"), fr=document.createElement("iframe"); w.className="hyF"; w.dataset.id=id;
+  fr.setAttribute("aria-hidden","true"); fr.tabIndex=-1; fr.title="The agent at work";
+  fr.style.width=(720+2*HY_P)+"px"; fr.style.height=(h+2*HY_P)+"px";
   fr.addEventListener("load",function(){requestAnimationFrame(function(){w.classList.add("on")})});
   fr.srcdoc=hyDoc(id,m[1]); w.appendChild(fr); box.appendChild(w); HY.cur=w; hyFit();
 }
+function hyPlace(w){var b=HYBOX[w.dataset.id], fr=w.firstChild; if(!b||!fr) return;
+  var bw=b[2]-b[0], bh=b[3]-b[1], z=Math.min(HY_BW/bw,HY_BH/bh,HY_ZMAX), S=HY.s*z,
+      tx=(HY_BW*HY.s-bw*S)/2-(b[0]+HY_P)*S, ty=(HY_BH*HY.s-bh*S)/2-(b[1]+HY_P)*S;
+  fr.style.transform="translate("+tx.toFixed(1)+"px,"+ty.toFixed(1)+"px) scale("+S.toFixed(4)+")"}
 function hyFit(){
   var box=$("hyL"), ex=$("extra"); if(!box||F.mode!=="proc") return;
-  var top=ex.offsetTop+ex.offsetHeight+6, avail=innerHeight-96-top-84,
-      sc=Math.max(.42,Math.min(1.25,avail/HY.hb,innerWidth*.92/720));
-  box.style.width=Math.round(720*sc)+"px"; box.style.height=Math.round(HY.hb*sc)+"px"; box.style.setProperty("--hs",sc);
+  // the block is centred: status pill (~50px) above, the corner pills below, so leave ~170px of air in all
+  var top=ex.offsetTop+ex.offsetHeight+14, avail=innerHeight-170-top;
+  HY.s=Math.max(.4,Math.min(1.15,avail/HY_BH,innerWidth*.92/HY_BW));
+  box.style.width=Math.round(HY_BW*HY.s)+"px"; box.style.height=Math.round(HY_BH*HY.s)+"px";
+  [].forEach.call(box.children,hyPlace);
 }
 
 function fillStep(){
