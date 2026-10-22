@@ -110,6 +110,8 @@ body.appon > .brand{opacity:0;pointer-events:none}
 .prog li.on i{background:#fff;border-color:#fff;color:var(--deep);animation:pring 1.8s infinite}
 .prog li.dn{color:rgba(255,255,255,.92)}
 .prog li.dn i{background:#fff;border-color:#fff;color:var(--deep)}
+.prog li.lt{color:rgba(255,255,255,.92)}.prog li.lt i{background:transparent;border:1.5px dashed rgba(255,255,255,.9);color:#fff}.prog li.lt i svg{width:11px;height:11px;stroke-width:2.4}.prog li.lt .lbl::after{content:" · later";opacity:.72;font-weight:500}
+@media (max-width:1199px){.prog li.lt .lbl{display:inline}}
 .prog b{display:block;width:22px;height:2px;border-radius:2px;background:rgba(255,255,255,.25);position:relative;overflow:hidden}
 .prog b:after{content:"";position:absolute;inset:0;background:#fff;transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .prog b.dn:after{transform:none}
@@ -1390,11 +1392,12 @@ function say(o,quiet){
   measure();
 }
 function drawProg(p){
-  var st=p.states||[];
+  var st=(p.states||[]).slice();
+  if(p.label==="Steps"&&F.later) st=st.map(function(c,k){return F.later[k]&&(c==="dn"||c==="")&&F.status[k]==="done"?"lt":c});
   if(p.label==="Agreements"){$("prog").innerHTML=""; $("prog").style.display="none"; return}
   $("prog").style.display="";
   $("prog").innerHTML=(p.label&&p.label!=="Steps"?'<em>'+p.label+'</em>':'')+'<ol>'+p.items.map(function(l,i){var c=st[i]||"";
-    return (i?'<b class="'+(c==="dn"||c==="on"?"dn":"")+'"></b>':'')+'<li class="'+c+(c==="dn"&&p.label==="Steps"?' go" data-a="stepov" data-i="'+i+'" title="See what happened in '+esc(l)+'"':'"')+'><i>'+(c==="dn"?I("check"):i+1)+'</i><span class="lbl">'+esc(l)+'</span></li>'}).join("")+'</ol>';
+    return (i?'<b class="'+(c==="dn"||c==="on"||c==="lt"?"dn":"")+'"></b>':'')+'<li class="'+c+((c==="dn"||c==="lt")&&p.label==="Steps"?' go" data-a="stepov" data-i="'+i+'" title="See what happened in '+esc(l)+'"':'"')+'><i>'+(c==="dn"?I("check"):c==="lt"?I("clock"):i+1)+'</i><span class="lbl">'+esc(l)+'</span></li>'}).join("")+'</ol>';
 }
 function states(n,cur,doneUpTo){var a=[];for(var i=0;i<n;i++)a.push(i<doneUpTo?"dn":i===cur?"on":"");return a}
 
@@ -1410,7 +1413,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");clearTi
 
 /* ======================= flow ======================= */
 var F={mode:"gate",doc:0,accepted:[false,false],readEnd:false,status:["review","locked","locked","locked","locked"],
-  active:0,auth:false,teamLater:false,lobf:"all",tq:"",tf:-1,procT0:0,procI:-1,subState:""};
+  active:0,auth:false,teamLater:false,later:[0,0,0,0,0],lobf:"all",tq:"",tf:-1,procT0:0,procI:-1,subState:""};
 var STEPLINE=function(i){return "Step "+(i+1)+" of 5 · "+STEPS[i].title};
 
 /* 1 · agreements: summary first, the full text is in the sheet; accept only after reading to the end */
@@ -1722,8 +1725,10 @@ function verify(){
 /* a step is done: the ring closes, then the next one opens */
 function complete(i,title){F.doneAt=F.doneAt||{}; if(!F.doneAt[i]) F.doneAt[i]=nowTime(); F.face=null; F.ro=false; F.notice=null;
   closeSheet(); F.status[i]="done"; F.mode="pass"; show("pass");
+  var lt=/for later/i.test(title); F.later[i]=lt?1:0; if(i===1) F.teamLater=lt;
   var nx=i<4?"Next: "+STEPS[i+1].title:"Next: your migration window";
-  say({kick:STEPLINE(i), line:title, sub:OK+nx, extra:i===0&&/approved/.test(title)?opsList(4):"", status:["Step done","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
+  if(lt){title=STEPS[i].title+" is marked for later"}
+  say({kick:STEPLINE(i), line:title, sub:(lt?"Nothing is blocked. You can come back to it any time. ":"")+OK+nx, extra:i===0&&/approved/.test(title)?opsList(opsN()):"", status:[lt?"Marked for later":"Step done",lt?"still":"done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
   later(function(){if(i<4){F.status[i+1]="review"; review(i+1)} else final()},i===0?3800:2300);
 }
 
@@ -1732,7 +1737,7 @@ function final(){
   F.mode="final"; show("final");
   var tl=onPeople().length;
   var fv=F.fin, sk=fv==="skipped";
-  var rows=facts([["Business profile","Approved by 4 of 4 operators"],["Team",F.teamLater?"Saved for later":tl+" invites sent"],["Brands and LOBs",BRANDS.length+" brands · "+lobCount()+" lines of business"],["GTM partners",picked().map(function(p){return p.name}).join(" and ")],["Templates",sk?"Saved for later":(100-unmapped())+" of 100 mapped"]]);
+  var rows=facts([["Business profile",F.later[0]?"Marked for later":"Approved by "+opsN()+" of 4 telcos"],["Team",(F.teamLater||F.later[1])?"Marked for later":tl+" invites sent"],["Brands and LOBs",F.later[2]?"Marked for later":BRANDS.length+" brands · "+lobCount()+" lines of business"],["GTM partners",F.later[3]?"Marked for later":picked().map(function(p){return p.name}).join(" and ")],["Templates",(sk||F.later[4])?"Marked for later":(100-unmapped())+" of 100 mapped"]]);
   var clock='<div class="cl-lbl">Migration closes in</div><div class="clock" id="clock"></div>';
   say({kick:"Onboarding Agent · setup complete", line:sk?"You can start migration":"You're set to start migration",
     sub:sk?"Team and Templates are saved for later. Finish them any time from the product.":fv==="notopen"?"Every step is done. Your migration window opens on 25 October 2026.":fv==="closed"?"Your migration window closed on 19 October 2026. Ask your account manager to open a new one.":"Here is what was set up for HDFC Bank Limited.",
@@ -2020,11 +2025,11 @@ function ovMove(){var r=F.ovRet, c=r&&r.mode==="review"?r.i:-1; return c>=0&&STE
 function opsN(){return F.opsA==null?4:F.opsA}
 function telcoPanel(){var n=opsN(), d=["14 Oct, 11:42","14 Oct, 12:05","14 Oct, 12:20","14 Oct, 12:31"];
   return '<div class="tpanel"><div class="tph"><b>Telco approval</b><span>'+n+' of 4 approved</span></div>'+["Airtel","Jio","Vi","BSNL"].map(function(o,k){return '<div class="tpr '+(k<n?"tpa":"tpw")+'"><span class="tpd">'+I(k<n?"check":"clock")+'</span><b>'+o+'</b><em>'+(k<n?"Approved":"Still reviewing")+'</em><small>'+(k<n?d[k]:"Usually a few hours")+'</small></div>'}).join("")+'</div>'}
-function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=(i===1&&F.teamLater)||F.status[i]==="later";
+function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=!!F.later[i]||(i===1&&F.teamLater)||F.status[i]==="later";
   F.ovRet=F.ovRet!=null?F.ovRet:{mode:F.mode,i:F.active}; F.active=i;
-  setFace(i,{chip:later?["Do it later","vi"]:["Done","gr"],head:later?st.title+" is saved for later":st.title+" is done",sum:typeof o[2]==="function"?o[2]():o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
-    h:later?st.title+" saved for later":o[0],p:o[1]().join(" · "),
-    extra:(st.k==="profile"&&!later?'<div class="ovtel '+(opsN()===4?"all":"part")+'">'+I(opsN()===4?"check":"clock")+'<b>'+opsN()+' of 4 telcos approved</b></div>':'')+'<div class="okby xovby"><i>RM</i>Done by <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',
+  setFace(i,{chip:later?["Marked for later","vi"]:["Done","gr"],head:later?st.title+" is marked for later":st.title+" is done",sum:later?"Nothing is blocked. You can come back to it any time.":typeof o[2]==="function"?o[2]():o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
+    h:later?st.title+" marked for later":o[0],p:later?(i===1&&F.teamLater?"Nothing sent yet":"Nothing was changed. Open it to fill it in whenever you are ready."):o[1]().join(" · "),
+    extra:(st.k==="profile"&&!later?'<div class="ovtel '+(opsN()===4?"all":"part")+'">'+I(opsN()===4?"check":"clock")+'<b>'+opsN()+' of 4 telcos approved</b></div>':'')+'<div class="okby xovby"><i>RM</i>'+(later?"Marked for later by":"Done by")+' <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',
     l:'<button class="btn ghost" data-a="ovedit">'+I("max")+(st.k==="profile"?"View":"View and edit")+'</button>',r:ovMove()});
   if(F.mode!=="review"){F.mode="review"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["Step done","done"]}); showCard()} else refresh();
   var stx=F.status.map(function(x){return x==="done"||x==="later"?"dn":""}); stx[i]="on"; drawProg({label:"Steps",items:STEPN,states:stx}); markOv(i)}
@@ -2088,6 +2093,8 @@ var XS={
   "rc-tpl":function(){jump("plan"); BRANDS[0].lobs.push("Gold Loan"); goStep(4)},
   "ov-profile-4":function(){jump("plan"); later(function(){goStep(1); later(function(){stepOverview(0)},400)},300)},
   "ov-profile-2":function(){jump("plan"); F.opsA=2; later(function(){goStep(1); later(function(){stepOverview(0)},400)},300)},
+  "later-stepper":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; F.later[1]=1; F.teamLater=true; goStep(2)},300)},
+  "later-overview":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; F.later[1]=1; F.teamLater=true; goStep(2); later(function(){stepOverview(1)},400)},300)},
   "ov-team":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; goStep(2); later(function(){stepOverview(1)},400)},300)},
   "pm-kyc":function(){jump("plan"); F.opsA=2; later(function(){doneScreen(0,{chip:"Partly approved",line:"Approved by 2 of 4 operators",sub:"Your business profile is done. 2 operators are still reviewing it.",
     extra:opsList(2)+'<div class="xamb">You can carry on. Messages go out only through the approved operators until the others approve.</div>',btn:B("xgo","Next: Team is open now"+I("arrow"),"",1)})},300)},
@@ -2124,7 +2131,7 @@ var XS={
   "attention-templates":function(){rStep(4,function(){setFace(4,{chip:["Needs attention","or"],head:"Please review your templates",sum:"Suggested a line of business for 98 of 100 templates. Confirm the template mapping.",tone:"or",h:"14 templates need a new line of business",p:"14 templates were mapped to lines of business that changed.",btn:B("xreview","Review","ghost","tpart")})})},
   "partly-templates":function(){rStep(4,function(){F.tpart=true})},
   "dialog-templates":function(){bigStep(4); later(saveDlg,REDUCE?600:1700)},
-  "fin-skipped":function(){jump("final"); F.fin="skipped"; F.teamLater=true; final()},
+  "fin-skipped":function(){jump("final"); F.fin="skipped"; F.teamLater=true; F.later[1]=1; F.later[4]=1; final()},
   "fin-notopen":function(){jump("final"); F.fin="notopen"; final()},
   "fin-open":function(){jump("final")},
   "fin-closed":function(){jump("final"); F.fin="closed"; final()},
@@ -2141,7 +2148,7 @@ function failFace(i,tries){var st=STEPS[i];
 function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
 var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
   ["Agent messages",[["Waiting","msg-wait"],["GTM waiting","msg-gtm"],["Welcome back","msg-back"],["After a decision","msg-next"]]],
-  ["Business profile",[["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Result unknown","unk-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Approved by 2 of 4 operators","pm-kyc"],["Completed: view, 4 of 4 telcos","ov-profile-4"],["Completed: view, 2 of 4 telcos","ov-profile-2"],["Completed Team: move to current step","ov-team"]]],
+  ["Business profile",[["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Result unknown","unk-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Approved by 2 of 4 operators","pm-kyc"],["Completed: view, 4 of 4 telcos","ov-profile-4"],["Completed: view, 2 of 4 telcos","ov-profile-2"],["Completed Team: move to current step","ov-team"],["Team marked for later: stepper","later-stepper"],["Team marked for later: completed card","later-overview"]]],
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["In review","inreview-team"],["Do it later","later-team"],["Details: nothing found","notice-team-nothing"],["Details: done by someone else","notice-team-someone"],["Details: stays editable","notice-team-team"],["Save changes dialog","dialog-team"],["Save dialog, read-only","dialog-team-ro"],["Done by someone else, on the card","conc-card"],["Done by someone else, on the page","conc-deep"]]],
   ["Brands and LOBs",[["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: suggestion arrived late","notice-brands-late"],["Details: save failed","derr-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["Approved while mapping: popup","pm-partial-popup"],["LOB removed: remapping","pm-remove-remap"]]],
   ["GTM partners",[["No rate cards, locked","norate-gtm"],["Partly prepared","partly-gtm"],["Save changes dialog","dialog-gtm"]]],
@@ -2342,7 +2349,7 @@ addEventListener("keydown",function(e){
 addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0) tourGo(TS)});
 
 /* ======================= prototype jumps ======================= */
-function resetData(){F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function resetData(){F.later=[0,0,0,0,0]; F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
