@@ -2017,10 +2017,10 @@ function telcoPanel(){var n=opsN(), d=["14 Oct, 11:42","14 Oct, 12:05","14 Oct, 
   return '<div class="tpanel"><div class="tph"><b>Telco approval</b><span>'+n+' of 4 approved</span></div>'+["Airtel","Jio","Vi","BSNL"].map(function(o,k){return '<div class="tpr '+(k<n?"tpa":"tpw")+'"><span class="tpd">'+I(k<n?"check":"clock")+'</span><b>'+o+'</b><em>'+(k<n?"Approved":"Still reviewing")+'</em><small>'+(k<n?d[k]:"Usually a few hours")+'</small></div>'}).join("")+'</div>'}
 function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=(i===1&&F.teamLater)||F.status[i]==="later";
   F.ovRet=F.ovRet!=null?F.ovRet:{mode:F.mode,i:F.active}; F.active=i;
-  setFace(i,{ov:1,chip:later?["Do it later","vi"]:["Done","gr"],head:later?st.title+" is saved for later":st.title+" is done",sum:typeof o[2]==="function"?o[2]():o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
+  setFace(i,{chip:later?["Do it later","vi"]:["Done","gr"],head:later?st.title+" is saved for later":st.title+" is done",sum:typeof o[2]==="function"?o[2]():o[2],icon:later?"mark":"check",tone:later?"vi":"gr",
     h:later?st.title+" saved for later":o[0],p:o[1]().join(" · "),
     extra:(st.k==="profile"&&!later?'<div class="ovtel '+(opsN()===4?"all":"part")+'">'+I(opsN()===4?"check":"clock")+'<b>'+opsN()+' of 4 telcos approved</b></div>':'')+'<div class="okby xovby"><i>RM</i>Done by <b>Ravi Menon</b> · '+((F.doneAt||{})[i]||nowTime())+'</div>',
-    btn:ovMove(),l:'',r:''});
+    l:'<button class="btn ghost" data-a="ovedit">'+I("max")+(st.k==="profile"?"View":"View and edit")+'</button>',r:ovMove()});
   if(F.mode!=="review"){F.mode="review"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["Step done","done"]}); showCard()} else refresh();
   var stx=F.status.map(function(x){return x==="done"||x==="later"?"dn":""}); stx[i]="on"; drawProg({label:"Steps",items:STEPN,states:stx}); markOv(i)}
 function ovOpts(i){var st=STEPS[i], edit=st.k!=="profile";
