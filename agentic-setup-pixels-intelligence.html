@@ -484,6 +484,7 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .xamb{margin:16px auto 0;max-width:460px;padding:10px 14px;border-radius:12px;background:rgba(255,210,122,.18);color:#ffe2a8;font-size:14px;line-height:1.45}
 .xops{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:8px;justify-content:center;margin-top:18px}
 .xops span{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.12);font-size:13px;color:rgba(255,255,255,.8)}.xops b{color:#fff;margin-right:auto}
+.ok.nfw{background:var(--amber)!important}
 .xops.xwide{grid-template-columns:repeat(2,minmax(0,230px))}
 .xcountline{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}.xcountline span{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600}.xcountline .a{background:#e3f6ec;color:#0f6b4a}.xcountline .r{background:#fff1d6;color:#9a5b05}.xcountline .n{background:#fde7e1;color:#b13a1d}
 .xcounts{margin-bottom:12px}.xitems{display:grid;gap:6px;margin-bottom:14px}.xit{display:grid;grid-template-columns:1.1fr 1.4fr auto;gap:10px;align-items:center;padding:9px 14px;border-radius:12px;background:#f6f8fc;font-size:14px}.xit b{font-weight:600}.xit span{color:var(--s-muted)}.xit em{font-style:normal;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px}.xit.xa em{background:#e3f6ec;color:#0f6b4a}.xit.xr em{background:#fff1d6;color:#9a5b05}.xit.xn em{background:#fde7e1;color:#b13a1d}.xit.xa{opacity:.85}
@@ -878,6 +879,7 @@ function ease(x){x=clamp(x,0,1);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2}
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function I(n){return '<svg class="i"><use href="#i-'+n+'"/></svg>'}
+var NFW='<span class="ok nfw"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 2.5v4.2M6 9.1v.2"/></svg></span>';
 var OK='<span class="ok"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.3 2.2 4.7-5"/></svg></span>';
 
 /* ======================= pixel engine ======================= */
@@ -1428,6 +1430,14 @@ function plan(){
 /* 3 · processing (timeline) */
 var STARTS=[];(function(){var s=0;SCENES.forEach(function(x){STARTS.push(s);s+=x.dur})})();
 function sceneAt(t){for(var i=SCENES.length-1;i>=0;i--)if(t>=STARTS[i])return i;return 0}
+/* processing runs where a source or step finds nothing: the agent says so, in amber, and moves on */
+var NF=null, NFLAB={sources:"Website",team:"Team",brands:"Brands and LOBs",gtm:"GTM partners",tpl:"Templates"};
+var NFV={sources:{log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.5,"GSTIN: PAN AAACH2702H is active and matches the DLT entity",0,"99%"],[2.7,"MCA: HDFC Bank Limited, a public limited company",0,"99%"],[3.9,"Website: nothing found for this company",1],[5.0,"Rate cards: 4 partners, 3 phases each"]],done:"5 of 6 sources read. No website found."},
+  team:{log:[[.4,"No people are named on your DLT record",1],[1.9,"GSTIN and MCA have no contacts either",1],[3.3,"Nothing to suggest, so you will add people yourself"]],done:"No people found. You can add them yourself."},
+  brands:{log:[[.4,"No sender headers found on your DLT record",1],[1.9,"Nothing to group into brands",1],[3.3,"I can't suggest brands. You can add them yourself"]],done:"No brands found to suggest."},
+  gtm:{log:[[.4,"Looking for rate cards from 4 partners"],[1.9,"No partner has sent a rate card yet",1],[3.3,"I can't compare or split volume yet. This step opens when one arrives"]],done:"No rate cards yet. This step opens when one arrives."},
+  tpl:{log:[[.4,"Looking for your templates on DLT"],[2.3,"Your DLT account has no templates yet",1],[4.3,"Nothing to map. You can add templates later"]],done:"No templates found to map."}};
+function nfScene(s){if(NF&&s.id===NF){var o=NFV[NF],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
 function proc(at){F.mode="proc"; F.procT0=clock-(at||0); F.procI=-1; procTick()}
 function phaseOf(s,lt){return s.id==="intro"?"Planning":s.id==="sources"?"Observing":(lt/s.dur<.38?"Reasoning":"Drafting")}
 /* one line of the agent's reasoning at a time: it types in, stays, then types out before the next */
@@ -1448,7 +1458,7 @@ function thoughtTick(sc,lt){
   ul.scrollTop=ul.scrollHeight
 }
 function procTick(){
-  var pt=clock-F.procT0, i=sceneAt(pt), s=SCENES[i], lt=pt-STARTS[i];
+  var pt=clock-F.procT0, i=sceneAt(pt), s=nfScene(SCENES[i]), lt=pt-STARTS[i];
   if(i!==F.procI){F.procI=i;
     if(s.id==="done"){ready(); return}
     show(s.id,lt); F.subState=s.subs?"s0":""; F.logN=0; F.phase=phaseOf(s,lt);
@@ -1458,7 +1468,7 @@ function procTick(){
   if(s.subs){var span=s.dur*.75,n=s.subs.length;
     if(lt<span){var k0=Math.min(n-1,Math.floor(lt/(span/n))); if(F.subState!=="s"+k0){F.subState="s"+k0; say({sub:(s.subPre||"")+s.subs[k0]});
       if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(SRC.length,k0,k0)})}}}
-  if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:OK+s.done}); if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(SRC.length,-1,SRC.length)})}
+  if(s.done&&lt>s.dur*(s.subs?.75:.72)&&F.subState!=="done"){F.subState="done"; say({sub:(s.nf?NFW:OK)+s.done}); if(s.progSubs) drawProg({label:"Sources",items:SRC,states:states(SRC.length,-1,SRC.length)})}
   var ph=phaseOf(s,lt); if(ph!==F.phase){F.phase=ph; $("statusTxt").textContent=ph; corePulse()}
   if(s.log) thoughtTick(s,lt);
   if(s.id==="form"){var c=0; for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
@@ -1468,7 +1478,7 @@ function procTick(){
 function ready(){
   F.mode="ready"; show("done");
   say({kick:"Onboarding Agent", line:"All done. Have a look?", sub:"I've filled everything in. Go through it one part at a time and confirm what looks right.",
-    extra:'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>'+
+    extra:(NF?'<div class="three"><span>'+OK+'4 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>'+NFLAB[NF]+': nothing found</span></div>':'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>')+
       '<div class="acts"><button class="btn" data-a="go0">Review your business profile'+I("arrow")+'</button></div>',
     status:["Ready for your review","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
 }
@@ -2121,6 +2131,8 @@ XS["gap-brands-none"]=function(){rStep(2,function(){blockedFace(2,"No brand is a
 XS["gap-tpl-review"]=function(){rStep(4,function(){setFace(4,{chip:["In review","amb"],head:"Templates are in review",sum:"42 templates sent. 58 unchanged templates were not resubmitted.",icon:"clock",tone:"amb",h:"42 in review",p:"Only the 42 changed templates were sent to the operators. The other 58 keep their approval.",extra:'<div class="xcountline"><span class="r">42 in review</span><span class="a">58 unchanged</span></div>',btn:B("xview","View","ghost")})})};
 XS["gap-tpl-partial"]=function(){rStep(4,function(){setFace(4,{chip:["Partly approved","amb"],head:"Some templates were not approved",sum:"30 approved, 12 not approved.",icon:"warn",tone:"or",h:"30 approved · 12 not approved",p:"Fix the 12 and resubmit. Only changed templates are resubmitted.",extra:'<div class="xcountline"><span class="a">30 approved</span><span class="n">12 not approved</span></div>',btn:B("xreview","Review the 12","ghost","tpart")})})};
 XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",icon:"lock",title:"Your organisation isn't eligible",text:"An operator has blacklisted your organisation, so setup is paused on every screen. Still available: Contact support, Log out, and your signed agreements.",btns:B("xagree","Signed agreements","ghost")+B("xlogout","Log out","ghost")+B("xsupport","Contact support")})},REDUCE?700:1700)};
+[["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
+XMENU.push(["AI processing: nothing found",[["Sources: website not found","nf-sources"],["Team: no people found","nf-team"],["Brands: no sender headers","nf-brands"],["GTM: no rate cards","nf-gtm"],["Templates: none found","nf-tpl"]]]);
 XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Return mid-preparation","gap-return-prep"],["Ready on return","gap-return-ready"],["Ready, some not prepared","gap-ready-partial"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 function detailParts(i){
   var st=STEPS[i], h="", ft=["",""]; function foot(l,r){ft=[l,r]}
@@ -2278,7 +2290,7 @@ addEventListener("keydown",function(e){
 addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0) tourGo(TS)});
 
 /* ======================= prototype jumps ======================= */
-function resetData(){var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function resetData(){NF=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
