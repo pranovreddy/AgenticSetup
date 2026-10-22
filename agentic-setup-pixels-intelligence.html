@@ -1431,7 +1431,7 @@ function plan(){
 var STARTS=[];(function(){var s=0;SCENES.forEach(function(x){STARTS.push(s);s+=x.dur})})();
 function sceneAt(t){for(var i=SCENES.length-1;i>=0;i--)if(t>=STARTS[i])return i;return 0}
 /* processing runs where a source or step finds nothing: the agent says so, in amber, and moves on */
-var NF=null, NFLAB={sources:"Website",team:"Team",brands:"Brands and LOBs",gtm:"GTM partners",tpl:"Templates"};
+var NF=null, NFLAB={form:"Business profile",sources:"Website",team:"Team",brands:"Brands and LOBs",gtm:"GTM partners",tpl:"Templates"};
 var NFV={sources:{log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.5,"GSTIN: PAN AAACH2702H is active and matches the DLT entity",0,"99%"],[2.7,"MCA: HDFC Bank Limited, a public limited company",0,"99%"],[3.4,"Checking your company website..."],[4.2,"Website: not found",1],[5.0,"Rate cards: 4 partners, 3 phases each"]],done:"5 of 6 sources read. No website found."},
   sourcesAll:{log:[[.3,"Checking DLT registration..."],[1.0,"DLT registration: not found",1],[1.7,"Checking GSTIN..."],[2.4,"GSTIN: not found",1],[3.1,"Checking MCA and your website..."],[3.8,"MCA and website: not found",1],[4.5,"Checking partner rate cards..."],[5.2,"Rate cards: not found",1]],done:"No sources found. I have nothing to read."},
   form:{log:[[.3,"Checking GSTIN, MCA and your website..."],[1.6,"Business details: not found",1],[3.2,"Nothing to fill in. You will enter the profile yourself"]],done:"Nothing found to fill in."},
@@ -1439,7 +1439,21 @@ var NFV={sources:{log:[[.3,"DLT: entity, address, 3 sender headers, 100 template
   brands:{log:[[.4,"Checking your DLT sender headers..."],[1.4,"Sender headers: not found",1],[2.6,"Nothing to group into brands"],[3.8,"I can't suggest brands. You can add them yourself"]],done:"No brands found to suggest."},
   gtm:{log:[[.4,"Checking rate cards from 4 partners..."],[1.4,"Rate cards: not found",1],[3.0,"I can't compare or split volume yet. This step opens when one arrives"]],done:"No rate cards yet. This step opens when one arrives."},
   tpl:{log:[[.4,"Checking your DLT account for templates..."],[1.6,"Templates: not found",1],[3.6,"Nothing to map. You can add templates later"]],done:"No templates found to map."}};
-function nfScene(s){var key=NF==="all"?(s.id==="sources"?"sourcesAll":s.id):NF; if(NF&&(NF==="all"?NFV[key]:s.id===NF)){var o=NFV[key],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
+/* the agent hits a problem partway through a scene: it stops, says what failed and asks to retry */
+var ERR=null;
+var ERRV={sources:{at:3.2,log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.4,"Checking GSTIN..."],[2.4,"GSTIN service didn't respond",1]],t:"Couldn't reach GSTIN",d:"The GSTIN service isn't responding right now. Nothing you did caused this."},
+  form:{at:3.0,log:[[.3,"Checking GSTIN, MCA and your website..."],[1.4,"GSTIN: PAN AAACH2702H matches",0,"99%"],[2.3,"MCA record didn't load",1]],t:"Couldn't finish your business profile",d:"The MCA record didn't load, so I stopped after 3 fields. Try again to fill the rest."},
+  team:{at:3.0,log:[[.4,"Reading people on your DLT record..."],[1.5,"DLT contacts didn't load",1],[2.4,"Stopped before suggesting roles",1]],t:"Couldn't finish finding your team",d:"The DLT contact list didn't load. Nothing was sent to anyone."},
+  brands:{at:3.2,log:[[.4,"Reading your DLT sender headers..."],[1.6,"Read 2 of 3 header families",0],[2.6,"HDFCER didn't load",1]],t:"Couldn't finish your brands",d:"One sender header family didn't load, so the brand list would be incomplete."},
+  gtm:{at:3.0,log:[[.4,"Reading rate cards from 4 partners..."],[1.5,"Read Karix and Value First",0],[2.4,"Tata and Route Mobile cards didn't load",1]],t:"Couldn't compare your partners",d:"Two rate cards didn't load, so I can't compare all four partners yet."},
+  tpl:{at:3.4,log:[[.4,"Reading the message text of all 100 templates"],[2.0,"Read 41 of 100 templates",0],[3.0,"Connection to DLT dropped",1]],t:"Couldn't map your templates",d:"The connection to DLT dropped after 41 of 100 templates. Nothing was changed."}};
+function errHalt(s,i){var o=ERRV[s.id];
+  F.mode="msg"; show("blank"); hideCard();
+  var twice=ERR.tries>=1;
+  say({kick:"Onboarding Agent",line:twice?"Still couldn't finish":o.t,sub:twice?"Two tries didn't work. You can try once more, or skip this step and come back to it.":"Nothing was lost. "+o.d,
+    extra:'<div class="xamb">'+(twice?"The problem is on the source side. It usually clears in a few minutes.":"Something went wrong while I was working. You can try again.")+'</div><div class="acts">'+B("perr-retry","Try again")+B("perr-skip","Skip this step for now","ghost")+'</div>',
+    status:["Something went wrong","attn"],prog:{label:"Steps",items:s.grp==="src"?SRC:STEPN,states:states(5,s.prog,s.prog)}})}
+function nfScene(s){if(ERR&&s.id===ERR.id){var o=ERRV[ERR.id],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=null; r.err=1; return r}var key=NF==="all"?(s.id==="sources"?"sourcesAll":s.id):NF; if(NF&&(NF==="all"?NFV[key]:s.id===NF)){var o=NFV[key],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
 function proc(at){F.mode="proc"; F.procT0=clock-(at||0); F.procI=-1; procTick()}
 function phaseOf(s,lt){return s.id==="intro"?"Planning":s.id==="sources"?"Observing":(lt/s.dur<.38?"Reasoning":"Drafting")}
 /* one line of the agent's reasoning at a time: it types in, stays, then types out before the next */
@@ -1461,6 +1475,7 @@ function thoughtTick(sc,lt){
 }
 function procTick(){
   var pt=clock-F.procT0, i=sceneAt(pt), s=nfScene(SCENES[i]), lt=pt-STARTS[i];
+  if(s.err&&lt>=ERRV[s.id].at){errHalt(s,i); return}
   if(i!==F.procI){F.procI=i;
     if(s.id==="done"){ready(); return}
     show(s.id,lt); F.subState=s.subs?"s0":""; F.logN=0; F.phase=phaseOf(s,lt);
@@ -1480,7 +1495,7 @@ function procTick(){
 function ready(){
   F.mode="ready"; show("done");
   say({kick:"Onboarding Agent", line:"All done. Have a look?", sub:"I've filled everything in. Go through it one part at a time and confirm what looks right.",
-    extra:(NF==="all"?'<div class="three"><span><span class="ok" style="background:var(--amber)"></span>Nothing found for any step</span></div>':NF?'<div class="three"><span>'+OK+'4 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>'+NFLAB[NF]+': nothing found</span></div>':'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>')+
+    extra:(NF==="all"?'<div class="three"><span><span class="ok" style="background:var(--amber)"></span>Nothing found for any step</span></div>':NF?'<div class="three"><span>'+OK+'4 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>'+NFLAB[NF]+(F.errSkip?": couldn\'t prepare":": nothing found")+'</span></div>':'<div class="three"><span>'+OK+'3 ready to accept</span><span><span class="ok" style="background:var(--amber)"></span>2 need a quick look</span></div>')+
       '<div class="acts"><button class="btn" data-a="go0">Review your business profile'+I("arrow")+'</button></div>',
     status:["Ready for your review","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
 }
@@ -2134,6 +2149,8 @@ XS["gap-tpl-review"]=function(){rStep(4,function(){setFace(4,{chip:["In review",
 XS["gap-tpl-partial"]=function(){rStep(4,function(){setFace(4,{chip:["Partly approved","amb"],head:"Some templates were not approved",sum:"30 approved, 12 not approved.",icon:"warn",tone:"or",h:"30 approved · 12 not approved",p:"Fix the 12 and resubmit. Only changed templates are resubmitted.",extra:'<div class="xcountline"><span class="a">30 approved</span><span class="n">12 not approved</span></div>',btn:B("xreview","Review the 12","ghost","tpart")})})};
 XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",icon:"lock",title:"Your organisation isn't eligible",text:"An operator has blacklisted your organisation, so setup is paused on every screen. Still available: Contact support and Log out.",btns:B("xlogout","Log out","ghost")+B("xsupport","Contact support")})},REDUCE?700:1700)};
 [["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
+[["sources",1,"err-sources",1],["form",2,"err-form",1],["team",3,"err-team",1],["brands",4,"err-brands",1],["gtm",5,"err-gtm",1],["tpl",6,"err-tpl",1],["tpl",6,"err-tpl-twice",2]].forEach(function(r){XS[r[2]]=function(){jump("proc"); ERR={id:r[0],idx:r[1],tries:0,ok:r[3]}; proc(STARTS[r[1]])}});
+XMENU.push(["AI processing: it failed",[["Sources: GSTIN didn't respond","err-sources"],["Business profile: MCA didn't load","err-form"],["Team: DLT contacts didn't load","err-team"],["Brands: headers didn't load","err-brands"],["GTM: rate cards didn't load","err-gtm"],["Templates: connection dropped","err-tpl"],["Templates: fails twice","err-tpl-twice"]]]);
 XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
 XMENU.push(["AI processing: nothing found",[["All steps: nothing found","nf-all"],["Sources: website not found","nf-sources"],["Team: no people found","nf-team"],["Brands: no sender headers","nf-brands"],["GTM: no rate cards","nf-gtm"],["Templates: none found","nf-tpl"]]]);
 XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Return mid-preparation","gap-return-prep"],["Ready on return","gap-return-ready"],["Ready, some not prepared","gap-ready-partial"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
@@ -2206,6 +2223,8 @@ document.addEventListener("click",function(e){
   else if(a==="rcskip"){clearLater(); F.rcT=true; F.status[4]="later"; complete(4,"Template mapping saved for later")}
   else if(a==="ovedit"){F.ro=STEPS[F.active].k==="profile"; expandCard()}
   else if(a==="xgo"){goStep(+el.dataset.v)}
+  else if(a==="perr-retry"){var e0=ERR; e0.tries++; if(e0.tries>=e0.ok){ERR=null} proc(STARTS[e0.idx])}
+  else if(a==="perr-skip"){var e1=ERR; ERR=null; F.errSkip=e1.id; NF=e1.id; proc(STARTS[e1.idx+1])}
   else if(a==="xjump"){hideDlg(); jump(el.dataset.v)}
   else if(a==="xsupport"){toast("Support has your details. They will contact you at ravi.menon@hdfcbank.com.")}
   else if(a==="xlogout"){toast("You are logged out. Signed agreements stay on record.")}
@@ -2293,7 +2312,7 @@ addEventListener("keydown",function(e){
 addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0) tourGo(TS)});
 
 /* ======================= prototype jumps ======================= */
-function resetData(){NF=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function resetData(){NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
