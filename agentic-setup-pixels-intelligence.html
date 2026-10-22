@@ -1440,6 +1440,13 @@ var NFV={sources:{log:[[.3,"DLT: entity, address, 3 sender headers, 100 template
   gtm:{log:[[.4,"Checking rate cards from 4 partners..."],[1.4,"Rate cards: not found",1],[3.0,"I can't compare or split volume yet. This step opens when one arrives"]],done:"No rate cards yet. This step opens when one arrives."},
   tpl:{log:[[.4,"Checking your DLT account for templates..."],[1.6,"Templates: not found",1],[3.6,"Nothing to map. You can add templates later"]],done:"No templates found to map."}};
 /* the agent hits a problem partway through a scene: it stops, says what failed and asks to retry */
+var SLOW=false;
+/* every step is drafted, but the last checks run long: say so and keep the user informed until it lands */
+function slowEnd(){F.mode="msg"; show("done");
+  say({kick:"Onboarding Agent",line:"This is taking longer than usual",sub:"All five steps are drafted. I'm still checking the last details, so please wait. You don't need to do anything.",
+    extra:'<div class="rcrow"><span class="spn w"></span>Putting the last details together</div><div class="xamb">It can take a few more minutes. You can leave this page and come back. Your progress is saved.</div>',
+    status:["Still working","still"],prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
+  corePulse(); later(function(){SLOW=false; ready()},REDUCE?1200:9000)}
 var ERR=null;
 var ERRV={sources:{at:3.2,log:[[.3,"DLT: entity, address, 3 sender headers, 100 templates"],[1.4,"Checking GSTIN..."],[2.4,"GSTIN service didn't respond",1]],t:"Couldn't reach GSTIN",d:"The GSTIN service isn't responding right now. Nothing you did caused this."},
   form:{at:3.0,log:[[.3,"Checking GSTIN, MCA and your website..."],[1.4,"GSTIN: PAN AAACH2702H matches",0,"99%"],[2.3,"MCA record didn't load",1]],t:"Couldn't finish your business profile",d:"The MCA record didn't load, so I stopped after 3 fields. Try again to fill the rest."},
@@ -1477,7 +1484,7 @@ function procTick(){
   var pt=clock-F.procT0, i=sceneAt(pt), s=nfScene(SCENES[i]), lt=pt-STARTS[i];
   if(s.err&&lt>=ERRV[s.id].at){errHalt(s,i); return}
   if(i!==F.procI){F.procI=i;
-    if(s.id==="done"){ready(); return}
+    if(s.id==="done"){if(SLOW){slowEnd(); return} ready(); return}
     show(s.id,lt); F.subState=s.subs?"s0":""; F.logN=0; F.phase=phaseOf(s,lt);
     say({kick:s.kick,line:s.line,sub:s.sub||((s.subPre||"")+s.subs[0]),extra:'<ul class="think" id="think" data-s="'+s.id+'"></ul>',status:[F.phase],
       prog:{label:s.grp==="src"?"Sources":"Steps",items:s.grp==="src"?SRC:STEPN,states:states(5,s.prog,s.prog)}});
@@ -2155,6 +2162,9 @@ XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",
 [["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
 [["sources",1,"err-sources",1],["form",2,"err-form",1],["team",3,"err-team",1],["brands",4,"err-brands",1],["gtm",5,"err-gtm",1],["tpl",6,"err-tpl",1],["tpl",6,"err-tpl-twice",2]].forEach(function(r){XS[r[2]]=function(){jump("proc"); ERR={id:r[0],idx:r[1],tries:0,ok:r[3]}; proc(STARTS[r[1]])}});
 XMENU.push(["AI processing: it failed",[["Sources: GSTIN didn't respond","err-sources"],["Business profile: MCA didn't load","err-form"],["Team: DLT contacts didn't load","err-team"],["Brands: headers didn't load","err-brands"],["GTM: rate cards didn't load","err-gtm"],["Templates: connection dropped","err-tpl"],["Templates: fails twice","err-tpl-twice"]]]);
+XS["slow-end"]=function(){jump("proc"); SLOW=true; proc(STARTS[1])};
+XS["slow-end-quick"]=function(){jump("proc"); SLOW=true; proc(STARTS[6]+SDUR.tpl*.8)};
+XMENU.push(["AI processing: taking longer",[["All steps done, last checks slow","slow-end"],["Same, jump to the end","slow-end-quick"]]]);
 XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
 XMENU.push(["AI processing: nothing found",[["All steps: nothing found","nf-all"],["Sources: website not found","nf-sources"],["Team: no people found","nf-team"],["Brands: no sender headers","nf-brands"],["GTM: no rate cards","nf-gtm"],["Templates: none found","nf-tpl"]]]);
 XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Return mid-preparation","gap-return-prep"],["Ready on return","gap-return-ready"],["Ready, some not prepared","gap-ready-partial"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
@@ -2317,7 +2327,7 @@ addEventListener("keydown",function(e){
 addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0) tourGo(TS)});
 
 /* ======================= prototype jumps ======================= */
-function resetData(){NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function resetData(){SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
