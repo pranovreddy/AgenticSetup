@@ -419,6 +419,30 @@ body.bigsplit .brand{background:transparent!important;border:1px solid rgba(255,
 .sv{position:absolute;transform:translate(-50%,0);color:#fff;opacity:.5;transition:opacity .4s}
 .sv b{font-size:13px;font-weight:600;letter-spacing:.02em;text-shadow:0 1px 8px rgba(8,30,130,.5);white-space:nowrap}
 .sv.on,.sv.done{opacity:1}.sv.bad b{color:#ffd27a}
+.lgn{position:fixed;inset:0;z-index:28;display:none;grid-template-columns:minmax(0,.46fr) minmax(0,.54fr);color:#fff}
+body.lgnon .lgn{display:grid}body.lgnon .brand,body.lgnon .closes,body.lgnon #prog,body.lgnon #status{opacity:0!important;pointer-events:none!important}
+.lgn-l{position:relative;padding:clamp(28px,5vw,64px);display:flex;flex-direction:column;justify-content:space-between;min-width:0;transition:opacity .5s,transform .7s cubic-bezier(.6,0,.2,1)}
+.lgn-top{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;letter-spacing:-.01em}.lgn-logo{width:26px;height:auto;background:#fff;border-radius:50%;padding:5px;box-sizing:content-box}
+.lgn-pill{display:inline-block;padding:11px 20px;border-radius:999px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);font-size:12px;font-weight:600;letter-spacing:.14em}
+.lgn-mid h1{margin:34px 0 18px;font-size:clamp(44px,5vw,64px);line-height:1;font-weight:700;letter-spacing:-.025em}
+.lgn-mid>p{margin:0 0 34px;max-width:520px;font-size:16px;line-height:1.7;color:rgba(255,255,255,.88)}
+.lgn-card{max-width:540px;padding:22px 26px;border-radius:18px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.32);backdrop-filter:blur(6px)}
+.lgn-card small{display:block;margin-bottom:10px;font-size:11.5px;font-weight:700;letter-spacing:.16em}.lgn-card p{margin:0;font-size:13.5px;line-height:1.65;color:rgba(255,255,255,.85)}
+.lgn-pw{display:flex;align-items:center;gap:10px;padding-top:22px;border-top:1px solid rgba(255,255,255,.25);max-width:620px;font-size:14px}.lgn-pw svg{height:22px;width:auto}
+.lgn-r{background:#fff;color:#0f1b3d;display:grid;place-items:center;padding:32px;min-width:0;transition:transform .7s cubic-bezier(.6,0,.2,1),opacity .5s}
+.lgn-f{width:min(100%,560px);display:flex;flex-direction:column}
+.lgn-f h2{margin:0 0 10px;font-size:38px;font-weight:700;letter-spacing:-.02em}.lgn-s{margin:0 0 30px;font-size:16px;color:#4a5878}
+.lgn-f label{display:block;margin:0 0 6px;font-size:15px;font-weight:600}.lgn-f label i{color:#d92d20;font-style:normal;margin-left:2px}
+.lgn-f input{display:block;width:100%;box-sizing:border-box;margin:8px 0 22px;height:62px;padding:0 22px;border:1px solid #d9e0ee;border-radius:16px;background:#fff;font:400 17px Inter,sans-serif;color:#0f1b3d;outline:none;transition:box-shadow .2s,border-color .2s}
+.lgn-f input::placeholder{color:#9aa6bf}.lgn-f input:focus{border-color:#2563eb;box-shadow:0 0 0 4px rgba(37,99,235,.14)}
+.lgn-pwd{position:relative;display:block}.lgn-pwd input{padding-right:58px}.lgn-pwd button{position:absolute;right:16px;top:24px;width:34px;height:34px;border:0;background:none;cursor:pointer;color:#4a5878;display:grid;place-items:center}.lgn-pwd button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.lgn-go{height:62px;border:0;border-radius:16px;background:#a9c0f8;color:#fff;font:600 17px Inter,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background .25s,transform .2s}.lgn-go svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lgn-go.rdy,.lgn-go:hover{background:#2563eb}.lgn-go:active{transform:scale(.99)}
+.lgn-fp{margin:26px 0 20px;font-size:16px;font-weight:500;color:#1f2d57;text-decoration:none}.lgn-new{padding-top:18px;border-top:1px solid #e6ebf5;text-align:center;font-size:16px;color:#4a5878}.lgn-new a{color:#2563eb;font-weight:600;text-decoration:none}
+.lgn.out .lgn-r{transform:translateX(24%);opacity:0}.lgn.out .lgn-l{opacity:0;transform:translateX(-4%)}
+body.lgnon .proto>button{color:var(--navy)!important;background:#fff!important;border:1px solid #d5ddec!important;box-shadow:0 6px 18px rgba(30,70,170,.14)}
+.lgn-pwd button{top:22px}
+@media (max-width:900px){.lgn{grid-template-columns:1fr}.lgn-l{display:none}}
 .bs-in{position:absolute;left:24px;right:24px;top:150px;bottom:96px;overflow:auto;pointer-events:auto;color:#fff;scrollbar-width:none}
 .bs-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 11px 5px 7px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:600;letter-spacing:.02em}
 .bs-chip img{width:16px;height:16px;border-radius:50%;background:#fff;padding:2px}
@@ -806,6 +830,29 @@ body[data-m=proc] #sub{display:none}
 <div class="card on" id="cardM" aria-hidden="true"></div>
 <aside class="bigsum" id="bigsum" aria-label="Agent summary"></aside>
 <div class="xdlg" id="xdlg"></div>
+<div class="lgn" id="lgn" role="dialog" aria-label="Sign in">
+  <section class="lgn-l">
+    <div class="lgn-top"><img class="lgn-logo" id="lgnLogo" alt="DigiConsent"><b>DigiConsent</b></div>
+    <div class="lgn-mid">
+      <span class="lgn-pill">ENTERPRISE CONSOLE</span>
+      <h1>Welcome</h1>
+      <p>DigiConsent is India's TCCCPR-compliant consent management platform. If your organisation is DLT-registered, you can sign up here to migrate, manage, and grow subscriber consents, all in one place.</p>
+      <div class="lgn-card"><small>ACCEPTABLE USE</small><p>By proceeding, you confirm that your use of this platform will be lawful and in accordance with applicable regulations. Any misuse or misrepresentation is a breach of your organisation's terms with DigiConsent.</p></div>
+    </div>
+    <div class="lgn-pw">Powered by <svg viewBox="0 0 96 26" aria-label="tanla"><rect x="0" y="2" width="22" height="22" rx="5" fill="#fff"/><path d="M6 8h10v3H13v8h-3v-8H6z" fill="#0a2a8f"/><text x="29" y="21" font-family="Inter,Arial,sans-serif" font-weight="700" font-size="21" fill="#fff" letter-spacing="-.5">tanla</text></svg></div>
+  </section>
+  <section class="lgn-r">
+    <form class="lgn-f" id="lgnForm" autocomplete="off">
+      <h2>Sign in</h2>
+      <p class="lgn-s">Enter your credentials to access the enterprise console.</p>
+      <label>Email address <i>*</i><input id="lgnEmail" type="email" placeholder="you@company.com"></label>
+      <label>Password <i>*</i><span class="lgn-pwd"><input id="lgnPass" type="password" placeholder="Enter your password"><button type="button" id="lgnEye" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+      <button class="lgn-go" id="lgnGo" type="submit">Sign in <svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+      <a class="lgn-fp" href="#" onclick="return false">Forgot password?</a>
+      <div class="lgn-new">New to DigiConsent? <a href="#" onclick="return false">Sign up</a></div>
+    </form>
+  </section>
+</div>
 <button class="xoff" id="xoff" data-a="xonline" type="button"><i></i>You're offline. Changes are paused until you're back.<span>Click to go back online</span></button>
 <div class="app" id="app" aria-hidden="true"></div>
 <div class="tcard" id="tcard" role="dialog" aria-modal="true" aria-labelledby="tcTitle"></div>
@@ -2374,7 +2421,8 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 /* ======================= prototype jumps ======================= */
 function resetData(){F.later=[0,0,0,0,0]; F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
-  clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  if(w==="login"){showLogin(); return}
+  document.body.classList.remove("lgnon"); clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
@@ -2385,7 +2433,7 @@ function jump(w){
   else{var n=+w.slice(1); F.status=STEPS.map(function(_,k){return k<n?"done":k===n?"review":"locked"}); review(n)}
 }
 (function(){var pm=$("pm");
-  pm.innerHTML='<details class="pmg" open><summary>Flow</summary>'+[["gate","Agreements"],["plan","Setup plan"],["proc","AI processing"],["ready","Ready for review"],["r0","Review: Business profile"],["r1","Review: Team"],["r2","Review: Brands and LOBs"],["r3","Review: GTM partners"],["r4","Review: Templates"],["final","Finished"],["app","Migration + walkthrough"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
+  pm.innerHTML='<details class="pmg" open><summary>Flow</summary>'+[["login","Login"],["gate","Agreements"],["plan","Setup plan"],["proc","AI processing"],["ready","Ready for review"],["r0","Review: Business profile"],["r1","Review: Team"],["r2","Review: Brands and LOBs"],["r3","Review: GTM partners"],["r4","Review: Templates"],["final","Finished"],["app","Migration + walkthrough"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
     '</details>'+XMENU.map(function(g){return '<details class="pmg"><summary>'+g[0]+'<i>'+g[1].length+'</i></summary>'+g[1].map(function(x){return '<button data-x="'+x[1]+'">'+x[0]+'</button>'}).join("")+'</details>'}).join("")+
     '<details class="pmg"><summary>Display</summary><button data-j="glyph">Pixels: use arrows</button><button data-j="pause">Pause motion</button></details>';
   $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on")};
@@ -2400,8 +2448,16 @@ var CLOSE_AT=Date.now()+30*864e5;
 (function cd(){var s=Math.max(0,Math.floor((CLOSE_AT-Date.now())/1000)), t=Math.floor(s/86400)+"d "+String(Math.floor(s/3600)%24).padStart(2,"0")+"h "+String(Math.floor(s/60)%60).padStart(2,"0")+"m";
   document.querySelectorAll(".cdv").forEach(function(e){e.textContent=t}); setTimeout(cd,1000)})();
 resize();
+$("lgnLogo").src=LOGO;
+function showLogin(){clearLater(); closeSheet(); hideCard(); closeApp(); F.mode="msg"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["",""]}); $("lgn").classList.remove("out"); document.body.classList.add("lgnon"); $("lgnEmail").value=""; $("lgnPass").value=""; $("lgnGo").classList.remove("rdy"); try{$("lgnEmail").focus({preventScroll:true})}catch(e){}}
+function leaveLogin(){if(!document.body.classList.contains("lgnon")) return; var l=$("lgn"); l.classList.add("out"); later(function(){document.body.classList.remove("lgnon"); gate(0)},REDUCE?50:650)}
+(function(){var f=$("lgnForm"), em=$("lgnEmail"), pw=$("lgnPass"), go=$("lgnGo");
+  function chk(){go.classList.toggle("rdy",!!em.value.trim()&&!!pw.value)}
+  em.addEventListener("input",chk); pw.addEventListener("input",chk);
+  $("lgnEye").addEventListener("click",function(){pw.type=pw.type==="password"?"text":"password"});
+  f.addEventListener("submit",function(e){e.preventDefault(); leaveLogin()})})();
 var h=(location.hash||"").replace("#","").split("&")[0];
-if(/^(gate|plan|proc|ready|final|app|r[0-4])$/.test(h)) jump(h); else gate(0);
+if(/^(gate|plan|proc|ready|final|app|r[0-4])$/.test(h)) jump(h); else showLogin();
 var m=/t=([\d.]+)/.exec(location.hash); if(m&&F.mode==="proc") F.procT0=clock-parseFloat(m[1]);
 requestAnimationFrame(function(n){last=n; frame(n)});
 })();
