@@ -1574,7 +1574,7 @@ function primary(i){
   if(k==="profile"&&F.plock) return F.plchk?'<button class="btn" disabled><span class="spn w"></span>Checking DLT…</button>':B("plretry","I\'ve updated DLT. Retry");
   if(k==="profile") return F.punk?'<button class="btn" disabled><span class="spn w"></span>Submitting…</button>':'<button class="btn" data-a="submit"'+(F.auth&&!F.pf&&profOk()?'':' disabled')+'>Submit to telecom operators</button>';
   if(k==="team"){var n=onPeople().length; return '<button class="btn" data-a="invites"'+(n?'':' disabled')+'>Send '+n+' invite'+(n===1?'':'s')+'</button>'}
-  if(k==="brands") return '<button class="btn" data-a="brands"'+(F.bok?'':' disabled')+'>'+(brandsChanged()?'Send for review':'Confirm brands')+'</button>';
+  if(k==="brands") return '<button class="btn" data-a="brands"'+(F.bok?'':' disabled')+'>'+(brandsChanged()?'Send for review':'Confirm')+'</button>';
   if(k==="gtm") return '<button class="btn" data-a="gtm"'+((picked().length===2||F.gpart)&&F.gt?'':' disabled')+'>Confirm partners</button>';
   return '<button class="btn" data-a="tpl">Send '+(100-unmapped())+' for approval</button>';
 }
@@ -1945,7 +1945,7 @@ function gAlloc(){ // volume split per partner and phase, starts from the agent'
 function phaseTot(k){var m=gAlloc(),t=0; picked().forEach(function(p){t+=+m[p.name][k]||0}); return t}
 function allocOk(){return PH.every(function(_,k){return phaseTot(k)===100})}
 /* typing in a field must not redraw the card: the click that follows would land on a new element */
-function patchBrands(){var b=document.querySelector('#card [data-a="brands"]'), t=document.querySelector("#card .zban span"); if(b) b.textContent=brandsChanged()?"Send for review":"Confirm brands";
+function patchBrands(){var b=document.querySelector('#card [data-a="brands"]'), t=document.querySelector("#card .zban span"); if(b) b.textContent=brandsChanged()?"Send for review":"Confirm";
   if(t) t.textContent=brandsChanged()?"You changed the draft, so it goes for review before it's set up. Templates wait until it's approved.":"Confirm the draft as it is and it's set up straight away, with no review."}
 function patchAlloc(){var m=gAlloc(), sel=picked(), tr=document.querySelector("#card .ztot"), sp=document.querySelector("#card .zsplits");
   if(tr) tr.innerHTML='<td class="zl">Total, must equal 100%</td>'+PH.map(function(_,k){var t=phaseTot(k); return '<td class="'+(t===100?'good':'bad')+'">'+t+'%'+(t===100?' ✓':'')+'</td>'}).join("");
