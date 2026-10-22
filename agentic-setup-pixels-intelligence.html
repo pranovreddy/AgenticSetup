@@ -429,11 +429,13 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .chipmini.or{background:#fff1e6;color:#c2410c}.chipmini.vi{background:#f1ecff;color:#6d28d9}.chipmini.sl{background:#eef1f6;color:#475569}
 .xface{display:grid;justify-items:center;text-align:center;padding:34px 20px 26px}.xface.xtall{padding:90px 20px}
 .xface h3{margin:16px 0 6px;font-size:19px}.xface p{margin:0;max-width:440px;color:var(--s-muted);font-size:14px;line-height:1.5}
-.xic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);box-shadow:0 0 0 8px rgba(37,99,235,.06)}
+.xic{flex:none;aspect-ratio:1;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);box-shadow:0 0 0 8px rgba(37,99,235,.06)}
 .xic .i{width:24px;height:24px}.xic .spn{width:22px;height:22px}
-.xic.or{background:#fff1e6;color:#c2410c;box-shadow:0 0 0 8px rgba(194,65,12,.06)}.xic.amb{background:var(--s-asoft);color:var(--s-amber)}.xic.gr{background:var(--s-gsoft);color:var(--s-green)}
+.xic.or{background:#fff1e6;color:#c2410c;box-shadow:0 0 0 8px rgba(194,65,12,.06)}.xic.amb{background:var(--s-asoft);color:var(--s-amber)}.xic.gr{background:var(--s-green);color:#fff;box-shadow:0 0 0 7px rgba(15,138,95,.14)}.xic.gr .i{width:26px;height:26px;stroke-width:2.8}
 .xic.vi{background:#f1ecff;color:#6d28d9}.xic.sl{background:#eef1f6;color:#475569;box-shadow:0 0 0 8px rgba(71,85,105,.05)}
 .xbtns{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.cd-togs{display:inline-flex;gap:8px;align-items:center}.dlbtn{width:36px;padding:0;justify-content:center}.dlbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.xopts.one{grid-template-columns:minmax(0,300px);justify-content:center}
 .xopts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px auto 0;max-width:520px;text-align:left}
 .xopt{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1.5px solid #d3e0fb;border-radius:14px;background:#fff;cursor:pointer;font:inherit;color:var(--s-ink);transition:border-color .15s,box-shadow .15s}
 .xopt:hover{border-color:var(--s-blue);box-shadow:0 10px 22px -16px rgba(37,84,230,.6)}.xopt.on{background:#eef3ff;border-color:var(--s-blue)}
@@ -1572,7 +1574,7 @@ var CARD={on:false,big:false};
 function docCard(){
   var d=DOCS[F.doc], kick="Before we begin · agreement "+(F.doc+1)+" of 2";
   return {kick:kick,title:d.name,
-    tog:CARD.big?'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Exit full page</button>':'<button class="btn ghost cd-tog" data-a="details">'+I("max")+'Full page</button>',
+    tog:CARD.big?'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Exit full page</button>':'<span class="cd-togs"><button class="btn ghost dlbtn" data-a="dl" title="Download '+esc(d.name)+'" aria-label="Download '+esc(d.name)+'"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg></button><button class="btn ghost cd-tog" data-a="details">'+I("max")+'Full page</button></span>',
     body:'<div class="dgrid"><aside class="dsum"><div class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</div><p class="cd-sum">Here is what it says, in short.</p><ol class="lpts">'+d.summary.map(function(x,k){return '<li data-a="pt" data-k="'+k+'" tabindex="0">'+esc(x)+'</li>'}).join("")+'</ol>'+
       '<div class="lneed"><span>This summary is only a guide. What you accept is the full text of the document.</span></div></aside>'+
       (F.gx==="fail"?'<div class="dtext"><div class="xface xtall"><span class="xic or">'+I("warn")+'</span><h3>Couldn\'t load this document</h3><p>Check your connection, then try again.</p><div class="xbtns">'+B("xgretry","Try again")+'</div></div></div></div>':'<div class="dtext"><div class="doc">'+d.sections.map(function(s,si){return '<h4 data-sec="'+si+'">'+esc(s[0])+'</h4>'+String(s[1]).replace(/<br\s*\/?>/gi,"\n").split(/\n+/).map(function(p){return '<p>'+esc(p)+'</p>'}).join("")}).join("")+'</div></div></div>'),
@@ -1959,10 +1961,8 @@ function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=(i===1&&F.teamLater)
     l:'',r:''});
   if(F.mode!=="review"){F.mode="review"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["Step done","done"]}); showCard()} else refresh();
   var stx=F.status.map(function(x){return x==="done"||x==="later"?"dn":""}); stx[i]="on"; drawProg({label:"Steps",items:STEPN,states:stx}); markOv(i)}
-function ovOpts(i){var st=STEPS[i], on=F.ovShow&&F.ovShow[i], edit=st.k!=="profile";
-  return '<div class="xopts"><button class="xopt'+(on?' on':'')+'" data-a="ovshow" aria-expanded="'+(!!on)+'"><span class="xoi">'+I("file")+'</span><span><b>What happened</b><small>See the data from this step</small></span></button>'+
-    '<button class="xopt" data-a="ovedit"><span class="xoi">'+I(edit?"max":"max")+'</span><span><b>'+(edit?"Edit":"View")+'</b><small>'+(edit?"Open the full page and change it":"Open the full page")+'</small></span></button></div>'+
-    (on?'<div class="xovdata">'+cardSummary(i)+'</div>':'')}
+function ovOpts(i){var st=STEPS[i], edit=st.k!=="profile";
+  return '<div class="xopts one"><button class="xopt" data-a="ovedit"><span class="xoi">'+I("max")+'</span><span><b>'+(edit?"View and edit":"View")+'</b><small>'+(edit?"Open the full page":"Open the full page, read only")+'</small></span></button></div>'}
 function markOv(i){var li=document.querySelectorAll("#prog li"); li.forEach(function(e,k){e.classList.toggle("viewing",k===i)})}
 function setFace(i,f){F.face=f; f.i=i}
 function faceParts(i){var f=F.face, k=STEPS[i].k;
@@ -2126,6 +2126,8 @@ document.addEventListener("click",function(e){
   else if(a==="start") proc(0);
   else if(a==="go0") review(0);
   else if(a==="details") expandCard();
+  else if(a==="dl"){var d=DOCS[F.doc], txt=d.name+"\n"+"=".repeat(d.name.length)+"\n\n"+d.sections.map(function(s){return s[0]+"\n"+String(s[1]).replace(/<[^>]+>/g,"")}).join("\n\n")+"\n";
+    try{var u=URL.createObjectURL(new Blob([txt],{type:"text/plain"})), l=document.createElement("a"); l.href=u; l.download=d.name.replace(/\s+/g,"-").toLowerCase()+".txt"; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function(){URL.revokeObjectURL(u)},2000); toast("Downloading "+d.name)}catch(e){toast("Download isn't available here")}}
   else if(a==="collapse"){if(CARD.big&&F.mode==="review"&&F.snap&&!F.ro&&snapNow()!==F.snap) saveDlg(); else collapseCard()}
   else if(a==="dkeep") hideDlg();
   else if(a==="dsave"){hideDlg(); F.snap=null; collapseCard(); toast("Your changes are saved")}
