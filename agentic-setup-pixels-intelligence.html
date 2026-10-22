@@ -277,7 +277,7 @@ select.inp{height:36px;padding:0 8px}
 .lfacts b{font-weight:600}
 .lfacts em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-soft);color:var(--s-blue)}
 .rp{margin:2px 0 0;font-size:14.5px;line-height:1.5;color:var(--s-ink2)}
-.chg{margin:16px 0 0;font-size:13px;color:var(--s-muted)}
+.chg{display:flex;align-items:center;gap:10px;margin:14px 0 4px;padding:10px 14px;border-radius:12px;background:#eef3ff;border:1px solid #d3e0fb;color:#1e3a8a;font-size:14px;font-weight:500;line-height:1.4}.chg svg{width:18px;height:18px;flex:none;color:var(--s-blue)}
 .card .auth u{text-decoration:underline;text-underline-offset:2px}
 .cd-ft .ls{max-width:300px;line-height:1.35}
 .gcount{margin:14px 0 10px;font-size:14.5px;color:var(--s-muted)}.gcount b{font-size:17px;color:var(--s-ink)}
@@ -1531,7 +1531,7 @@ function cardSummary(i){
   if(st.k==="brands") h+=lfacts(BRANDS.map(function(b){return [b.name,b.lobs.join(", ")||"No lines of business"]}))+needLine(st);
   if(st.k==="gtm") h+=gtmCard();
   if(st.k==="templates") h+=tplSummary();
-  if(st.k!=="profile") h+='<p class="chg">You can change this later at any time.</p>';
+  if(st.k!=="profile") h='<div class="chg">'+I("info")+'<span>You can change this later at any time.</span></div>'+h;
   return h;
 }
 var CARD={on:false,big:false};
@@ -1556,7 +1556,7 @@ function cardHTML(){
   var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>', chips=st.attn?'<span class="chipmini amb">Needs a look</span>':'', p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
-    p={title:heading(i),tog:'',body:d0.h+(st.k!=="profile"?'<p class="chg">You can change this later at any time.</p>':''),l:d0.l,r:d0.r}}
+    p={title:heading(i),tog:'',body:(st.k!=="profile"?'<div class="chg">'+I("info")+'<span>You can change this later at any time.</span></div>':'')+d0.h,l:d0.l,r:d0.r}}
   else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.'):
       '<button class="btn ghost" data-a="tlater">Do it later</button>';
     p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i)}}
