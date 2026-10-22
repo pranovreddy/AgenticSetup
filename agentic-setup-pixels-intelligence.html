@@ -416,14 +416,9 @@ body.bigsplit .card.big .cd-ft{padding-right:140px}
 body.bigsplit #prog{opacity:0;pointer-events:none}
 body.bigsplit .brand{background:transparent!important;border:1px solid rgba(255,255,255,.55)!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .srcov,#srcov{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .45s}#srcov.on{opacity:1}
-.sv{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;opacity:.5;transition:opacity .4s,transform .4s cubic-bezier(.2,.9,.3,1.2)}
-.sv b{font-size:13px;font-weight:600;letter-spacing:.01em;text-shadow:0 1px 8px rgba(8,30,130,.45)}
-.svi{position:relative;display:grid;place-items:center;width:62px;height:62px;border-radius:20px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.5)}
-.svi svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.sv.on{opacity:1;transform:translate(-50%,-50%) scale(1.1)}.sv.on .svi{background:rgba(255,255,255,.26);box-shadow:inset 0 0 0 2px #fff,0 0 0 7px rgba(255,255,255,.14)}
-.sv.done{opacity:.95}.sv .svb{position:absolute;right:-6px;top:-6px;width:20px;height:20px;border-radius:50%;background:#2fd08a;display:none;place-items:center}
-.sv.done .svb,.sv.on.done .svb{display:grid}.sv .svb::after{content:"";width:9px;height:5px;border:solid #fff;border-width:0 0 2.2px 2.2px;transform:rotate(-45deg) translate(1px,-1px)}
-.sv.bad .svb{background:#f5a524}.sv.bad .svb::after{width:2.4px;height:9px;border:0;background:#fff;border-radius:2px;transform:none}
+.sv{position:absolute;transform:translate(-50%,0);color:#fff;opacity:.5;transition:opacity .4s}
+.sv b{font-size:13px;font-weight:600;letter-spacing:.02em;text-shadow:0 1px 8px rgba(8,30,130,.5);white-space:nowrap}
+.sv.on,.sv.done{opacity:1}.sv.bad b{color:#ffd27a}
 .bs-in{position:absolute;left:24px;right:24px;top:150px;bottom:96px;overflow:auto;pointer-events:auto;color:#fff;scrollbar-width:none}
 .bs-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 11px 5px 7px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:600;letter-spacing:.02em}
 .bs-chip img{width:16px;height:16px;border-radius:50%;background:#fff;padding:2px}
@@ -1153,19 +1148,23 @@ var DRAW={
 /* scenes for the rest of the journey */
 Object.assign(DRAW,{
   blank:function(){},
-  sources:function(c,t){ // six sources, three above the agent and three below; each is lit and scanned in turn, then feeds it
-    var n=6, step=.75, K=.8, xs=[.26,.5,.74], ys=[Math.round(L.rows*.07),Math.round(L.rows*.9)];
-    function glyph(k,a){A(c,a); c.lineWidth=1.25;
-      if(k===0){c.strokeRect(-3.5,-5.5,8,11); for(var q=0;q<3;q++) c.fillRect(-2,-2+q*2.5,5,1)}                 // DLT record
-      if(k===1){for(var q2=0;q2<6;q2++) c.fillRect(-5+q2*2,-5,q2%2?1:1+(q2%3>0?1:0),10)}                                // GSTIN barcode
-      if(k===2){c.beginPath(); c.moveTo(-6,0); c.lineTo(-2,0); c.lineTo(-.5,-5); c.lineTo(1.5,4); c.lineTo(3,0); c.lineTo(6,0); c.stroke()} // MCA pulse
-      if(k===3){c.beginPath(); c.arc(0,0,5,0,7); c.stroke(); c.beginPath(); c.ellipse(0,0,2,5,0,0,7); c.stroke(); c.fillRect(-5,0,10,1)}   // website globe
-      if(k===4){c.beginPath(); c.arc(0,0,5,0,7); c.stroke(); c.fillRect(-2,-2,5,1); c.fillRect(0,-2,1,5)}              // trademark
-      if(k===5){c.strokeRect(-6.5,-4.5,13,9); c.fillRect(-4,-2,4,1); c.fillRect(1,1,4,2)}                              // rate card
+  sources:function(c,t){ // six sources, three each side of the agent, drawn big and bold in the triangle field; each is lit and scanned in turn, then feeds it
+    var n=6, step=.75, K=.72, ys=[.17,.45,.72];
+    function glyph(k,a){A(c,a); c.lineWidth=2.2;
+      if(k===0){c.beginPath(); c.moveTo(-5,-7); c.lineTo(2,-7); c.lineTo(5,-4); c.lineTo(5,7); c.lineTo(-5,7); c.closePath(); c.stroke(); c.fillRect(-2.5,-1,5,1.8); c.fillRect(-2.5,2.4,5,1.8)}   // DLT: document with a folded corner
+      if(k===1){c.beginPath(); c.arc(-2.6,-3.2,2,0,7); c.fill(); c.beginPath(); c.arc(2.6,3.2,2,0,7); c.fill(); c.beginPath(); c.moveTo(4.6,-6); c.lineTo(-4.6,6); c.stroke()}    // GSTIN: percent
+      if(k===2){c.beginPath(); c.moveTo(-6,-3); c.lineTo(0,-7); c.lineTo(6,-3); c.closePath(); c.stroke(); c.fillRect(-4.5,-1,2,8); c.fillRect(-1,-1,2,8); c.fillRect(2.5,-1,2,8); c.fillRect(-6,6.4,12,1.6)}  // MCA: registry building
+      if(k===3){c.beginPath(); c.arc(0,0,6.5,0,7); c.stroke(); c.beginPath(); c.ellipse(0,0,2.8,6.5,0,0,7); c.stroke(); c.fillRect(-6.5,-.9,13,1.8)}                      // website: globe
+      if(k===4){c.beginPath(); c.arc(0,0,6.5,0,7); c.stroke(); c.fillRect(-2.6,-3.6,2,7.4); c.fillRect(-2.6,-3.6,4.4,2); c.fillRect(1,-3.6,1.6,4.4); c.fillRect(-.6,.2,3.4,1.8)}   // trademark: circled R
+      if(k===5){c.beginPath(); c.arc(-1.5,2,4.6,0,7); c.stroke(); c.beginPath(); c.arc(2.6,-2,4.6,0,7); c.fill()}                                                         // rate card: two coins
     }
-    for(var k=0;k<n;k++){var top=k<3, x=Math.round(L.cols*xs[k%3]), y=ys[top?0:1], s0=.15+k*step, p=clamp((t-s0)/.7,0,1), on=t>=s0&&t<s0+.75, done=t>=s0+.7;
-      var a=done?.9:on?1:.32*ease(t/.4+.2);
-      anc(x,top?y+5.5:y-5.5,on?1:done?.6:.2);
+    for(var k=0;k<n;k++){var left=k<3, x=Math.round(L.cols*(left?.15:.85)), y=Math.round(L.rows*ys[k%3]), s0=.15+k*step, p=clamp((t-s0)/.7,0,1), on=t>=s0&&t<s0+.75, done=t>=s0+.7;
+      var a=done?.9:on?1:.4*ease(t/.4+.2);
+      c.save(); c.translate(x,y); c.scale(K,K); glyph(k,a);
+      if(on){A(c,.95); c.fillRect(Math.round(-7+p*14),-7.5,1.4,15); A(c,.5); c.lineWidth=1.2; c.strokeRect(-8,-8,16,16)}
+      if(done){A(c,1); c.lineWidth=1.8; c.beginPath(); c.moveTo(5.5,-8.5); c.lineTo(7,-7); c.lineTo(10,-10.5); c.stroke()}
+      c.restore();
+      anc(x+(left?9:-9)*K,y,on?1:done?.6:.2);
     }
   },
   agree:function(c,t){ // two agreements, left and right; the one being read is lit, key clauses marked
@@ -1475,19 +1474,13 @@ function errHalt(s,i){var o=ERRV[s.id];
     extra:'<div class="xamb">'+(twice?"The problem is on the source side. It usually clears in a few minutes.":"Something went wrong while I was working. You can try again.")+'</div><div class="acts">'+B("perr-retry","Try again")+B("perr-skip","Skip this step for now","ghost")+'</div>',
     status:["Something went wrong","attn"],prog:{label:"Steps",items:s.grp==="src"?SRC:STEPN,states:states(5,s.prog,s.prog)}})}
 function nfScene(s){if(ERR&&s.id===ERR.id){var o=ERRV[ERR.id],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=null; r.err=1; return r}var key=NF==="all"?(s.id==="sources"?"sourcesAll":s.id):NF; if(NF&&(NF==="all"?NFV[key]:s.id===NF)){var o=NFV[key],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
-var SRC_IC=[
- '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 15h6M9.5 18h4"/>',
- '<path d="M6 3h12v18l-2.2-1.5L13.6 21l-2.2-1.5L9.2 21 7 19.5 6 21z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/>',
- '<path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6M8.5 10.5h1M14.5 10.5h1"/>',
- '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
- '<circle cx="12" cy="12" r="9"/><path d="M9.5 16.5v-9h3.4a2.6 2.6 0 0 1 0 5.2H9.5M12.6 12.7l2.4 3.8"/>',
- '<rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M3 10.5h18M6.5 15h4"/>'];
 function srcOv(lt){var o=$("srcov"); if(!o) return;
-  if(!o.dataset.b){o.dataset.b=1; o.innerHTML=SRC.map(function(n,k){return '<div class="sv" data-k="'+k+'"><span class="svi"><svg viewBox="0 0 24 24">'+SRC_IC[k]+'</svg><i class="svb"></i></span><b>'+n+'</b></div>'}).join("")}
-  o.classList.add("on"); var xs=[.26,.5,.74], ys=[.075,.865];
-  [].forEach.call(o.children,function(e,k){var top=k<3; e.style.left=Math.round(W*xs[k%3])+"px"; e.style.top=Math.round(H*ys[top?0:1])+"px";
+  if(!o.dataset.b){o.dataset.b=1; o.innerHTML=SRC.map(function(n,k){return '<div class="sv" data-k="'+k+'"><b>'+n+'</b></div>'}).join("")}
+  o.classList.add("on"); var ys=[.17,.45,.72];
+  [].forEach.call(o.children,function(e,k){var left=k<3; e.style.left=Math.round(L.cols*(left?.15:.85)*cell)+"px"; e.style.top=Math.round((L.rows*ys[k%3]+6.4)*cell)+"px";
     var s0=.15+k*.75, on=lt>=s0&&lt<s0+.75, done=lt>=s0+.7, bad=(NF==="all"||(NF==="sources"&&k===3))&&done;
-    e.className="sv"+(on?" on":done?" done":"")+(bad?" bad":"")})}
+    e.className="sv"+(on?" on":done?" done":"")+(bad?" bad":"");
+    e.firstChild.textContent=SRC[k]+(bad?" · not found":"")})}
 function proc(at){F.mode="proc"; F.procT0=clock-(at||0); F.procI=-1; procTick()}
 function phaseOf(s,lt){return s.id==="intro"?"Planning":s.id==="sources"?"Observing":(lt/s.dur<.38?"Reasoning":"Drafting")}
 /* one line of the agent's reasoning at a time: it types in, stays, then types out before the next */
