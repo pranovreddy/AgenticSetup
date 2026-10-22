@@ -530,6 +530,8 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .xoff:not(.on){visibility:hidden}.xoff.on{transform:translate(-50%,0)}.xoff i{width:8px;height:8px;border-radius:50%;background:#f59e0b}.xoff span{opacity:.6;margin-left:6px;font-size:12px}
 .xby{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;color:rgba(255,255,255,.85)}.xby i{flex:none;aspect-ratio:1;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font:600 11px Inter,sans-serif;font-style:normal}
 .xamb{margin:16px auto 0;max-width:460px;padding:10px 14px;border-radius:12px;background:rgba(255,210,122,.18);color:#ffe2a8;font-size:14px;line-height:1.45}
+/* On the white card, amber field colours wash out — use a clear ink callout */
+.xface .xamb{background:#eef3ff;color:#1e3a8a;border:1px solid #c7d7fe;font-weight:600}
 .xops{display:grid;grid-template-columns:repeat(2,minmax(0,200px));gap:8px;justify-content:center;margin-top:18px}
 .xops span{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.12);font-size:13px;color:rgba(255,255,255,.8)}.xops b{color:#fff;margin-right:auto}
 .ok.nfw{background:var(--amber)!important}
@@ -1498,7 +1500,7 @@ function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");clearTi
 
 /* ======================= flow ======================= */
 var F={mode:"gate",doc:0,accepted:[false,false],readEnd:false,status:["review","locked","locked","locked","locked"],
-  active:0,auth:false,teamLater:false,later:[0,0,0,0,0],lobf:"all",tq:"",tf:-1,procT0:0,procI:-1,subState:""};
+  active:0,auth:false,teamLater:false,later:[0,0,0,0,0],lobf:"all",tq:"",tf:-1,procT0:0,procI:-1,subState:"",tplGate:null};
 var STEPLINE=function(i){return "Step "+(i+1)+" of 5 · "+STEPS[i].title};
 
 /* 1 · agreements: summary first, the full text is in the sheet; accept only after reading to the end */
@@ -1632,8 +1634,21 @@ review=function(i){
   if(i===2&&!F.rcB&&profEdited()) return recalc("brands",function(){_review0(2)});
   if(i===4&&!F.rcT&&brandsChanged()) return recalc("templates",function(){_review0(4)});
   return _review0(i)};
+function tplGateFace(){
+  return {chip:["Before you map","amb"],head:"Have you added all your brands and LOBs?",
+    sum:"Proceed only if everything is in. You can do Templates later if you still need to add more.",
+    icon:"info",tone:"amb",
+    h:"Have you added all your brands and LOBs?",
+    p:"Proceed with Templates only if all brands and lines of business are added. If you think you want to add more, you can do this step later. Having all brands and LOBs added helps me suggest better matches for your templates.",
+    extra:'<div class="xamb">'+BRANDS.length+" brands · "+lobCount()+" lines of business currently set up.</div>",
+    btn:B("tplgate-skip","Skip","ghost")+B("tplgate-ok","Continue with existing brands and LOBs")}
+}
 function review(i){
+  if(F.active===4&&i!==4) F.tplGate=null; // leaving Templates → ask again next visit
   F.mode="review"; F.active=i; var st=STEPS[i];
+  if(i===4&&!F.tov&&F.tplGate!=="ok"&&!F.later[4]&&!F.face){
+    F.tplGate="ask"; setFace(4,tplGateFace());
+  }
   show("blank");
   say({kick:"",line:"",sub:"",extra:"",status:["Needs you",st.attn?"attn":"still"], prog:{label:"Steps",items:STEPN,states:states(5,i,i)}});
   var fill=i===0&&!F.pfDone&&!REDUCE; if(i===0) F.pfDone=true; if(fill) F.pf={k:-1,n:0};
@@ -1743,6 +1758,8 @@ function xGate(p){
   return p}
 function cardHTML(){
   if(F.mode==="gate") return cardWrap(xGate(docCard()));
+  // Brands/LOBs gate yields to Templates lock / hold / remap overlays
+  if(F.mode==="review"&&F.active===4&&F.tov&&F.tplGate==="ask") F.face=null;
   if(F.face&&F.face.i===F.active&&!CARD.big&&F.mode==="review") return cardWrap(faceParts(F.active));
   var i=F.active, st=STEPS[i], kick='<span class="cd-agent"><img src="'+LOGO+'" alt="">Agent summary</span>', chips=st.attn?'<span class="chipmini amb dot">Needs review</span>':'', p;
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
@@ -2251,20 +2268,21 @@ var XS={
   "derr-brands":function(){bigStep(2,function(){F.derr=true})},
   "dialog-brands":function(){bigStep(2); later(saveDlg,REDUCE?600:1700)},
   "pm-all":function(){rStep(2,function(){setFace(2,{chip:["In review","amb"],head:"Your brands and LOBs are in review",sum:"Your changes are being reviewed. You can carry on.",icon:"clock",tone:"amb",h:"Not done yet. Waiting for approval",p:"All your brands and LOBs were edited or added, so they were sent for review. Please wait for approval. Template mapping is locked until then. GTM partners is still open.",btn:B("xview","View","ghost")})}); later(function(){toast("Brands and LOBs sent for review")},700)},
-  "pm-all-lock":function(){rStep(4,function(){F.tov="lock"}); later(function(){toast("Brands and LOBs sent for review")},700)},
+  "pm-all-lock":function(){rStep(4,function(){F.tplGate="ok"; F.face=null; F.tov="lock"}); later(function(){toast("Brands and LOBs sent for review")},700)},
   "pm-partial":function(){jump("plan"); F.status=["done","done","review","locked","locked"]; later(function(){doneScreen(2,{line:"Brands and LOBs set up",sub:"5 brands · 11 lines of business · Set up",extra:'<div class="xby"><i>RM</i>Done by <b>Ravi Menon</b> · 09:53 am</div><div class="xamb">2 brands and 4 LOBs are under review. The rest is set up.</div>',btn:B("xgo","Next: GTM partners and Templates are open"+I("arrow"),"",3)}); toast("Brands and LOBs saved. 2 brands and 4 LOBs are under review.")},300)},
-  "pm-partial-warn":function(){rStep(4,function(){F.tov="hold"}); later(function(){toast("Brands and LOBs saved. 2 brands and 4 LOBs are under review.")},700)},
-  "pm-partial-popup":function(){rStep(4); later(function(){showDlg({tone:"",icon:"info",title:"Your mapping was updated",text:"Your brands and LOBs were approved, so the templates were mapped again. Please check the mapping and confirm.",btns:B("dkeep","Check mapping")})},REDUCE?600:3200)},
-  "pm-remove-remap":function(){rStep(4,function(){F.tov="remap"}); later(function(){toast("Brands and LOBs updated. Templates will be mapped again.")},700);
+  "pm-partial-warn":function(){rStep(4,function(){F.tplGate="ok"; F.face=null; F.tov="hold"}); later(function(){toast("Brands and LOBs saved. 2 brands and 4 LOBs are under review.")},700)},
+  "pm-partial-popup":function(){rStep(4,function(){F.tplGate="ok"; F.face=null}); later(function(){showDlg({tone:"",icon:"info",title:"Your mapping was updated",text:"Your brands and LOBs were approved, so the templates were mapped again. Please check the mapping and confirm.",btns:B("dkeep","Check mapping")})},REDUCE?600:3200)},
+  "pm-remove-remap":function(){rStep(4,function(){F.tplGate="ok"; F.face=null; F.tov="remap"}); later(function(){toast("Brands and LOBs updated. Templates will be mapped again.")},700);
     later(function(){F.tov=null; refresh(); toast("Templates were mapped again to your updated lines of business")},REDUCE?1200:5200)},
   "norate-gtm":function(){rStep(3,function(){setFace(3,{chip:["Locked","sl"],head:"GTM partners opens soon",sum:"No partner has sent a rate card yet. This step opens as soon as one arrives.",icon:"lock",tone:"sl",h:"Opens once a partner has sent a rate card",p:"You get an email as soon as the first one arrives.",did:{ok:0,bad:"No partner has sent a rate card yet"}})})},
   "partly-gtm":function(){rStep(3,function(){F.gpart=true; PARTNERS.forEach(function(p,k){p.pick=k===0})})},
   "dialog-gtm":function(){bigStep(3); later(saveDlg,REDUCE?600:1700)},
-  "nothing-templates":function(){rStep(4,function(){setFace(4,{head:"Nothing found for Templates",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no templates to suggest",p:"Your DLT account has no templates yet. Add them manually when they exist.",did:{ok:2,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:B("xlater","Do it later","ghost")})})},
-  "busy-templates":function(){rStep(4,function(){var f=failFace(4,1); f.r='<button class="btn" disabled><span class="spn w"></span>Trying again…</button>'; setFace(4,f)}); later(function(){F.face=null; refresh(); toast("Templates are ready to review")},REDUCE?1500:5200)},
-  "attention-templates":function(){rStep(4,function(){setFace(4,{chip:["Needs attention","or"],head:"Please review your templates",sum:"Suggested a line of business for 98 of 100 templates. Confirm the template mapping.",tone:"or",h:"14 templates need a new line of business",p:"14 templates were mapped to lines of business that changed.",btn:B("xreview","Review","ghost","tpart")})})},
-  "partly-templates":function(){rStep(4,function(){F.tpart=true})},
-  "dialog-templates":function(){bigStep(4); later(saveDlg,REDUCE?600:1700)},
+  "nothing-templates":function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{head:"Nothing found for Templates",sum:"The agent checked your sources and found nothing to suggest. Add it yourself, or come back to it later.",icon:"search",tone:"sl",h:"We found no templates to suggest",p:"Your DLT account has no templates yet. Add them manually when they exist.",did:{ok:2,none:"Found nothing to suggest"},l:B("xadd","+ Add manually","ghost"),r:B("xlater","Do it later","ghost")})})},
+  "busy-templates":function(){rStep(4,function(){F.tplGate="ok"; var f=failFace(4,1); f.r='<button class="btn" disabled><span class="spn w"></span>Trying again…</button>'; setFace(4,f)}); later(function(){F.face=null; refresh(); toast("Templates are ready to review")},REDUCE?1500:5200)},
+  "attention-templates":function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{chip:["Needs attention","or"],head:"Please review your templates",sum:"Suggested a line of business for 98 of 100 templates. Confirm the template mapping.",tone:"or",h:"14 templates need a new line of business",p:"14 templates were mapped to lines of business that changed.",btn:B("xreview","Review","ghost","tpart")})})},
+  "partly-templates":function(){rStep(4,function(){F.tplGate="ok"; F.face=null; F.tpart=true})},
+  "dialog-templates":function(){bigStep(4,function(){F.tplGate="ok"; F.face=null}); later(saveDlg,REDUCE?600:1700)},
+  "tpl-gate":function(){rStep(4,function(){F.tplGate="ask"; setFace(4,tplGateFace())})},
   "fin-skipped":function(){jump("final"); F.fin="skipped"; F.teamLater=true; F.later[1]=1; F.later[4]=1; final()},
   "fin-notopen":function(){jump("final"); F.fin="notopen"; final()},
   "fin-open":function(){jump("final")},
@@ -2286,7 +2304,7 @@ var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["In review","inreview-team"],["Do it later","later-team"],["Details: nothing found","notice-team-nothing"],["Details: done by someone else","notice-team-someone"],["Details: stays editable","notice-team-team"],["Save changes dialog","dialog-team"],["Save dialog, read-only","dialog-team-ro"],["Done by someone else, on the card","conc-card"],["Done by someone else, on the page","conc-deep"]]],
   ["Brands and LOBs",[["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: suggestion arrived late","notice-brands-late"],["Details: save failed","derr-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["Approved while mapping: popup","pm-partial-popup"],["LOB removed: remapping","pm-remove-remap"]]],
   ["GTM partners",[["No rate cards, locked","norate-gtm"],["Partly prepared","partly-gtm"],["Save changes dialog","dialog-gtm"]]],
-  ["Templates",[["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Needs attention","attention-templates"],["Partly prepared","partly-templates"],["Save changes dialog","dialog-templates"]]],
+  ["Templates",[["Brands check before mapping","tpl-gate"],["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Needs attention","attention-templates"],["Partly prepared","partly-templates"],["Save changes dialog","dialog-templates"]]],
   ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
   ["Whole screen",[["Offline","offline-x"],["Setup failed to load","loadfail-deck"],["Card failed to load","loadfail-card"],["Details failed to load","loadfail-deep"],["Locked step opens","conc-unlock"]]]];
 
@@ -2312,8 +2330,8 @@ XS["gap-rc-brands-slow"]=function(){jump("plan"); PROFILE[3][1]="AAACH2702X"; F.
 XS["gap-rc-brands-fail"]=function(){jump("plan"); PROFILE[3][1]="AAACH2702X"; F.rcSim="fail"; goStep(2)};
 XS["gap-brands-some"]=function(){rStep(2,function(){setFace(2,{chip:["Partly approved","amb"],head:"Airtel withdrew approval of 1 brand",sum:"2 brands are still approved.",icon:"clock",tone:"amb",h:"1 brand withdrawn, 2 still approved",p:"Templates and migration stay open for the 2 approved brands. Edit the withdrawn one and resubmit when ready.",btn:B("xview","View and edit","ghost")})}); later(function(){toast("Airtel withdrew approval of Acme Wealth. 2 brands are still approved.")},REDUCE?700:1700)};
 XS["gap-brands-none"]=function(){rStep(2,function(){blockedFace(2,"No brand is approved now","No brand is approved","Acme Bank, Acme Cards and Acme Wealth were withdrawn or blacklisted. Templates and migration are locked until one is approved again.")}); later(function(){toast("No brand is approved now. You stay on this screen.")},REDUCE?700:1700)};
-XS["gap-tpl-review"]=function(){rStep(4,function(){setFace(4,{chip:["In review","amb"],head:"Templates are in review",sum:"42 templates sent. 58 unchanged templates were not resubmitted.",icon:"clock",tone:"amb",h:"42 in review",p:"Only the 42 changed templates were sent to the operators. The other 58 keep their approval.",extra:'<div class="xcountline"><span class="r">42 in review</span><span class="a">58 unchanged</span></div>',btn:B("xview","View","ghost")})})};
-XS["gap-tpl-partial"]=function(){rStep(4,function(){setFace(4,{chip:["Partly approved","amb"],head:"Some templates were not approved",sum:"30 approved, 12 not approved.",icon:"warn",tone:"or",h:"30 approved · 12 not approved",p:"Fix the 12 and resubmit. Only changed templates are resubmitted.",extra:'<div class="xcountline"><span class="a">30 approved</span><span class="n">12 not approved</span></div>',btn:B("xreview","Review the 12","ghost","tpart")})})};
+XS["gap-tpl-review"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{chip:["In review","amb"],head:"Templates are in review",sum:"42 templates sent. 58 unchanged templates were not resubmitted.",icon:"clock",tone:"amb",h:"42 in review",p:"Only the 42 changed templates were sent to the operators. The other 58 keep their approval.",extra:'<div class="xcountline"><span class="r">42 in review</span><span class="a">58 unchanged</span></div>',btn:B("xview","View","ghost")})})};
+XS["gap-tpl-partial"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{chip:["Partly approved","amb"],head:"Some templates were not approved",sum:"30 approved, 12 not approved.",icon:"warn",tone:"or",h:"30 approved · 12 not approved",p:"Fix the 12 and resubmit. Only changed templates are resubmitted.",extra:'<div class="xcountline"><span class="a">30 approved</span><span class="n">12 not approved</span></div>',btn:B("xreview","Review the 12","ghost","tpart")})})};
 XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",icon:"lock",title:"Your organisation isn't eligible",text:"An operator has blacklisted your organisation, so setup is paused on every screen. Still available: Contact support and Log out.",btns:B("xlogout","Log out","ghost")+B("xsupport","Contact support")})},REDUCE?700:1700)};
 [["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
 [["sources",1,"err-sources",1],["form",2,"err-form",1],["team",3,"err-team",1],["brands",4,"err-brands",1],["gtm",5,"err-gtm",1],["tpl",6,"err-tpl",1],["tpl",6,"err-tpl-twice",2]].forEach(function(r){XS[r[2]]=function(){jump("proc"); ERR={id:r[0],idx:r[1],tries:0,ok:r[3]}; proc(STARTS[r[1]])}});
@@ -2409,6 +2427,8 @@ document.addEventListener("click",function(e){
   else if(a==="xdretry"){F.dfail=false; refresh()}
   else if(a==="xuse"){F.notice=null; refresh(); toast("The agent's suggestion is filled in")}
   else if(a==="xskip"){F.tov=null; finishStep(function(){complete(4,"Template mapping saved for later")})}
+  else if(a==="tplgate-ok"){F.tplGate="ok"; F.face=null; refresh()}
+  else if(a==="tplgate-skip"){F.tplGate="skip"; F.face=null; finishStep(function(){complete(4,"Templates saved for later")})}
   else if(a==="xcont"){F.tov=null; refresh(); toast("Templates will be mapped to the approved LOBs only")}
   else if(a==="xgretry"){F.gx=null; refresh()}
   else if(a==="xdl") toast("Terms of Use downloaded as a PDF");
@@ -2489,7 +2509,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 function resetData(){F.infoOpen=false; F.tpx=null; F.later=[0,0,0,0,0]; F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   if(w==="login"){showLogin(); return}
-  document.body.classList.remove("lgnon"); clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  document.body.classList.remove("lgnon"); clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.tplGate=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
