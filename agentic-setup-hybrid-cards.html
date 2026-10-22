@@ -820,8 +820,8 @@ body[data-m=proc] .hyL{display:block}
   background:radial-gradient(closest-side,rgba(4,24,120,.28),rgba(4,24,120,0));filter:blur(6px)}
 @keyframes hyGlow{0%,100%{opacity:.55;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
 /* the 3D step cards (from the cards version): the current step turns to the front and flips to its white face */
-.deck{position:absolute;left:0;top:0;width:900px;height:380px;transform-origin:0 0;transform:scale(var(--hs,1));perspective:1300px;perspective-origin:50% 42%;text-align:left;z-index:1}
-.dc{position:absolute;left:315px;top:14px;width:270px;height:350px;transform-style:preserve-3d;transition:transform .95s cubic-bezier(.2,.8,.2,1),opacity .7s ease,filter .7s ease}
+.deck{position:absolute;left:0;top:0;width:1180px;height:390px;transform-origin:0 0;transform:scale(var(--hs,1));perspective:1300px;perspective-origin:50% 42%;text-align:left;z-index:1}
+.dc{position:absolute;left:350px;top:20px;width:480px;height:350px;transform-style:preserve-3d;transition:transform .95s cubic-bezier(.2,.8,.2,1),opacity .7s ease,filter .7s ease}
 .dcIn{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.3,.7,.2,1)}
 .dc.flip .dcIn{transform:rotateY(180deg)}
 .fa,.fb{position:absolute;inset:0;border-radius:26px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
@@ -830,7 +830,7 @@ body[data-m=proc] .hyL{display:block}
 .fa:before{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 20% 0%,rgba(255,255,255,.32),transparent 60%)}
 .fa:after{content:"";position:absolute;top:-20%;bottom:-20%;width:34%;left:-50%;background:linear-gradient(100deg,transparent,rgba(210,230,255,.28),transparent);transform:skewX(-18deg);animation:dcSweep 6s ease-in-out infinite}
 @keyframes dcSweep{0%,55%{left:-50%}100%{left:130%}}
-.fa-ic{position:absolute;left:50%;top:41%;transform:translate(-50%,-50%);opacity:.9}.fa-ic svg.i{width:84px;height:84px;stroke-width:1.2}
+.fa-ic{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);opacity:.9}.fa-ic svg.i{width:84px;height:84px;stroke-width:1.2}
 .fa-ft{position:absolute;left:24px;right:24px;bottom:22px}.fa-ft b{display:block;font-size:22px;font-weight:650;letter-spacing:-.02em}
 .fa-st{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:14px;opacity:.85}.fa-st svg.i{width:14px;height:14px;stroke-width:2.6}
 .dc.done .fa-st{opacity:1;color:#b9f5dc}
@@ -839,6 +839,10 @@ body[data-m=proc] .hyL{display:block}
 .fb-in{display:flex;flex-direction:column;height:100%;transition:opacity .35s ease}.fb-in.sw{opacity:0}
 .fb-hd{display:flex;align-items:center;gap:10px}.fb-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;background:linear-gradient(140deg,#5d8cff,#2453dc);box-shadow:0 6px 14px -6px rgba(36,83,220,.7)}
 .fb-ic svg.i{width:17px;height:17px}.fb-hd div{display:grid;gap:2px;min-width:0}.fb-hd b{font-size:15px;font-weight:650;letter-spacing:-.01em;white-space:nowrap}.fb-hd em{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.09em;color:#7a869c;white-space:nowrap}
+.fb-anim{position:relative;flex:1;margin:14px 0 12px;border-radius:16px;overflow:hidden;background:radial-gradient(120% 90% at 50% 40%,#f8faff,#edf2fb);box-shadow:inset 0 0 0 1px rgba(11,26,58,.06)}
+.fb-anim iframe{position:absolute;left:0;top:0;border:0;background:transparent;transform-origin:0 0;opacity:0;transition:opacity .6s ease}.fb-anim iframe.on{opacity:1}
+.fb-st{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:550;color:#36435a;margin-bottom:8px;min-height:18px}.fb-st i{flex:none;width:14px;height:14px;border-radius:50%;border:1.6px solid #2459e3;border-top-color:transparent;animation:fbSpin .8s linear infinite}
+.fb.fin .fb-st i{animation:none;border-color:#0e9f6e;background:#0e9f6e}.fb.nf .fb-st i{animation:none;border-color:var(--amber);background:var(--amber)}
 .fb-t{margin:22px 0 14px;font-size:19px;font-weight:650;line-height:1.25;letter-spacing:-.02em;min-height:48px}
 .fb-ls{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .fb-ls li{display:flex;align-items:center;gap:10px;font-size:13.5px;line-height:1.3;text-align:left;color:#7a869c;transition:color .3s}
@@ -848,7 +852,7 @@ body[data-m=proc] .hyL{display:block}
 .fb-ls li.dn i:after{content:"";position:absolute;left:4.2px;top:1.6px;width:3px;height:6.5px;border:solid #fff;border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
 .fb-ch{display:flex;flex-wrap:wrap;gap:7px}.fb-ch span{padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:550;background:#eef2f9;color:#7a869c;transition:all .3s}
 .fb-ch span.cur{background:#e4ecff;color:#2459e3;box-shadow:0 0 0 1.5px #9db8ff inset}.fb-ch span.dn{background:#e3f6ee;color:#0b7a55}
-.fb-pg{margin-top:auto;height:6px;border-radius:6px;background:#e7ecf5;overflow:hidden}.fb-pg i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#5d8cff,#2459e3);transition:width .3s linear}
+.fb-pg{height:5px;border-radius:6px;background:#e7ecf5;overflow:hidden}.fb-pg i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#5d8cff,#2459e3);transition:width .3s linear}
 .fb.fin .fb-pg i{background:linear-gradient(90deg,#3cd29c,#0e9f6e)}.fb.nf .fb-pg i{background:var(--amber)}
 .fb-ft{display:flex;justify-content:space-between;margin-top:8px;font-size:11.5px;color:#7a869c}.fb.fin .fb-ft b{color:#0e9f6e}
 @keyframes fbSpin{to{transform:rotate(360deg)}}
@@ -1010,6 +1014,9 @@ var SCENES = [
    log:[[.4,"Reading the message text of all 100 templates"],[2.3,"98 matched to a line of business by what they say",0,"88%"],[4.3,"72 are high confidence, 26 are worth a look"],[6.1,"2 fit no line of business: flagged for you",1]]},
   {id:"done",  dur:Infinity}
 ];
+/* hybrid: each step lasts long enough for its loader scene to play out in full (10 to 12s); its notes spread out to match */
+(function(){var D={team:10.4,brands:10.2,gtm:11,tpl:12};
+  SCENES.forEach(function(x){var d=D[x.id]; if(!d) return; var k=d/x.dur; x.dur=d; x.log=x.log.map(function(e){var c=e.slice(); c[0]=+(e[0]*k).toFixed(2); return c})})})();
 var SDUR={}; SCENES.forEach(function(x){SDUR[x.id]=x.dur});
 var BUILD={form:1,team:1,brands:1,gtm:1,tpl:1};
 var CONF=[99,93,95,97,88];
@@ -2035,51 +2042,63 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
     .replace("<head>", `<head><script>(function(){var K=1.7,st=window.setTimeout.bind(window);window.setTimeout=function(f,ms){var a=[].slice.call(arguments,2);return st.apply(null,[f,(ms||0)/K].concat(a));};var an=Element.prototype.animate;Element.prototype.animate=function(fr,o){if(o&&typeof o==="object"){o=Object.assign({},o);if(typeof o.duration==="number")o.duration=Math.max(1,o.duration/K);if(typeof o.delay==="number")o.delay=o.delay/K;}else if(typeof o==="number"){o=o/K;}return an.call(this,fr,o);};var si=window.setInterval.bind(window);window.setInterval=function(f,ms){var a=[].slice.call(arguments,2);return si.apply(null,[f,(ms||0)/K].concat(a));};function fx(){try{document.getAnimations().forEach(function(a){if(((window.CSSTransition&&a instanceof CSSTransition)||(window.CSSAnimation&&a instanceof CSSAnimation))&&a.playbackRate!==K)a.playbackRate=K;});}catch(e){}requestAnimationFrame(fx);}requestAnimationFrame(fx);})();<\/script>`).replace("</head>", `<style>.reticle,.kbay > i{display:none !important}.copy{visibility:hidden !important}html,body{background:transparent !important}.tm-lab{position:absolute;font:500 11px/1 Inter,system-ui,sans-serif;color:#5B6474;white-space:nowrap}${extra}</style></head>`);
 }
 
-/* ======================= hybrid cards: the 3D step cards under the processing steps ======================= */
+/* ======================= hybrid cards: 3D step cards under the processing steps; the front card plays its loader scene ======================= */
 var DICON=["home","users","layers","coin","file"], FORM_PH=["Legal name and entity type","Registered address and PAN","Industry and sub industry"];
-var HY_BW=900, HY_BH=380, HY={s:1};
-var DECK={el:null,A:-1,sid:null,t:0};
+var HY_BW=1180, HY_BH=390, HY={s:1};
+var DECK={el:null,A:-1,sid:null,lid:null};
+/* loader, speed, and the part of its 720-wide stage it actually draws in [x0,y0,x1,y1] (some scenes spill past the stage edge) */
+var HYMAP={sources:["kyc",1.25],form:["kyc",1.25],team:["team",1.5],brands:["brand",1.5],gtm:["gtm",1.5],tpl:["match",1.5]};
+var HYBOX={kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
+var HY_P=56, HY_CSS="html.embed,html.embed body{height:100%}html.embed main{height:100%;padding:0 !important;display:flex;align-items:center;justify-content:center}"+
+  "html.embed .loader{width:auto !important}html.embed .stage-wrap{flex:none;width:720px !important;height:var(--hyH) !important;max-height:none !important;min-height:0 !important;aspect-ratio:auto !important}"+
+  ".stage{contain:none !important}.copy{position:absolute !important;left:0;top:0}";
+function hyDoc(id,K){var h=id==="brand"?460:360;
+  return loaderDoc(id,HY_CSS.replace("var(--hyH)",h+"px")).replace("var K=1.7,","var K="+K+",").replace("(ms / 1.7)","(ms / "+K+")")}
 function deckBuild(){if(DECK.el) return; var d=document.createElement("div"); d.className="deck";
   d.innerHTML=STEPS.map(function(st,i){return '<div class="dc" data-i="'+i+'"><div class="dcIn"><div class="fa"><span class="fa-ic">'+I(DICON[i])+'</span><div class="fa-ft"><b>'+esc(st.title)+'</b><span class="fa-st">Step '+(i+1)+' of 5</span></div></div><div class="fb"><div class="fb-in"></div></div></div></div>'}).join("");
   $("hyL").appendChild(d); DECK.el=d}
 /* coverflow: the current card faces you, done cards stack to the left, queued ones to the right */
 function deckPlace(){[].forEach.call(DECK.el.children,function(c,i){var d=i-Math.max(0,DECK.A), a=Math.abs(d), sg=d<0?-1:1,
-    x=a?sg*(196+(a-1)*46):0, z=a?-130-a*44:40, ry=a?-sg*54:0, sc=a?.9:1;
+    x=a?sg*(300+(a-1)*46):0, z=a?-150-a*44:30, ry=a?-sg*56:0, sc=a?.9:1;
     c.style.transform="translate3d("+x+"px,0,"+z+"px) rotateY("+ry+"deg) scale("+sc+")";
     c.style.zIndex=10-a; c.style.opacity=a>3?0:1-Math.max(0,a-1)*.14; c.style.filter=a?"saturate(.9) brightness("+(1-a*.06)+")":"none"})}
 function hyScene(s){deckBuild(); var A=Math.max(0,s.prog), moved=A!==DECK.A, el=DECK.el;
   if(moved){[].forEach.call(el.children,function(c,i){var was=c.classList.contains("done"), dn=i<A;
       c.classList.toggle("done",dn); c.classList.remove("flip");
-      if(dn&&!was) c.querySelector(".fa-st").innerHTML=I("check")+(F.errSkip&&false?"":"Done")});
-    DECK.A=A; deckPlace()}
-  DECK.sid=s.id; DECK.s=s; var cur=el.children[A], fb=cur.querySelector(".fb"), inn=fb.firstChild;
+      if(dn&&!was) c.querySelector(".fa-st").innerHTML=I("check")+"Done";
+      if(i!==A) setTimeout(function(){if(!c.classList.contains("flip")) c.querySelector(".fb-in").innerHTML=""},1000)});
+    DECK.A=A; DECK.lid=null; deckPlace()}
+  DECK.sid=s.id; var cur=el.children[A], fb=cur.querySelector(".fb"), inn=fb.firstChild;
   if(s.id==="intro"){cur.classList.remove("flip"); return}
-  var fill=function(){inn.innerHTML=faceHTML(s,A); fb.className="fb"+(s.nf?" nf":""); inn.classList.remove("sw")};
-  if(cur.classList.contains("flip")){inn.classList.add("sw"); setTimeout(fill,300)}
-  else{fill(); setTimeout(function(){if(DECK.A===A&&DECK.sid===s.id) cur.classList.add("flip")},moved&&!REDUCE?650:60)}
+  var m=HYMAP[s.id], lid=m&&!s.nf&&!s.err?m[0]:null;
+  if(!inn.firstChild||moved) inn.innerHTML=faceHTML(A);
+  fb.className="fb"+(s.nf?" nf":"");
+  if(lid!==DECK.lid){DECK.lid=lid; var box=inn.querySelector(".fb-anim"), old=box.firstChild; if(old){old.classList.remove("on"); setTimeout(function(){old.remove()},600)}
+    if(lid){var h=lid==="brand"?460:360, fr=document.createElement("iframe"); fr.setAttribute("aria-hidden","true"); fr.tabIndex=-1; fr.title="The agent at work"; fr.dataset.id=lid;
+      fr.style.width=(720+2*HY_P)+"px"; fr.style.height=(h+2*HY_P)+"px"; fr.addEventListener("load",function(){fr.classList.add("on")});
+      fr.srcdoc=hyDoc(lid,m[1]); box.appendChild(fr); animFit(fr)}}
+  if(!cur.classList.contains("flip")) setTimeout(function(){if(DECK.A===A&&DECK.sid===s.id) cur.classList.add("flip")},moved&&!REDUCE?650:60);
 }
-function faceHTML(s,i){var st=STEPS[i], items=s.id==="sources"?SRC:s.id==="form"?FORM_PH:(s.subs||[]);
-  return '<div class="fb-hd"><span class="fb-ic">'+I(DICON[i])+'</span><div><em>STEP '+(i+1)+' OF 5</em><b>'+esc(st.title)+'</b></div></div><div class="fb-t"></div>'+
-    (s.id==="sources"?'<div class="fb-ch">'+items.map(function(x){return '<span>'+esc(x)+'</span>'}).join("")+'</div>'
-      :'<ul class="fb-ls">'+items.map(function(x){return '<li><i></i>'+esc(x)+'</li>'}).join("")+'</ul>')+
-    '<div class="fb-pg"><i></i></div><div class="fb-ft"><span>'+(s.id==="sources"?"Reading sources":"Drafting")+'</span><b></b></div>'}
-/* each frame: which item is running, the headline, and the bar */
+function faceHTML(i){var st=STEPS[i];
+  return '<div class="fb-hd"><span class="fb-ic">'+I(DICON[i])+'</span><div><em>STEP '+(i+1)+' OF 5</em><b>'+esc(st.title)+'</b></div></div>'+
+    '<div class="fb-anim"></div><div class="fb-st"><i></i><span></span></div><div class="fb-pg"><i></i></div>'}
+/* the scene's drawn area, centred and scaled into the card's animation window (the card is laid out unscaled, so offsetWidth is true size) */
+function animFit(fr){var box=fr.parentNode, b=HYBOX[fr.dataset.id]; if(!box||!b) return; var aw=box.offsetWidth, ah=box.offsetHeight, bw=b[2]-b[0], bh=b[3]-b[1], z=Math.min(aw/bw,ah/bh,1);
+  fr.style.transform="translate("+((aw-bw*z)/2-(b[0]+HY_P)*z).toFixed(1)+"px,"+((ah-bh*z)/2-(b[1]+HY_P)*z).toFixed(1)+"px) scale("+z.toFixed(4)+")"}
+/* each frame: the status line and the bar under the animation */
 function deckTick(s,lt){if(!DECK.el||DECK.sid!==s.id||s.id==="intro") return;
-  var fb=DECK.el.children[DECK.A].querySelector(".fb"), inn=fb.firstChild, rows=inn.querySelectorAll(".fb-ls li,.fb-ch span"); if(!rows.length&&!inn.querySelector(".fb-t")) return;
-  var n=rows.length, end=s.dur*(s.subs?.75:.72), p=Math.min(1,lt/end), fin=lt>=end, k;
-  if(s.id==="form"){var c=0; for(var q=0;q<7;q++) if(lt>=FILL_T0+q*FILL_STEP+FILL_DUR) c++; k=c>=7?n:c>=5?2:c>=3?1:0; p=c/7; fin=c>=7}
-  else k=fin?n:Math.min(n-1,Math.floor(p*n));
-  if(s.nf&&fin) k=n;
-  [].forEach.call(rows,function(r,j){r.className=j<k?"dn":j===k?"cur":""});
-  var t=fin?(s.done||(s.id==="form"?(s.nf?"Nothing found to fill in":"All 7 fields filled"):"Done")):s.id==="form"?(rows[k]?rows[k].textContent:"")+"\u2026":(s.subs?s.subs[Math.min(k,s.subs.length-1)]:"Working")+"\u2026";
-  var h=inn.querySelector(".fb-t"); if(h&&h.textContent!==t) h.textContent=t;
-  fb.classList.toggle("fin",fin&&!s.nf); var bar=inn.querySelector(".fb-pg i"); if(bar) bar.style.width=(p*100).toFixed(1)+"%";
-  var pc=inn.querySelector(".fb-ft b"); if(pc) pc.textContent=fin?(s.nf?"Nothing found":"Done"):Math.round(p*100)+"%"}
-function hyShow(m){if(m) return; if(DECK.el){DECK.el.remove(); DECK.el=null} DECK.A=-1; DECK.sid=null} // leaving processing resets the deck
+  var fb=DECK.el.children[DECK.A].querySelector(".fb"), inn=fb.firstChild, st=inn.querySelector(".fb-st span"); if(!st) return;
+  var items=s.id==="sources"?SRC:s.id==="form"?FORM_PH:(s.subs||["Working"]), n=items.length, end=s.dur*(s.subs?.75:.72), p=Math.min(1,lt/end), fin=lt>=end, k;
+  if(s.id==="form"){var c=0; for(var q=0;q<7;q++) if(lt>=FILL_T0+q*FILL_STEP+FILL_DUR) c++; k=c>=5?2:c>=3?1:0; p=c/7; fin=c>=7}
+  else k=Math.min(n-1,Math.floor(p*n));
+  var t=fin?(s.done||(s.id==="form"?(s.nf?"Nothing found to fill in":"All 7 fields filled"):"Done")):(s.id==="sources"?"Reading "+items[k]:items[k])+"\u2026";
+  if(st.textContent!==t) st.textContent=t;
+  fb.classList.toggle("fin",fin&&!s.nf); var bar=inn.querySelector(".fb-pg i"); if(bar) bar.style.width=(p*100).toFixed(1)+"%"}
+function hyShow(m){if(m) return; if(DECK.el){DECK.el.remove(); DECK.el=null} DECK.A=-1; DECK.sid=null; DECK.lid=null} // leaving processing resets the deck
 function hyFit(){
   var box=$("hyL"), ex=$("extra"); if(!box||F.mode!=="proc") return;
   var top=ex.offsetTop+ex.offsetHeight+14, avail=innerHeight-170-top;
-  HY.s=Math.max(.4,Math.min(1.1,avail/HY_BH,innerWidth*.94/HY_BW));
+  HY.s=Math.max(.4,Math.min(1.1,avail/HY_BH,innerWidth*.96/HY_BW));
   box.style.width=Math.round(HY_BW*HY.s)+"px"; box.style.height=Math.round(HY_BH*HY.s)+"px"; box.style.setProperty("--hs",HY.s);
 }
 
