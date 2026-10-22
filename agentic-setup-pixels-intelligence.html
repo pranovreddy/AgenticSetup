@@ -1651,7 +1651,7 @@ function cardHTML(){
   if(CARD.big){var d=detailParts(i); p={title:st.k==="profile"?"Business profile details":st.title+" details",tog:'<button class="btn ghost cd-tog" data-a="collapse">'+I("min")+'Show summary</button>',body:d.h,l:d.l,r:d.r}}
   else if(st.k==="profile"||st.k==="team"||st.k==="brands"){var d0=detailParts(i); // the profile card is the form itself: logo, all fields, authorise, submit
     p={title:heading(i),tog:'',body:(st.k!=="profile"?'<div class="chg">'+I("info")+'<span>You can change this later at any time.</span></div>':'')+d0.h,l:d0.l,r:d0.r}}
-  else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.'):
+  else{var lf=st.k==="gtm"?checkRow("gterms",F.gt,'I accept the rate card terms of '+(picked().map(function(x){return esc(x.name)}).join(" and ")||"the chosen partners")+'.'):
       '<button class="btn ghost" data-a="tlater">Do it later</button>';
     p={title:heading(i),tog:'',body:cardSummary(i),l:lf,r:'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i)}}
   if(st.k==="profile"&&F.kv&&!CARD.big){var dn=F.kv.ph==="done";
@@ -1992,7 +1992,7 @@ function bigParts(i){var k=STEPS[i].k, h, l="", r;
   if(k==="brands"){h=brandsBig(); l=checkRow("bok",F.bok,"<b>I've reviewed these details and they're correct.</b>"); r=primary(i)}
   if(k==="gtm"){h=gtmBig();
     if(F.gstep==="select"){var n=picked().length; l='<span class="ls">Selected '+n+'</span><button class="btn ghost" data-a="gclear">Clear</button>'; r='<button class="btn" data-a="gnext"'+(n===2?'':' disabled')+'>Next: set allocation</button>'}
-    else{l=checkRow("gterms",F.gt,'I accept the <u>rate card terms</u> of '+picked().map(function(x){return esc(x.name)}).join(" and ")+'.')+'<span class="ls" id="gnote"'+(allocOk()?' style="display:none"':'')+'>Each phase must total 100%.</span>'; r='<button class="btn ghost" data-a="gback">Back</button><button class="btn" data-a="gtm"'+(F.gt&&allocOk()?'':' disabled')+'>Confirm partners</button>'}}
+    else{l=checkRow("gterms",F.gt,'I accept the rate card terms of '+picked().map(function(x){return esc(x.name)}).join(" and ")+'.')+'<span class="ls" id="gnote"'+(allocOk()?' style="display:none"':'')+'>Each phase must total 100%.</span>'; r='<button class="btn ghost" data-a="gback">Back</button><button class="btn" data-a="gtm"'+(F.gt&&allocOk()?'':' disabled')+'>Confirm partners</button>'}}
   if(k==="templates"){h=tplBig(); l='<span class="ls">Showing '+Math.min(PER,tplRows2().length)+' of '+TPLS.length+' sample templates</span>'; r=primary(i)}
   return {h:h,l:l,r:r};
 }
