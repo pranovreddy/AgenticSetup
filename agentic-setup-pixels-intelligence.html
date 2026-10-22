@@ -1337,7 +1337,7 @@ function coreState(dt){
   if(m==="plan"){vt=1;et=.3}
   else if(m==="ready"){vt=1;et=.5}
   else if(m==="verify"){vt=1;et=.55}
-  else if(m==="msg"){vt=1;et=.35}
+  else if(m==="msg"){vt=document.body.classList.contains("lgnon")?0:1;et=.35}
   else if(m==="pass"){vt=1;et=.7}
   else if(m==="proc"){vt=1; var sc=SCENES[F.procI];
     if(sc){var lt=clock-F.procT0-STARTS[F.procI]; if(sc.id==="intro") et=.45; else if(sc.id==="sources") et=.7; else et=(lt/sc.dur)<.38?1:.8}}
