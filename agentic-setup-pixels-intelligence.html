@@ -300,7 +300,7 @@ select.inp{height:36px;padding:0 8px}
 .gpc h6{margin:12px 0 2px;font-size:13.5px;color:var(--s-muted);font-weight:650}.gpc p{margin:0 0 10px;font-size:15px;line-height:1.5;color:var(--s-ink)}
 .gt3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .gt{border:1.5px solid #dbe5f8;border-radius:12px;padding:8px 10px;background:#fff}.gt.bst{background:#eef3ff;border-color:#c6d6fa}
-.gt span{display:block;font-size:13px;color:var(--s-muted)}.gt b{display:flex;align-items:center;gap:6px;font-size:19px;font-weight:650;margin-top:2px}.gt.bst b{color:var(--s-blue)}.gt b svg{width:14px;height:14px;color:#3b4763}
+.gt span{display:block;font-size:13px;color:var(--s-muted)}.gt b{display:flex;align-items:center;gap:6px;font-size:19px;font-weight:650;margin-top:2px}.gt.bst b{color:var(--s-blue)}.gt>span{display:flex!important;justify-content:space-between;align-items:center}.gt span svg{width:15px;height:15px;color:var(--s-blue);flex:none}
 .gt em{display:block;font-style:normal;font-size:14px;font-weight:600;color:var(--s-blue);margin-top:4px}
 .gsc{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;border-top:1px solid #e3e9f6;margin-top:10px;padding-top:9px;font-size:13px;color:var(--s-muted)}.gsc>b{color:var(--s-ink2);font-weight:650}.gsc span b{color:var(--s-ink);font-weight:650}
 .gdiv{display:flex;align-items:center;gap:12px;margin:16px 0 0;font-size:14px;font-weight:650;color:var(--s-ink2)}.gdiv:after{content:"";flex:1;height:1px;background:#d8e2f5}
@@ -1543,7 +1543,7 @@ function gpartCard(){var c='minmax(0,1.5fr) repeat(3,minmax(70px,.5fr))';
 function gtmCard(){if(F.gpart) return gpartCard();
   var sel=picked(), best=PH.map(function(_,k){return Math.min.apply(null,PARTNERS.map(function(p){return p.r[k]}))}), F2=F.gexp||(F.gexp={});
   function tiles(p,isSel){return '<div class="gt3">'+PH.map(function(x,k){var b=p.r[k]===best[k]&&isSel, sh=isSel&&sel.length===2?(p===sel[0]?ALLOC[k]:100-ALLOC[k]):0;
-    return '<div class="gt'+(b?' bst':'')+'"><span>'+x+'</span><b>'+(b?I("check"):"")+'₹'+p.r[k].toFixed(2)+'</b>'+(sh?'<em>'+sh+'%</em>':'')+'</div>'}).join("")+'</div>'+
+    return '<div class="gt'+(b?' bst':'')+'"><span>'+x+(b?I("check"):"")+'</span><b>₹'+p.r[k].toFixed(2)+'</b>'+(sh?'<em>'+sh+'%</em>':'')+'</div>'}).join("")+'</div>'+
     '<div class="gsc"><b>Scrubbing</b>'+["SMS","Call","RCS"].map(function(x,k){return '<span>'+x+' <b>₹'+p.s[k].toFixed(2)+'</b></span>'}).join("")+'</div>'}
   function head(p,right){return '<div class="gph"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b>'+right+'</div>'}
   var c='<div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners selected</div><div class="gsel">'+
