@@ -447,6 +447,13 @@ body.lgnon .lgn{display:grid}body.lgnon .brand,body.lgnon .closes,body.lgnon #pr
 body.lgnon .proto>button{color:var(--navy)!important;background:#fff!important;border:1px solid #d5ddec!important;box-shadow:0 6px 18px rgba(30,70,170,.14)}
 .lgn-pwd button{top:12px}
 @media (max-width:900px){.lgn{grid-template-columns:1fr}.lgn-l{display:none}}
+.itab{position:fixed;z-index:12;width:40px;height:40px;margin:0;padding:0;border-radius:50%;border:1.5px solid #c9d6f3;background:#fff;color:#2554e6;display:none;place-items:center;cursor:pointer;box-shadow:0 8px 20px -8px rgba(15,40,130,.45);transition:background .2s,color .2s,transform .2s}
+.itab.on{display:grid}.itab:hover{transform:scale(1.07)}.itab.act{background:#2554e6;color:#fff;border-color:#2554e6}.itab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ipan{position:fixed;z-index:11;box-sizing:border-box;overflow:auto;padding:20px 22px 22px;border-radius:22px;background:#fff;color:var(--s-ink);box-shadow:0 24px 60px -24px rgba(8,28,110,.55),0 0 0 1px rgba(200,214,245,.8);opacity:0;pointer-events:none;transform:translateX(-14px) scale(.98);transform-origin:left top;transition:opacity .3s,transform .35s cubic-bezier(.2,.9,.3,1)}
+.ipan.on{opacity:1;pointer-events:auto;transform:none}
+.ip-h{display:flex;align-items:center;gap:10px;margin:0 0 6px}.ip-h b{flex:1;font-size:16px;line-height:1.3}.ip-i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eaf0ff;color:#2554e6;flex:none}.ip-i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.ip-h button{width:28px;height:28px;border:0;border-radius:8px;background:#f1f4fa;color:#4a5878;display:grid;place-items:center;cursor:pointer;flex:none}.ip-h button .i{width:14px;height:14px}
+.ipan section{padding:14px 0 0}.ipan section+section{margin-top:14px;border-top:1px solid #e8edf6}.ipan h4{margin:0 0 6px;font-size:14px;color:#2554e6}.ipan p{margin:0;font-size:13.5px;line-height:1.6;color:var(--s-ink2)}
 .bs-in{position:absolute;left:24px;right:24px;top:150px;bottom:96px;overflow:auto;pointer-events:auto;color:#fff;scrollbar-width:none}
 .bs-chip{display:inline-flex;align-items:center;gap:7px;padding:5px 11px 5px 7px;border-radius:999px;background:rgba(255,255,255,.16);font-size:12px;font-weight:600;letter-spacing:.02em}
 .bs-chip img{width:16px;height:16px;border-radius:50%;background:#fff;padding:2px}
@@ -847,6 +854,8 @@ body[data-m=proc] #sub{display:none}
 <div class="card on" id="cardM" aria-hidden="true"></div>
 <aside class="bigsum" id="bigsum" aria-label="Agent summary"></aside>
 <div class="xdlg" id="xdlg"></div>
+<button class="itab" id="itab" type="button" data-a="itab" aria-label="About this step" title="About this step"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.01"/></svg></button>
+<aside class="ipan" id="ipan" aria-label="About this step"></aside>
 <div class="lgn" id="lgn" role="dialog" aria-label="Sign in">
   <section class="lgn-l">
     <div class="lgn-top"><img class="lgn-logo" id="lgnLogo" alt="DigiConsent"><b>DigiConsent</b></div>
@@ -1751,6 +1760,30 @@ function railW(){return 24}
 function setSum(text){$("asumT").textContent=text}
 function setConf(i){var c=CONF[i], el=$("asumC"); el.className="aconf"+(c<90?" amb":""); el.textContent='Confidence '+c+'%'}
 function asumOn(){return false} // the summary now sits inside the card, under the Agent summary chip
+/* the info tab pops out of the right edge of a review card and opens a side card that explains the step */
+var INFO={
+ brands:{t:"About brands and lines of business",s:[
+  ["What is a brand?","The name your customers know you by, for example HDFC Bank. Each brand has its own sender headers on DLT, and it is the name shown in your customers' Consent Wallet."],
+  ["What is a line of business?","A product area inside a brand, such as Credit Cards or Home Loan. Consent is asked for per line of business, so a customer can say yes to loan offers and no to card offers."],
+  ["How they shape your consent setup","Every consent you collect or migrate is recorded against a brand and a line of business. Your templates are mapped to lines of business, so a message only reaches customers who agreed to that line. Telecom operators approve brands, which is why approved items stay locked and changes go for review."]]},
+ gtm:{t:"About GTM partners",s:[
+  ["What is a GTM partner?","A go-to-market partner is the telecom aggregator that delivers your consent messages and calls to customers. Here the choices are Karix, Value First, Tata and Route Mobile."],
+  ["Why they matter","They set what each consent costs you and how reliably messages are delivered. Your partners decide your cost per consent in each phase, and their service cover decides how well you are supported when something fails."],
+  ["What you decide here","Pick two partners and split your volume between them for each phase: migration, acquisition and refresh. Two partners spread the risk and keep your rates low. You can change the choice later at any time."]]},
+ templates:{t:"Why template mapping matters",s:[
+  ["What mapping does","Each of your DLT templates is matched to a line of business, so the right message goes to the right customers."],
+  ["Why it matters for migration","Migration works by sending your existing customers an approved template and asking them to confirm their consent. A template that is not mapped cannot be used, so the customers it would have reached are not migrated."],
+  ["What happens next","Mapped templates are sent to the telecom operators for approval. Templates you leave unmapped do not hold up migration, and you can map them later at any time."]]}
+};
+function infoKey(){var k=STEPS[F.active]&&STEPS[F.active].k; return INFO[k]?k:null}
+function placeInfo(r){var t=$("itab"), pn=$("ipan"), k=(CARD.on&&!CARD.big&&F.mode==="review"&&!F.face&&!F.kv)?infoKey():null;
+  if(!k){t.classList.remove("on"); pn.classList.remove("on"); return}
+  var tx=r.l+r.w-20, open=!!F.infoOpen; t.style.left=tx+"px"; t.style.top=(r.t+64)+"px"; t.classList.add("on"); t.classList.toggle("act",open);
+  var pl=r.l+r.w+18, pw=Math.min(340,W-pl-16);
+  if(pw<250){pw=Math.min(340,r.w-60); pl=r.l+r.w-pw-24}
+  pn.style.left=pl+"px"; pn.style.top=Math.max(14,r.t)+"px"; pn.style.width=pw+"px"; pn.style.maxHeight=Math.max(240,Math.min(r.h,H-28-r.t))+"px";
+  if(pn.dataset.k!==k){pn.dataset.k=k; var o=INFO[k]; pn.innerHTML='<div class="ip-h"><span class="ip-i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.01"/></svg></span><b>'+esc(o.t)+'</b><button type="button" data-a="itab" aria-label="Close">'+I("x")+'</button></div>'+o.s.map(function(x){return '<section><h4>'+esc(x[0])+'</h4><p>'+esc(x[1])+'</p></section>'}).join("")}
+  pn.classList.toggle("on",open)}
 function placeCard(){
   var A0=$("asum"), aOn=asumOn(), aH=0;
   var c=$("card"), r, x0=railW(), av=W-x0-24; // cards centre on the page; the stepper sits below them
@@ -1764,6 +1797,7 @@ function placeCard(){
     r={l:x0+(av-w)/2,t:top,w:w,h:h}}
   c.style.left=r.l+"px"; c.style.top=r.t+"px"; c.style.width=r.w+"px"; c.style.height=r.h+"px";
   A0.classList.toggle("on",aOn); if(aOn){A0.style.top=(r.t-aH+22)+"px"; A0.style.left=r.l+"px"}
+  placeInfo(r);
   placeStatus();
 }
 function renderCard(){if(F.kv&&F.kv.ph!=="done"&&$("card").querySelector(".kv iframe")){placeCard(); return} // a redraw would restart the scene
@@ -1772,7 +1806,7 @@ function renderCard(){if(F.kv&&F.kv.ph!=="done"&&$("card").querySelector(".kv if
   c.innerHTML=cardHTML(); bd=c.querySelector(".dtext")||c.querySelector(".cd-bd"); if(bd) bd.scrollTop=top; placeCard(); syncPts()}
 function showCard(){var c=$("card"); CARD.on=true; CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big","swap"); c.classList.add("noanim"); renderCard(); void c.offsetWidth; c.classList.remove("noanim");
   requestAnimationFrame(function(){c.classList.add("on")})}
-function hideCard(){CARD.on=false; $("card").classList.remove("on"); $("asum").classList.remove("on"); placeStatus()}
+function hideCard(){CARD.on=false; var _t=$("itab"),_p=$("ipan"); if(_t) _t.classList.remove("on"); if(_p) _p.classList.remove("on"); $("card").classList.remove("on"); $("asum").classList.remove("on"); placeStatus()}
 function expandCard(){var c=$("card"); if(CARD.big) return; F.snap=snapNow(); c.classList.add("swap");
   later(function(){CARD.big=true; document.body.classList.add("bigcard"); c.classList.add("big"); renderCard(); var bd=c.querySelector(".cd-bd"); if(bd&&F.mode!=="gate") bd.scrollTop=0; later(function(){c.classList.remove("swap"); checkCardEnd()},280)},170)}
 /* coming back from "add it yourself" with nothing added: show the same "nothing found" card as before */
@@ -2359,6 +2393,7 @@ document.addEventListener("click",function(e){
   else if(a==="perr-retry"){var e0=ERR; e0.tries++; if(e0.tries>=e0.ok){ERR=null} proc(STARTS[e0.idx])}
   else if(a==="perr-skip"){var e1=ERR; ERR=null; F.errSkip=e1.id; NF=e1.id; proc(STARTS[e1.idx+1])}
   else if(a==="tpx"){F.tpx=F.tpx||{}; var o0=el.dataset.o; F.tpx[o0]=F.tpx[o0]?0:1; el.classList.toggle("open",!!F.tpx[o0])}
+  else if(a==="itab"){F.infoOpen=!F.infoOpen; var _t2=$("itab"), _p2=$("ipan"); _t2.classList.toggle("act",F.infoOpen); _p2.classList.toggle("on",F.infoOpen&&_t2.classList.contains("on"))}
   else if(a==="xjump"){hideDlg(); jump(el.dataset.v)}
   else if(a==="xsupport"){toast("Support has your details. They will contact you at ravi.menon@hdfcbank.com.")}
   else if(a==="xlogout"){toast("You are logged out. Signed agreements stay on record.")}
@@ -2446,7 +2481,7 @@ addEventListener("keydown",function(e){
 addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0) tourGo(TS)});
 
 /* ======================= prototype jumps ======================= */
-function resetData(){F.tpx=null; F.later=[0,0,0,0,0]; F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function resetData(){F.infoOpen=false; F.tpx=null; F.later=[0,0,0,0,0]; F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   if(w==="login"){showLogin(); return}
   document.body.classList.remove("lgnon"); clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
