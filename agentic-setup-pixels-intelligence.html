@@ -1517,7 +1517,7 @@ function onPeople(){return PEOPLE.filter(function(p){return p.on})}
 function lobCount(){return BRANDS.reduce(function(a,b){return a+b.lobs.length},0)}
 function picked(){return PARTNERS.filter(function(p){return p.pick})}
 function unmapped(){return TPLS.filter(function(t){return !t[2]}).length}
-function authRow(){return '<div class="auth" data-a="auth"><span class="cbx'+(F.auth?' on':'')+'">'+(F.auth?I("check"):'')+'</span><span><b>I\'m authorised to submit this KYC, and it\'s accurate.</b><small>Airtel, Jio, Vi and BSNL will review these 7 fields. The company accepts responsibility for any false or misleading information.</small></span></div>'}
+function authRow(){return '<div class="auth" data-a="auth"><span class="cbx'+(F.auth?' on':'')+'">'+(F.auth?I("check"):'')+'</span><span><b>I\'m authorized to submit this KYC, and it\'s accurate.</b><small>The company accepts responsibility for any false or misleading information.</small></span></div>'}
 function checkRow(a,on,html){return '<div class="auth" data-a="'+a+'"><span class="cbx'+(on?' on':'')+'">'+(on?I("check"):'')+'</span><span>'+html+'</span></div>'}
 function adminNote(){var n=PEOPLE.filter(function(p){return p.on&&p.role===2}).length; return n?'<span class="ls">'+n+(n===1?' person gets':' people get')+' Super Admin (full access).</span>':''}
 function primary(i){
