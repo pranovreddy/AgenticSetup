@@ -437,7 +437,7 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .chipmini.or{background:#fff1e6;color:#c2410c}.chipmini.vi{background:#f1ecff;color:#6d28d9}.chipmini.sl{background:#eef1f6;color:#475569}
 .xface{display:grid;justify-items:center;text-align:center;padding:34px 20px 26px}.xface.xtall{padding:90px 20px}
 .xface h3{margin:16px 0 6px;font-size:19px}.xface p{margin:0;max-width:440px;color:var(--s-muted);font-size:14px;line-height:1.5}
-.xic{flex:none;aspect-ratio:1;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);box-shadow:0 0 0 8px rgba(37,99,235,.06)}
+.xic{flex:none;aspect-ratio:1;box-sizing:border-box;padding:0!important;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--s-soft);color:var(--s-blue);box-shadow:0 0 0 8px rgba(37,99,235,.06)}
 .xic .i{width:24px;height:24px}.xic .spn{width:22px;height:22px}
 .xic.or{background:#fff1e6;color:#c2410c;box-shadow:0 0 0 8px rgba(194,65,12,.06)}.xic.amb{background:var(--s-asoft);color:var(--s-amber)}.xic.gr{background:var(--s-green);color:#fff;box-shadow:0 0 0 7px rgba(15,138,95,.14)}.xic.gr .i{width:26px;height:26px;stroke-width:2.8}
 .xic.vi{background:#f1ecff;color:#6d28d9}.xic.sl{background:#eef1f6;color:#475569;box-shadow:0 0 0 8px rgba(71,85,105,.05)}
@@ -1893,11 +1893,13 @@ function kvNext(){}
 
 /* left of an expanded card: the agent's summary on the blue field, between the logo rail and the Migration closes in pill */
 var BSUM={
+  profile:["Filled your logo and all 7 fields from 4 sources","Your profile goes to Airtel, Jio, Vi and BSNL for approval. Fields from official records are locked.",["Read your DLT registration","Checked GSTIN and MCA","Read your company website","Filled your logo and 7 fields"],"Team opens as soon as the business profile is approved."],
   team:["Found 6 people and suggested a role for each","Each person has a suggested role. Add people, change a role, or skip this step.",["Looked up your DLT registration","Found people on record","Matched a role to each person","Suggested people to invite"],"Invites go out by email. Brands and LOBs open next, whether you invite or skip."],
   brands:["Drafted 3 brands and 7 lines of business","Confirm the draft as it is and it's set up straight away. Any change goes for review.",["Read your DLT headers and entities","Grouped them into brands","Created lines of business","Refined the drafts"],"GTM partners open next. Templates open once your brands and lines of business are set up."],
   gtm:["Chose Karix and Value First, with volume split by phase","Karix and Value First have the lowest rates. Change the choice or the split if you want.",["Read partner requests","Compared rates for each phase","Chose the best combination","Set allocation across phases","Prepared the summary"],"Accepting includes the rate card terms. Templates open next."],
   templates:["Suggested a line of business for 98 of 100 templates","A line of business is suggested for 98 of 100 templates. 2 still need mapping.",["Read your templates","Suggested a line of business for each","Marked how confident each suggestion is"],"Templates you map are sent for approval. The 2 unmapped ones don't hold up migration."]};
 function bigSum(i){var b=BSUM[STEPS[i].k]; if(!b) return "";
+  if(STEPS[i].k==="profile"&&F.ro) b=["Approved by "+opsN()+" of 4 telcos",opsN()===4?"Every telco has approved your business profile. Nothing more to do here.":"The other telcos are still reviewing. You can carry on with the next steps.",b[2],"Team is open now."];
   return '<div class="bs-in"><span class="bs-chip"><img src="'+LOGO+'" alt="">Agent summary</span><h3>'+esc(b[0])+'</h3><p>'+esc(b[1])+'</p>'+
     '<details class="bs-acc" open><summary>What I did <em>'+b[2].length+' steps</em></summary><ul>'+b[2].map(function(x){return '<li>'+I("check")+esc(x)+'</li>'}).join("")+'</ul></details>'+
     '<details class="bs-acc" open><summary>What happens next</summary><p>'+esc(b[3])+'</p></details></div>'}
