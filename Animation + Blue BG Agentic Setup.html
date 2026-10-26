@@ -816,7 +816,7 @@ body[data-m=proc] .think li{line-height:1.45}
 body[data-m=proc] .hyL{display:block}
 .hyL:before{content:"";position:absolute;left:-10%;right:-10%;top:-14%;bottom:-14%;border-radius:50%;
   background:radial-gradient(closest-side,rgba(170,205,255,.26),rgba(120,165,255,.10) 55%,rgba(120,165,255,0));animation:hyGlow 7s ease-in-out infinite}
-.hyL:after{content:"";position:absolute;left:18%;right:18%;bottom:-6%;height:16%;border-radius:50%;
+.hyL:after{content:"";position:absolute;left:24%;right:24%;bottom:-4%;height:10%;border-radius:50%;opacity:.6;
   background:radial-gradient(closest-side,rgba(4,24,120,.28),rgba(4,24,120,0));filter:blur(6px)}
 @keyframes hyGlow{0%,100%{opacity:.55;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
 .hyF{position:absolute;inset:0;z-index:1;opacity:0;filter:blur(8px);transform:translateY(10px) scale(.965);
@@ -1617,7 +1617,7 @@ function thinkScroll(ul){var ks=ul.children, n=ks.length, cs=getComputedStyle(ul
   if(Math.abs((parseFloat(ul.style.height)||0)-H)>.5){ul.style.height=H+"px"; if(F.mode==="proc"){hyFit(); later(measure,650,true)}}
   var tgt=Math.max(0,ul.scrollHeight-H), cur=ul.scrollTop;
   var st=ul.scrollTop=REDUCE||Math.abs(tgt-cur)<.6?tgt:cur+(tgt-cur)*thinkK(), v0=st+parseFloat(cs.paddingTop)-1, v1=st+H-parseFloat(cs.paddingBottom)+1;
-  for(var q=0;q<n;q++){var li=ks[q], t=li.offsetTop-ul.offsetTop, b=t+li.offsetHeight, f=clamp((Math.min(b,v1)-Math.max(t,v0))/li.offsetHeight,0,1), base=q===n-1?1:q===n-2?.72:.45;
+  for(var q=0;q<n;q++){var li=ks[q], t=li.offsetTop-ul.offsetTop, b=t+li.offsetHeight, f=clamp((Math.min(b,v1)-Math.max(t,v0))/li.offsetHeight,0,1), base=q===n-1?1:q===n-2?.8:.58;
     li.style.opacity=(base*f*f*f).toFixed(3)}}
 function thinkK(){var t=performance.now(), d=Math.min(.1,(t-(thinkK.t||t))/1000); thinkK.t=t; return 1-Math.exp(-d*11)} // frame-rate independent glide
 function procTick(){
@@ -2019,6 +2019,20 @@ var HY_CSS=".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{c
   ".fld-tag{color:#fff !important;background:rgba(255,255,255,.18) !important;border-color:rgba(255,255,255,.3) !important}"+
   ".blob.on-dark .mark{box-shadow:0 6px 16px -4px rgba(6,24,110,.55),0 0 0 6px rgba(255,255,255,.2),0 0 26px rgba(255,255,255,.35) !important}"+
   ".traces path,.traces circle{stroke:rgba(255,255,255,.14) !important;fill:none}"+
+  /* the light cone from the blob onto what it reads, and the ring on the lit card: white light on the blue field (amber while it waits) */
+  ".cone{--bc:#fff !important;filter:blur(.5px) drop-shadow(0 0 12px rgba(255,255,255,.28)) !important}"+
+  ".cone .s0{stop-opacity:.6 !important}.cone .s1{stop-opacity:.28 !important}.cone .s2{stop-opacity:.06 !important}"+
+  "[data-state=wait] .cone{--bc:#ffd27a !important}"+
+  ".beamed{border-color:#fff !important;box-shadow:0 0 0 3px rgba(255,255,255,.6),0 0 30px 4px rgba(255,255,255,.42),0 12px 26px -12px rgba(3,18,96,.55) !important}"+
+  "[data-state=wait] .beamed{border-color:#ffd27a !important;box-shadow:0 0 0 3px rgba(255,210,122,.6),0 0 30px 4px rgba(255,210,122,.4),0 12px 26px -12px rgba(3,18,96,.55) !important}"+
+  /* focus spotlight, connector wires and travelling packets were blue or ink, so they vanished on blue */
+  ".spot{background:radial-gradient(closest-side,rgba(255,255,255,.18),rgba(255,255,255,0)) !important}"+
+  ".wire{stroke:rgba(255,255,255,.34) !important}"+
+  ".beam[style*='--blue'],.beam-head[style*='--blue']{stroke:#fff !important;color:#fff !important}"+
+  /* the white blob keeps a soft halo so it reads as the agent, not a dot */
+  ".core.blob.on-dark::after{display:block !important;background:radial-gradient(closest-side,rgba(255,255,255,.3),rgba(255,255,255,.08) 55%,rgba(255,255,255,0) 78%) !important}"+
+  /* sources not read yet stay legible */
+  ".ksrc[data-s=idle]{opacity:.78 !important}"+
   ".fld.missing .fld-box{border-color:rgba(255,255,255,.55) !important;background:rgba(255,255,255,.08) !important}"+
   /* the stage keeps its own size (so the loader's maths is untouched) and sits in a padded, unclipped page */
   "html.embed,html.embed body{height:100%}html.embed main{height:100%;padding:0 !important;display:flex;align-items:center;justify-content:center}"+
