@@ -1395,7 +1395,7 @@ function coreState(dt){
   CORE.vis+=(((vt&&CORE.R>0)?1:0)-CORE.vis)*Math.min(1,dt*3.5);
   CORE.e+=(et-CORE.e)*Math.min(1,dt*2.5); CORE.kick*=Math.exp(-dt*1.4);
   // angles are integrated so that a change of energy speeds the turn up gently instead of jumping
-  var ee=Math.min(1.2,CORE.e); CORE.ang=(CORE.ang||0)+dt*(.07+.07*ee); CORE.bAng=(CORE.bAng||0)+dt*(.55+.45*ee); CORE.orbA=(CORE.orbA||0)+dt*(.3+.18*ee);
+  var ee=Math.min(1.2,CORE.e); CORE.ang=(CORE.ang||0)+dt*(.07+.07*ee); CORE.bAng=(CORE.bAng||0)+dt*(.55+.45*ee); CORE.ok=(CORE.ok||0)+((CORE.okT||0)-(CORE.ok||0))*Math.min(1,dt*5); CORE.orbA=(CORE.orbA||0)+dt*(.3+.18*ee);
 }
 /* the agent blob from the loaders, used everywhere: a turning sphere of dots with the logo mark on a blue disc at its heart */
 var BPTS=(function(){var n=480,o=[];for(var i=0;i<n;i++){var y=1-i/(n-1)*2,r=Math.sqrt(Math.max(0,1-y*y)),th=i*2.399963;o.push([Math.cos(th)*r,y,Math.sin(th)*r,.72+(i%7)*.06])}return o})();
@@ -1414,13 +1414,20 @@ function paintBlob(g,cx,cy,R,o){var A=o.a==null?1:o.a, P=o.white?[200,220,255,25
   g.globalAlpha=A; g.shadowColor="rgba(2,14,80,.55)"; g.shadowBlur=mr*.6; g.shadowOffsetY=mr*.18;
   g.fillStyle=dg; g.beginPath(); g.arc(cx,cy,mr,0,6.283); g.fill(); g.shadowColor="transparent"; g.shadowBlur=0; g.shadowOffsetY=0;
   if(o.white){g.strokeStyle="rgba(232,240,255,.75)"; g.lineWidth=Math.max(1,mr*.09); g.stroke()}
-  var sc=mr*2*.6/26; g.save(); g.translate(cx-13*sc,cy-13*sc); g.scale(sc,sc); g.fillStyle="#fff";
-  MARKP.forEach(function(m){g.save(); g.translate(m[0],m[1]); g.globalAlpha=m[3]*A; g.fill(m[2]); g.restore()}); g.restore(); g.globalAlpha=1}
+  var ok=o.ok||0, sc=mr*2*.6/26; g.save(); g.translate(cx-13*sc,cy-13*sc); g.scale(sc,sc); g.fillStyle="#fff";
+  MARKP.forEach(function(m){g.save(); g.translate(m[0],m[1]); g.globalAlpha=m[3]*A*(1-ok); g.fill(m[2]); g.restore()}); g.restore();
+  if(ok>.01){ // done: the disc turns green and a check pops in where the logo was
+    var gg=g.createLinearGradient(cx-mr,cy-mr,cx+mr,cy+mr); gg.addColorStop(0,"#4fdca6"); gg.addColorStop(1,"#0e9f6e");
+    g.globalAlpha=A*ok; g.fillStyle=gg; g.beginPath(); g.arc(cx,cy,mr,0,6.283); g.fill();
+    if(o.white){g.strokeStyle="rgba(232,240,255,.75)"; g.lineWidth=Math.max(1,mr*.09); g.stroke()}
+    var cs=mr*(.7+.3*ok); g.strokeStyle="#fff"; g.lineWidth=Math.max(1.5,mr*.16); g.lineCap=g.lineJoin="round";
+    g.beginPath(); g.moveTo(cx-cs*.42,cy+cs*.02); g.lineTo(cx-cs*.1,cy+cs*.32); g.lineTo(cx+cs*.44,cy-cs*.3); g.stroke()}
+  g.globalAlpha=1}
 function drawOrb(){
   var S=cell*dpr; octx.setTransform(1,0,0,1,0,0); octx.clearRect(0,0,orb.width,orb.height);
   var v=CORE.vis; if(v<.01||CORE.Rs<1) return;
   var cx=CORE.cx*S, cy=CORE.csy*S, R=CORE.Rs*S*(1+CORE.kick*.08), ba=REDUCE?0:CORE.bAng;
-  paintBlob(octx,cx,cy,R,{white:true,a:v,ry:ba,rx:.55+ba*.28,k:clamp(R/dpr/28,.85,1.6)*dpr});
+  paintBlob(octx,cx,cy,R,{white:true,a:v,ok:CORE.ok||0,ry:ba,rx:.55+ba*.28,k:clamp(R/dpr/28,.85,1.6)*dpr});
   // a ripple leaves the blob whenever it has a new thought
   CORE.pulses=CORE.pulses.filter(function(t0){return clock-t0<2.3});
   CORE.pulses.forEach(function(t0){var age=(clock-t0)/2.2, rr=R*(1.05+.9*(1-Math.pow(1-age,2)));
@@ -1491,7 +1498,7 @@ function say(o,quiet){
   if(o.line!=null&&o.line!==said.line){said.line=o.line; setWords($("line"),o.line,true); if(F.mode!=="gate"&&F.mode!=="review") corePulse()}
   if(o.sub!=null&&o.sub!==said.sub){said.sub=o.sub; setWords($("sub"),o.sub,false)}
   if(o.extra!=null&&o.extra!==said.extra){said.extra=o.extra; setExtra(o.extra,quiet)}
-  if(o.status){$("statusTxt").textContent=o.status[0]; $("status").className="status "+(o.status[1]||"")}
+  if(o.status){$("statusTxt").textContent=o.status[0]; $("status").className="status "+(o.status[1]||""); CORE.okT=o.status[1]==="done"?1:0}
   if(o.prog) drawProg(o.prog);
   $("prog").classList.toggle("off",["gate","review","verify","pass","msg"].indexOf(F.mode)<0);
   measure();
@@ -1799,7 +1806,7 @@ function cardHTML(){
   if(st.k==="profile"&&F.kv&&!CARD.big){var dn=F.kv.ph==="done";
     chips='<span class="chipmini amb">In review</span>';
     p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
-  if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span>Filling in <b id="fillf">'+(F.pf.k<0?"your logo":esc(PROFILE[F.pf.k][0]))+'</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
+  if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span>Filling in <b id="fillf">your business details</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
   if(st.k==="templates"&&F.tov&&!CARD.big){p.body='<div class="xovw"><div class="xblur">'+p.body+'</div>'+tplOverlay()+'</div>'; p.r=p.r.replace('data-a="tpl"','data-a="tpl" disabled'); if(F.tov==="lock"){chips='<span class="chipmini sl">Locked</span>'; p.title="Templates"}}
   if(CARD.big) kick=STEPLINE(i);
   p.kick=kick; p.chips=chips; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
@@ -2023,6 +2030,9 @@ var HY_GLASS=":root{--surface:rgba(236,243,255,.15) !important;--surface-2:rgba(
   "[data-state=done] .blob.on-dark .mark{color:#fff !important;background:linear-gradient(140deg,#4fdca6,#0e9f6e) !important}"+
   /* the done ripple round the blob is a circle like the blob, not a rounded square */
   ".ripple[style*='border-radius: 30%']{border-radius:50% !important}"+
+  /* operator logos on a wide light plate (their brand colours vanish on glass) */
+  ".tlogo{align-self:stretch;margin:7px 7px 0;height:40px !important;border-radius:10px;background:rgba(238,244,255,.92);box-shadow:inset 0 0 0 1px rgba(255,255,255,.6),0 6px 14px -8px rgba(2,14,80,.5)}"+
+  ".tlogo img{height:28px !important;max-width:80px !important}.telco[data-s=idle] .tlogo{opacity:.72 !important}"+
   /* brand cards carry no names: a soft bar sits where "Brand A/B/C" was */
   ".hbr-n .hn-t{font-size:0 !important;display:inline-block;width:52px;height:7px;border-radius:4px;background:var(--sk)}"+
   /* lines of business and form fields stay generic: an outlined row with a soft bar, a short bar for each field label */
@@ -2090,7 +2100,7 @@ function fillStep(){
   if(!F.pf||F.mode!=="review"||F.active!==0) return;
   var pill=document.querySelector("#card .fillpill > span:last-of-type");
   if(F.offline){if(pill&&!F.pfPause){F.pfPause=1; pill.innerHTML="Paused while you're offline"} later(fillStep,400); return}
-  if(F.pfPause){F.pfPause=0; if(pill) pill.innerHTML='Filling in <b id="fillf"></b>'; patchFill()}
+  if(F.pfPause){F.pfPause=0; if(pill) pill.innerHTML='Filling in <b id="fillf">your business details</b>'; patchFill()}
   if(F.pf.k<0){F.pf.k=0; F.pf.n=0; patchFill(); later(fillStep,420); return}
   var v=PROFILE[F.pf.k][1], sel=SEL_F.indexOf(F.pf.k)>=0;
   F.pf.n=sel?v.length:Math.min(v.length,F.pf.n+Math.max(1,Math.ceil(v.length/16)));
@@ -2103,7 +2113,7 @@ function patchFill(){var c=$("card"), k=F.pf?F.pf.k:99;
   c.querySelectorAll("[data-f]").forEach(function(inp){var id=+inp.dataset.f, d=inp.closest(".fd"), v=PROFILE[id][1];
     d.classList.toggle("wait",id>k); d.classList.toggle("typing",id===k); inp.value=id>k?"":id===k?v.slice(0,F.pf.n):v});
   var lg=c.querySelector(".kyc-logo"); if(lg) lg.classList.toggle("wait",k<0);
-  var f=$("fillf"); if(f) f.textContent=k<0?"your logo":PROFILE[k][0]}
+}
 var KV_BOX=[10,20,570,340];
 var AU_RX='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>';
 var AU_TELCO_CSS=".telco .au-rx{position:absolute;right:-8px;top:-8px;width:26px;height:26px;border-radius:50%;background:#2563eb;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 3px #fff,0 6px 14px -6px rgba(37,99,235,.7);transform:scale(0);transition:transform .4s cubic-bezier(.2,1.4,.4,1)}.telco .au-rx svg{width:14px;height:14px}.telco.au-got .au-rx{transform:scale(1)}.telco.au-got{box-shadow:0 0 0 2px #93b4f5,0 10px 24px -14px rgba(37,99,235,.6)}";
