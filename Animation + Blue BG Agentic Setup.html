@@ -804,7 +804,7 @@ body[data-m=proc] #sub{display:none}
 <style id="hybrid-css">
 /* hybrid approach: the pixel field stays, the agent-loader scene sits under the steps, no blob on top.
    The whole block (status, headline, steps, scene) is centred on the page. */
-body[data-m=proc] .stage{top:calc(50% + 22px)}
+body[data-m=proc] .stage,body[data-m=kv] .stage{top:calc(50% + 22px)}
 .stage{transition:top .7s cubic-bezier(.2,.8,.2,1)}
 body[data-m=proc] .extra{min-height:116px}
 /* steps: three rows at most, newer ones scroll in from below */
@@ -813,7 +813,7 @@ body[data-m=proc] .think{min-height:98px;max-height:none;height:98px;padding:8px
 body[data-m=proc] .think li{line-height:1.45}
 /* the scene: a fixed frame, each loader is cropped to what it draws and centred in it */
 .hyL{display:none;position:relative;margin:14px auto 0;pointer-events:none;text-shadow:none;transition:height .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1)}
-body[data-m=proc] .hyL{display:block}
+body[data-m=proc] .hyL,body[data-m=kv] .hyL{display:block}
 .hyL:before{content:"";position:absolute;left:-10%;right:-10%;top:-14%;bottom:-14%;border-radius:50%;
   background:radial-gradient(closest-side,rgba(170,205,255,.26),rgba(120,165,255,.10) 55%,rgba(120,165,255,0));animation:hyGlow 7s ease-in-out infinite}
 .hyL:after{content:"";position:absolute;left:24%;right:24%;bottom:-4%;height:10%;border-radius:50%;opacity:.6;
@@ -983,13 +983,14 @@ var SCENES = [
   {id:"done",  dur:Infinity}
 ];
 /* hybrid: each step lasts long enough for its loader scene to play out in full (10 to 12s); its notes spread out to match */
-(function(){var D={team:10.4,brands:10.2,gtm:11,tpl:12};
+(function(){var D={sources:9.6,form:9.8,team:10.4,brands:10.2,gtm:11,tpl:12};
   SCENES.forEach(function(x){var d=D[x.id]; if(!d) return; var k=d/x.dur; x.dur=d; x.log=x.log.map(function(e){var c=e.slice(); c[0]=+(e[0]*k).toFixed(2); return c})})})();
 var SDUR={}; SCENES.forEach(function(x){SDUR[x.id]=x.dur});
 var BUILD={form:1,team:1,brands:1,gtm:1,tpl:1};
 var CONF=[99,93,95,97,88];
 var FORM_ORDER = [0,4,1,5,2,6,3];   // alternate left and right columns
 var FILL_T0 = .5, FILL_STEP = .7, FILL_DUR = .55;
+FILL_T0=.8; FILL_STEP=1.1; // hybrid: the 7 fields fill across the longer business-profile step
 var STEP_SCENE={profile:["form",7],team:["team",6],brands:["brands",6.4],gtm:["gtm",6.4],templates:["tpl",7.6]};
 
 var REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1485,7 +1486,7 @@ function setExtra(html,quiet){
 }
 /* o: {kick, line, sub, extra, status:[text, cls], prog:{label, items, states}} ; only what changed animates */
 function say(o,quiet){
-  document.body.setAttribute("data-m",F.mode); if(F.mode!=="proc") hyShow(null);
+  document.body.setAttribute("data-m",F.mode); if(F.mode!=="proc"&&F.mode!=="kv") hyShow(null);
   if(o.kick!=null&&o.kick!==said.kick){said.kick=o.kick; $("kick").innerHTML=o.kick}
   if(o.line!=null&&o.line!==said.line){said.line=o.line; setWords($("line"),o.line,true); if(F.mode!=="gate"&&F.mode!=="review") corePulse()}
   if(o.sub!=null&&o.sub!==said.sub){said.sub=o.sub; setWords($("sub"),o.sub,false)}
@@ -1999,8 +2000,9 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
 
 /* ======================= hybrid: the agent-loader scene under the processing steps ======================= */
 /* loader, speed, and the part of its 720-wide stage it actually draws in [x0,y0,x1,y1] (some scenes spill past the stage edge) */
-var HYMAP={sources:["kyc",1.25],form:["kyc",1.25],team:["team",1.5],brands:["brand",1.5],gtm:["gtm",1.5],tpl:["match",1.5]}; // ~10-12s per scene
-var HYBOX={kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
+/* [loader, speed, variant]: sources = the checks scene (each source lit and ticked in turn), business profile = the form-filling scene */
+var HYMAP={sources:["kycv",1.2,1],form:["kyc",1.45],team:["team",1.5],brands:["brand",1.5],gtm:["gtm",1.5],tpl:["match",1.5]}; // ~10-12s per scene
+var HYBOX={kycv1:[6,12,600,320],kycv0:[6,12,600,320],kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
 var HY_P=170, HY_BW=720, HY_BH=330, HY_ZMAX=1.15; // padding round the stage inside the frame, then the scene frame in base px
 /* glass on the blue field: no pure white surfaces, light text, translucent tiles and skeletons; accents brightened to read on blue */
 var HY_GLASS=":root{--surface:rgba(236,243,255,.15) !important;--surface-2:rgba(236,243,255,.10) !important;--surface-3:rgba(236,243,255,.13) !important;"+
@@ -2022,7 +2024,12 @@ var HY_GLASS=":root{--surface:rgba(236,243,255,.15) !important;--surface-2:rgba(
   /* the done ripple round the blob is a circle like the blob, not a rounded square */
   ".ripple[style*='border-radius: 30%']{border-radius:50% !important}"+
   /* brand cards carry no names: a soft bar sits where "Brand A/B/C" was */
-  ".hbr-n .hn-t{font-size:0 !important;display:inline-block;width:52px;height:7px;border-radius:4px;background:var(--sk)}";
+  ".hbr-n .hn-t{font-size:0 !important;display:inline-block;width:52px;height:7px;border-radius:4px;background:var(--sk)}"+
+  /* lines of business and form fields stay generic: an outlined row with a soft bar, a short bar for each field label */
+  ".hlob{position:relative;font-size:0 !important;background:transparent !important;box-shadow:inset 0 0 0 1px var(--line-2) !important}"+
+  ".hlob:after{content:'';position:absolute;left:9px;top:50%;width:52%;height:5px;margin-top:-2.5px;border-radius:3px;background:var(--sk)}"+
+  ".fld-name{font-size:0 !important;display:inline-block;width:62px;height:6px;border-radius:3px;background:var(--sk);vertical-align:middle}"+
+  ".fld:nth-child(2n) .fld-name{width:46px}.fld:nth-child(3n) .fld-name{width:74px}";
 var HY_CSS=HY_GLASS+".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{color:rgba(255,255,255,.9) !important}"+
   /* colours that were made for a light page: the source tag on a field, the white blob's glow, the faint circuit traces */
   ".fld-tag{color:#fff !important;background:rgba(255,255,255,.18) !important;border-color:rgba(255,255,255,.3) !important}"+
@@ -2047,28 +2054,31 @@ var HY_CSS=HY_GLASS+".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,
   "html.embed .loader{width:auto !important}html.embed .stage-wrap{flex:none;width:720px !important;height:var(--hyH) !important;max-height:none !important;min-height:0 !important;aspect-ratio:auto !important}"+
   ".stage{contain:none !important}.copy{position:absolute !important;left:0;top:0}";
 var HY={id:null,cur:null,s:1};
-function hyDoc(id,K){var h=id==="brand"?460:360;
-  return loaderDoc(id,HY_CSS.replace("var(--hyH)",h+"px")).replace("var K=1.7,","var K="+K+",").replace("(ms / 1.7)","(ms / "+K+")")
+/* the checks scene lists our five sources, not its demo topics */
+var HY_SRC="const KV_CHK = [\n  { icon: 'signal', label: 'DLT', status: 'Reading DLT registration...' },\n  { icon: 'id', label: 'GSTIN', status: 'Checking GSTIN...' },\n  { icon: 'building', label: 'MCA', status: 'Reading MCA records...' },\n  { icon: 'globe', label: 'Website', status: 'Reading your website...' },\n  { icon: 'shield', label: 'Trademark', status: 'Checking the trademark registry...' },\n];";
+function hyDoc(id,K,vi){var h=id==="brand"?460:360, d=loaderDoc(id,HY_CSS.replace("var(--hyH)",h+"px")).replace("const EMBED_VI = 0;","const EMBED_VI = "+(vi||0)+";");
+  if(id==="kycv"){var a=d.indexOf("const KV_CHK = ["), b=d.indexOf("];",a); if(a>0&&b>a) d=d.slice(0,a)+HY_SRC+d.slice(b+2)}
+  return d.replace("var K=1.7,","var K="+K+",").replace("(ms / 1.7)","(ms / "+K+")")
     .replace("opts.onDark && 'on-dark'","'on-dark'")
     .replace("${.24 + b.kick * .2}","${.07 + b.kick * .1}")} // every agent blob uses the loaders' white on-dark look
 function hyScene(s){var m=HYMAP[s.id]; hyShow(m&&!s.nf&&!s.err?m:null)}
 function hyShow(m){
-  var box=$("hyL"), id=m?m[0]:null; if(!box||id===HY.id) return;
-  HY.id=id; var old=HY.cur; HY.cur=null;
+  var box=$("hyL"), key=m?m[0]+(m[2]==null?"":m[2]):null, id=m?m[0]:null; if(!box||key===HY.id) return;
+  HY.id=key; var old=HY.cur; HY.cur=null;
   if(old){old.classList.remove("on"); old.classList.add("off"); setTimeout(function(){old.remove()},900)}
   if(!id) return;
-  var h=id==="brand"?460:360, w=document.createElement("div"), fr=document.createElement("iframe"); w.className="hyF"; w.dataset.id=id;
+  var h=id==="brand"?460:360, w=document.createElement("div"), fr=document.createElement("iframe"); w.className="hyF"; w.dataset.id=key;
   fr.setAttribute("aria-hidden","true"); fr.tabIndex=-1; fr.title="The agent at work";
   fr.style.width=(720+2*HY_P)+"px"; fr.style.height=(h+2*HY_P)+"px";
   fr.addEventListener("load",function(){requestAnimationFrame(function(){w.classList.add("on")})});
-  fr.srcdoc=hyDoc(id,m[1]); w.appendChild(fr); box.appendChild(w); HY.cur=w; hyFit();
+  fr.srcdoc=hyDoc(id,m[1],m[2]); w.appendChild(fr); box.appendChild(w); HY.cur=w; hyFit();
 }
 function hyPlace(w){var b=HYBOX[w.dataset.id], fr=w.firstChild; if(!b||!fr) return;
   var bw=b[2]-b[0], bh=b[3]-b[1], z=Math.min(HY_BW/bw,HY_BH/bh,HY_ZMAX), S=HY.s*z,
       tx=(HY_BW*HY.s-bw*S)/2-(b[0]+HY_P)*S, ty=(HY_BH*HY.s-bh*S)/2-(b[1]+HY_P)*S;
   fr.style.transform="translate("+tx.toFixed(1)+"px,"+ty.toFixed(1)+"px) scale("+S.toFixed(4)+")"}
 function hyFit(){
-  var box=$("hyL"), ex=$("extra"); if(!box||F.mode!=="proc") return;
+  var box=$("hyL"), ex=$("extra"); if(!box||(F.mode!=="proc"&&F.mode!=="kv")) return;
   // the block is centred: status pill (~50px) above, the corner pills below, so leave ~170px of air in all
   var top=ex.offsetTop+ex.offsetHeight+14, avail=innerHeight-170-top;
   HY.s=Math.max(.4,Math.min(1.15,avail/HY_BH,innerWidth*.92/HY_BW));
@@ -2106,22 +2116,26 @@ function fitScene(ld,box){var crop=ld.querySelector(".ld-crop"), fr=ld.querySele
   crop.style.width=bw*s+"px"; crop.style.height=bh*s+"px"; crop.style.marginLeft=(-bw*s/2)+"px"; crop.style.marginTop=(-bh*s/2)+"px";
   fr.style.transform="translate("+(-box[0]*s)+"px,"+(-box[1]*s)+"px) scale("+s+")"}
 function kvPhase(p){if(!F.kv||F.kv.ph===p) return; F.kv.ph=p; var t=kvText(), c=$("card"), h=c.querySelector(".cd-hd h2"), sm=c.querySelector(".cd-asum .t"), cp=$("kvcap");
+  if(F.mode==="kv") say({line:t[0],sub:t[1]});
   if(h) h.textContent=t[0]; if(sm) sm.textContent=t[1]; if(cp){cp.textContent=t[2]; cp.classList.remove("swap"); void cp.offsetWidth; cp.classList.add("swap")}
-  if(p==="send") toast("Sent to Airtel, Jio, Vi and BSNL for review"); corePulse()}
+  if(p==="send"&&F.mode!=="kv") toast("Sent to Airtel, Jio, Vi and BSNL for review"); corePulse()}
 function kvStop(){if(!F.kv) return; clearInterval(F.kv.iv); clearTimeout(F.kv.to); if(F.kv.off) F.kv.off()}
+/* hybrid: after submit the card steps aside and the check plays on the blue field, under its headline, like the processing steps */
 function startKV(){
-  F.kv={ph:"check",rx:0}; F.status[0]="verifying"; renderCard();
-  var fr=$("card").querySelector(".kv iframe"); if(!fr||REDUCE){kvDone(); return}
-  var ld=fr.closest(".ld"); fitScene(ld,KV_BOX);
+  F.kv={ph:"check",rx:0}; F.status[0]="verifying";
+  if(REDUCE){kvDone(); return}
+  hideCard(); F.mode="kv"; show("blank"); var t=kvText();
+  say({kick:"",line:t[0],sub:t[1],extra:'<div class="rcrow"><span class="spn w"></span><span id="kvcap">'+t[2]+'</span></div>',status:["Verifying","still"],
+    prog:{label:"Steps",items:STEPN,states:states(5,0,0)}});
+  hyShow(["kycv",1.4,0]); var fr=HY.cur&&HY.cur.querySelector("iframe"); if(!fr){kvDone(); return}
   var on=function(e){if(!F.kv||e.source!==fr.contentWindow||!e.data||!e.data.agLoader) return; if(e.data.step>=2&&F.kv.ph==="check") kvPhase("send")};
   addEventListener("message",on); F.kv.off=function(){removeEventListener("message",on)};
-  fr.srcdoc=loaderDoc("kycv",".chk-scroll{left:390px !important}");
   F.kv.iv=setInterval(function(){ // each operator tile gets a reply badge, one by one, then the scene holds on all four
-    var d=fr.contentDocument; if(!d||!F.kv) return; var tiles=[].slice.call(d.querySelectorAll(".telco")); if(tiles.length!==4) return;
+    var d; try{d=fr.contentDocument}catch(e){} if(!d||!F.kv) return; var tiles=[].slice.call(d.querySelectorAll(".telco")); if(tiles.length!==4) return;
     if(!F.kv.t0){F.kv.t0=performance.now(); if(F.kv.ph==="check") kvPhase("send")}
-    var el=performance.now()-F.kv.t0, n=[0,1,2,3].filter(function(k){return el>1600+k*750}).length; // the scene just keeps loading; progress shows in the chip text only
+    var el=performance.now()-F.kv.t0, n=[0,1,2,3].filter(function(k){return el>1600+k*750}).length;
     if(n&&n!==F.kv.rx){F.kv.rx=n; if(F.kv.ph!=="rx") kvPhase("rx"); var cp=$("kvcap"); if(cp) cp.textContent=kvText()[2]}
-    if(n===4&&!F.kv.fin){F.kv.fin=1; setTimeout(kvDone,1800)}},100);
+    if(n===4&&!F.kv.fin){F.kv.fin=1; setTimeout(kvDone,2000)}},100);
   F.kv.to=setTimeout(kvDone,30000);
 }
 function okFace(){var t=new Date(), hm=t.getHours()%12||12, tm=hm+":"+String(t.getMinutes()).padStart(2,"0")+(t.getHours()<12?" am":" pm");
