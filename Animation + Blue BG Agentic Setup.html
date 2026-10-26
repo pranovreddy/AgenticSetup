@@ -823,7 +823,7 @@ body[data-m=proc] .hyL{display:block}
   transition:opacity .9s ease,filter .9s ease,transform 1.1s cubic-bezier(.2,.8,.2,1)}
 .hyF.on{opacity:1;filter:none;transform:none}
 .hyF.off{opacity:0;filter:blur(6px);transform:translateY(-6px) scale(1.02);transition-duration:.6s}
-.hyF iframe{position:absolute;left:0;top:0;border:0;background:transparent;transform-origin:0 0;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.hyF iframe{position:absolute;left:0;top:0;border:0;background:transparent;transform-origin:0 0;-webkit-mask-image:radial-gradient(closest-side,#000 74%,transparent 100%);mask-image:radial-gradient(closest-side,#000 74%,transparent 100%);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 @media (prefers-reduced-motion:reduce){.stage,.hyL,.hyF,.hyF iframe,body[data-m=proc] .think{transition:none}.hyL:before{animation:none}}
 </style>
 </head>
@@ -2013,8 +2013,23 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
 /* loader, speed, and the part of its 720-wide stage it actually draws in [x0,y0,x1,y1] (some scenes spill past the stage edge) */
 var HYMAP={sources:["kyc",1.25],form:["kyc",1.25],team:["team",1.5],brands:["brand",1.5],gtm:["gtm",1.5],tpl:["match",1.5]}; // ~10-12s per scene
 var HYBOX={kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
-var HY_P=56, HY_BW=720, HY_BH=330, HY_ZMAX=1.15; // padding round the stage inside the frame, then the scene frame in base px
-var HY_CSS=".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{color:rgba(255,255,255,.9) !important}"+
+var HY_P=170, HY_BW=720, HY_BH=330, HY_ZMAX=1.15; // padding round the stage inside the frame, then the scene frame in base px
+/* glass on the blue field: no pure white surfaces, light text, translucent tiles and skeletons; accents brightened to read on blue */
+var HY_GLASS=":root{--surface:rgba(236,243,255,.15) !important;--surface-2:rgba(236,243,255,.10) !important;--surface-3:rgba(236,243,255,.13) !important;"+
+  "--tile-a:rgba(236,243,255,.19) !important;--tile-b:rgba(220,232,255,.09) !important;--edge:rgba(225,236,255,.30) !important;"+
+  "--ink:#F3F7FF !important;--ink-2:rgba(240,246,255,.86) !important;--muted:rgba(232,240,255,.70) !important;--faint:rgba(228,238,255,.52) !important;"+
+  "--line:rgba(225,236,255,.16) !important;--line-2:rgba(225,236,255,.26) !important;--sk:rgba(228,238,255,.34) !important;--sk-a:rgba(228,238,255,.30) !important;--sk-b:rgba(228,238,255,.22) !important;"+
+  "--blue:#A9C3FF !important;--blue-soft:rgba(169,195,255,.16) !important;--blue-line:rgba(190,210,255,.5) !important;--blue-4:#C9DAFF !important;"+
+  "--green:#4FDCA6 !important;--green-soft:rgba(79,220,166,.16) !important;--green-line:rgba(79,220,166,.5) !important;--amber:#FFC25C !important;--amber-soft:rgba(255,194,92,.16) !important;--amber-line:rgba(255,194,92,.5) !important;"+
+  "--sh-card:inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 0 1px rgba(255,255,255,.04),0 18px 38px -22px rgba(2,14,80,.6) !important;"+
+  "--sh-tile:inset 0 1px 0 rgba(255,255,255,.3),0 10px 22px -14px rgba(2,14,80,.55) !important;--shadow-2:0 12px 28px -16px rgba(2,14,80,.5) !important}"+
+  ".card,.chk-row,.telco,.tcard,.trow,.lane,.bhead,.blob-pill,.qcard,.rec2,.tokn,.bin,.binx,.tray{border-color:var(--edge) !important;"+
+  "background:linear-gradient(160deg,rgba(240,246,255,.22),rgba(220,232,255,.08) 60%,rgba(220,232,255,.12)) !important}"+
+  ".card{box-shadow:var(--sh-card) !important}.kdoc{box-shadow:6px 6px 0 -1px rgba(225,236,255,.10),6px 6px 0 0 var(--edge),12px 12px 0 -1px rgba(225,236,255,.06),12px 12px 0 0 rgba(225,236,255,.18),var(--sh-card) !important}"+
+  ".blob.on-dark .mark{background:#EEF4FF !important}"+
+  /* the done ripple round the blob is a circle like the blob, not a rounded square */
+  ".ripple[style*='border-radius: 30%']{border-radius:50% !important}";
+var HY_CSS=HY_GLASS+".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{color:rgba(255,255,255,.9) !important}"+
   /* colours that were made for a light page: the source tag on a field, the white blob's glow, the faint circuit traces */
   ".fld-tag{color:#fff !important;background:rgba(255,255,255,.18) !important;border-color:rgba(255,255,255,.3) !important}"+
   ".blob.on-dark .mark{box-shadow:0 6px 16px -4px rgba(6,24,110,.55),0 0 0 6px rgba(255,255,255,.2),0 0 26px rgba(255,255,255,.35) !important}"+
@@ -2026,11 +2041,11 @@ var HY_CSS=".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{c
   ".beamed{border-color:#fff !important;box-shadow:0 0 0 3px rgba(255,255,255,.6),0 0 30px 4px rgba(255,255,255,.42),0 12px 26px -12px rgba(3,18,96,.55) !important}"+
   "[data-state=wait] .beamed{border-color:#ffd27a !important;box-shadow:0 0 0 3px rgba(255,210,122,.6),0 0 30px 4px rgba(255,210,122,.4),0 12px 26px -12px rgba(3,18,96,.55) !important}"+
   /* focus spotlight, connector wires and travelling packets were blue or ink, so they vanished on blue */
-  ".spot{background:radial-gradient(closest-side,rgba(255,255,255,.18),rgba(255,255,255,0)) !important}"+
+  ".spot{background:radial-gradient(closest-side,rgba(225,236,255,.10),rgba(225,236,255,0)) !important}"+
   ".wire{stroke:rgba(255,255,255,.34) !important}"+
   ".beam[style*='--blue'],.beam-head[style*='--blue']{stroke:#fff !important;color:#fff !important}"+
   /* the white blob keeps a soft halo so it reads as the agent, not a dot */
-  ".core.blob.on-dark::after{display:block !important;background:radial-gradient(closest-side,rgba(255,255,255,.3),rgba(255,255,255,.08) 55%,rgba(255,255,255,0) 78%) !important}"+
+  ".core.blob.on-dark::after{display:block !important;background:radial-gradient(closest-side,rgba(225,236,255,.22),rgba(225,236,255,.06) 55%,rgba(225,236,255,0) 78%) !important}"+
   /* sources not read yet stay legible */
   ".ksrc[data-s=idle]{opacity:.78 !important}"+
   ".fld.missing .fld-box{border-color:rgba(255,255,255,.55) !important;background:rgba(255,255,255,.08) !important}"+
