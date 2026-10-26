@@ -7,7 +7,8 @@ Clickable HTML prototypes of agentic onboarding for DigiConsent.
 ## Open a preview
 Each prototype is one self-contained HTML file. To preview, publish it with the `Artifact` tool (same file path to update an existing one; the artifact URLs are listed in `references/CONTEXT.md`):
 
-- `Animation + Blue BG Agentic Setup.html` is the current base to enhance: the Pixels Intelligence blue field with the agent-loader animations under the processing steps. See CONTEXT.md 8g. `agentic-setup-hybrid-cards.html` is its 3D flip-cards sibling.
+- `Animation + Blue BG Agentic Setup v2.html` is the newest: v1 plus the owner's motion, login (two-factor) and brands-board edits. See CONTEXT.md 8h.
+- `Animation + Blue BG Agentic Setup.html` (v1) was the base before v2: the Pixels Intelligence blue field with the agent-loader animations under the processing steps. See CONTEXT.md 8g. `agentic-setup-hybrid-cards.html` is its 3D flip-cards sibling.
 - `agentic-setup-telemetry-opus.html` was the newest before the cards and pixels work: the telemetry direction with 2 to 3 versions per screen (Versions button, bottom left). See CONTEXT.md 8c.
 - `agentic-setup-telemetry.html` is the previous direction (loader header with live steps, summaries on the page).
 - `agentic-setup-sidebar.html` is the pills and pop-up version.
