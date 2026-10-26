@@ -720,3 +720,5 @@ PM feedback file: the Prototype button and its menu moved to the top right; Prev
 - Prototype button and menu moved to the top right; the menu scrolls.
 
 **Fixes Claude applied:** stripped the artifact-download wrapper (a second `<!doctype html>…<body>` on line 1 and a trailing `</body></html>` that nested two pages); Education Loan had the Credit Cards description, now its own; the templates data (`TLOB_META`, `TLOBS`) follows the new brands (Education Loan under HDFC Bank replaces Savings Plans, Health Insurance under HDFC Life); the top-right Prototype button covered an expanded card's "Show summary", so it moves back to the bottom right while a card is expanded (`body.bigcard .proto`). Checked: login with two-factor, processing, brands review and details, templates gate and details, no script errors.
+
+**v2, login headline:** the "Keep reaching customers. Stay compliant" headline is about 30% smaller (46px on a 1440 screen, was 64; 52px at 1920, 32px on short laptops, 30px on mobile; line height 1.08) per the owner's comment.
