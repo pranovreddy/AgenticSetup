@@ -1394,53 +1394,41 @@ function coreState(dt){
   CORE.vis+=(((vt&&CORE.R>0)?1:0)-CORE.vis)*Math.min(1,dt*3.5);
   CORE.e+=(et-CORE.e)*Math.min(1,dt*2.5); CORE.kick*=Math.exp(-dt*1.4);
   // angles are integrated so that a change of energy speeds the turn up gently instead of jumping
-  var ee=Math.min(1.2,CORE.e); CORE.ang=(CORE.ang||0)+dt*(.07+.07*ee); CORE.orbA=(CORE.orbA||0)+dt*(.3+.18*ee);
+  var ee=Math.min(1.2,CORE.e); CORE.ang=(CORE.ang||0)+dt*(.07+.07*ee); CORE.bAng=(CORE.bAng||0)+dt*(.55+.45*ee); CORE.orbA=(CORE.orbA||0)+dt*(.3+.18*ee);
 }
+/* the agent blob from the loaders, used everywhere: a turning sphere of dots with the logo mark on a blue disc at its heart */
+var BPTS=(function(){var n=480,o=[];for(var i=0;i<n;i++){var y=1-i/(n-1)*2,r=Math.sqrt(Math.max(0,1-y*y)),th=i*2.399963;o.push([Math.cos(th)*r,y,Math.sin(th)*r,.72+(i%7)*.06])}return o})();
+var MARKP=[[13,3.094,"M0 0L4.952 3.714L0 7.429Z",.95],[16.715,8.047,"M4.952 0V6.19L0 4.333Z",.85],[16.715,15.475,"M4.952 2.476L0 5.571V0Z",.75],
+  [8.047,15.475,"M4.952 7.429L0 3.714L4.952 0Z",.95],[4.334,11.762,"M0 6.19V0L4.952 1.857Z",.85],[4.334,4.953,"M0 3.095L4.952 0V5.571Z",.75]].map(function(m){return [m[0],m[1],new Path2D(m[2]),m[3]]});
+function paintBlob(g,cx,cy,R,o){var A=o.a==null?1:o.a, P=o.white?[200,220,255,255,255,255]:[24,58,214,102,156,255], k=o.k||1;
+  var gl=g.createRadialGradient(cx,cy,0,cx,cy,R*1.4); gl.addColorStop(0,"rgba("+P[3]+","+P[4]+","+P[5]+","+(.08*A)+")"); gl.addColorStop(.55,"rgba("+P[3]+","+P[4]+","+P[5]+","+(.04*A)+")"); gl.addColorStop(1,"rgba("+P[3]+","+P[4]+","+P[5]+",0)");
+  g.fillStyle=gl; g.beginPath(); g.arc(cx,cy,R*1.4,0,6.283); g.fill();
+  var cY=Math.cos(o.ry), sY=Math.sin(o.ry), cX=Math.cos(o.rx), sX=Math.sin(o.rx), Q=[];
+  for(var i=0;i<BPTS.length;i+=(o.step||1)){var p=BPTS[i], x1=p[0]*cY-p[2]*sY, z1=p[0]*sY+p[2]*cY; Q.push([x1,p[1]*cX-z1*sX,p[1]*sX+z1*cX,p[3]])}
+  Q.sort(function(u,v){return u[2]-v[2]});
+  for(var j=0;j<Q.length;j++){var q=Q[j], d=(q[2]+1)/2, r=(.3+d*.86)*q[3]*k, f=.24+d*d*.76;
+    g.fillStyle="rgba("+(P[0]+f*(P[3]-P[0])|0)+","+(P[1]+f*(P[4]-P[1])|0)+","+(P[2]+f*(P[5]-P[2])|0)+","+((.14+f*.82)*A)+")";
+    g.beginPath(); g.arc(cx+q[0]*R,cy+q[1]*R,r,0,6.283); g.fill()}
+  var mr=R*.42, dg=g.createLinearGradient(cx-mr,cy-mr,cx+mr,cy+mr); dg.addColorStop(0,"#5f8bff"); dg.addColorStop(1,"#2347d6");
+  g.globalAlpha=A; g.shadowColor="rgba(2,14,80,.55)"; g.shadowBlur=mr*.6; g.shadowOffsetY=mr*.18;
+  g.fillStyle=dg; g.beginPath(); g.arc(cx,cy,mr,0,6.283); g.fill(); g.shadowColor="transparent"; g.shadowBlur=0; g.shadowOffsetY=0;
+  if(o.white){g.strokeStyle="rgba(232,240,255,.75)"; g.lineWidth=Math.max(1,mr*.09); g.stroke()}
+  var sc=mr*2*.6/26; g.save(); g.translate(cx-13*sc,cy-13*sc); g.scale(sc,sc); g.fillStyle="#fff";
+  MARKP.forEach(function(m){g.save(); g.translate(m[0],m[1]); g.globalAlpha=m[3]*A; g.fill(m[2]); g.restore()}); g.restore(); g.globalAlpha=1}
 function drawOrb(){
   var S=cell*dpr; octx.setTransform(1,0,0,1,0,0); octx.clearRect(0,0,orb.width,orb.height);
   var v=CORE.vis; if(v<.01||CORE.Rs<1) return;
-  var tt=REDUCE?0:clock, e=Math.min(1.2,CORE.e+CORE.kick*.22), cx=CORE.cx*S, cy=CORE.csy*S, R=CORE.Rs*S;
-  // soft glow around the core
-  var g=octx.createRadialGradient(cx,cy,R*.15,cx,cy,R*2.2); g.addColorStop(0,"rgba(215,230,255,"+(.26*v)+")"); g.addColorStop(.4,"rgba(130,175,255,"+(.09*v)+")"); g.addColorStop(1,"rgba(130,175,255,0)");
-  octx.fillStyle=g; octx.fillRect(cx-R*2.3,cy-R*2.3,R*4.6,R*4.6);
-  // the sphere: 440 small triangles turning in 3D, their surface rippling more the harder the agent works
-  var a=REDUCE?0:CORE.ang, ca=Math.cos(a), sa=Math.sin(a), tl=.4+.08*Math.sin(tt*.12), ct=Math.cos(tl), st=Math.sin(tl);
-  var Bk=[new Path2D(),new Path2D(),new Path2D(),new Path2D(),new Path2D(),new Path2D()];
-  function proj(i){var p=PTS[i], x1=p[0]*ca+p[2]*sa, z1=-p[0]*sa+p[2]*ca, y2=p[1]*ct-z1*st, z2=p[1]*st+z1*ct;
-    var n=Math.sin(p[0]*2.6+tt*.55)+Math.sin(p[1]*2.3-tt*.42)+Math.sin(p[2]*2.8+tt*.36), rs=1+.02*Math.sin(tt*.5)+(.02+.045*e)*n/3;
-    return [cx+x1*R*rs, cy+y2*R*rs, (z2+1)/2]}
-  for(var i=0;i<PTS.length;i++){var q=proj(i), d=q[2]; tri(Bk[Math.min(5,Math.floor(d*6))],q[0],q[1],S*(.2+.3*d)*(.85+.2*e),(i&1)?1:-1)}
-  for(var b=0;b<6;b++){octx.fillStyle="rgba(255,255,255,"+(v*(.09+.085*b))+")"; octx.fill(Bk[b])}
-  // an inner shell turning the other way gives the sphere depth
-  var Ik=new Path2D(), ia=-a*1.6, ic=Math.cos(ia), is=Math.sin(ia);
-  for(var m2=0;m2<PTS.length;m2+=3){var p2=PTS[m2], x3=p2[0]*ic+p2[2]*is, z3=-p2[0]*is+p2[2]*ic, y3=p2[1]*ct-z3*st, d3=(p2[1]*st+z3*ct+1)/2;
-    if(d3>.35) tri(Ik,cx+x3*R*.5,cy+y3*R*.5,S*(.16+.18*d3),(m2&1)?1:-1)}
-  octx.fillStyle="rgba(215,230,255,"+(.5*v)+")"; octx.fill(Ik);
-  // thinking: faint chords flicker between points on the surface
-  if(e>.8&&!REDUCE){octx.strokeStyle="rgba(255,255,255,"+(.3*v*Math.min(1,(e-.8)*5))+")"; octx.lineWidth=Math.max(1,dpr); octx.beginPath();
-    var seed=Math.floor(tt*1.1);
-    for(var c2=0;c2<6;c2++){var i1=Math.floor(hash(seed*7+c2)*PTS.length), i2=Math.floor(hash(seed*13+c2+5)*PTS.length), q1=proj(i1), q2=proj(i2);
-      if(q1[2]>.45&&q2[2]>.45){octx.moveTo(q1[0],q1[1]); octx.lineTo(q2[0],q2[1])}}
-    octx.stroke()}
-  // a soft light at the centre, no mark: the core is just energy
-  var pr=R*(.3+.03*Math.sin(tt*.9)+.04*e), hg=octx.createRadialGradient(cx,cy,0,cx,cy,pr*1.6);
-  hg.addColorStop(0,"rgba(255,255,255,"+(.32*v)+")"); hg.addColorStop(1,"rgba(255,255,255,0)"); octx.fillStyle=hg; octx.fillRect(cx-pr*2,cy-pr*2,pr*4,pr*4);
-  // a ripple leaves the core whenever it has a new thought
+  var cx=CORE.cx*S, cy=CORE.csy*S, R=CORE.Rs*S*(1+CORE.kick*.08), ba=REDUCE?0:CORE.bAng;
+  paintBlob(octx,cx,cy,R,{white:true,a:v,ry:ba,rx:.55+ba*.28,k:clamp(R/dpr/28,.85,1.6)*dpr});
+  // a ripple leaves the blob whenever it has a new thought
   CORE.pulses=CORE.pulses.filter(function(t0){return clock-t0<2.3});
   CORE.pulses.forEach(function(t0){var age=(clock-t0)/2.2, rr=R*(1.05+.9*(1-Math.pow(1-age,2)));
-    octx.strokeStyle="rgba(255,255,255,"+((1-age)*.22*v)+")"; octx.lineWidth=Math.max(1,dpr); octx.beginPath(); octx.arc(cx,cy,rr,0,7); octx.stroke()});
+    octx.strokeStyle="rgba(232,240,255,"+((1-age)*.22*v)+")"; octx.lineWidth=Math.max(1,dpr); octx.beginPath(); octx.arc(cx,cy,rr,0,7); octx.stroke()});
 }
-
-/* the agent, small: the same triangle sphere in blue, beside each summary */
-function drawMini(){var cs=document.querySelectorAll("canvas.mblob"); if(!cs.length) return;
-  var tt=REDUCE?0:clock, a=tt*.35, ca=Math.cos(a), sa=Math.sin(a), tl=.4, ct=Math.cos(tl), st=Math.sin(tl);
+function drawMini(){var cs=document.querySelectorAll("canvas.mblob"); if(!cs.length) return; var tt=REDUCE?0:clock;
   cs.forEach(function(c){var w=c.clientWidth, h=c.clientHeight; if(!w) return; var d=Math.min(2,dpr||1);
     if(c.width!==w*d){c.width=w*d; c.height=h*d} var x=c.getContext("2d"); x.setTransform(d,0,0,d,0,0); x.clearRect(0,0,w,h);
-    var cx=w/2, cy=h/2, R=Math.min(w,h)*.38, Bk=[new Path2D(),new Path2D(),new Path2D()];
-    for(var i=0;i<PTS.length;i+=2){var p=PTS[i], x1=p[0]*ca+p[2]*sa, z1=-p[0]*sa+p[2]*ca, y2=p[1]*ct-z1*st, z2=(p[1]*st+z1*ct+1)/2,
-      n=Math.sin(p[0]*2.6+tt*.8)+Math.sin(p[1]*2.3-tt*.6), rs=1+.06*n/2; tri(Bk[Math.min(2,Math.floor(z2*3))],cx+x1*R*rs,cy+y2*R*rs,1.1+1.4*z2,(i&2)?1:-1)}
-    ["rgba(59,98,227,.25)","rgba(59,98,227,.55)","rgba(59,98,227,.95)"].forEach(function(f,k){x.fillStyle=f; x.fill(Bk[k])});
-    var g=x.createRadialGradient(cx,cy,0,cx,cy,R*.6); g.addColorStop(0,"rgba(120,160,255,.45)"); g.addColorStop(1,"rgba(120,160,255,0)"); x.fillStyle=g; x.fillRect(0,0,w,h)})}
+    var R=Math.min(w,h)*.38; paintBlob(x,w/2,h/2,R,{white:false,ry:tt*.9,rx:.55+tt*.25,k:clamp(R/28,.6,1),step:2})})}
 function frame(now){
   var dt=Math.min(.05,(now-last)/1000); last=now;
   if(!paused) clock+=dt;
@@ -2026,13 +2014,18 @@ var HY_GLASS=":root{--surface:rgba(236,243,255,.15) !important;--surface-2:rgba(
   ".card,.chk-row,.telco,.tcard,.trow,.lane,.bhead,.blob-pill,.qcard,.rec2,.tokn,.bin,.binx,.tray{border-color:var(--edge) !important;"+
   "background:linear-gradient(160deg,rgba(240,246,255,.22),rgba(220,232,255,.08) 60%,rgba(220,232,255,.12)) !important}"+
   ".card{box-shadow:var(--sh-card) !important}.kdoc{box-shadow:6px 6px 0 -1px rgba(225,236,255,.10),6px 6px 0 0 var(--edge),12px 12px 0 -1px rgba(225,236,255,.06),12px 12px 0 0 rgba(225,236,255,.18),var(--sh-card) !important}"+
-  ".blob.on-dark .mark{background:#EEF4FF !important}"+
+  /* the blob's heart: a blue disc with a thin light ring and a crisp white logo, instead of a glowing white dot */
+  ".blob.on-dark .mark{width:36% !important;height:36% !important;color:#fff !important;background:linear-gradient(140deg,#5f8bff,#2347d6) !important;"+
+  "box-shadow:0 0 0 1.5px rgba(232,240,255,.75),0 6px 16px -5px rgba(2,14,80,.7) !important}"+
+  ".blob.on-dark .mark .m-logo{fill:#fff !important}"+
+  "[data-state=done] .blob.on-dark .mark{color:#fff !important;background:linear-gradient(140deg,#4fdca6,#0e9f6e) !important}"+
   /* the done ripple round the blob is a circle like the blob, not a rounded square */
-  ".ripple[style*='border-radius: 30%']{border-radius:50% !important}";
+  ".ripple[style*='border-radius: 30%']{border-radius:50% !important}"+
+  /* brand cards carry no names: a soft bar sits where "Brand A/B/C" was */
+  ".hbr-n .hn-t{font-size:0 !important;display:inline-block;width:52px;height:7px;border-radius:4px;background:var(--sk)}";
 var HY_CSS=HY_GLASS+".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,.tm-lab{color:rgba(255,255,255,.9) !important}"+
   /* colours that were made for a light page: the source tag on a field, the white blob's glow, the faint circuit traces */
   ".fld-tag{color:#fff !important;background:rgba(255,255,255,.18) !important;border-color:rgba(255,255,255,.3) !important}"+
-  ".blob.on-dark .mark{box-shadow:0 6px 16px -4px rgba(6,24,110,.55),0 0 0 6px rgba(255,255,255,.2),0 0 26px rgba(255,255,255,.35) !important}"+
   ".traces path,.traces circle{stroke:rgba(255,255,255,.14) !important;fill:none}"+
   /* the light cone from the blob onto what it reads, and the ring on the lit card: white light on the blue field (amber while it waits) */
   ".cone{--bc:#fff !important;filter:blur(.5px) drop-shadow(0 0 12px rgba(255,255,255,.28)) !important}"+
@@ -2045,7 +2038,7 @@ var HY_CSS=HY_GLASS+".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,
   ".wire{stroke:rgba(255,255,255,.34) !important}"+
   ".beam[style*='--blue'],.beam-head[style*='--blue']{stroke:#fff !important;color:#fff !important}"+
   /* the white blob keeps a soft halo so it reads as the agent, not a dot */
-  ".core.blob.on-dark::after{display:block !important;background:radial-gradient(closest-side,rgba(225,236,255,.22),rgba(225,236,255,.06) 55%,rgba(225,236,255,0) 78%) !important}"+
+  ".core.blob.on-dark::after{display:block !important;background:radial-gradient(closest-side,rgba(225,236,255,.13),rgba(225,236,255,.04) 55%,rgba(225,236,255,0) 78%) !important}"+
   /* sources not read yet stay legible */
   ".ksrc[data-s=idle]{opacity:.78 !important}"+
   ".fld.missing .fld-box{border-color:rgba(255,255,255,.55) !important;background:rgba(255,255,255,.08) !important}"+
@@ -2056,7 +2049,8 @@ var HY_CSS=HY_GLASS+".ksn,.fld-name,.fld.active .fld-name,.fld.filled .fld-name,
 var HY={id:null,cur:null,s:1};
 function hyDoc(id,K){var h=id==="brand"?460:360;
   return loaderDoc(id,HY_CSS.replace("var(--hyH)",h+"px")).replace("var K=1.7,","var K="+K+",").replace("(ms / 1.7)","(ms / "+K+")")
-    .replace("opts.onDark && 'on-dark'","'on-dark'")} // every agent blob uses the loaders' white on-dark look
+    .replace("opts.onDark && 'on-dark'","'on-dark'")
+    .replace("${.24 + b.kick * .2}","${.07 + b.kick * .1}")} // every agent blob uses the loaders' white on-dark look
 function hyScene(s){var m=HYMAP[s.id]; hyShow(m&&!s.nf&&!s.err?m:null)}
 function hyShow(m){
   var box=$("hyL"), id=m?m[0]:null; if(!box||id===HY.id) return;
