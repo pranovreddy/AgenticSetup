@@ -824,6 +824,29 @@ body[data-m=proc] .hyL,body[data-m=kv] .hyL{display:block}
 .hyF.on{opacity:1;filter:none;transform:none}
 .hyF.off{opacity:0;filter:blur(6px);transform:translateY(-6px) scale(1.02);transition-duration:.6s}
 .hyF iframe{position:absolute;left:0;top:0;border:0;background:transparent;transform-origin:0 0;-webkit-mask-image:radial-gradient(closest-side,#000 74%,transparent 100%);mask-image:radial-gradient(closest-side,#000 74%,transparent 100%);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+/* sources scan: five glass source cards in a row; each slides to the centre under the blob, is scanned, ticked and moves left */
+.ssc{position:absolute;left:0;top:0;width:720px;height:330px;transform-origin:0 0;color:#F3F7FF;text-align:left}
+.ssc canvas{position:absolute;left:300px;top:-6px;width:120px;height:120px}
+.ssc-cone{position:absolute;left:0;top:0;width:720px;height:330px;pointer-events:none;opacity:0;transition:opacity .35s ease;
+  background:linear-gradient(180deg,rgba(235,243,255,.5),rgba(235,243,255,.16) 70%,rgba(235,243,255,.04));clip-path:polygon(346px 74px,374px 74px,448px 130px,272px 130px);filter:blur(.6px)}
+.ssc-cone.on{opacity:1}
+.scard{position:absolute;left:275px;top:130px;width:170px;height:176px;border-radius:18px;padding:16px;box-sizing:border-box;overflow:hidden;will-change:transform,opacity;
+  background:linear-gradient(160deg,rgba(240,246,255,.24),rgba(220,232,255,.08) 60%,rgba(220,232,255,.12));border:1px solid rgba(225,236,255,.30);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 18px 38px -22px rgba(2,14,80,.6);transition:border-color .3s,box-shadow .3s}
+.scard.lit{border-color:rgba(255,255,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 3px rgba(255,255,255,.5),0 0 30px 4px rgba(255,255,255,.35),0 18px 38px -22px rgba(2,14,80,.6)}
+.scard .si{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;background:linear-gradient(160deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,0) 55%),linear-gradient(160deg,#7BA4FF 0%,#4372F6 42%,#2347D6 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 8px 18px -8px rgba(2,14,80,.6)}
+.scard .si svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.scard b{display:block;margin-top:14px;font-size:15px;font-weight:650;letter-spacing:-.01em}
+.scard .sk1,.scard .sk2{display:block;height:6px;border-radius:3px;background:rgba(228,238,255,.32);margin-top:10px}.scard .sk1{width:78%}.scard .sk2{width:52%}
+.scard .ss{position:absolute;left:16px;bottom:14px;font-size:11.5px;font-weight:550;color:rgba(232,240,255,.7);display:flex;align-items:center;gap:6px}
+.scard .ss i{width:8px;height:8px;border-radius:50%;background:rgba(232,240,255,.45)}
+.scard.scan .ss{color:#fff}.scard.scan .ss i{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25);animation:sscPulse 1s ease-in-out infinite}
+.scard .sline{position:absolute;left:0;right:0;height:2px;top:0;opacity:0;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 14px 3px rgba(255,255,255,.55)}
+.scard .sline:after{content:"";position:absolute;left:0;right:0;bottom:2px;height:34px;background:linear-gradient(180deg,transparent,rgba(235,243,255,.18))}
+.scard .sok{position:absolute;right:12px;top:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;margin:0;background:linear-gradient(140deg,#4fdca6,#0e9f6e);box-shadow:0 4px 10px -3px rgba(2,40,30,.5);transform:scale(0);transition:transform .35s cubic-bezier(.2,1.5,.4,1)}
+.scard .sok svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.scard.dn .sok{transform:scale(1)}.scard.dn .ss{color:#bff3dc}.scard.dn .ss i{background:#4fdca6}
+@keyframes sscPulse{50%{box-shadow:0 0 0 6px rgba(255,255,255,0)}}
 @media (prefers-reduced-motion:reduce){.stage,.hyL,.hyF,.hyF iframe,body[data-m=proc] .think{transition:none}.hyL:before{animation:none}}
 </style>
 </head>
@@ -1632,6 +1655,7 @@ function procTick(){
   var ph=phaseOf(s,lt); if(ph!==F.phase){F.phase=ph; $("statusTxt").textContent=ph; corePulse()}
   if(s.log) thoughtTick(s,lt);
   placeStatus();
+  if(s.id==="sources") scanTick(lt);
   if(s.id==="form"){var c=0; if(!s.nf) for(var k=0;k<7;k++) if(lt>=FILL_T0+k*FILL_STEP+FILL_DUR) c++;
     var txt=s.nf?"Nothing found to fill in":c===7?OK+"7 of 7 fields filled":c+" of 7 fields filled";
     if(F.subState!==txt){F.subState=txt; said.sub=txt; $("sub").innerHTML='<span class="w" style="--d:0ms">'+txt+'</span>'; $("sub").classList.add("in")}}
@@ -2008,7 +2032,7 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
 /* ======================= hybrid: the agent-loader scene under the processing steps ======================= */
 /* loader, speed, and the part of its 720-wide stage it actually draws in [x0,y0,x1,y1] (some scenes spill past the stage edge) */
 /* [loader, speed, variant]: sources = the checks scene (each source lit and ticked in turn), business profile = the form-filling scene */
-var HYMAP={sources:["kycv",1.2,1],form:["kyc",1.45],team:["team",1.5],brands:["brand",1.5],gtm:["gtm",1.5],tpl:["match",1.5]}; // ~10-12s per scene
+var HYMAP={sources:["scan"],form:["kyc",1.45],team:["team",1.5],brands:["brand",1.5],gtm:["gtm",1.5],tpl:["match",1.5]}; // ~10-12s per scene
 var HYBOX={kycv1:[6,12,600,320],kycv0:[6,12,600,320],kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
 var HY_P=170, HY_BW=720, HY_BH=330, HY_ZMAX=1.15; // padding round the stage inside the frame, then the scene frame in base px
 /* glass on the blue field: no pure white surfaces, light text, translucent tiles and skeletons; accents brightened to read on blue */
@@ -2071,19 +2095,47 @@ function hyDoc(id,K,vi){var h=id==="brand"?460:360, d=loaderDoc(id,HY_CSS.replac
   return d.replace("var K=1.7,","var K="+K+",").replace("(ms / 1.7)","(ms / "+K+")")
     .replace("opts.onDark && 'on-dark'","'on-dark'")
     .replace("${.24 + b.kick * .2}","${.07 + b.kick * .1}")} // every agent blob uses the loaders' white on-dark look
+var SCAN_SRC=[["DLT",'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'],["GSTIN",'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2M15 12h2M7 16h10"/>'],
+  ["MCA",'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/>'],
+  ["Website",'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'],
+  ["Trademark",'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>']];
+function scanHTML(){return '<div class="ssc"><div class="ssc-cone"></div><canvas aria-hidden="true"></canvas>'+SCAN_SRC.map(function(x){return '<div class="scard"><span class="si"><svg viewBox="0 0 24 24">'+x[1]+'</svg></span><b>'+x[0]+'</b><span class="sk1"></span><span class="sk2"></span>'+
+  '<span class="ss"><i></i><em style="font-style:normal">Queued</em></span><span class="sline"></span><span class="sok"><svg viewBox="0 0 12 12"><path d="M2.5 6.3l2.3 2.2 4.7-5"/></svg></span></div>'}).join("")+'</div>'}
+/* each source takes PER seconds: it slides into the centre, a scan line sweeps it, it is ticked, then the row moves on; at the end the five gather in a row */
+var SCAN_T0=.5, SCAN_PER=1.62;
+function scanTick(lt){var sc=HY.scan; if(!sc||!sc.el.isConnected) return; var cards=sc.el.querySelectorAll(".scard"), n=cards.length;
+  if(REDUCE) lt=SCAN_T0+n*SCAN_PER+1;
+  var u=Math.max(0,(lt-SCAN_T0)/SCAN_PER), k=Math.floor(u), f=u-k, mv=.3, c=k-1+ease(Math.min(1,f/mv)), g=ease(clamp((u-n)/.45,0,1));
+  if(u>=n) c=n-1+ease(Math.min(1,(u-n+1)/1)); // after the last scan the row settles
+  var scanning=k<n&&f>=mv&&f<.86, sp=scanning?(f-mv)/(.86-mv):0;
+  [].forEach.call(cards,function(el,i){var d=i-c, a=Math.abs(d), sg=d<0?-1:1;
+    var x=a<=1?d*196:sg*(196+(a-1)*118), y=a<=1?a*10:10+(a-1)*4, sc2=1-Math.min(1,a)*.18-Math.max(0,a-1)*.07, op=a<1.6?1:clamp(1-(a-1.6)*.75,0,1);
+    var gx=(i-(n-1)/2)*140, gs=.8; // the closing row
+    x=x+(gx-x)*g; y=y+(14-y)*g; sc2=sc2+(gs-sc2)*g; op=op+(1-op)*g;
+    el.style.transform="translate("+x.toFixed(1)+"px,"+y.toFixed(1)+"px) scale("+sc2.toFixed(3)+")"; el.style.opacity=op.toFixed(3); el.style.zIndex=10-Math.round(a*2);
+    var dn=i<k||(i===k&&f>=.86)||u>=n, on=i===k&&scanning;
+    el.classList.toggle("dn",dn); el.classList.toggle("scan",on); el.classList.toggle("lit",on);
+    var st=el.querySelector(".ss em"), tx=dn?"Read":on?"Scanning":"Queued"; if(st.textContent!==tx) st.textContent=tx;
+    var ln=el.querySelector(".sline"); ln.style.opacity=on?1:0; ln.style.top=(sp*100).toFixed(1)+"%"});
+  sc.el.querySelector(".ssc-cone").classList.toggle("on",scanning&&g<.01);
+  // the blob above the slot: white dots, the logo, a check once every source is read
+  var cv=sc.cv, d2=Math.min(2,dpr||1); if(cv.width!==120*d2){cv.width=cv.height=120*d2} var x2=cv.getContext("2d"); x2.setTransform(d2,0,0,d2,0,0); x2.clearRect(0,0,120,120);
+  paintBlob(x2,60,60,34*(1+(scanning?.04*Math.sin(lt*9):0)),{white:true,ok:g,ry:clock*.9*(scanning?1.6:1),rx:.55+clock*.25,k:1})}
 function hyScene(s){var m=HYMAP[s.id]; hyShow(m&&!s.nf&&!s.err?m:null)}
 function hyShow(m){
   var box=$("hyL"), key=m?m[0]+(m[2]==null?"":m[2]):null, id=m?m[0]:null; if(!box||key===HY.id) return;
   HY.id=key; var old=HY.cur; HY.cur=null;
   if(old){old.classList.remove("on"); old.classList.add("off"); setTimeout(function(){old.remove()},900)}
   if(!id) return;
+  if(id==="scan"){var w0=document.createElement("div"); w0.className="hyF"; w0.dataset.id="scan"; w0.innerHTML=scanHTML(); box.appendChild(w0); HY.cur=w0; HY.scan={el:w0,cv:w0.querySelector("canvas")}; hyFit();
+    requestAnimationFrame(function(){requestAnimationFrame(function(){w0.classList.add("on")})}); return}
   var h=id==="brand"?460:360, w=document.createElement("div"), fr=document.createElement("iframe"); w.className="hyF"; w.dataset.id=key;
   fr.setAttribute("aria-hidden","true"); fr.tabIndex=-1; fr.title="The agent at work";
   fr.style.width=(720+2*HY_P)+"px"; fr.style.height=(h+2*HY_P)+"px";
   fr.addEventListener("load",function(){requestAnimationFrame(function(){w.classList.add("on")})});
   fr.srcdoc=hyDoc(id,m[1],m[2]); w.appendChild(fr); box.appendChild(w); HY.cur=w; hyFit();
 }
-function hyPlace(w){var b=HYBOX[w.dataset.id], fr=w.firstChild; if(!b||!fr) return;
+function hyPlace(w){if(w.dataset.id==="scan"){w.firstChild.style.transform="scale("+HY.s+")"; return} var b=HYBOX[w.dataset.id], fr=w.firstChild; if(!b||!fr) return;
   var bw=b[2]-b[0], bh=b[3]-b[1], z=Math.min(HY_BW/bw,HY_BH/bh,HY_ZMAX), S=HY.s*z,
       tx=(HY_BW*HY.s-bw*S)/2-(b[0]+HY_P)*S, ty=(HY_BH*HY.s-bh*S)/2-(b[1]+HY_P)*S;
   fr.style.transform="translate("+tx.toFixed(1)+"px,"+ty.toFixed(1)+"px) scale("+S.toFixed(4)+")"}
