@@ -2537,7 +2537,7 @@ function placeCard(){
   if(split){var LW=Math.round(Math.max(260,Math.min(320,W*.22))); r={l:LW,t:0,w:W-LW,h:H}; $("bigsum").style.width=LW+"px"}
   else if(CARD.big) r={l:0,t:0,w:W,h:H};
   else if(F.mode==="gate"){var w=Math.min(1120,av), h=Math.min(H-150,700); r={l:x0+(av-w)/2,t:Math.max(60,(H-h)/2-16),w:w,h:h}}
-  else{var face=F.mode==="review"&&F.face&&F.face.i===F.active&&!CARD.big&&!F.kv, w=Math.min(F.mode==="review"&&!face&&(STEPS[F.active].k==="team"||STEPS[F.active].k==="brands")?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML.replace(/<iframe[\s\S]*?<\/iframe>/g,""); var h=Math.min(m.offsetHeight,H-(H<780?100:140)); m.innerHTML=""; if(face) h=Math.min(430,H-(H<780?100:140)); /* summary cards (done, in review, later) share one medium size, so they do not grow and shrink from step to step */
+  else{var face=F.mode==="review"&&F.face&&F.face.i===F.active&&!CARD.big&&!F.kv, w=Math.min(F.mode==="review"&&!face&&(STEPS[F.active].k==="team"||STEPS[F.active].k==="brands")?1040:820,av), m=$("cardM"); m.style.width=w+"px"; m.innerHTML=c.innerHTML.replace(/<iframe[\s\S]*?<\/iframe>/g,""); var h=Math.min(m.offsetHeight,H-(H<780?100:140)); m.innerHTML=""; /* summary cards (done, in review, later) keep one width; their height follows the content */
     if(aOn){A0.style.width=w+"px"; setSum(subline(F.active)); setConf(F.active); aH=A0.offsetHeight}
     var cmp=H<780, top=aOn?Math.max(aH-2,(H-h)/2+(aH-22)/2-14):Math.max(cmp?18:64,(H-h)/2-(cmp?24:18)); if(aOn) h=Math.min(h,H-top-88);
     r={l:x0+(av-w)/2,t:top,w:w,h:h}}
