@@ -943,6 +943,20 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .tpc-r{display:none;margin-top:14px;padding:12px 16px;border-radius:10px;background:#fcf1d2;box-shadow:inset 0 0 0 1px #efdca0;color:#8c2a1a}.tpc.open .tpc-r{display:block}.tpc-r b{display:block;font-size:14px;margin-bottom:4px}.tpc-r p{margin:0;font-size:14px;line-height:1.55}
 .tpn{width:100%;box-sizing:border-box;margin-top:14px;padding:16px 20px;border-radius:12px;background:#f3f6ff;box-shadow:inset 0 0 0 1.5px #3d63d8;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;font-size:15px;color:var(--s-ink)}.tpn .btn{flex:none;height:38px;padding:0 14px;font-size:13.5px}.tpn .btn .i{width:14px;height:14px}
 .xops.xwide{grid-template-columns:repeat(2,minmax(0,230px))}
+.aw{display:flex;flex-direction:column;gap:8px;width:min(460px,92vw);margin:20px auto 0;text-align:left}
+.aw-r{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);transition:background var(--dur-ui) var(--ease-out),border-color var(--dur-ui) var(--ease-out)}
+.aw-ic{width:22px;height:22px;flex:none;display:grid;place-items:center;border-radius:50%;position:relative}
+.aw-ic:before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.85);border-right-color:transparent;animation:rcspin 1.1s linear infinite}
+.aw-ic .i{display:none;width:13px;height:13px;stroke-width:2.6}
+.aw-t{display:flex;flex-direction:column;min-width:0;margin-right:auto}.aw-t b{font-size:14.5px;font-weight:600;color:#fff}.aw-t small{font-size:12.5px;color:rgba(255,255,255,.68)}
+.aw-r em{font-style:normal;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.14);color:rgba(255,255,255,.86);white-space:nowrap}
+.aw-r.aw-ok{background:rgba(124,240,180,.12);border-color:rgba(124,240,180,.32)}
+.aw-r.aw-ok .aw-ic{background:#7cf0b4;color:#0b3a26}.aw-r.aw-ok .aw-ic:before{display:none}.aw-r.aw-ok .aw-ic .i{display:block}.aw-r.aw-ok em{background:rgba(124,240,180,.2);color:#b9f7d6}
+.aw-r.aw-still .aw-ic:before{animation:none;border-color:var(--amber);border-right-color:var(--amber);width:8px;height:8px;background:var(--amber)}.aw-r.aw-still em{background:rgba(255,210,122,.18);color:#ffe2a8}
+.facts>div.aw-done em{background:rgba(124,240,180,.2);box-shadow:inset 0 0 0 1px rgba(124,240,180,.4)}.facts>div.aw-done em::before{background:#7cf0b4}
+.aw-more{font-size:13px;color:rgba(255,255,255,.7);text-align:center}
+.aw-meta{margin:14px auto 0;max-width:460px;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.75)}.aw-meta b{color:#fff;font-weight:600}
+@media (prefers-reduced-motion:reduce){.aw-ic:before{animation:none}}
 .xcountline{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}.xcountline span{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600}.xcountline .a{background:#e3f6ec;color:#0f6b4a}.xcountline .r{background:#fff1d6;color:#9a5b05}.xcountline .n{background:#fde7e1;color:#b13a1d}
 .xcounts{margin-bottom:12px}.xitems{display:grid;gap:6px;margin-bottom:14px}.xit{display:grid;grid-template-columns:1.1fr 1.4fr auto;gap:10px;align-items:center;padding:9px 14px;border-radius:12px;background:#f6f8fc;font-size:14px}.xit b{font-weight:600}.xit span{color:var(--s-muted)}.xit em{font-style:normal;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px}.xit.xa em{background:#e3f6ec;color:#0f6b4a}.xit.xr em{background:#fff1d6;color:#9a5b05}.xit.xn em{background:#fde7e1;color:#b13a1d}.xit.xa{opacity:.85}
 .xops .i{width:15px;height:15px}.xops .wt .i{color:#ffd27a}
@@ -2212,9 +2226,8 @@ function errHalt(s,i){var o=ERRV[s.id];
     errMsg(s,o);
     requestAnimationFrame(function(){requestAnimationFrame(function(){fade.forEach(function(e){if(e){e.style.transition="";e.style.opacity=""}})})})},REDUCE?0:(D*1000+120))}
 function errMsg(s,o){
-  var twice=ERR.tries>=1;
-  say({kick:"Onboarding Agent",line:twice?"Still couldn't finish":o.t,sub:twice?"Two tries didn't work. You can try once more, or skip this step and come back to it.":"Nothing was lost. "+o.d,
-    extra:'<div class="xamb">'+(twice?"It usually clears in a few minutes.":"You can try again in a moment, or come back to this step later.")+'</div><div class="acts">'+B("perr-retry","Try again")+B("perr-skip","Skip this step for now","ghost")+'</div>',
+  say({kick:"Onboarding Agent",line:"AI processing failed",sub:"Nothing was lost. Something went wrong and the agent couldn't finish preparing your setup.",
+    extra:'<div class="xamb">Retry and the agent picks up from where it stopped.</div><div class="acts">'+B("perr-retry","Retry")+'</div>',
     status:["Something went wrong","attn"],prog:{label:"Steps",items:s.grp==="src"?SRC:STEPN,states:states(5,s.prog,s.prog)}})}
 function nfScene(s){if(ERR&&s.id===ERR.id){var o=ERRV[ERR.id],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=null; r.err=1; return r}var key=NF==="all"?(s.id==="sources"?"sourcesAll":s.id):NF; if(NF&&(NF==="all"?NFV[key]:s.id===NF)){var o=NFV[key],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
 function srcOv(lt){var o=$("srcov"); if(!o) return;
@@ -2559,7 +2572,7 @@ function expandCard(){var c=$("card"); if(CARD.big) return; F.snap=snapNow(); F.
 function restoreNf(){var f=F.nfFace; if(!f) return; F.nfFace=null; var k=STEPS[F.active].k;
   var empty=k==="team"?!PEOPLE.length:k==="brands"?BRANDS.every(function(b){return !b.hdr&&b.name==="New brand"&&b.lobs.length<=1}):false;
   if(empty){F.face=f; F.addU=false; if(k==="team") PEOPLE.splice(0)}}
-function leaveDetails(){ if(CARD.big&&F.mode==="review"&&F.snap&&!F.ro&&snapNow()!==F.snap) saveDlg(); else collapseCard() }
+function leaveDetails(){ if(F.aw&&F.aw.view){awBack(); return} if(CARD.big&&F.mode==="review"&&F.snap&&!F.ro&&snapNow()!==F.snap) saveDlg(); else collapseCard() }
 function collapseCard(){var c=$("card"); if(!CARD.big) return; c.classList.add("swap");
   later(function(){restoreNf(); CARD.big=false; document.body.classList.remove("bigcard"); c.classList.remove("big"); renderCard(); later(function(){c.classList.remove("swap")},240)},200)}
 /* finishing a step: the card comes back to its summary size, then gives way to the agent */
@@ -2581,6 +2594,55 @@ function verify(){
   later(function(){say({sub:OK+"Approved by 4 of 4 operators"})},4300);
   later(function(){complete(0,"KYC details approved")},5800);
 }
+/* waiting for approval: once a step is sent, the page itself holds until the approvers reply, then moves to the outcome.
+   KYC lists the four operators on the page; Brands and LOBs shows only the counts, and the card lists every item. */
+function awRows(i){if(i===0) return ["Airtel","Jio","Vi","BSNL"].map(function(o){return {n:o,s:"Telecom operator"}});
+  var r=[]; BRANDS.forEach(function(b){if(bNew(b)) r.push({n:b.name,s:"New brand · "+b.lobs.length+" lines of business",t:"b",lobs:b.lobs.length});
+    else b.lobs.forEach(function(l){if(lNew(b,l)) r.push({n:l,s:b.name,t:"l"})})}); return r}
+function awMeta(aw){var n=aw.rows.length;
+  return aw.i===0?'<b>'+aw.got+' of '+n+' operators approved.</b> Operators usually reply within a few hours. You can leave this page; we\'ll email you when they do.'
+    :'Reviews usually finish within a day. You can leave this page; we\'ll email you when they\'re done.'}
+function awCounts(aw){var b=[0,0,0], l=[0,0,0];
+  aw.rows.forEach(function(r,k){var ok=aw.st[k]==="ok"?1:0, nb=r.t==="b"?1:0, nl=r.t==="b"?r.lobs:1; b[0]+=nb; l[0]+=nl; b[1]+=ok*nb; l[1]+=ok*nl});
+  b[2]=b[0]-b[1]; l[2]=l[0]-l[1]; return {b:b,l:l}}
+function awSumRows(aw){var c=awCounts(aw), row=function(n){return [n[0]+" submitted · "+n[1]+" approved",n[2]?n[2]+" in review":"All approved"]}, r=[];
+  if(c.b[0]) r.push(["Brands"].concat(row(c.b))); r.push(["Lines of business"].concat(row(c.l))); r.push(["Sent for review",aw.sent+" · by Ravi Menon"]); return r}
+function awSumHTML(aw){return facts(awSumRows(aw))}
+function awHTML(aw){
+  if(aw.i===2) return '<div id="awSum">'+awSumHTML(aw)+'</div><div class="aw-meta" id="awMeta" aria-live="polite">'+awMeta(aw)+'</div><div class="acts">'+B("awview","View details","ghost")+'</div>';
+  return '<div class="aw" id="aw" role="list">'+aw.rows.map(function(r,k){return '<div class="aw-r" role="listitem" data-k="'+k+'"><span class="aw-ic">'+I("check")+'</span><span class="aw-t"><b>'+esc(r.n)+'</b><small>'+esc(r.s)+'</small></span><em>Reviewing</em></div>'}).join("")+
+    '</div><div class="aw-meta" id="awMeta" aria-live="polite">'+awMeta(aw)+'</div>'}
+function awScreen(aw){var i=aw.i; F.mode="msg"; F.active=i; show("blank"); hideCard();
+  say({kick:STEPLINE(i),
+    line:i===0?"Waiting for the operators to approve your KYC details":"Waiting for approval of your brands and LOBs",
+    sub:i===0?"Airtel, Jio, Vi and BSNL each review your KYC details. Team opens as soon as one of them approves.":"New brands and lines of business are reviewed before they're set up. Templates map only approved lines of business.",
+    extra:awHTML(aw),status:["Waiting for approval","attn"],prog:{label:"Steps",items:STEPN,states:states(5,i,i)}});
+  if(i===0) aw.st.forEach(function(s,k){if(s) awSet(k,s)})}
+function awSet(k,s){var r=document.querySelector('#aw .aw-r[data-k="'+k+'"]'); if(!r) return; r.classList.add("aw-"+s); r.querySelector("em").textContent=s==="ok"?"Approved":"Still reviewing"}
+function awFace(aw){setFace(2,{chip:["Waiting for approval","amb"],head:"Your brands and LOBs are in review",sum:"Opening Brands & LOBs.",icon:"clock",tone:"amb",h:"Waiting for approval",p:"Opening the details"})}
+function awKey(b,l){return l==null?"b:"+b.name:"l:"+b.name+"|"+l}
+function awUpdate(aw){
+  if(aw.view){if(CARD.big) renderCard(); return}
+  var rows=awSumRows(aw), m=$("awMeta");
+  [].forEach.call(document.querySelectorAll("#awSum .facts>div"),function(d,k){var r=rows[k]; if(!r) return; var bb=d.querySelector("b"); bb.dataset.tf=r[1]; if(!bb.classList.contains("typing")) bb.textContent=r[1]; var em=d.querySelector("em"); if(em) em.textContent=r[2]; d.classList.toggle("aw-done",!/in review/.test(r[2]))});
+  if(m) m.innerHTML=awMeta(aw)}
+function awMark(r){F.bAp=F.bAp||{}; BRANDS.forEach(function(b){if(r.t==="b"&&b.name===r.n){F.bAp[awKey(b)]=1; b.lobs.forEach(function(l){F.bAp[awKey(b,l)]=1})} if(r.t==="l"&&b.name===r.s&&b.lobs.indexOf(r.n)>=0) F.bAp[awKey(b,r.n)]=1})}
+function awLater(aw,f,ms){timers.push(setTimeout(function(){if(F.aw===aw) f()},REDUCE?Math.min(ms,300):ms))}
+function awOutcome(aw){if(aw.view){aw.due=1; return} var i=aw.i, ok=aw.ok, part=ok<aw.rows.length; F.aw=null;
+  if(i===0){F.opsA=part?ok:null; complete(0,part?"KYC details partly approved":"KYC details approved")}
+  else{var left={rb:0,rl:0}; aw.rows.slice(ok).forEach(function(r){if(r.t==="b"){left.rb++; left.rl+=r.lobs} else left.rl++}); F.bLeft=left;
+    complete(2,part?"Brands and LOBs partly approved":"Brands and LOBs approved")}}
+function awView(){var aw=F.aw; if(!aw) return; aw.view=1; awFace(aw); review(2); say({status:["Waiting for approval","attn"]});
+  later(function(){if(!aw.view) return; F.face=null; F.ro=true; F.dvNext=true; expandCard()},REDUCE?300:700)}
+function awBack(){var aw=F.aw; if(!aw) return; aw.view=0; F.face=null; F.ro=false; F.dv=false; if(aw.due) finishStep(function(){awOutcome(aw)}); else finishStep(function(){awScreen(aw)})}
+function startAwait(i,o){o=o||{}; var rows=awRows(i);
+  if(!rows.length){complete(i,i===2?"Brands and LOBs set up":"KYC details approved"); return}
+  var n=rows.length, ok=o.partial?(i===0?2:Math.max(1,Math.floor(n/2))):n, aw={i:i,rows:rows,ok:ok,got:0,sent:nowTime(),st:rows.map(function(){return ""})}; F.aw=aw;
+  F.status[i]="verifying"; awScreen(aw);
+  for(var k=0;k<ok;k++)(function(k){awLater(aw,function(){aw.got=k+1; aw.st[k]="ok"; if(i===0) awSet(k,"ok"); else awMark(rows[k]); awUpdate(aw)},2600+k*1700)})(k);
+  var end=2600+(ok-1)*1700;
+  if(ok<n) awLater(aw,function(){for(var k=ok;k<n;k++){aw.st[k]="still"; if(i===0) awSet(k,"still")} awUpdate(aw)},end+1200);
+  awLater(aw,function(){awOutcome(aw)},end+(ok<n?3000:1800))}
 /* a step is done: the ring closes, then the next one opens */
 /* what was actually set up, shown on every success screen as plain facts */
 function reviewCounts(){var rb=BRANDS.filter(bNew).length, rl=0; /* a brand waits only if it is new; a new line of business under an existing brand waits on its own */
@@ -2593,7 +2655,7 @@ function successFacts(i,title,lt){var rows=[];
     if(lt) rows=[["People suggested",PEOPLE.length+" · none invited yet"]];
     else{var roles=ROLES.map(function(r,q){var c=who.filter(function(x){return x.role===q}).length; return c?c+" "+r:""}).filter(Boolean).join(" · ");
       rows=[["Invites sent",n+" of "+PEOPLE.length+" people"]].concat(roles?[["Roles",roles]]:[]).concat(PEOPLE.length-n>0?[["Not invited",String(PEOPLE.length-n)]]:[])}}
-  if(i===2&&!lt){var rc=reviewCounts(), L=lobCount();
+  if(i===2&&!lt){var rc=F.bLeft||reviewCounts(), L=lobCount();
     rows=[["Brands",createdLine(BRANDS.length,rc.rb)],["Lines of business",createdLine(L,rc.rl)]]}
   if(i===3&&!lt){var pk=picked(), m=gAlloc();
     rows=[["Partners selected",pk.length+" of "+PARTNERS.length+" · "+pk.map(function(x){return x.name}).join(" and ")]].concat(pk.length===2?PH.map(function(x,k){return [x,pk[0].name+" "+m[pk[0].name][k]+"% · "+pk[1].name+" "+m[pk[1].name][k]+"%"]}):[])}
@@ -2608,7 +2670,7 @@ function complete(i,title){F.doneAt=F.doneAt||{}; if(!F.doneAt[i]) F.doneAt[i]=n
   var lt=/for later/i.test(title); F.later[i]=lt?1:0; if(i===1) F.teamLater=lt;
   var nx=i<4?"Next: "+STEPS[i+1].title:"Next: your migration window";
   if(lt){title=STEPS[i].title+" is marked for later"}
-  say({kick:STEPLINE(i), line:title, sub:lt?"Nothing is blocked. You can come back to it any time.":"", extra:successFacts(i,title,lt)+(i===0&&/approved/.test(title)?opsList(opsN()):""), status:[lt?"Marked for later":"Step done",lt?"still":"done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
+  say({kick:STEPLINE(i), line:title, sub:lt?"Nothing is blocked. You can come back to it any time.":"", extra:successFacts(i,title,lt)+(i===0&&/approved/.test(title)?opsList(opsN()):"")+(/partly approved/i.test(title)?'<div class="xamb">'+(i===0?"You can carry on. Messages go out only through the approved operators until the others approve.":"The rest is set up. Templates map only approved lines of business until the others are approved.")+'</div>':""), status:[lt?"Marked for later":/partly approved/i.test(title)?"Partly approved":"Step done",lt?"still":"done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
   upNext(i<4?STEPS[i+1].title:"Your migration window",function(){if(i<4){F.status[i+1]="review"; review(i+1)} else final()});
 }
 
@@ -3075,13 +3137,13 @@ var AU_TELCO_CSS=".telco .au-rx{position:absolute;right:-8px;top:-8px;width:26px
 function kvText(){var p=F.kv.ph, n=F.kv.rx||0; return {
   check:["Validating your details","I'm matching your KYC against trusted sources before it goes to the telecom operators.","Validating your business details"],
   send:["Sending your KYC details for approval","Your KYC details are going to Airtel, Jio, Vi and BSNL.","Sending it to telecom operators for approval"],
-  rx:["Checking for profile approval","The telecom operators are reviewing your KYC details. Each reply shows as it comes in.",n<4?"Replies from "+n+" of 4 operators":"All 4 operators have replied"],
+  rx:["Confirming the operators received it","Each operator confirms it has your KYC details. Their approval comes next.",n<4?"Received by "+n+" of 4 operators":"All 4 operators have it"],
   done:["KYC details are done","Nothing more to do here.",""]}[p]}
 function fitScene(ld,box){var crop=ld.querySelector(".ld-crop"), fr=ld.querySelector("iframe"), bw=box[2]-box[0], bh=box[3]-box[1], s=Math.min((ld.clientWidth-24)/bw,(ld.clientHeight-20)/bh,1.5);
   crop.style.width=bw*s+"px"; crop.style.height=bh*s+"px"; crop.style.marginLeft=(-bw*s/2)+"px"; crop.style.marginTop=(-bh*s/2)+"px";
   fr.style.transform="translate("+(-box[0]*s)+"px,"+(-box[1]*s)+"px) scale("+s+")"}
 /* the approval check lists its stages the way the processing steps list theirs: each line types in, then ticks when the next begins */
-function kvThink(){var ul=$("kvthink"); if(!ul||!F.kv) return; var ord=["check","send","rx","done"], cur=ord.indexOf(F.kv.ph), all=cur>=3, rows=["Validating your KYC details","Sending your KYC details for approval","Checking for profile approval"]; F.kv.ts=F.kv.ts||[]; var now=performance.now();
+function kvThink(){var ul=$("kvthink"); if(!ul||!F.kv) return; var ord=["check","send","rx","done"], cur=ord.indexOf(F.kv.ph), all=cur>=3, rows=["Validating your KYC details","Sending your KYC details for approval","Confirming the operators received it"]; F.kv.ts=F.kv.ts||[]; var now=performance.now();
   for(var k=0;k<=Math.min(cur,2);k++){if(F.kv.ts[k]==null) F.kv.ts[k]=now; var li=ul.querySelector('li[data-n="'+k+'"]'); if(!li){li=document.createElement("li"); li.dataset.n=k; li.innerHTML="<i></i><span></span>"; ul.appendChild(li)}
     var fin=k<cur||all, typed=fin?rows[k].length:Math.min(rows[k].length,Math.floor((now-F.kv.ts[k])/1000*TYPE_CPS));
     li.classList.toggle("done",fin); li.classList.toggle("cur",!fin); li.classList.toggle("typing",typed<rows[k].length); li.style.opacity=(k===Math.min(cur,2)&&!all)?1:.62;
@@ -3100,7 +3162,7 @@ function kvFail(){if(!F.kv) return; clearTimeout(F.kv.failT); kvStop(); F.kv=nul
 function kvStop(){if(!F.kv) return; clearInterval(F.kv.iv); clearInterval(F.kv.iv2); clearTimeout(F.kv.to); clearTimeout(F.kv.failT); if(F.kv.off) F.kv.off()}
 /* hybrid: after submit the card steps aside and the check plays on the blue field, under its headline, like the processing steps */
 function startKV(o){o=o||{};
-  F.kv={ph:"check",rx:0,fail:!!o.fail}; F.status[0]="verifying";
+  F.kv={ph:"check",rx:0,fail:!!o.fail,partial:!!o.partial}; F.status[0]="verifying";
   if(REDUCE){kvDone(); return}
   hideCard(); F.mode="kv"; show("blank"); var t=kvText();
   say({kick:"",line:t[0],sub:t[1],extra:'<ul class="think" id="kvthink" data-s="kv"></ul>',status:["Verifying","still"],
@@ -3119,7 +3181,7 @@ function startKV(o){o=o||{};
 }
 function okFace(){var t=new Date(), hm=t.getHours()%12||12, tm=hm+":"+String(t.getMinutes()).padStart(2,"0")+(t.getHours()<12?" am":" pm");
   return '<div class="okface"><span class="okt">'+I("check")+'</span><h3>KYC details approved</h3><p>7 fields filled · Approved by 4 of 4 operators · Logo added</p><div class="okby"><i>RM</i>Done by <b>Ravi Menon</b> · '+tm+'</div><button class="zlk" data-a="kvnext">Next: Team is open now</button></div>'}
-function kvDone(){if(!F.kv||F.kv.ph==="done") return; kvStop(); F.kv=null; hideCard(); later(function(){complete(0,"KYC details approved")},420)} // the approval shows on the blue field, like every other step
+function kvDone(){if(!F.kv||F.kv.ph==="done") return; var part=F.kv.partial; kvStop(); F.kv=null; hideCard(); later(function(){startAwait(0,{partial:part})},420)} // the approval shows on the blue field, like every other step
 function kvNext(){}
 
 /* left of an expanded card: the agent's summary on the blue field, between the logo rail and the Migration closes in pill */
@@ -3131,7 +3193,9 @@ var BSUM={
   templates:["Suggested a line of business for 98 of 100 templates","A line of business is suggested for 98 of 100 templates. 2 still need mapping.",["Read your templates","Suggested a line of business for each","Marked how confident each suggestion is"],"Templates you map are sent for approval. The 2 unmapped ones don't hold up migration."]};
 function bigSum(i){var b=BSUM[STEPS[i].k]; if(!b) return "";
   if(STEPS[i].k==="profile"&&F.ro) b=["Approved by "+opsN()+" of 4 telcos",opsN()===4?"Every telco has approved your KYC details. Nothing more to do here.":"The other telcos are still reviewing. You can carry on with the next steps.",b[2],"Team is open now."];
-  if(F.dv&&dvOn()){var dn=((F.doneAt||{})[i]||nowTime()), nx={team:"Brands and LOBs is open. You can come back to the team list at any time.",brands:"GTM partners and Templates are open. Changes to approved items go for review.",gtm:"Templates is open. You can change the partners or the split later.",templates:"Mapped templates are with the operators. Unmapped ones don't hold up migration."}[STEPS[i].k];
+  if(F.aw&&F.aw.view&&STEPS[i].k==="brands"){var ac=awCounts(F.aw);
+    b=["Waiting for approval",ac.l[1]+" of "+ac.l[0]+" new lines of business approved so far"+(ac.b[0]?", "+ac.b[1]+" of "+ac.b[0]+" new brands":"")+". The statuses here update as approvals come in.",b[2],"GTM partners is open while you wait. Templates map only approved lines of business."]}
+  else if(F.dv&&dvOn()){var dn=((F.doneAt||{})[i]||nowTime()), nx={team:"Brands and LOBs is open. You can come back to the team list at any time.",brands:"GTM partners and Templates are open. Changes to approved items go for review.",gtm:"Templates is open. You can change the partners or the split later.",templates:"Mapped templates are with the operators. Unmapped ones don't hold up migration."}[STEPS[i].k];
     b=[b[0],"This step is done. Done by Ravi Menon · "+dn+".",b[2],nx]}
   if(STEPS[i].k==="brands"&&!BRANDS.length) b=["No brands or lines of business found","I checked your DLT headers and found nothing to suggest. Add your first brand and its lines of business, then submit for approval.",["Read your DLT headers and entities","Found nothing to group into brands"],b[3]];
   return '<div class="bs-in"><span class="bs-chip"><img src="'+LOGO+'" alt="">Agent summary</span><h3>'+esc(b[0])+'</h3><p>'+esc(b[1])+'</p>'+
@@ -3432,9 +3496,9 @@ function failFace(i,tries){var st=STEPS[i];
 function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
 var XMENU=[["Agreements",[["Accepted","gate-accepted"],["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
   ["Agent messages",[["GTM waiting","msg-gtm"],["Welcome back","msg-back"],["After a decision","msg-next"]]],
-  ["KYC details",[["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Locked fields not found: contact support","lock-profile-support"],["Verification animation: all 3 stages","kv-anim"],["Verification animation: slow motion","kv-anim-slow"],["Verification: couldn't send","kv-error"],["Approved by 2 of 4 operators","pm-kyc"],["Completed: view, 4 of 4 telcos","ov-profile-4"],["Completed: view, 2 of 4 telcos","ov-profile-2"],["Profile view: none approved","ov-profile-0"]]],
+  ["KYC details",[["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Locked fields not found: contact support","lock-profile-support"],["Verification animation: all 3 stages","kv-anim"],["Verification animation: slow motion","kv-anim-slow"],["Verification: couldn't send","kv-error"],["Waiting for approval: all 4 approve","aw-kyc"],["Waiting for approval: 2 of 4 approve","aw-kyc-partial"],["Approved by 2 of 4 operators","pm-kyc"],["Completed: view, 4 of 4 telcos","ov-profile-4"],["Completed: view, 2 of 4 telcos","ov-profile-2"],["Profile view: none approved","ov-profile-0"]]],
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["Do it later","later-team"],["Success: invites sent","ok-team"],["Success: saved for later","ok-team-later"],["Coming back to a finished step","back-team"],["Details: nothing found","notice-team-nothing"],["Details: done by someone else","notice-team-someone"],["Save changes dialog","dialog-team"],["Done by someone else, on the card","conc-card"]]],
-  ["Brands and LOBs",[["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["One brand, two LOBs suggested","brands-single"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: save failed","derr-brands"],["Success: sent for approval","ok-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["LOB removed: remapping","pm-remove-remap"]]],
+  ["Brands and LOBs",[["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["One brand, two LOBs suggested","brands-single"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: save failed","derr-brands"],["Waiting for approval: all approved","aw-brands"],["Waiting for approval: partly approved","aw-brands-partial"],["Success: approved","ok-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["LOB removed: remapping","pm-remove-remap"]]],
   ["GTM partners",[["Couldn't prepare, first try","fail-gtm"],["Couldn't prepare, after two tries","fail2-gtm"],["No rate cards, locked","norate-gtm"],["Success: partners selected","ok-gtm"],["Save changes dialog","dialog-gtm"]]],
   ["Templates",[["Brands check before mapping","tpl-gate"],["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Couldn't prepare, first try","fail-templates"],["Couldn't prepare, after two tries","fail2-templates"],["Success: templates mapped","ok-templates"],["Needs attention","attention-templates"],["Save changes dialog","dialog-templates"]]],
   ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
@@ -3458,7 +3522,11 @@ XS["fail2-templates"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,fa
 /* success screens, straight from the menu */
 XS["ok-team"]=function(){rStep(1); later(function(){finishStep(function(){complete(1,"6 invites sent")})},300)};
 XS["ok-team-later"]=function(){rStep(1); later(function(){finishStep(function(){complete(1,"Team saved for later")})},300)};
-XS["ok-brands"]=function(){rStep(2,function(){if(BRANDS[0]) BRANDS[0].lobs.push("New line of business")}); later(function(){finishStep(function(){complete(2,"Brands and LOBs set up")})},300)};
+XS["ok-brands"]=function(){rStep(2,function(){if(BRANDS[0]) BRANDS[0].lobs.push("New line of business"); F.bLeft={rb:0,rl:0}}); later(function(){finishStep(function(){complete(2,"Brands and LOBs approved")})},300)};
+XS["aw-kyc"]=function(){rStep(0,function(){F.pfDone=true; F.auth=true}); later(function(){startAwait(0)},500)};
+XS["aw-kyc-partial"]=function(){rStep(0,function(){F.pfDone=true; F.auth=true}); later(function(){startAwait(0,{partial:1})},500)};
+XS["aw-brands"]=function(){rStep(2,function(){BRANDS[0].lobs.push("Gold Loan"); BRANDS[1].lobs.push("Pension Plans")}); later(function(){startAwait(2)},500)};
+XS["aw-brands-partial"]=function(){rStep(2,function(){BRANDS[0].lobs.push("Gold Loan"); BRANDS[0].lobs.push("Two Wheeler Loan"); BRANDS[1].lobs.push("Pension Plans"); BRANDS[1].lobs.push("Child Plans")}); later(function(){startAwait(2,{partial:1})},500)};
 XS["ok-gtm"]=function(){rStep(3); later(function(){finishStep(function(){complete(3,"Partners confirmed")})},300)};
 XS["ok-templates"]=function(){rStep(4,function(){F.tplGate="ok"}); later(function(){finishStep(function(){complete(4,"Templates mapped")})},300)};
 /* coming back to a finished step */
@@ -3484,14 +3552,10 @@ XS["gap-brands-none"]=function(){rStep(2,function(){blockedFace(2,"No brand is a
 XS["gap-tpl-review"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{chip:["In review","amb"],head:"Templates are in review",sum:"42 templates sent. 58 unchanged templates were not resubmitted.",icon:"clock",tone:"amb",h:"42 in review",p:"Only the 42 changed templates were sent to the operators. The other 58 keep their approval.",extra:'<div class="xcountline"><span class="r">42 in review</span><span class="a">58 unchanged</span></div>',btn:B("xview","View","ghost")})})};
 XS["gap-tpl-partial"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{chip:["Partly approved","amb"],head:"Some templates were not approved",sum:"30 approved, 12 not approved.",icon:"warn",tone:"or",h:"30 approved · 12 not approved",p:"Fix the 12 and resubmit. Only changed templates are resubmitted.",extra:'<div class="xcountline"><span class="a">30 approved</span><span class="n">12 not approved</span></div>',btn:B("xreview","Review the 12","ghost","tpart")})})};
 XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",icon:"lock",title:"Your organisation isn't eligible",text:"An operator has blacklisted your organisation, so setup is paused on every screen. Still available: Contact support and Log out.",btns:B("xlogout","Log out","ghost")+B("xsupport","Contact support")})},REDUCE?700:1700)};
-[["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
-[["sources",1,"err-sources",1],["form",2,"err-form",1],["team",3,"err-team",1],["brands",4,"err-brands",1],["gtm",5,"err-gtm",1],["tpl",6,"err-tpl",1],["tpl",6,"err-tpl-twice",2]].forEach(function(r){XS[r[2]]=function(){jump("proc"); ERR={id:r[0],idx:r[1],tries:0,ok:r[3]}; proc(STARTS[r[1]])}});
-XMENU.push(["AI processing: it failed",[["Sources: step didn't finish","err-sources"],["KYC details: step didn't finish","err-form"],["Team: step didn't finish","err-team"],["Brands and LOBs: step didn't finish","err-brands"],["GTM partners: step didn't finish","err-gtm"],["Templates: step didn't finish","err-tpl"],["Templates: fails twice","err-tpl-twice"]]]);
 XS["slow-end"]=function(){jump("proc"); SLOW=true; proc(STARTS[1])};
-XS["slow-end-quick"]=function(){jump("proc"); SLOW=true; proc(STARTS[6]+SDUR.tpl*.8)};
-XMENU.push(["AI processing: taking longer",[["All steps done, last checks slow","slow-end"],["Same, jump to the end","slow-end-quick"]]]);
-XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
-XMENU.push(["AI processing: nothing found",[["All steps: nothing found","nf-all"],["Sources: website not found","nf-sources"],["Team: no people found","nf-team"],["Brands: no sender headers","nf-brands"],["GTM: no rate cards","nf-gtm"],["Templates: none found","nf-tpl"]]]);
+XS["err-proc"]=function(){jump("proc"); ERR={id:"sources",idx:1,tries:0,ok:1}; proc(STARTS[1])};
+XS["nf-sources"]=function(){jump("proc"); NF="sources"; proc(STARTS[1])};
+XMENU.push(["AI processing",[["Taking longer: all steps done, last checks slow","slow-end"],["Failed: retry","err-proc"],["Nothing found: website not found","nf-sources"]]]);
 XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Return mid-preparation","gap-return-prep"],["Ready on return","gap-return-ready"],["Ready, some not prepared","gap-ready-partial"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 /* a finished step opened again with View: the product page, not the review flow */
 var DVT={team:"User Management",brands:"Brands & LOBs",gtm:"GTM Partners",templates:"LOB-Promo Template Mapping"}, DV={};
@@ -3518,7 +3582,7 @@ function dvTeam(){var u=dvUsers(), tf=DV.tf, rows=u.filter(function(x){return tf
     '<div class="dv-card dv-pg"><span class="dv-rows">Rows per page <span>10 '+dvi("dn")+'</span></span><span>Showing <b>1–'+rows.length+'</b> of '+rows.length+' match'+(rows.length===1?'':'es')+'</span><span class="pgs"><button disabled>‹ Previous</button><button class="on">1</button><button disabled>Next ›</button></span></div></div>'; return h}
 
 /* brands */
-function dvBS(b,l){var nw=l==null?bNew(b):(bNew(b)||lNew(b,l)); return nw?"ur":"ap"}
+function dvBS(b,l){var nw=l==null?bNew(b):(bNew(b)||lNew(b,l)); return nw&&!(F.bAp&&F.bAp[awKey(b,l)])?"ur":"ap"}
 var DVSN={ap:["Approved","#3a7d44"],ur:["Under review","#e9a23b"],rj:["Rejected","#d9534f"],dc:["Deactivated","#c4cad6"],bl:["Blacklisted","#e3a6bb"]};
 function dvBCounts(){var b={ap:0,ur:0,rj:0,dc:0,bl:0}, l={ap:0,ur:0,rj:0,dc:0,bl:0}; BRANDS.forEach(function(x){b[dvBS(x)]++; x.lobs.forEach(function(y){l[dvBS(x,y)]++})}); return [b,l]}
 function dvDonut(c,title){var t=0,k,acc=0,seg=[]; for(k in c) t+=c[k]; for(k in DVSN){if(!c[k]) continue; var a=acc/t*100; acc+=c[k]; seg.push(DVSN[k][1]+" "+a+"% "+(acc/t*100)+"%")}
@@ -3629,7 +3693,7 @@ $("card").addEventListener("scroll",checkCardEnd,true);
 /* the facts on success and finale screens type themselves in, row by row */
 function typeFacts(f){if(REDUCE||f.dataset.ty) return; f.dataset.ty=1;
   f.querySelectorAll(":scope > div").forEach(function(row,i){var b=row.querySelector("b"); if(!b) return; var full=b.textContent, k=0; b.textContent=""; b.classList.add("tyw");
-    later(function step0(){b.classList.add("typing"); (function step(){if(!b.isConnected) return; k=Math.min(full.length,k+1); b.textContent=full.slice(0,k); if(k<full.length) later(step,20); else b.classList.remove("typing")})()},380+i*520)})}
+    later(function step0(){b.classList.add("typing"); (function step(){if(!b.isConnected) return; if(b.dataset.tf) full=b.dataset.tf; k=Math.min(full.length,k+1); b.textContent=full.slice(0,k); if(k<full.length) later(step,20); else b.classList.remove("typing")})()},380+i*520)})}
 (function(){var ex=document.getElementById("extra"); if(!ex) return; new MutationObserver(function(){ex.querySelectorAll(".facts:not([data-ty])").forEach(typeFacts)}).observe(ex,{childList:true,subtree:true})})();
 /* every button gets an icon and Title Case words; one pass after each render, so buttons built later are covered too */
 var TC_SMALL={a:1,an:1,and:1,as:1,at:1,but:1,by:1,for:1,in:1,of:1,on:1,or:1,the:1,to:1,with:1,via:1,vs:1};
@@ -3717,6 +3781,8 @@ document.addEventListener("click",function(e){
   else if(a==="dvpg"){DV.tp=Math.max(0,+el.dataset.v); renderCard()}
   else if(a==="dvcp"){DV.cp=+el.dataset.v; renderCard()}
   else if(a==="xview"){F.ro=true; expandCard()}
+  else if(a==="awview"){awView()}
+  else if(a==="awback"){awBack()}
   else if(a==="ovshow"){F.ovShow=F.ovShow||{}; F.ovShow[F.active]=!F.ovShow[F.active]; refresh()}
   else if(a==="rcskip"){clearLater(); F.rcT=true; F.status[4]="later"; complete(4,"Template mapping saved for later")}
   else if(a==="ovedit"){var ka=F.active; F.ro=STEPS[ka].k==="profile"; F.dvNext=STEPS[ka].k!=="profile"&&F.status[ka]==="done"&&!(F.later&&F.later[ka])&&!(ka===1&&F.teamLater); expandCard()}
@@ -3756,7 +3822,7 @@ document.addEventListener("click",function(e){
   else if(a==="invites"){F.teamLater=false; finishStep(function(){complete(1,"Invites sent")})}
   else if(a==="later"){F.teamLater=true; finishStep(function(){complete(1,"Team saved for later")})}
   else if(a==="rmlob"){BRANDS[+el.dataset.b].lobs.splice(+el.dataset.l,1); refresh()}
-  else if(a==="brands") finishStep(function(){complete(2,"Brands and LOBs set up")});
+  else if(a==="brands"){var chg=brandsChanged(); finishStep(function(){if(chg) startAwait(2); else complete(2,"Brands and LOBs set up")})}
   else if(a==="ptn"){var n=picked().length; if(PARTNERS[i].pick||n<2){PARTNERS[i].pick=!PARTNERS[i].pick; F.am=null} else toast("Untick one partner first"); refresh()}
   else if(a==="gtm") finishStep(function(){complete(3,"Partners confirmed")});
   else if(a==="tf"){F.tf=+el.dataset.v; refresh()}
@@ -3824,7 +3890,7 @@ addEventListener("keydown",function(e){
 addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0) tourGo(TS)});
 
 /* ======================= prototype jumps ======================= */
-function resetData(){F.infoOpen=false; F.topen={}; F.am=null; F.tpx=null; F.later=[0,0,0,0,0]; F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
+function resetData(){F.infoOpen=false; F.topen={}; F.am=null; F.tpx=null; F.later=[0,0,0,0,0]; F.opsA=null; F.aw=null; F.bLeft=null; F.bAp=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   if(w==="login"){showLogin(); return}
   document.body.classList.remove("lgnon"); clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.nfFace=null; F.plock=0; F.plstill=0; F.plsup=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.tplGate=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
@@ -3857,7 +3923,7 @@ function jump(w){
     if(b.classList.contains("appon")) return ["Finale","Flow"];
     if(m==="gate") return ["Agreements","Flow"];
     if(m==="plan") return ["Flow","Agent messages"];
-    if(m==="proc") return ["Card animation","AI processing: it failed","AI processing: nothing found","AI processing: taking longer"];
+    if(m==="proc") return ["Card animation","AI processing"];
     if(m==="kv"||m==="verify") return ["KYC details","Flow"];
     if(m==="ready") return ["Agent messages","PM gaps","Flow"];
     if(m==="review"||m==="pass") return (sg?[sg]:[]).concat(["PM gaps","Flow"]);
