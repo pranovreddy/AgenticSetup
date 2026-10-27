@@ -2593,33 +2593,54 @@ function verify(){
   later(function(){say({sub:OK+"Approved by 4 of 4 operators"})},4300);
   later(function(){complete(0,"KYC details approved")},5800);
 }
-/* waiting for approval: once a step is sent, the page itself holds until the approvers reply, then moves to the outcome */
-var AW_SHOW=5;
+/* waiting for approval: once a step is sent, the page itself holds until the approvers reply, then moves to the outcome.
+   KYC lists the four operators on the page; Brands and LOBs shows only the counts, and the card lists every item. */
 function awRows(i){if(i===0) return ["Airtel","Jio","Vi","BSNL"].map(function(o){return {n:o,s:"Telecom operator"}});
   var r=[]; BRANDS.forEach(function(b){if(bNew(b)) r.push({n:b.name,s:"New brand · "+b.lobs.length+" lines of business",t:"b",lobs:b.lobs.length});
-    else b.lobs.forEach(function(l){if(lNew(b,l)) r.push({n:l,s:"New line of business · "+b.name,t:"l"})})}); return r}
-function awMeta(aw){var n=aw.rows.length, who=aw.i===0?"operators":"items";
-  return '<b>'+aw.got+' of '+n+' '+who+' approved.</b> '+(aw.i===0?"Operators usually reply within a few hours. You can leave this page; we'll email you when they do.":"Reviews usually finish within a day. You can leave this page; we'll email you when they're done.")}
-function awHTML(aw){var rows=aw.rows, more=rows.length-AW_SHOW;
-  return '<div class="aw" id="aw" role="list">'+rows.slice(0,AW_SHOW).map(function(r,k){return '<div class="aw-r" role="listitem" data-k="'+k+'"><span class="aw-ic">'+I("check")+'</span><span class="aw-t"><b>'+esc(r.n)+'</b><small>'+esc(r.s)+'</small></span><em>'+(aw.i===0?"Reviewing":"In review")+'</em></div>'}).join("")+
-    (more>0?'<div class="aw-more">and '+more+' more in review</div>':'')+'</div><div class="aw-meta" id="awMeta" aria-live="polite">'+awMeta(aw)+'</div>'}
-function awSet(aw,k,cls,txt){var r=document.querySelector('#aw .aw-r[data-k="'+k+'"]'); if(!r) return; r.classList.add(cls); r.querySelector("em").textContent=txt}
-function awLater(aw,f,ms){timers.push(setTimeout(function(){if(F.aw===aw) f()},REDUCE?Math.min(ms,300):ms))}
-function startAwait(i,o){o=o||{}; var rows=awRows(i);
-  if(!rows.length){complete(i,i===2?"Brands and LOBs set up":"KYC details approved"); return}
-  var n=rows.length, ok=o.partial?(i===0?2:Math.max(1,Math.floor(n/2))):n, aw={i:i,rows:rows,ok:ok,got:0}; F.aw=aw;
-  F.active=i; F.status[i]="verifying"; F.mode="msg"; show("blank"); hideCard();
+    else b.lobs.forEach(function(l){if(lNew(b,l)) r.push({n:l,s:b.name,t:"l"})})}); return r}
+function awMeta(aw){var n=aw.rows.length;
+  return aw.i===0?'<b>'+aw.got+' of '+n+' operators approved.</b> Operators usually reply within a few hours. You can leave this page; we\'ll email you when they do.'
+    :'Reviews usually finish within a day. You can leave this page; we\'ll email you when they\'re done.'}
+function awCounts(aw){var b=[0,0,0], l=[0,0,0];
+  aw.rows.forEach(function(r,k){var ok=aw.st[k]==="ok"?1:0, nb=r.t==="b"?1:0, nl=r.t==="b"?r.lobs:1; b[0]+=nb; l[0]+=nl; b[1]+=ok*nb; l[1]+=ok*nl});
+  b[2]=b[0]-b[1]; l[2]=l[0]-l[1]; return {b:b,l:l}}
+function awSumHTML(aw){var c=awCounts(aw); return bovHTML(c.b,c.l)}
+function awHTML(aw){
+  if(aw.i===2) return '<div id="awSum">'+awSumHTML(aw)+'</div><div class="aw-meta" id="awMeta" aria-live="polite">'+awMeta(aw)+'</div><div class="acts">'+B("awview","View details","ghost")+'</div>';
+  return '<div class="aw" id="aw" role="list">'+aw.rows.map(function(r,k){return '<div class="aw-r" role="listitem" data-k="'+k+'"><span class="aw-ic">'+I("check")+'</span><span class="aw-t"><b>'+esc(r.n)+'</b><small>'+esc(r.s)+'</small></span><em>Reviewing</em></div>'}).join("")+
+    '</div><div class="aw-meta" id="awMeta" aria-live="polite">'+awMeta(aw)+'</div>'}
+function awScreen(aw){var i=aw.i; F.mode="msg"; F.active=i; show("blank"); hideCard();
   say({kick:STEPLINE(i),
     line:i===0?"Waiting for the operators to approve your KYC details":"Waiting for approval of your brands and LOBs",
     sub:i===0?"Airtel, Jio, Vi and BSNL each review your KYC details. Team opens as soon as one of them approves.":"New brands and lines of business are reviewed before they're set up. Templates map only approved lines of business.",
     extra:awHTML(aw),status:["Waiting for approval","attn"],prog:{label:"Steps",items:STEPN,states:states(5,i,i)}});
-  for(var k=0;k<ok;k++)(function(k){awLater(aw,function(){aw.got=k+1; awSet(aw,k,"aw-ok","Approved"); var m=$("awMeta"); if(m) m.innerHTML=awMeta(aw)},2600+k*1700)})(k);
+  if(i===0) aw.st.forEach(function(s,k){if(s) awSet(k,s)})}
+function awSet(k,s){var r=document.querySelector('#aw .aw-r[data-k="'+k+'"]'); if(!r) return; r.classList.add("aw-"+s); r.querySelector("em").textContent=s==="ok"?"Approved":"Still reviewing"}
+/* the card behind "View details": every submitted brand and line of business with where it stands */
+function awFace(aw){var c=awCounts(aw);
+  setFace(2,{chip:["Waiting for approval","amb"],head:"Your brands and LOBs are in review",sum:c.b[1]+c.l[1]?"Some items are already approved. The rest are still in review.":"Everything you sent is still in review.",icon:"clock",tone:"amb",
+    h:"Waiting for approval",p:c.l[1]+" of "+c.l[0]+" lines of business approved"+(c.b[0]?" · "+c.b[1]+" of "+c.b[0]+" brands":""),
+    extra:'<div class="xitems">'+aw.rows.map(function(r,k){var s=aw.st[k], cl=s==="ok"?"xa":"xr";
+      return '<div class="xit '+cl+'"><b>'+esc(r.t==="b"?r.n:r.s)+'</b><span>'+esc(r.t==="b"?"New brand · "+r.lobs+" lines of business":r.n)+'</span><em>'+(s==="ok"?"Approved":"In review")+'</em></div>'}).join("")+'</div>',
+    btn:B("awback","Back to the summary","ghost")})}
+function awUpdate(aw){
+  if(aw.view){awFace(aw); if(CARD.on) renderCard(); return}
+  var sm=$("awSum"), m=$("awMeta"); if(sm) sm.innerHTML=awSumHTML(aw); if(m) m.innerHTML=awMeta(aw)}
+function awLater(aw,f,ms){timers.push(setTimeout(function(){if(F.aw===aw) f()},REDUCE?Math.min(ms,300):ms))}
+function awOutcome(aw){if(aw.view){aw.due=1; return} var i=aw.i, ok=aw.ok, part=ok<aw.rows.length; F.aw=null;
+  if(i===0){F.opsA=part?ok:null; complete(0,part?"KYC details partly approved":"KYC details approved")}
+  else{var left={rb:0,rl:0}; aw.rows.slice(ok).forEach(function(r){if(r.t==="b"){left.rb++; left.rl+=r.lobs} else left.rl++}); F.bLeft=left;
+    complete(2,part?"Brands and LOBs partly approved":"Brands and LOBs approved")}}
+function awView(){var aw=F.aw; if(!aw) return; aw.view=1; awFace(aw); review(2); say({status:["Waiting for approval","attn"]})}
+function awBack(){var aw=F.aw; if(!aw) return; aw.view=0; F.face=null; if(aw.due) finishStep(function(){awOutcome(aw)}); else finishStep(function(){awScreen(aw)})}
+function startAwait(i,o){o=o||{}; var rows=awRows(i);
+  if(!rows.length){complete(i,i===2?"Brands and LOBs set up":"KYC details approved"); return}
+  var n=rows.length, ok=o.partial?(i===0?2:Math.max(1,Math.floor(n/2))):n, aw={i:i,rows:rows,ok:ok,got:0,st:rows.map(function(){return ""})}; F.aw=aw;
+  F.status[i]="verifying"; awScreen(aw);
+  for(var k=0;k<ok;k++)(function(k){awLater(aw,function(){aw.got=k+1; aw.st[k]="ok"; if(i===0) awSet(k,"ok"); awUpdate(aw)},2600+k*1700)})(k);
   var end=2600+(ok-1)*1700;
-  if(ok<n) awLater(aw,function(){for(var k=ok;k<n;k++) awSet(aw,k,"aw-still",i===0?"Still reviewing":"Still in review")},end+1200);
-  awLater(aw,function(){var part=ok<n; F.aw=null;
-    if(i===0){F.opsA=part?ok:null; complete(0,part?"KYC details partly approved":"KYC details approved")}
-    else{var left={rb:0,rl:0}; rows.slice(ok).forEach(function(r){if(r.t==="b"){left.rb++; left.rl+=r.lobs} else left.rl++}); F.bLeft=left;
-      complete(2,part?"Brands and LOBs partly approved":"Brands and LOBs approved")}},end+(ok<n?3000:1800))}
+  if(ok<n) awLater(aw,function(){for(var k=ok;k<n;k++){aw.st[k]="still"; if(i===0) awSet(k,"still")} awUpdate(aw)},end+1200);
+  awLater(aw,function(){awOutcome(aw)},end+(ok<n?3000:1800))}
 /* a step is done: the ring closes, then the next one opens */
 /* what was actually set up, shown on every success screen as plain facts */
 function reviewCounts(){var rb=BRANDS.filter(bNew).length, rl=0; /* a brand waits only if it is new; a new line of business under an existing brand waits on its own */
@@ -3756,6 +3777,8 @@ document.addEventListener("click",function(e){
   else if(a==="dvpg"){DV.tp=Math.max(0,+el.dataset.v); renderCard()}
   else if(a==="dvcp"){DV.cp=+el.dataset.v; renderCard()}
   else if(a==="xview"){F.ro=true; expandCard()}
+  else if(a==="awview"){awView()}
+  else if(a==="awback"){awBack()}
   else if(a==="ovshow"){F.ovShow=F.ovShow||{}; F.ovShow[F.active]=!F.ovShow[F.active]; refresh()}
   else if(a==="rcskip"){clearLater(); F.rcT=true; F.status[4]="later"; complete(4,"Template mapping saved for later")}
   else if(a==="ovedit"){var ka=F.active; F.ro=STEPS[ka].k==="profile"; F.dvNext=STEPS[ka].k!=="profile"&&F.status[ka]==="done"&&!(F.later&&F.later[ka])&&!(ka===1&&F.teamLater); expandCard()}
