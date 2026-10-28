@@ -3557,7 +3557,7 @@ XS["slow-end"]=function(){jump("proc"); SLOW=true; proc(STARTS[1])};
 XS["slow-end-quick"]=function(){jump("proc"); SLOW=true; proc(STARTS[6]+SDUR.tpl*.8)};
 XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
 XMENU.push(["AI processing",[["Step didn't finish (failed)","err-team"],["Nothing found","nf-team"],["Taking longer, jump to the end","slow-end-quick"]]]);
-XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Brands item states: card","gap-brands-items-card"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
+XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Brands item states: card","gap-brands-items-card"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 /* a finished step opened again with View: the product page, not the review flow */
 var DVT={team:"User Management",brands:"Brands & LOBs",gtm:"GTM Partners",templates:"LOB-Promo Template Mapping"}, DV={};
 function dvOn(){return !!F.dv&&CARD.big&&F.mode==="review"&&!!DVT[STEPS[F.active].k]}
