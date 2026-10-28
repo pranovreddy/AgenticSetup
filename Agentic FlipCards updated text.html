@@ -429,7 +429,7 @@ select.inp{height:36px;padding:0 8px}
 .gvt{display:inline-flex;gap:3px;padding:3px;border-radius:10px;background:#eef2f9}.gvt button{appearance:none;width:34px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--s-muted);display:grid;place-items:center;cursor:pointer}.gvt button .i{width:16px;height:16px}.gvt button.on{background:#fff;color:var(--s-blue);box-shadow:0 1px 3px rgba(15,27,61,.12)}.gvt button:focus-visible{outline:2px solid var(--s-blue);outline-offset:1px}
 .gpcell .gtin{justify-self:start;box-sizing:border-box;width:56px;height:24px;padding:0 6px;gap:1px;border-radius:7px;font-size:12.5px;justify-content:flex-start}.gpcell .gtin input{width:2.4em;text-align:left;padding:0}.gpcell .gtin span{font-size:12px}
 .gpv{display:grid;gap:12px;margin-top:12px}.gpr{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:12px 20px;align-items:center;border:1px solid #e3e9f6;border-radius:14px;background:#fff;padding:16px 18px}
-.gpl{display:flex;gap:12px;align-items:flex-start;min-width:0}.gpl .gav{width:36px;height:36px;font-size:14px;box-shadow:none;background:linear-gradient(160deg,#6f95ff,#2554e6);color:#fff}.gpl b{font-size:16px;font-weight:650}.gtot{margin-top:12px}.gtot-r{display:flex;gap:10px;flex-wrap:wrap}.gtot-r span{font-size:12.5px;padding:5px 11px;border-radius:999px;background:#eef2f9;color:var(--s-muted)}.gtot-r b{font-variant-numeric:tabular-nums}.gtot-r .good{background:#e3f5ec;color:#17704c}.gtot-r .bad{background:#fff1e0;color:#b3591a}
+.gpl{display:flex;gap:12px;align-items:flex-start;min-width:0}.gpl .gav{width:36px;height:36px;font-size:14px;box-shadow:none;background:linear-gradient(160deg,#6f95ff,#2554e6);color:#fff}.gpl b{font-size:16px;font-weight:650}.gtot{margin-top:12px}.gtot:empty{display:none}.gtot-r{display:flex;gap:10px;flex-wrap:wrap}.gtot-r span{font-size:12.5px;padding:5px 11px;border-radius:999px;background:#eef2f9;color:var(--s-muted)}.gtot-r b{font-variant-numeric:tabular-nums}.gtot-r .good{background:#e3f5ec;color:#17704c}.gtot-r .bad{background:#fff1e0;color:#b3591a}
 .gtot-m{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#fff7ec;border:1px solid #f6dcb8;font-size:13px;color:#8a4a12}.gtot-m .i{width:16px;height:16px;flex:none;margin-top:1px}
 .gscl{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin:0;font-size:12.5px;color:var(--s-muted)}.gscl span{font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:600}.gscl b{color:var(--s-ink2);font-weight:650;font-variant-numeric:tabular-nums}
 .gpcell.sc{background:#fff;gap:4px}.gpcell.sc .gpv2{font-size:14.5px;color:var(--s-ink2)}
@@ -2457,9 +2457,9 @@ function gPhaseTable(sel,best){var m=gAlloc(), one=sel.length===1;
 function gSam(el){var sm=gAlloc(), sk=+el.dataset.k, sv=Math.max(0,Math.min(100,Math.round(+el.value)||0)), sp2=picked();
   sm[el.dataset.n][sk]=sv; if(sp2.length===2) ALLOC[sk]=+sm[sp2[0].name][sk]||0;
   var gt=document.getElementById("gtot"); if(gt) gt.innerHTML=gTotHtml(); if(typeof patchAlloc==="function") patchAlloc()}
-function gTotHtml(){var bad=PH.filter(function(_,k){return phaseTot(k)!==100});
-  return '<div class="gtot-r">'+PH.map(function(x,k){var t=phaseTot(k), ok=t===100; return '<span class="'+(ok?'good':'bad')+'">'+x+' <b>'+t+'%</b>'+(ok?' ✓':'')+'</span>'}).join("")+'</div>'+
-    (bad.length?'<p class="gtot-m">'+I("warn")+'<span>The shares for '+bad.join(" and ")+' don\'t add up to 100%. Edit them so each process totals 100%.</span></p>':'')}
+function gTotHtml(){var bad=PH.filter(function(_,k){return phaseTot(k)!==100}); if(!bad.length) return "";
+  return '<div class="gtot-r">'+PH.map(function(x,k){var t=phaseTot(k); return t===100?"":'<span class="bad">'+x+' <b>'+t+'%</b></span>'}).join("")+'</div>'+
+    '<p class="gtot-m">'+I("warn")+'<span>The shares for '+bad.join(" and ")+' don\'t add up to 100%. Edit them so each process totals 100%.</span></p>'}
 document.addEventListener("input",function(e){if(e.target.dataset&&e.target.dataset.c==="sam") gSam(e.target)});
 /* the same choice read by partner: who they are on the left, their rate and a changeable share for each process on the right */
 function gPartnerView(sel,best){var m=gAlloc();
