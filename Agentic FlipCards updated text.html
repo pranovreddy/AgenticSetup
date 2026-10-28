@@ -3656,8 +3656,9 @@ function detailParts(i){
   if(CARD.big&&st.k!=="profile") return xBig(i,bigParts(i));
   if(st.k==="profile"){h=(F.plock?'<div class="xbar err">'+I("warn")+'<span><b>Couldn\'t find 3 fields that can\'t be edited here:</b> Legal Entity Name, Registered Address and Business PAN/TAN. You can\'t move forward until they are updated in DLT. '+(F.plock===2?'I checked DLT again and they are still empty. ':'')+'Update them in DLT, then retry here.</span></div>':'')+(F.ppart?'<div class="xbar err">'+I("warn")+'Couldn\'t fill 2 fields: Website URL and Sub Industry. Add them to submit.</div>':'')+(F.pret?'<div class="xbar warn">'+I("warn")+'Jio and Vi returned 2 fields. Correct them, then submit again.</div>':'')+'<div class="kyc"><div class="kyc-lg"><span class="kyc-lab">Enterprise logo</span><div class="kyc-logo'+(F.pf&&F.pf.k<0?' wait':'')+'"><img src="'+(F.logo||HDFC_LOGO)+'" alt="Enterprise logo"></div>'+((F.pf||F.ro)?'':'<label class="kyc-edit">'+I("upload")+'Change logo<input type="file" accept="image/*" data-c="logo"></label>'+(F.logo?'<span class="xedt">Edited</span>':''))+'</div><div class="fgrid">'+PROFILE.map(function(x,k){return fd(x[0],x[1],x[2],k===2,k)}).join("")+'</div></div>';
     if(F.ro) h=telcoPanel();
+    if(F.perr&&!F.ro) h+='<div class="xbar err" role="alert">'+I("warn")+'<span>That wasn\'t saved. Try again.</span></div>';
     if(F.punk) h+='<div class="xbar info"><span class="spn"></span>Checking whether that was saved…</div>';
-    if(F.ro) foot('',B("collapse","Back to cards","ghost")); else foot(authRow(),(F.perr?'<span class="ls xerr xfail" role="alert">'+I("warn")+'That wasn\'t saved. Try again.</span>':'')+primary(i))}
+    if(F.ro) foot('',B("collapse","Back to cards","ghost")); else foot(authRow(),primary(i))}
   if(st.k==="team"){
     h='<div class="tbar"><div class="chips" style="margin:0">'+
       [[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var n=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
