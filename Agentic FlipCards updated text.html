@@ -404,12 +404,8 @@ select.inp{height:36px;padding:0 8px}
 .bt-lobs .lob:not(:last-child):after{content:"";position:absolute;left:-18px;top:50%;height:calc(50% + 10px);border-left:1.5px solid #c3d2ee}
 .bt-nav{position:absolute;top:50%;z-index:3;width:32px;height:32px;margin-top:-16px;border-radius:50%;border:1px solid #d9e0ec;background:#fff;color:var(--s-ink2);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 12px rgba(15,27,61,.12)}.bt-nav.l{left:-6px}.bt-nav.r{right:-6px}.bt-nav .i{width:15px;height:15px}.bt-nav:hover{background:var(--s-soft)}
 .bt-hint{font-size:12.5px;color:var(--s-muted);margin:2px 0 0}
-.gnr{margin-top:16px;border:1px solid #e3e9f6;border-radius:16px;background:#fff;overflow:hidden}.gnrh{display:flex;align-items:baseline;gap:10px;padding:13px 16px;background:#f8faff;border-bottom:1px solid #e3e9f6}.gnrh b{font-size:14.5px;font-weight:650}.gnrh>span{font-size:11.5px;font-weight:700;color:var(--s-blue);background:var(--s-soft);padding:2px 8px;border-radius:999px}.gnrh em{font-style:normal;font-size:12.5px;color:var(--s-muted)}
-.gnrr+.gnrr{border-top:1px solid #eef2f9}.gnrb{appearance:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto 18px;gap:14px;align-items:center;width:100%;padding:12px 16px;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}.gnrb:hover{background:#fafcff}.gnrb:focus-visible{outline:2px solid var(--s-blue);outline-offset:-2px}
-.gnrb .gav{width:32px;height:32px;font-size:13px;box-shadow:none;background:#e4e9f5;color:#5b6b8c}.gnrt b{display:block;font-size:14.5px;font-weight:650;color:#3b4763}.gnrt small{display:block;margin-top:2px;font-size:12.5px;color:var(--s-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gnrc{display:flex;gap:8px}.gnrchip{display:grid;gap:1px;min-width:84px;padding:6px 10px;border:1px solid #eef2f9;border-radius:10px;background:#fbfcff}.gnrchip i{font-style:normal;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--s-muted);font-weight:600}.gnrchip b{font-size:14px;font-variant-numeric:tabular-nums;color:var(--s-ink2)}.gnrchip em{font-style:normal;font-size:11px;font-weight:600}.gnrchip em.up{color:#b3591a}.gnrchip em.eq{color:#17704c}
-.gnrb .gchev{width:16px;height:16px;color:#8aa0c8}.gnrx{display:flex;gap:16px;align-items:baseline;padding:0 16px 14px 62px;font-size:13px;color:var(--s-muted)}.gnrx>b{color:var(--s-ink2)}.gnrx span b{color:var(--s-ink)}
-@media (max-width:820px){.gnrb{grid-template-columns:auto minmax(0,1fr) 18px}.gnrc{display:none}}
+.gnr{margin-top:14px;border:1px solid #e3e9f6;border-radius:14px;background:#fff;overflow:hidden}.gnrh{appearance:none;display:flex;align-items:center;gap:8px;width:100%;padding:11px 14px;border:0;background:#f8faff;font:inherit;color:inherit;text-align:left;cursor:pointer}.gnrh b{font-size:14px;font-weight:650}.gnrh span{font-size:12.5px;color:var(--s-muted)}.gnrh .gchev{margin-left:auto;width:16px;height:16px;color:#8aa0c8}
+.gnrr{display:flex;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid #eef2f9;font-size:13px}.gnrr .gav{width:24px;height:24px;font-size:11px;box-shadow:none;background:#e4e9f5;color:#5b6b8c}.gnrr>b{min-width:90px;color:#3b4763}.gnrc{display:flex;gap:16px;margin-left:auto;color:var(--s-muted)}.gnrc b{color:var(--s-ink2);font-variant-numeric:tabular-nums}
 .gcountrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .gvt{display:inline-flex;gap:3px;padding:3px;border-radius:10px;background:#eef2f9}.gvt button{appearance:none;width:34px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--s-muted);display:grid;place-items:center;cursor:pointer}.gvt button .i{width:16px;height:16px}.gvt button.on{background:#fff;color:var(--s-blue);box-shadow:0 1px 3px rgba(15,27,61,.12)}.gvt button:focus-visible{outline:2px solid var(--s-blue);outline-offset:1px}
 .gpv{display:grid;gap:12px;margin-top:12px}.gpr{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:20px;align-items:center;border:1px solid #e3e9f6;border-radius:14px;background:#fff;padding:16px 18px}
@@ -2447,14 +2443,12 @@ function gtmCard(){if(F.gpart) return gpartCard();
     return '<div class="gt'+(b?' bst':'')+'"><span>'+x+(b?I("check"):"")+'</span><b>₹'+p.r[k].toFixed(2)+'</b>'+(sh?'<em>'+sh+'%</em>':'')+'</div>'}).join("")+'</div>'+
     '<div class="gsc"><b>Scrubbing</b>'+["SMS","Call","RCS"].map(function(x,k){return '<span>'+x+' <b>₹'+p.s[k].toFixed(2)+'</b></span>'}).join("")+'</div>'}
   function head(p,right){return '<div class="gph"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b>'+right+'</div>'}
-  var byP=F.gview==="partner";
-  var c='<div class="gcountrow"><div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners recommended</div><div class="gvt" role="tablist" aria-label="View"><button type="button" role="tab" aria-selected="'+!byP+'" class="'+(byP?'':'on')+'" data-a="gview" data-v="process" title="By process" aria-label="By process">'+I("list")+'</button><button type="button" role="tab" aria-selected="'+byP+'" class="'+(byP?'on':'')+'" data-a="gview" data-v="partner" title="By partner" aria-label="By partner">'+I("users")+'</button></div></div>'+(byP?gPartnerView(sel,best):gPhaseTable(sel,best)+
-    '<div class="gwhy">'+sel.map(function(p){return '<div><i class="gav">'+p.name[0]+'</i><span><b>'+esc(p.name)+'</b>'+esc(p.why)+'</span></div>'}).join("")+'</div>');
+  var byP=false;
+  var c='<div class="gcountrow"><div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners recommended</div></div>'+(byP?gPartnerView(sel,best):gPhaseTable(sel,best));
   var rest=PARTNERS.filter(function(p){return !p.pick});
   if(false&&sel.length===2) c+='<div class="gsp"><h6>Volume split by phase</h6>'+PH.map(function(x,k){var a=ALLOC[k];return '<div class="gsr"><span>'+x+'</span><div class="gbar"><i style="width:'+a+'%"><b>'+esc(sel[0].name)+' '+a+'%</b></i><i class="v" style="width:'+(100-a)+'%"><b>'+esc(sel[1].name)+' '+(100-a)+'%</b></i></div></div>'}).join("")+'</div>';
-  if(rest.length) c+='<section class="gnr"><div class="gnrh"><b>Other partners</b><span>'+rest.length+'</span><em>Not recommended. Their rates are higher than the best in at least one process.</em></div>'+rest.map(function(p){var o=F2[p.name];
-    return '<div class="gnrr'+(o?' open':'')+'"><button type="button" class="gnrb" data-a="gexp" data-v="'+esc(p.name)+'" aria-expanded="'+(!!o)+'"><i class="gav">'+p.name[0]+'</i><span class="gnrt"><b>'+esc(p.name)+'</b><small>'+esc(p.why)+'</small></span><span class="gnrc">'+PH.map(function(x,k){var d=p.r[k]-best[k]; return '<span class="gnrchip"><i>'+x+'</i><b>₹'+p.r[k].toFixed(2)+'</b><em class="'+(d>0.004?'up':'eq')+'">'+(d>0.004?'+₹'+d.toFixed(2):'Best')+'</em></span>'}).join("")+'</span><svg class="i gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(o?"m6 15 6-6 6 6":"m6 9 6 6 6-6")+'"/></svg></button>'+
-      (o?'<div class="gnrx"><b>Scrubbing</b>'+["SMS","Call","RCS"].map(function(x,k){return '<span>'+x+' <b>₹'+p.s[k].toFixed(2)+'</b></span>'}).join("")+'</div>':'')+'</div>'}).join("")+'</section>';
+  if(rest.length){var no=!!F.gnro; c+='<section class="gnr'+(no?' open':'')+'"><button type="button" class="gnrh" data-a="gnro" aria-expanded="'+no+'"><b>Other partners</b><span>'+rest.length+'</span><svg class="i gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(no?"m6 15 6-6 6 6":"m6 9 6 6 6-6")+'"/></svg></button>'+(no?rest.map(function(p){
+    return '<div class="gnrr"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b><span class="gnrc">'+PH.map(function(x,k){return '<span>'+x+' <b>₹'+p.r[k].toFixed(2)+'</b></span>'}).join("")+'</span></div>'}).join(""):'')+'</section>'}
   return c;
 }
 function cardSummary(i){
@@ -3806,6 +3800,7 @@ document.addEventListener("click",function(e){
   else if(a==="tf"){F.tf=+el.dataset.v; refresh()}
   else if(a==="tclear"){F.tq=""; F.tf=-1; refresh()}
   else if(a==="lobf"){F.lobf=el.dataset.v; F.tpage=0; refresh()}
+  else if(a==="gnro"){F.gnro=!F.gnro; refresh()}
   else if(a==="gexp"){F.gexp=F.gexp||{}; F.gexp[el.dataset.v]=!F.gexp[el.dataset.v]; refresh()}
   else if(a==="tt"){F.tt=el.dataset.v; refresh()}
   else if(a==="auopen"){openAddUser()}
