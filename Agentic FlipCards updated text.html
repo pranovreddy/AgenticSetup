@@ -387,6 +387,25 @@ select.inp{height:36px;padding:0 8px}
 .bg-pop a{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:560;color:#2563eb;text-decoration:none;word-break:break-all}.bg-pop a:hover{text-decoration:underline}.bg-pop a .i{width:11px;height:11px;flex:none}
 .bg-ev:hover~.bg-pop,.bg-ev:focus~.bg-pop,.bg-pop:hover{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition-delay:0s}
 .bg-card:has(.bg-ev:hover),.bg-card:has(.bg-ev:focus),.bg-card:has(.bg-pop:hover){z-index:5}
+/* brands as a tree: enterprise, then each brand on a trunk, its lines of business as rows beneath */
+.bt2{margin-top:2px}
+.bt2-ent{display:flex;align-items:center;gap:14px;padding:4px 0 22px}
+.bt2-lg{width:52px;height:52px;border-radius:14px;border:1px solid var(--s-line);background:#fff;display:grid;place-items:center;overflow:hidden;flex:none}.bt2-lg img{width:38px;height:38px;object-fit:contain}
+.bt2-ent small{font-size:12.5px;color:var(--s-muted)}.bt2-ent h4{margin:1px 0;font-size:19px;font-weight:700;color:var(--s-ink)}.bt2-ent p{margin:0;font-size:13px;color:var(--s-muted)}
+.bt2-brs{padding-left:40px;display:grid;gap:22px;margin-left:14px;border-left:0}
+.bt2-b{position:relative}
+.bt2-b:before{content:"";position:absolute;left:-26px;top:-22px;height:44px;width:20px;border-left:2px solid #d8e1f2;border-bottom:2px solid #d8e1f2;border-radius:0 0 0 12px}
+.bt2-b:not(:last-child):after{content:"";position:absolute;left:-26px;top:22px;bottom:-22px;border-left:2px solid #d8e1f2}
+.bt2-b:first-child:before{top:-48px;height:70px}
+.bt2-b header{display:flex;align-items:center;gap:12px;min-height:44px}
+.bt2-b h5{margin:0;font-size:16.5px;font-weight:650;color:var(--s-ink)}.bt2-b header em{font-style:normal;font-size:12.5px;color:var(--s-muted);padding:2px 9px;border-radius:999px;background:#f0f4fb}
+.bt2-l{list-style:none;margin:10px 0 0 56px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 18px}
+.bt2-l li{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px 9px 22px;border-radius:10px;transition:background .14s}
+.bt2-l li:before{content:"";position:absolute;left:8px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#9bb3e3}
+.bt2-l li:hover{background:#f4f7fd}
+.bt2-l li b{display:block;font-size:14.5px;font-weight:600;color:var(--s-ink)}.bt2-l li small{display:block;margin-top:2px;font-size:12.5px;color:var(--s-muted)}
+.bt2-b:has(.bg-ev:hover),.bt2-b:has(.bg-ev:focus),.bt2-b:has(.bg-pop:hover){z-index:5}
+@media (max-width:760px){.bt2-brs{padding-left:30px}.bt2-l{margin-left:0;grid-template-columns:1fr}}
 @media (max-width:760px){.bg-grid{grid-template-columns:1fr}.bg-grid:before{display:none}}
 .bt{position:relative;margin-top:14px}
 .bt-scroll{overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#c3d2ee transparent}
@@ -3635,9 +3654,9 @@ function detailParts(i){
         return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+n+'</button>'}).join("")+'</div><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name or email" value="'+esc(F.tq)+'"></label></div><div id="teamRows">'+teamRows()+'</div>';
     foot('<button class="btn ghost" data-a="details">'+I("max")+'Edit manually</button><span class="ls">'+onPeople().length+' out of '+PEOPLE.length+' selected</span>',laterBtn(1,"later")+primary(i))}
   if(st.k==="brands"){var pl=function(n,w){return n+" "+w+(n===1?"":"s")}, nb=BRANDS.length;
-    h='<div class="bg">'+
-      '<div class="bg-grid'+(nb===1?' one':'')+'">'+BRANDS.map(function(br){return '<section class="bg-card"><header><span class="blogo round" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><div><h4>'+esc(br.name)+'</h4><p>'+pl(br.lobs.length,"line")+' of business</p></div></header><ul>'+br.lobs.map(function(l){var d=PM_LOB[l]; var note=d?d[0]:"Found under "+br.name+" in your DLT registration.", link=d&&br.name==="HDFC Bank"?'<a href="https://www.hdfc.com/en/home.html" target="_blank" rel="noopener">https://www.hdfc.com/en/home.html'+I("max")+'</a>':'';
-        return '<li><div><b>'+esc(l)+'</b>'+(d?'<small>'+d[1].map(esc).join(" · ")+'</small>':'')+'</div><i class="bg-ev" tabindex="0" role="button" aria-label="Show evidence for '+esc(l)+'">'+I("list")+'</i><span class="bg-pop" role="tooltip"><em>'+I("list")+'Evidence:</em>'+esc(note)+link+'</span></li>'}).join("")+'</ul></section>'}).join("")+'</div></div>';
+    var nl=BRANDS.reduce(function(a,b){return a+b.lobs.length},0);
+    h='<div class="bg"><div class="bt2"><div class="bt2-ent"><span class="bt2-lg"><img src="'+(F.logo||HDFC_LOGO)+'" alt=""></span><div><small>Enterprise</small><h4>HDFC Bank Limited</h4><p>'+pl(nb,"brand")+' · '+pl(nl,"line")+' of business</p></div></div><div class="bt2-brs">'+BRANDS.map(function(br){return '<section class="bt2-b"><header><span class="blogo" style="--c:'+br.logo[2]+'"><b>'+br.logo[0]+'</b><i>'+br.logo[1]+'</i></span><h5>'+esc(br.name)+'</h5><em>'+pl(br.lobs.length,"line")+'</em></header><ul class="bt2-l">'+br.lobs.map(function(l){var d=PM_LOB[l]; var note=d?d[0]:"Found under "+br.name+" in your DLT registration.", link=d&&br.name==="HDFC Bank"?'<a href="https://www.hdfc.com/en/home.html" target="_blank" rel="noopener">https://www.hdfc.com/en/home.html'+I("max")+'</a>':'';
+        return '<li><div><b>'+esc(l)+'</b>'+(d?'<small>'+d[1].map(esc).join(" · ")+'</small>':'')+'</div><i class="bg-ev" tabindex="0" role="button" aria-label="Show evidence for '+esc(l)+'">'+I("list")+'</i><span class="bg-pop" role="tooltip"><em>'+I("list")+'Evidence:</em>'+esc(note)+link+'</span></li>'}).join("")+'</ul></section>'}).join("")+'</div></div></div>';
     foot(checkRow("bok",F.bok,"<b>I've reviewed these details and they're correct.</b>"),'<button class="btn ghost" data-a="details">'+I("max")+'View and edit</button>'+primary(i))}
   if(st.k==="gtm"){var pk=picked(), c2="30px 1.1fr repeat(3,74px) 1.5fr";
     h='<div class="row hd" style="grid-template-columns:'+c2+'"><span></span><span>Partner</span>'+PH.map(function(x){return '<span>'+x+'</span>'}).join("")+'<span>Why</span></div>'+PARTNERS.map(function(x,k){return '<div class="row" style="grid-template-columns:'+c2+';opacity:'+(x.pick?1:.7)+'"><span class="ck'+(x.pick?' on':'')+'" data-a="ptn" data-i="'+k+'">'+(x.pick?I("check"):'')+'</span><b>'+esc(x.name)+'</b>'+x.r.map(function(r){return '<span>₹'+r.toFixed(2)+'</span>'}).join("")+'<span class="rm">'+esc(x.why)+'</span></div>'}).join("")+
