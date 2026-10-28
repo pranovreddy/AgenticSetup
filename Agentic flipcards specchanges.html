@@ -3751,7 +3751,7 @@ function titleCase(t){var w=t.split(/(\s+)/), n=0, last=-1; w.forEach(function(x
 function btnIcon(t){t=t.toLowerCase();
   if(/^add\b/.test(t)) return ["plus",0];
   if(/\bback\b|^go back/.test(t)) return ["back",0];
-  if(/try again|retry/.test(t)) return ["retry",0];
+  if(/try again|retry|check again/.test(t)) return ["retry",0];
   if(/send|submit/.test(t)) return ["send",0];
   if(/accept|confirm|^done|continue anyway|approve/.test(t)) return ["check",0];
   if(/later|skip/.test(t)) return ["clock",0];
