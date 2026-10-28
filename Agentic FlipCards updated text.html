@@ -2475,7 +2475,7 @@ function gtmCard(){if(F.gpart) return gpartCard();
   var c='<div class="gcountrow"><div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners recommended</div></div>'+(byP?gPartnerView(sel,best):gPhaseTable(sel,best));
   var rest=PARTNERS.filter(function(p){return !p.pick});
   if(false&&sel.length===2) c+='<div class="gsp"><h6>Volume split by phase</h6>'+PH.map(function(x,k){var a=ALLOC[k];return '<div class="gsr"><span>'+x+'</span><div class="gbar"><i style="width:'+a+'%"><b>'+esc(sel[0].name)+' '+a+'%</b></i><i class="v" style="width:'+(100-a)+'%"><b>'+esc(sel[1].name)+' '+(100-a)+'%</b></i></div></div>'}).join("")+'</div>';
-  if(rest.length){var no=!!F.gnro; c+='<section class="gnr'+(no?' open':'')+'"><button type="button" class="gnrh" data-a="gnro" aria-expanded="'+no+'"><b>Other partners</b><span>'+rest.length+'</span><svg class="i gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(no?"m6 15 6-6 6 6":"m6 9 6 6 6-6")+'"/></svg></button>'+(no?rest.map(function(p){
+  if(rest.length){var no=!!F.gnro; c+='<section class="gnr'+(no?' open':'')+'"><button type="button" class="gnrh" data-a="gnro" aria-expanded="'+no+'"><b>Other requests</b><span>'+rest.length+'</span><svg class="i gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(no?"m6 15 6-6 6 6":"m6 9 6 6 6-6")+'"/></svg></button>'+(no?rest.map(function(p){
     return '<div class="gnrr"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b><span class="gnrc">'+PH.map(function(x,k){return '<span>'+x+' <b>₹'+p.r[k].toFixed(2)+'</b></span>'}).join("")+'</span></div>'}).join(""):'')+'</section>'}
   return c;
 }
