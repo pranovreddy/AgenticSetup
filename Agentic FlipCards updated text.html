@@ -2673,10 +2673,10 @@ function final(){
   var fv=F.fin, sk=fv==="skipped";
   var rows=facts([["KYC details",F.later[0]?"Left for later":"Approved by "+opsN()+" out of 4 telcos"],["Team",(F.teamLater||F.later[1])?"Left for later":"Sent invitations to "+(PEOPLE.filter(function(p){return p.inv}).length||tl)+" users"],["Brands and LOBs",F.later[2]?"Left for later":BRANDS.length+" brands and "+lobCount()+" lines of business set up"],["GTM partners",F.later[3]?"Left for later":picked().length+" GTM partners selected. "+picked().map(function(p){return p.name}).join(" and ")],["Templates",(sk||F.later[4])?"Left for later":(100-unmapped())+" out of 100 mapped"]]);
   var clock='<div class="cl-lbl">Migration '+(fv==="notopen"?"opens":"closes")+' in</div><div class="clock" id="clock"></div>';
-  say({kick:"Onboarding Agent · setup complete", line:sk?"You can start migration":"You're set to start migration",
+  say({kick:"Onboarding Agent · setup complete", line:sk?"You can start migration":fv==="closed"?"You're set to start acquisition":"You're set to start migration",
     sub:sk?"You can invite people any time from User and Roles, and map templates any time from Promo Template Mapping.":fv==="notopen"?"Your migration window opens on 25 October 2026.":fv==="closed"?"Your migration window closed on 19 October 2026. You can start collecting new consents instead.":"Here is what was set up for HDFC Bank Limited.",
     extra:rows+(fv==="closed"?'':clock)+
-      '<div class="acts">'+(fv==="closed"?'<button class="btn" data-a="xreq">Request a new window'+I("arrow")+'</button>':'<button class="btn" data-a="mig"'+(fv==="notopen"?' disabled':'')+'>Start migration'+I("arrow")+'</button>')+'</div>',
+      '<div class="acts">'+(fv==="closed"?'<button class="btn" data-a="xacq">Start acquisition'+I("arrow")+'</button>':'<button class="btn" data-a="mig"'+(fv==="notopen"?' disabled':'')+'>Start migration'+I("arrow")+'</button>')+'</div>',
     status:[fv==="closed"?"Window closed":fv==="notopen"?"Window opens 25 Oct":"Setup complete",fv==="closed"?"attn":"done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
   var end=fv==="notopen"?OPEN_AT:Date.now()+30*864e5;
   var clockSet=false;
@@ -3820,7 +3820,7 @@ document.addEventListener("click",function(e){
   else if(a==="xcont"){F.tov=null; refresh(); toast("Templates will be mapped to the approved LOBs only")}
   else if(a==="xgretry"){F.gx=null; if(F.mode==="gate") renderCard(); else refresh()}
   else if(a==="xdl") toast("Terms of Use downloaded as a PDF");
-  else if(a==="xreq") toast("Request sent to your account manager");
+  else if(a==="xacq") toast("Taking you to acquisition");
   else if(a==="xonline") offline(false);
   else if(a==="stepov"){if(["review","final","pass"].indexOf(F.mode)>=0&&!F.kv&&!CARD.big) stepOverview(+el.dataset.i)}
   else if(a==="ovback"){var r=F.ovRet; F.ovRet=null; F.face=null; F.ro=false; if(r&&r.mode==="review"){F.active=r.i; review(r.i)} else {hideCard(); final()}}
@@ -3948,16 +3948,16 @@ function jump(w){
       [].forEach.call(g.querySelectorAll("button"),function(b){var m=!q||b.textContent.toLowerCase().indexOf(q)>=0||g.firstElementChild.textContent.toLowerCase().indexOf(q)>=0; b.style.display=m?"":"none"; if(m) any=true});
       g.style.display=any?"":"none"; g.open=q?any:false})});
   $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on"); if(pm.classList.contains("on")){arrangeMenu(); setTimeout(function(){try{$("pmq").focus({preventScroll:true})}catch(x){}},30)}};
-  pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); HOLD=[]; XS[x.dataset.x](); return}
+  pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); HOLD=null; XS[x.dataset.x](); return}
     var b=e.target.closest("[data-j]"); if(!b) return; var j=b.dataset.j;
     if(j==="glyph"){GLYPH=GLYPH==="tri"?"arrow":"tri"; b.textContent=GLYPH==="tri"?"Pixels: use arrows":"Pixels: use triangles"; makeSprites(); return}
     if(j==="pause"){paused=!paused; b.textContent=paused?"Play motion":"Pause motion"; return}
-    pm.classList.remove("on"); HOLD=[]; jump(j)};
+    pm.classList.remove("on"); HOLD=null; jump(j)};
 })();
 
 var CLOSE_AT=Date.now()+30*864e5, OPEN_AT=Date.now()+11*864e5;
 (function cd(){var op=F.mode==="final"&&F.fin==="notopen", s=Math.max(0,Math.floor(((op?OPEN_AT:CLOSE_AT)-Date.now())/1000)), t=Math.floor(s/86400)+"d "+String(Math.floor(s/3600)%24).padStart(2,"0")+"h "+String(Math.floor(s/60)%60).padStart(2,"0")+"m";
-  document.querySelectorAll(".cdv").forEach(function(e){e.textContent=t}); var cl=document.querySelector("#closes small"); if(cl) cl.textContent="Migration "+(op?"opens":"closes")+" in"; setTimeout(cd,1000)})();
+  var cld=F.mode==="final"&&F.fin==="closed"; document.querySelectorAll(".cdv").forEach(function(e){e.textContent=cld?"19 Oct 2026":t}); var cl=document.querySelector("#closes small"); if(cl) cl.textContent=cld?"Migration closed on":"Migration "+(op?"opens":"closes")+" in"; setTimeout(cd,1000)})();
 resize();
 $("lgnLogo").src=LOGO;
 function showLogin(){clearLater(); closeSheet(); hideCard(); closeApp(); F.mode="msg"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["",""]}); $("lgn").classList.remove("out"); document.body.classList.add("lgnon"); $("lgnR").dataset.view="creds"; $("lgnEmail").value=""; $("lgnPass").value=""; $("lgnGo").classList.remove("rdy"); [].forEach.call($("lgnOtp").querySelectorAll("input"),function(i){i.value=""}); try{$("lgnEmail").focus({preventScroll:true})}catch(e){}}
