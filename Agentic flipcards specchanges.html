@@ -887,6 +887,7 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 /* a soft white veil between the blurred content and the alert, so only the alert reads */
 .xovw::after{content:"";position:absolute;inset:-8px;z-index:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,rgba(255,255,255,.96),rgba(255,255,255,.82))}
 .xovw .xov{z-index:1}
+.tplov .xblur{display:none}.tplov::after{display:none}.tplov .xov{position:relative;inset:auto;padding:6px 40px 14px}.tplov .xov h3{margin-top:10px}.tplov .xic{width:48px;height:48px}.tplov .xov p{margin:4px 0;max-width:560px;font-size:13.5px}.tplov .xamb{padding:8px 12px;margin:8px 0}
 .xov{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;padding:20px 40px}
 .xov h3{margin:14px 0 6px;font-size:18px}
 .xmail{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:15px;font-weight:600;color:var(--s-blue);text-decoration:none;padding:8px 14px;border-radius:10px;background:var(--s-soft)}
@@ -2550,7 +2551,7 @@ function cardHTML(){
     p={title:heading(i),tog:'',body:dn?okFace():'<div class="kvw"><div class="ld kv"><div class="ld-crop"><iframe title="Checking your business details" tabindex="-1" aria-hidden="true"></iframe></div></div><div class="kvcap"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span class="t" id="kvcap">'+kvText()[2]+'</span></div></div>',l:'',r:''}}
   if(st.k==="profile"&&F.pf&&!CARD.big) p.extra='<div class="fillpill"><span class="kvai"><canvas class="mblob" aria-hidden="true"></canvas></span><span>Filling in <b id="fillf">your business details</b></span><i class="dots"><b></b><b></b><b></b></i></div>';
   if(st.k==="profile"&&F.plock&&!CARD.big){p.body='<div class="xovw"><div class="xblur">'+p.body+'</div>'+plockOverlay()+'</div>'; chips='<span class="chipmini amb dot">Nothing found</span>'; p.l=''}
-  if(st.k==="templates"&&F.tov&&!CARD.big){p.body='<div class="xovw"><div class="xblur">'+p.body+'</div>'+tplOverlay()+'</div>'; p.r=p.r.replace('data-a="tpl"','data-a="tpl" disabled'); if(F.tov==="lock"){chips='<span class="chipmini sl">Locked</span>'; p.title="Templates"}}
+  if(st.k==="templates"&&F.tov&&!CARD.big){p.body='<div class="xovw tplov"><div class="xblur">'+p.body+'</div>'+tplOverlay()+'</div>'; p.r=p.r.replace('data-a="tpl"','data-a="tpl" disabled'); if(F.tov==="lock"){chips='<span class="chipmini sl">Locked</span>'; p.title="Templates"}}
   if(CARD.big) kick=STEPLINE(i);
   p.kick=kick; p.chips=chips; if(!CARD.big){p.sum=subline(i); if(SHOW_TCCCPR&&st.k==="brands") p.sum+=" These suggestions are TCCCPR compliant."} return cardWrap(p);
 }
