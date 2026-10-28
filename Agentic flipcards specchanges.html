@@ -3985,7 +3985,7 @@ function jump(w){
     '</details>'+XMENU.map(function(g){return '<details class="pmg"><summary>'+g[0]+'<i>'+g[1].length+'</i></summary>'+g[1].map(function(x){return '<button data-x="'+x[1]+'">'+x[0]+'</button>'}).join("")+'</details>'}).join("");
   pm.insertAdjacentHTML("afterbegin",'<div class="pmq"><input id="pmq" type="search" placeholder="Search states" autocomplete="off" aria-label="Search states"></div>');
   /* a fixed order: the flow first, then each step in sequence, then the other scenarios at the end. It never rearranges itself when the page changes. */
-  var ORDER=["Flow","Agreements","Agent messages","Card animation","AI processing","KYC details","Team","Brands and LOBs","GTM partners","Templates","Finale","Finished steps: View details","Whole screen","Edge cases"];
+  var ORDER=["Flow","Card animation","Agreements","Agent messages","AI processing","KYC details","Team","Brands and LOBs","GTM partners","Templates","Finale","Finished steps: View details","Whole screen","Edge cases"];
   var MENU0=[].slice.call(pm.querySelectorAll("details.pmg"));
   function gname(g){return g.firstElementChild.childNodes[0].textContent.trim()}
   MENU0.sort(function(x,y){var i=ORDER.indexOf(gname(x)), j=ORDER.indexOf(gname(y)); return (i<0?99:i)-(j<0?99:j)}).forEach(function(g){pm.appendChild(g)});
