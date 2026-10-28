@@ -894,6 +894,10 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 @media (max-width:700px){.bem-steps{grid-template-columns:1fr;gap:18px}.bem-steps:before{display:none}}
 .xdlg.incard{inset:auto;z-index:9;border-radius:0;background:rgba(10,24,70,.28)}
 /* team details: each suggested user is a collapsible card */
+.tsec{margin:6px 0 18px}.tbar+#teamRows{margin-top:20px}.tsh{display:flex;align-items:center;gap:10px;margin:0 0 10px;font:inherit;color:var(--s-ink)}.tsh b{font-size:16px;font-weight:650}.tsh>span{font-size:12px;font-weight:700;color:var(--s-blue);background:var(--s-soft);padding:2px 9px;border-radius:999px}.tsh em{font-style:normal;font-size:13px;color:var(--s-muted)}
+.tsht{width:100%;padding:12px 14px;border:1px solid var(--s-line);border-radius:12px;background:#f8faff;cursor:pointer;text-align:left}.tsht:hover{background:#f1f5ff}.tsht .tuch{margin-left:auto;width:18px;height:18px;transition:transform .2s}.tsug.open .tsht .tuch{transform:rotate(180deg)}.tsug.open .tsht{margin-bottom:10px}
+.tdt{border:1px solid var(--s-line);border-radius:14px;background:#fff;overflow:hidden}.tdr{display:grid;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--s-line);font-size:13.5px}.tdr.hd{border-top:0;background:#f8fafd;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--s-muted);font-weight:600;padding-top:10px;padding-bottom:10px}.tdr .inp{min-width:0}
+.tdu{display:flex;gap:11px;align-items:center;min-width:0}.tdu .rm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tnone{padding:16px 4px;color:var(--s-muted);font-size:14px}
 .tucs{display:grid;gap:10px;padding:4px 0 8px}
 .tuc{border:1px solid var(--s-line);border-radius:14px;background:#fff;overflow:hidden;transition:border-color .18s var(--ease-out),box-shadow .18s var(--ease-out)}
 .tuc.open{border-color:#cfdcf7;box-shadow:0 10px 24px -18px rgba(20,50,140,.45)}
@@ -2700,17 +2704,25 @@ function renderSheet(){
 }
 var TCOLS="30px minmax(0,300px) 150px minmax(0,1fr) minmax(0,1fr)";
 function tcols(){return TCOLS+" 30px"}
-function teamCards(){
-  var q=F.tq.trim().toLowerCase(), rows=PEOPLE.map(function(x,k){return [x,k]}).filter(function(r){var x=r[0];
-    return (F.tf<0||x.role===F.tf)&&(!q||(x.name+" "+x.email+" "+x.dept+" "+ROLES[x.role]).toLowerCase().indexOf(q)>=0)});
-  F.topen=F.topen||{};
+function teamCards(){ /* users invited are the main list; the agent's suggestions sit apart, collapsible, and go away once none are left */
+  var q=F.tq.trim().toLowerCase(), match=function(x){return (F.tf<0||x.role===F.tf)&&(!q||(x.name+" "+x.email+" "+x.dept+" "+ROLES[x.role]).toLowerCase().indexOf(q)>=0)};
+  var all=PEOPLE.map(function(x,k){return [x,k]}), inv=all.filter(function(r){return r[0].inv}), sug=all.filter(function(r){return !r[0].inv});
+  var shown=function(list){return list.filter(function(r){return match(r[0])})};
   if(!PEOPLE.length) return '<div class="xface"><span class="xic sl">'+I("search")+'</span><h3>No users yet</h3><p>Add the people who should get access.</p><div class="xbtns"><button class="btn" data-a="auopen">+ Add user</button></div></div>';
-  if(!rows.length) return '<div class="empty">No people match your search. <button class="btn ghost" data-a="tclear">Clear search</button></div>';
-  return '<div class="tucs">'+rows.map(function(r){var x=r[0],k=r[1],op=!!F.topen[x.email];
-    return '<div class="tuc'+(op?' open':'')+'"><button type="button" class="tuh" data-a="tuopen" data-i="'+k+'" aria-expanded="'+op+'"><div class="av">'+x.i+'</div><div class="tun"><div class="rn">'+esc(x.name)+'</div><div class="rm">'+esc(x.title||x.dept)+'</div></div><span class="rolep">'+esc(ROLES[x.role])+'</span><span class="tust'+(x.inv?' sent':'')+'">'+(x.inv?'Invite sent':'Not invited')+'</span><svg class="tuch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>'+
-      (op?'<div class="tub"><label>Work email<b>'+esc(x.email)+'</b></label><label>Mobile<b>'+esc(x.mob)+'</b></label><label>Department<select class="inp" data-c="dept" data-i="'+k+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select></label><label>Role<select class="inp" data-c="role" data-i="'+k+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select></label>'+
-        '<div class="tuacts"><span class="ls">'+esc(RDESC[x.role])+'</span><button class="btn ghost" data-a="rmp" data-i="'+k+'">Remove</button>'+(x.inv?'<button class="btn ghost" data-a="pinv" data-i="'+k+'">Resend invite</button>':'<button class="btn" data-a="pinv" data-i="'+k+'">Send invite</button>')+'</div></div>':'')+'</div>'}).join("")+'</div>';
-}
+  var cols="minmax(0,1.7fr) 130px minmax(0,1fr) minmax(0,1fr) auto 28px";
+  var head='<div class="tdr hd" style="grid-template-columns:'+cols+'"><span>User</span><span>Mobile</span><span>Department</span><span>Role</span><span></span><span></span></div>';
+  var row=function(r,invited){var x=r[0],k=r[1]; return '<div class="tdr" style="grid-template-columns:'+cols+'"><div class="tdu"><div class="av">'+x.i+'</div><div><div class="rn">'+esc(x.name)+'</div><div class="rm">'+esc(x.title||"")+'</div><div class="rm">'+esc(x.email)+'</div></div></div><span class="rm">'+esc(x.mob)+'</span>'+
+    '<select class="inp" data-c="dept" data-i="'+k+'" aria-label="Department for '+esc(x.name)+'">'+DEPTS.map(function(d){return '<option'+(d===x.dept?' selected':'')+'>'+d+'</option>'}).join("")+'</select>'+
+    '<select class="inp" data-c="role" data-i="'+k+'" aria-label="Role for '+esc(x.name)+'">'+ROLES.map(function(o,qq){return '<option value="'+qq+'"'+(qq===x.role?' selected':'')+'>'+o+'</option>'}).join("")+'</select>'+
+    '<span>'+(invited?'<button class="btn ghost" data-a="pinv" data-i="'+k+'">Resend Invite</button>':'<button class="btn" data-a="pinv" data-i="'+k+'">Send Invite</button>')+'</span>'+
+    '<button class="zx" data-a="rmp" data-i="'+k+'" aria-label="'+(invited?'Remove ':'Remove suggestion for ')+esc(x.name)+'" title="'+(invited?'Remove user':'Remove this suggestion')+'">'+I("x")+'</button></div>'};
+  var iv=shown(inv), sv=shown(sug), openS=!F.sugClosed;
+  var h='<section class="tsec"><div class="tsh"><b>Users invited</b><span>'+inv.length+'</span></div>'+
+    (iv.length?'<div class="tdt">'+head+iv.map(function(r){return row(r,true)}).join("")+'</div>':'<div class="tnone">'+(inv.length?'No invited users match your search.':'No one has been invited yet. Send an invite from the suggestions below, or add a user.')+'</div>')+'</section>';
+  if(sug.length) h+='<section class="tsec tsug'+(openS?' open':'')+'"><button type="button" class="tsh tsht" data-a="tsug" aria-expanded="'+openS+'"><b>Suggested users</b><span>'+sug.length+'</span><em>Found on your DLT registration by the agent</em><svg class="tuch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>'+
+    (openS?(sv.length?'<div class="tdt">'+head+sv.map(function(r){return row(r,false)}).join("")+'</div>':'<div class="tnone">No suggestions match your search.</div>'):'')+'</section>';
+  if(!shown(all).length) return '<div class="empty">No people match your search. <button class="btn ghost" data-a="tclear">Clear search</button></div>';
+  return h}
 function openAddUser(){var d=$("xdlg");
   d.innerHTML='<div class="xdlg-c xform" role="dialog" aria-modal="true" aria-labelledby="auT"><h3 id="auT">Add a user</h3><p>They get an email invite to DigiConsent with the role you choose.</p><div class="fgr">'+
     '<label class="w2">Full name<input class="inp" id="auName" placeholder="Full name"></label><label>Work email<input class="inp" id="auMail" type="email" placeholder="name@hdfc.com"></label><label>Mobile<input class="inp" id="auMob" placeholder="+91"></label>'+
@@ -3170,7 +3182,7 @@ function teamBig(){
   if(F.tt==="roles") return tabs+'<div class="zpanel"><div class="zph"><b>What each role can do</b><span>Change a person\'s role on the Users tab</span></div><div class="zroles">'+ROLES.map(function(r,q){var ps=PEOPLE.filter(function(p){return p.on&&p.role===q});
     return '<div class="zrole"><b>'+esc(r)+'</b><p>'+RDESC[q]+'</p><div class="zstack">'+(ps.map(function(p){return '<span class="av" title="'+esc(p.name)+'">'+p.i+'</span>'}).join("")||'<small>Nobody yet</small>')+'</div><small>'+ps.length+(ps.length===1?' person':' people')+'</small></div>'}).join("")+'</div></div>';
   var add=false?'<div class="zadd"><label>Name<input class="inp" id="auName" placeholder="Full name"></label><label>Work email<input class="inp" id="auMail" placeholder="name@hdfc.com"></label><label>Department<select class="inp" id="auDept">'+DEPTS.map(function(x){return '<option>'+esc(x)+'</option>'}).join("")+'</select></label><label>Role<select class="inp" id="auRole">'+ROLES.map(function(r,q){return '<option value="'+q+'">'+esc(r)+'</option>'}).join("")+'</select></label><div class="zbtns"><button class="btn" data-a="ausave">Add</button><button class="btn ghost" data-a="aucancel">Cancel</button></div></div>':'';
-  return tabs+'<div class="zpanel"><div class="zph"><b>Suggested users</b><span>'+PEOPLE.length+' found on your DLT registration · open a card to see details and send an invite</span><button class="btn ghost zr" data-a="auopen">+ Add user</button></div>'+
+  return tabs+'<div class="zpanel"><div class="zph"><b>Users</b><span>Invite people to DigiConsent and set their department and role</span><button class="btn ghost zr" data-a="auopen">+ Add user</button></div>'+
     '<div class="tbar"><div class="chips" style="margin:0">'+[[-1,"All"]].concat(ROLES.map(function(r,q){return [q,r]})).map(function(r){var c=r[0]<0?PEOPLE.length:PEOPLE.filter(function(x){return x.role===r[0]}).length;
       return '<button class="fc'+(F.tf===r[0]?' on':'')+'" data-a="tf" data-v="'+r[0]+'">'+r[1]+' · '+c+'</button>'}).join("")+'</div><label class="srch">'+I("search")+'<input data-c="tq" placeholder="Search by name, role, email or department" value="'+esc(F.tq)+'"></label></div>'+add+'<div id="teamRows">'+teamRows()+'</div></div>';
 }
@@ -3766,6 +3778,7 @@ document.addEventListener("click",function(e){
   else if(a==="aucancel"){hideDlg()}
   else if(a==="ausend"){var nm=$("auName").value.trim(), ml=$("auMail").value.trim(); if(!nm||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ml)){toast("Add a name and a valid work email"); return}
     PEOPLE.push({title:"",i:initials(nm),name:nm,email:ml,dept:$("auDept").value,role:+$("auRole").value,on:true,inv:true,mob:$("auMob").value.trim()||"-"}); hideDlg(); refresh(); toast("Invite sent to "+nm)}
+  else if(a==="tsug"){F.sugClosed=!F.sugClosed; var tr2=$("teamRows"); if(tr2) tr2.innerHTML=teamRows(); else refresh()}
   else if(a==="tuopen"){var pp=PEOPLE[i]; F.topen=F.topen||{}; F.topen[pp.email]=!F.topen[pp.email]; var tr=$("teamRows"); if(tr) tr.innerHTML=teamRows(); else refresh()}
   else if(a==="pinv"){var pv=PEOPLE[i], again=pv.inv; pv.inv=true; pv.on=true; refresh(); toast((again?"Invite sent again to ":"Invite sent to ")+pv.name)}
   else if(a==="tdone"){var nd=PEOPLE.filter(function(p){return p.inv}).length; F.teamLater=false; finishStep(function(){complete(1,nd?nd+(nd===1?" invite sent":" invites sent"):"Team saved")})}
