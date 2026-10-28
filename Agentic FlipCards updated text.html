@@ -324,7 +324,7 @@ select.inp{height:36px;padding:0 8px}
 .amb5{font-weight:600;color:#b45309;background:#fff4dc;box-shadow:inset 0 0 0 1px #f3c77a;padding:2px 8px;border-radius:8px}
 .rcrow{display:inline-flex;align-items:flex-start;gap:10px;margin-top:22px;font-size:14.5px;line-height:1.4;color:#fff}.rcrow>i{position:relative;flex:none;width:14px;height:14px;margin-top:3px;border-radius:50%;box-sizing:border-box;border:1.5px solid #fff;background:rgba(255,255,255,.22);animation:thPing 1.5s infinite}.rcrow>i:after{content:"";position:absolute;inset:3px;border-radius:50%;background:#fff}.rcrow .spn{width:16px;height:16px;border:2.5px solid #fff;border-right-color:transparent;border-radius:50%;animation:rcspin .9s linear infinite}@keyframes rcspin{to{transform:rotate(360deg)}}
 .chg{display:flex;align-items:center;gap:10px;margin:14px 0 4px;padding:10px 14px;border-radius:12px;background:#eef3ff;border:1px solid #d3e0fb;color:#1e3a8a;font-size:14px;font-weight:500;line-height:1.4}.chg svg{width:18px;height:18px;flex:none;color:var(--s-blue)}
-.card .auth u{text-decoration:underline;text-underline-offset:2px}
+.xfail{white-space:nowrap}.card .auth u{text-decoration:underline;text-underline-offset:2px}
 .cd-ft .ls{max-width:300px;line-height:1.35}
 .gpc:not(.off){box-shadow:none;border-color:#e3eaf8;background:linear-gradient(180deg,#fff 0,#f3f7ff 100%)}
 .gpc .gav{background:linear-gradient(160deg,#6f95ff,#2554e6);color:#fff;box-shadow:none}.gpc.off .gav{background:#e4e9f5;color:#5b6b8c;box-shadow:0 0 0 3px #f5f6fa}
@@ -2510,7 +2510,7 @@ function docCard(){
 function xGate(p){
   if(F.gx==="accepted"){p.l='<span class="ls">Accepted by Ravi Menon on 14 Oct 2026, 11:42</span>'; p.r=B("xdl",I("dl")+"Download")}
   if(F.gx==="fail"){p.l='<span class="ls">You can\'t accept until the document loads.</span>'; p.r=p.r.replace('data-a="accdoc"','data-a="accdoc" disabled')}
-  if(F.gx==="refused") p.r='<span class="ls xerr xfail" role="alert">'+I("warn")+'We couldn\'t record your acceptance. Accept again.</span>'+p.r; /* on the right, beside the button that has to be pressed again */
+  if(F.gx==="refused") p.r='<span class="ls xerr xfail" role="alert">'+I("warn")+'Couldn\'t record your acceptance</span>'+p.r; /* on the right, beside the button that has to be pressed again */
   return p}
 function cardHTML(){
   if(F.mode==="gate") return cardWrap(xGate(docCard()));
@@ -3419,7 +3419,7 @@ function bigStep(n,pre){jump("r"+n); F.pf=null; if(pre) pre(); later(expandCard,
 var XS={
   "gate-accepted":function(){jump("gate"); F.gx="accepted"; F.readEnd=true},
   "gate-fail":function(){jump("gate"); F.gx="fail"},
-  "gate-refused":function(){jump("gate"); F.gx="refused"; F.readEnd=true},
+  "gate-refused":function(){jump("gate"); F.gx="refused"; F.readEnd=true; later(function(){toast("Your acceptance couldn't be recorded. Please try again.")},900)},
   "msg-wait":function(){jump("plan"); F.status=["verifying","locked","locked","locked","locked"]; later(function(){msgScreen({chip:"Waiting",line:"Nothing else is needed right now",sub:"Your progress is saved. Your KYC details are in review. The result will show here. Team opens as soon as it is approved. You can leave this page and come back.",prog:states(5,0,0)})},300)},
   "msg-gtm":function(){jump("plan"); later(function(){F.status=["done","done","done","locked","review"]; msgScreen({chip:"Waiting",line:"Waiting for rate cards",sub:"None of your GTM partners has sent a rate card yet. This step opens as soon as one arrives.",btn:B("xgo","Review Templates"+I("arrow"),"",4),prog:states(5,-1,3)})},300)},
   "msg-back":function(){jump("plan"); F.status=["done","done","review","locked","locked"]; later(function(){msgScreen({chip:"",line:"Welcome back, Ravi",sub:"You left off at Brands and LOBs. KYC details and Team are done. 3 steps are waiting. Nothing has changed since your last visit.",btn:B("xgo","Continue to Brands and LOBs"+I("arrow"),"",2),prog:states(5,2,2)})},300)},
