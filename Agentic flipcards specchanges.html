@@ -451,7 +451,7 @@ select.inp{height:36px;padding:0 8px}
 .gta{display:flex;align-items:center;gap:10px}.gta b{min-width:38px;color:var(--s-blue);font-variant-numeric:tabular-nums}.gtbar{flex:1;height:6px;border-radius:3px;background:#e6edfb;overflow:hidden}.gtbar i{display:block;height:100%;background:linear-gradient(90deg,#6f95ff,#2554e6);border-radius:3px}
 .gtin{display:inline-flex;align-items:center;gap:4px;flex:none;width:76px;height:32px;border:1px solid #d9e0ec;border-radius:8px;background:#fff;padding:0 8px 0 4px;color:var(--s-blue);font-weight:650}.gtin:focus-within{border-color:var(--s-blue);box-shadow:0 0 0 3px rgba(37,99,235,.14)}.gtin input{width:100%;min-width:0;border:0;outline:0;background:none;text-align:right;font:inherit;color:inherit;font-variant-numeric:tabular-nums;-moz-appearance:textfield}.gtin input::-webkit-outer-spin-button,.gtin input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .card .cd-ft .btn{white-space:nowrap;flex:none}
-body.wclosed #closes{display:none}
+body.wclosed #closes,body.noacc #closes,body.noacc #prog{display:none}
 body.gtmwait #prog li:nth-child(4){opacity:.4}
 body.kycnone #prog li:nth-child(n+2){opacity:.4;pointer-events:none}body.kycnone #pv,body.kycnone #nx{opacity:.35;pointer-events:none}
 .xops .wt{color:inherit}.card .xops span{color:var(--s-ink2)}.card .xops span b{color:var(--s-ink)}.card .cd-ft .auth{min-width:0;flex:1 1 auto}
@@ -3572,7 +3572,7 @@ var XMENU=[["Agreements",[["Can't be loaded","gate-fail"],["Acceptance refused",
   ["GTM partners",[["Couldn't prepare, first try","fail-gtm"],["Couldn't prepare, after two tries","fail2-gtm"],["No rate cards, locked","norate-gtm"],["Success: partners selected","ok-gtm"],["Save changes dialog","dialog-gtm"]]],
   ["Templates",[["Brands check before mapping","tpl-gate"],["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Couldn't prepare, first try","fail-templates"],["Couldn't prepare, after two tries","fail2-templates"],["Success: templates mapped","ok-templates"],["Needs attention","attention-templates"],["Save changes dialog","dialog-templates"]]],
   ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
-  ["Whole screen",[["Offline","offline-x"],["Setup failed to load","loadfail-deck"],["Card failed to load","loadfail-card"],["Details failed to load","loadfail-deep"]]]];
+  ["Whole screen",[["No access to this setup","no-access"],["Offline","offline-x"],["Setup failed to load","loadfail-deck"],["Card failed to load","loadfail-card"],["Details failed to load","loadfail-deep"]]]];
 
 
 /* PM gap screens: what the second reader sees, return paths, partial outcomes, withdrawals, eligibility */
@@ -3617,6 +3617,7 @@ XS["gap-brands-some"]=function(){rStep(2,function(){setFace(2,{chip:["Partly app
 XS["gap-brands-none"]=function(){rStep(2,function(){blockedFace(2,"No brand is approved now","No brand is approved","Acme Bank, Acme Cards and Acme Wealth were withdrawn or blacklisted. Templates and migration are locked until one is approved again.")}); later(function(){toast("No brand is approved now. You stay on this screen.")},REDUCE?700:1700)};
 XS["gap-tpl-review"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{chip:["In review","amb"],head:"Templates are in review",sum:"42 templates sent. 58 unchanged templates were not resubmitted.",icon:"clock",tone:"amb",h:"42 in review",p:"Only the 42 changed templates were sent to the operators. The other 58 keep their approval.",extra:'<div class="xcountline"><span class="r">42 in review</span><span class="a">58 unchanged</span></div>',btn:B("xview","View","ghost")})})};
 XS["gap-tpl-partial"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{chip:["Partly approved","amb"],head:"Some templates were not approved",sum:"30 approved, 12 not approved.",icon:"warn",tone:"or",h:"30 approved · 12 not approved",p:"Fix the 12 and resubmit. Only changed templates are resubmitted.",extra:'<div class="xcountline"><span class="a">30 approved</span><span class="n">12 not approved</span></div>',btn:B("xreview","Review the 12","ghost","tpart")})})};
+XS["no-access"]=function(){jump("plan"); clearLater(); later(function(){document.body.classList.remove("kycnone"); document.body.classList.add("noacc"); msgScreen({chip:"No access",cls:"still",line:"You don't have access to this setup yet",sub:"Your organisation's migration is being set up by an administrator. Please check back later. This page unlocks for you once the setup is ready.",extra:'<div class="xamb">Need access sooner? Ask your administrator to add you.</div>',btn:B("xadmin","Contact Administrator"),prog:[]})},300)};
 XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",icon:"lock",title:"Your organisation isn't eligible",text:"An operator has blacklisted your organisation, so setup is paused on every screen. Still available: Contact support and Log out.",btns:B("xlogout","Log out","ghost")+B("xsupport","Contact support")})},REDUCE?700:1700)};
 [["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
 [["sources",1,"err-sources",1],["form",2,"err-form",1],["team",3,"err-team",1],["brands",4,"err-brands",1],["gtm",5,"err-gtm",1],["tpl",6,"err-tpl",1],["tpl",6,"err-tpl-twice",2]].forEach(function(r){XS[r[2]]=function(){jump("proc"); ERR={id:r[0],idx:r[1],tries:0,ok:r[3]}; proc(STARTS[r[1]])}});
@@ -3813,7 +3814,7 @@ function btnIcon(t){t=t.toLowerCase();
   if(/^view|^review/.test(t)) return ["eye",0];
   if(/edit/.test(t)) return ["edit",0];
   if(/clear|cancel|discard/.test(t)) return ["x",0];
-  if(/support/.test(t)) return ["mail",0];
+  if(/support|administrator/.test(t)) return ["mail",0];
   if(/download/.test(t)) return ["dl",0];
   if(/log out/.test(t)) return ["lock",0];
   return ["arrow",1]}
@@ -3892,6 +3893,7 @@ document.addEventListener("click",function(e){
   else if(a==="rcskip"){clearLater(); F.rcT=true; F.status[4]="later"; complete(4,"Template mapping saved for later")}
   else if(a==="ovedit"){var ka=F.active; F.ro=STEPS[ka].k==="profile"; F.dvNext=STEPS[ka].k!=="profile"&&F.status[ka]==="done"&&!(F.later&&F.later[ka])&&!(ka===1&&F.teamLater); expandCard()}
   else if(a==="xgo"){goStep(+el.dataset.v)}
+  else if(a==="xadmin"){toast("Message sent to your administrator")}
   else if(a==="xcheck"){rateCheck()}
   else if(a==="xlnext"){var li=+el.dataset.v; if(li<4){F.status[li+1]="review"; review(li+1)} else final()}
   else if(a==="plretry"){F.plchk=true; refresh(); later(function(){F.plchk=false; if(F.plstill&&F.plock!==2){F.plock=2; refresh()} else {var b0=JSON.parse(BASE).P; [0,2,3].forEach(function(k){PROFILE[k][1]=b0[k][1]}); F.plock=0; F.plstill=0; refresh(); toast(F.plsup?"Found your details":"Found your details in DLT"); F.plsup=0}},REDUCE?600:1800)}
@@ -4010,7 +4012,7 @@ addEventListener("resize",function(){resize(); if(CARD.on) placeCard(); if(TS>=0
 function resetData(){F.infoOpen=false; F.topen={}; F.am=null; F.tpx=null; F.later=[0,0,0,0,0]; F.opsA=null; SLOW=false; NF=null; ERR=null; F.errSkip=null; var b=JSON.parse(BASE); PROFILE=b.P; PEOPLE=b.E; BRANDS=b.B; PARTNERS=b.G; TPLS=b.T}
 function jump(w){
   if(w==="login"){showLogin(); return}
-  document.body.classList.remove("lgnon","gtmwait","kycnone"); clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.bsub=false; F.nfFace=null; F.plock=0; F.plstill=0; F.plsup=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.tplGate=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
+  document.body.classList.remove("lgnon","gtmwait","kycnone","noacc"); clearLater(); closeSheet(); hideCard(); closeApp(); CARD.big=false; document.body.classList.remove("bigcard"); $("card").classList.remove("big","swap"); resetData(); F.ovRet=null; F.bsub=false; F.nfFace=null; F.plock=0; F.plstill=0; F.plsup=0; F.plchk=false; F.bstates=false; F.rcSim=null; F.logo=null; F.face=null; F.notice=null; F.tov=null; F.tplGate=null; F.gx=null; F.gpart=F.tpart=F.ppart=F.perr=F.punk=F.derr=F.dfail=F.ro=false; F.pret=null; F.fin=null; F.snap=null; F.gt=false; F.bok=false; hideDlg(); if(F.offline){F.offline=false; $("xoff").classList.remove("on")} if(F.kv) kvStop(); F.kv=null; F.pf=null; F.pfDone=false; F.auth=false; F.teamLater=false; F.lobf="all"; F.tq=""; F.tf=-1;
   F.accepted=w==="gate"?[false,false]:[true,true]; F.readDocs=[false,false]; F.prog=[0,0];
   if(w==="gate") gate(0);
   else if(w==="plan") plan();
