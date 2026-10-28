@@ -2697,10 +2697,10 @@ function final(){
   var fv=F.fin, sk=fv==="skipped";
   var rows=facts([["KYC details",F.later[0]?"Left for later":"Approved by "+opsN()+" out of 4 telcos"],["Team",(F.teamLater||F.later[1])?"Left for later":"Sent invitations to "+(PEOPLE.filter(function(p){return p.inv}).length||tl)+" users"],["Brands and LOBs",F.later[2]?"Left for later":BRANDS.length+" brands and "+lobCount()+" lines of business set up"],["GTM partners",F.later[3]?"Left for later":picked().length+" GTM partners selected. "+picked().map(function(p){return p.name}).join(" and ")],["Templates",(sk||F.later[4])?"Left for later":(100-unmapped())+" out of 100 mapped"]]);
   var clock='<div class="cl-lbl">Migration '+(fv==="notopen"?"opens":"closes")+' in</div><div class="clock" id="clock"></div>';
-  say({kick:"Onboarding Agent · setup complete", line:sk?"You can start migration":"You're set to start migration",
+  say({kick:"Onboarding Agent · setup complete", line:sk?"You can start migration":fv==="closed"?"You're set to start acquisition":"You're set to start migration",
     sub:sk?"You can invite people any time from User and Roles, and map templates any time from Promo Template Mapping.":fv==="notopen"?"Your migration window opens on 25 October 2026.":fv==="closed"?"Your migration window closed on 19 October 2026. You can now acquire consents on the platform.":"Here is what was set up for HDFC Bank Limited.",
     extra:rows+(fv==="closed"?'':clock)+
-      '<div class="acts">'+(fv==="closed"?'<button class="btn" data-a="mig">Start migration'+I("arrow")+'</button>':'<button class="btn" data-a="mig"'+(fv==="notopen"?' disabled':'')+'>Start migration'+I("arrow")+'</button>')+'</div>',
+      '<div class="acts">'+(fv==="closed"?'<button class="btn" data-a="mig">Start acquisition'+I("arrow")+'</button>':'<button class="btn" data-a="mig"'+(fv==="notopen"?' disabled':'')+'>Start migration'+I("arrow")+'</button>')+'</div>',
     status:[fv==="notopen"?"Window opens 25 Oct":"Setup complete","done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
   var end=fv==="notopen"?OPEN_AT:Date.now()+30*864e5;
   var clockSet=false;
@@ -3538,7 +3538,7 @@ var FAILT={team:["Could not fetch your team","Couldn't prepare this step. Your D
 function failFace(i,tries){var st=STEPS[i], ft=FAILT[st.k]||["Couldn't prepare this step","Couldn't prepare this step. Please try again in a moment.","Couldn't prepare this step. Please add it manually."], msg=tries>1?ft[2]:ft[1];
   return {chip:["Needs attention","or"],head:ft[0],sum:msg,tone:"or",
     h:ft[0],p:msg,
-    did:{ok:1,bad:didOf(st.k)[1]+": couldn't finish"},l:'',btn:(tries<=1&&i===3)?B("xretry","Try again"):'',r:tries>1?B("xlater","Do it later","ghost")+B("xretry","Try again","ghost")+B("xself","Add manually"):(i===3?'':B("xadd","Add manually","ghost")+B("xretry","Try again"))}} /* after two tries the primary action is Add manually, so it is not repeated on the left */
+    did:{ok:1,bad:didOf(st.k)[1]+": couldn't finish"},l:'',btn:(tries>1||i===3)?B("xretry","Try again"):'',r:tries>1?B("xlater","Do it later","ghost")+B("xself","Add manually"):(i===3?'':B("xadd","Add manually","ghost")+B("xretry","Try again"))}} /* after two tries the primary action is Add manually, so it is not repeated on the left */
 function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
 var XMENU=[["Agreements",[["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
   ["Agent messages",[["Welcome back","msg-back"],["After a decision","msg-next"]]],
@@ -3994,7 +3994,7 @@ function jump(w){
       [].forEach.call(g.querySelectorAll("button"),function(b){var m=!q||b.textContent.toLowerCase().indexOf(q)>=0||g.firstElementChild.textContent.toLowerCase().indexOf(q)>=0; b.style.display=m?"":"none"; if(m) any=true});
       g.style.display=any?"":"none"; g.open=q?any:false})});
   $("pmb").onclick=function(e){e.stopPropagation(); pm.classList.toggle("on"); if(pm.classList.contains("on")){arrangeMenu(); setTimeout(function(){try{$("pmq").focus({preventScroll:true})}catch(x){}},30)}};
-  pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); HOLD=null; XS[x.dataset.x](); return}
+  pm.onclick=function(e){var x=e.target.closest("[data-x]"); if(x){pm.classList.remove("on"); HOLD=null; if(XS[x.dataset.x]) XS[x.dataset.x](); else jump(x.dataset.x); return}
     var b=e.target.closest("[data-j]"); if(!b) return; var j=b.dataset.j;
     if(j==="glyph"){GLYPH=GLYPH==="tri"?"arrow":"tri"; b.textContent=GLYPH==="tri"?"Pixels: use arrows":"Pixels: use triangles"; makeSprites(); return}
     if(j==="pause"){paused=!paused; b.textContent=paused?"Play motion":"Pause motion"; return}
