@@ -404,6 +404,13 @@ select.inp{height:36px;padding:0 8px}
 .bt-lobs .lob:not(:last-child):after{content:"";position:absolute;left:-18px;top:50%;height:calc(50% + 10px);border-left:1.5px solid #c3d2ee}
 .bt-nav{position:absolute;top:50%;z-index:3;width:32px;height:32px;margin-top:-16px;border-radius:50%;border:1px solid #d9e0ec;background:#fff;color:var(--s-ink2);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 12px rgba(15,27,61,.12)}.bt-nav.l{left:-6px}.bt-nav.r{right:-6px}.bt-nav .i{width:15px;height:15px}.bt-nav:hover{background:var(--s-soft)}
 .bt-hint{font-size:12.5px;color:var(--s-muted);margin:2px 0 0}
+.gcountrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.gvt{display:inline-flex;gap:3px;padding:3px;border-radius:10px;background:#eef2f9}.gvt button{appearance:none;width:34px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--s-muted);display:grid;place-items:center;cursor:pointer}.gvt button .i{width:16px;height:16px}.gvt button.on{background:#fff;color:var(--s-blue);box-shadow:0 1px 3px rgba(15,27,61,.12)}.gvt button:focus-visible{outline:2px solid var(--s-blue);outline-offset:1px}
+.gpv{display:grid;gap:12px;margin-top:12px}.gpr{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:20px;align-items:center;border:1px solid #e3e9f6;border-radius:14px;background:#fff;padding:16px 18px}
+.gpl{display:flex;gap:12px;align-items:flex-start;min-width:0}.gpl .gav{width:36px;height:36px;font-size:14px;box-shadow:none;background:linear-gradient(160deg,#6f95ff,#2554e6);color:#fff}.gpl b{font-size:16px;font-weight:650}.gpl small{display:block;margin-top:3px;font-size:12.5px;color:var(--s-muted)}.gsc2{display:block;margin-top:8px;font-size:12px;color:var(--s-ink2)}
+.gpc3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.gpcell{border:1px solid #eef2f9;border-radius:12px;padding:10px 12px;display:grid;gap:7px;background:#fbfcff}.gph2{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--s-muted);font-weight:600}.gpv2{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:6px}.gpv2.bst{color:#17704c}.gpv2 em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:#def3e8;border-radius:5px;padding:2px 6px}
+.gpcell .gtbar{display:none}.gpcell .gtin{width:100%}
+@media (max-width:760px){.gpr{grid-template-columns:1fr}.gpc3{grid-template-columns:1fr}}
 .gtb{border:1px solid #e3e9f6;border-radius:14px;background:#fff;overflow:hidden;margin-top:12px}
 .gtp+.gtp{border-top:1px solid #e3e9f6}
 .gtph{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;background:#f6f8fd}.gtph b{font-size:14.5px;font-weight:650;color:var(--s-ink)}.gtph>span{font-size:12px;color:var(--s-muted)}
@@ -2422,16 +2429,21 @@ function gPhaseTable(sel,best){var m=gAlloc(), one=sel.length===1;
   return h}
 function gSam(el){var sm=gAlloc(), sk=+el.dataset.k, sv=Math.max(0,Math.min(100,Math.round(+el.value)||0)), sp2=picked();
   sm[el.dataset.n][sk]=sv; if(sp2.length===2){var oth=sp2.filter(function(p){return p.name!==el.dataset.n})[0]; sm[oth.name][sk]=100-sv; ALLOC[sk]=+sm[sp2[0].name][sk]||0}
-  document.querySelectorAll('#card [data-c="sam"][data-k="'+sk+'"]').forEach(function(x){if(x!==el) x.value=sm[x.dataset.n][sk]; var bi=x.closest(".gta").querySelector(".gtbar i"); if(bi) bi.style.width=sm[x.dataset.n][sk]+"%"})}
+  document.querySelectorAll('#card [data-c="sam"][data-k="'+sk+'"]').forEach(function(x){if(x!==el) x.value=sm[x.dataset.n][sk]; var ga=x.closest(".gta"), bi=ga&&ga.querySelector(".gtbar i"); if(bi) bi.style.width=sm[x.dataset.n][sk]+"%"})}
 document.addEventListener("input",function(e){if(e.target.dataset&&e.target.dataset.c==="sam") gSam(e.target)});
+/* the same choice read by partner: who they are on the left, their rate and a changeable share for each process on the right */
+function gPartnerView(sel,best){var m=gAlloc();
+  return '<div class="gpv">'+sel.map(function(p){return '<div class="gpr"><div class="gpl"><i class="gav">'+p.name[0]+'</i><div><b>'+esc(p.name)+'</b><small>'+esc(p.why)+'</small><span class="gsc2">Scrubbing · SMS ₹'+p.s[0].toFixed(2)+' · Call ₹'+p.s[1].toFixed(2)+' · RCS ₹'+p.s[2].toFixed(2)+'</span></div></div><div class="gpc3">'+PH.map(function(x,k){var a=+(m[p.name]||[])[k]||0, b=p.r[k]===best[k];
+    return '<div class="gpcell"><span class="gph2">'+x+'</span><b class="gpv2'+(b?' bst':'')+'">₹'+p.r[k].toFixed(2)+(b?'<em>Best</em>':'')+'</b><span class="gta">'+(sel.length===1?'<b>'+a+'%</b>':'<label class="gtin"><input type="number" min="0" max="100" step="5" value="'+a+'" data-c="sam" data-n="'+esc(p.name)+'" data-k="'+k+'" aria-label="'+esc(p.name)+' share of '+x+'"><span>%</span></label>')+'<span class="gtbar"><i style="width:'+a+'%"></i></span></span></div>'}).join("")+'</div></div>'}).join("")+(sel.length>1?'<p class="gtnote">Change one partner\'s share and the other adjusts so each process totals 100%. Scrubbing has no fixed allocation: it is not split by percentage, and each partner\'s own rate applies.</p>':'')+'</div>'}
 function gtmCard(){if(F.gpart) return gpartCard();
   var sel=picked(), best=PH.map(function(_,k){return Math.min.apply(null,PARTNERS.map(function(p){return p.r[k]}))}), F2=F.gexp||(F.gexp={});
   function tiles(p,isSel){return '<div class="gt3">'+PH.map(function(x,k){var b=p.r[k]===best[k]&&isSel, sh=isSel&&sel.length===2?(p===sel[0]?ALLOC[k]:100-ALLOC[k]):0;
     return '<div class="gt'+(b?' bst':'')+'"><span>'+x+(b?I("check"):"")+'</span><b>₹'+p.r[k].toFixed(2)+'</b>'+(sh?'<em>'+sh+'%</em>':'')+'</div>'}).join("")+'</div>'+
     '<div class="gsc"><b>Scrubbing</b>'+["SMS","Call","RCS"].map(function(x,k){return '<span>'+x+' <b>₹'+p.s[k].toFixed(2)+'</b></span>'}).join("")+'</div>'}
   function head(p,right){return '<div class="gph"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b>'+right+'</div>'}
-  var c='<div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners recommended</div>'+gPhaseTable(sel,best)+
-    '<div class="gwhy">'+sel.map(function(p){return '<div><i class="gav">'+p.name[0]+'</i><span><b>'+esc(p.name)+'</b>'+esc(p.why)+'</span></div>'}).join("")+'</div>';
+  var byP=F.gview==="partner";
+  var c='<div class="gcountrow"><div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners recommended</div><div class="gvt" role="tablist" aria-label="View"><button type="button" role="tab" aria-selected="'+!byP+'" class="'+(byP?'':'on')+'" data-a="gview" data-v="process" title="By process" aria-label="By process">'+I("list")+'</button><button type="button" role="tab" aria-selected="'+byP+'" class="'+(byP?'on':'')+'" data-a="gview" data-v="partner" title="By partner" aria-label="By partner">'+I("users")+'</button></div></div>'+(byP?gPartnerView(sel,best):gPhaseTable(sel,best)+
+    '<div class="gwhy">'+sel.map(function(p){return '<div><i class="gav">'+p.name[0]+'</i><span><b>'+esc(p.name)+'</b>'+esc(p.why)+'</span></div>'}).join("")+'</div>');
   var rest=PARTNERS.filter(function(p){return !p.pick});
   if(false&&sel.length===2) c+='<div class="gsp"><h6>Volume split by phase</h6>'+PH.map(function(x,k){var a=ALLOC[k];return '<div class="gsr"><span>'+x+'</span><div class="gbar"><i style="width:'+a+'%"><b>'+esc(sel[0].name)+' '+a+'%</b></i><i class="v" style="width:'+(100-a)+'%"><b>'+esc(sel[1].name)+' '+(100-a)+'%</b></i></div></div>'}).join("")+'</div>';
   if(rest.length) c+='<div class="gdiv"><span>Not recommended</span></div>'+rest.map(function(p){var o=F2[p.name];
@@ -3793,6 +3805,7 @@ document.addEventListener("click",function(e){
   else if(a==="tmenu"){F.tmenu=F.tmenu===i?-1:i; var tr3=$("teamRows"); if(tr3) tr3.innerHTML=teamRows(); else refresh()}
   else if(a==="tedit"){F.tedit=F.tedit||{}; F.tedit[PEOPLE[i].email]=1; F.tmenu=-1; var tr4=$("teamRows"); if(tr4) tr4.innerHTML=teamRows(); else refresh()}
   else if(a==="tedone"){F.tedit=F.tedit||{}; delete F.tedit[PEOPLE[i].email]; var tr5=$("teamRows"); if(tr5) tr5.innerHTML=teamRows(); else refresh(); toast("Changes saved for "+PEOPLE[i].name)}
+  else if(a==="gview"){F.gview=el.dataset.v; refresh()}
   else if(a==="tsug"){F.sugClosed=!F.sugClosed; var tr2=$("teamRows"); if(tr2) tr2.innerHTML=teamRows(); else refresh()}
   else if(a==="tuopen"){var pp=PEOPLE[i]; F.topen=F.topen||{}; F.topen[pp.email]=!F.topen[pp.email]; var tr=$("teamRows"); if(tr) tr.innerHTML=teamRows(); else refresh()}
   else if(a==="pinv"){var pv=PEOPLE[i], again=pv.inv; pv.inv=true; pv.on=true; F.tmenu=-1; refresh(); toast((again?"Invite sent again to ":"Invite sent to ")+pv.name)}
