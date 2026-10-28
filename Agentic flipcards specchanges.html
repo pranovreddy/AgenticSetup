@@ -3572,7 +3572,7 @@ var XMENU=[["Agreements",[["Can't be loaded","gate-fail"],["Acceptance refused",
   ["GTM partners",[["Couldn't prepare, first try","fail-gtm"],["Couldn't prepare, after two tries","fail2-gtm"],["No rate cards, locked","norate-gtm"],["Success: partners selected","ok-gtm"],["Save changes dialog","dialog-gtm"]]],
   ["Templates",[["Brands check before mapping","tpl-gate"],["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Couldn't prepare, first try","fail-templates"],["Couldn't prepare, after two tries","fail2-templates"],["Success: templates mapped","ok-templates"],["Needs attention","attention-templates"],["Save changes dialog","dialog-templates"]]],
   ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
-  ["Whole screen",[["No access to this setup","no-access"],["Offline","offline-x"],["Setup failed to load","loadfail-deck"],["Card failed to load","loadfail-card"],["Details failed to load","loadfail-deep"]]]];
+  ["Whole screen",[["Offline","offline-x"],["Setup failed to load","loadfail-deck"],["Card failed to load","loadfail-card"],["Details failed to load","loadfail-deep"]]]];
 
 
 /* PM gap screens: what the second reader sees, return paths, partial outcomes, withdrawals, eligibility */
@@ -3633,7 +3633,7 @@ XS["spec-gtm-error"]=function(){rStep(3,function(){later(function(){var i=docume
  ["Team",[["After two failed tries","fail2-team"],["Saved for later screen","later-team"]]]].forEach(function(a){
   var g=XMENU.filter(function(x){return x[0]===a[0]})[0]; if(!g) return;
   a[1].forEach(function(e){if(!g[1].some(function(x){return x[1]===e[1]})) g[1].unshift(e)})});
-XMENU.push(["Edge cases",[["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Brands item states: card","gap-brands-items-card"],["Not eligible, on the review screen","gap-not-eligible"]]]);
+XMENU.push(["Edge cases",[["No access to this setup","no-access"],["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Brands item states: card","gap-brands-items-card"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 /* a finished step opened again with View: the product page, not the review flow */
 var DVT={team:"User Management",brands:"Brands & LOBs",gtm:"GTM Partners",templates:"LOB-Promo Template Mapping"}, DV={};
 function dvOn(){return !!F.dv&&CARD.big&&F.mode==="review"&&!!DVT[STEPS[F.active].k]}
