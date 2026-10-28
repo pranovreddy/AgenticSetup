@@ -2370,7 +2370,7 @@ function heading(i){var k=STEPS[i].k;
   if(k==="profile"&&F.pf) return "I'm filling in your KYC details";
   if(k==="brands") return BRANDS.length+(BRANDS.length===1?" brand and ":" brands and ")+lobCount()+(lobCount()===1?" line of business":" lines of business")+" drafted for you";
   if(k==="gtm"&&F.gpart) return "Karix takes all the volume for now";
-  if(k==="gtm"){var pk0=picked(); return pk0.length===2?"Chose "+pk0[0].name+" and "+pk0[1].name+" for the best rates":"Choose two partners"}
+  if(k==="gtm"){var pk0=picked(); return pk0.length===2?"Recommended: "+pk0[0].name+" and "+pk0[1].name+" for the best rates":"Choose two partners"}
   if(k==="templates") return unmapped()?(100-unmapped())+" out of 100 templates are mapped to LOBs. Review or do it later.":"Your 100 templates are mapped to LOBs. Review or do it later.";
   return STEPS[i].rh}
 function subline(i){var k=STEPS[i].k, u=unmapped();
@@ -3185,7 +3185,7 @@ var BSUM={
   profile:["Filled your logo and all 7 fields from 4 sources","Your profile goes to Airtel, Jio, Vi and BSNL for approval. Fields from official records are locked.",["Read your DLT registration","Checked GSTIN and MCA","Read your company website","Filled your logo and 7 fields"],"Team opens as soon as the KYC details are approved."],
   team:["Found 6 people and suggested a role for each","Each person has a suggested role. Add people, change a role, or do it later.",["Looked up your DLT registration","Found people on record","Matched a role to each person","Suggested people to invite"],"Invites go out by email. Brands and LOBs open next, whether you invite or do it later."],
   brands:["4 brands and 9 lines of business drafted","Confirm them as drafted and they're set up straight away. Any change goes for approval.",["Read your DLT headers","Grouped them into brands","Created lines of business","Refined the drafts"],"Confirming sets up your brands and lines of business. Then you can map templates to them."],
-  gtm:["Chose Karix and Value First for the best rates","Change the choice or the split if you want.",["Read your partners' rate cards","Compared the rates for each phase","Chose the best combination","Set the volume for each phase"],"Confirming includes the rate card terms. You can change the partners or the split first."],
+  gtm:["Recommended: Karix and Value First for the best rates","Change the choice or the split if you want.",["Read your partners' rate cards","Compared the rates for each phase","Chose the best combination","Set the volume for each phase"],"Confirming includes the rate card terms. You can change the partners or the split first."],
   templates:["98 out of 100 templates mapped","Change any mapping if you want. A change goes for approval.",["Read your templates","Suggested a line of business for each","Matched them to your approved lines of business"],"Confirming uses these mappings. You can change this later."]};
 function bigSum(i){var b=BSUM[STEPS[i].k]; if(!b) return "";
   if(STEPS[i].k==="profile"&&F.ro) b=["Approved by "+opsN()+" out of 4 telcos",opsN()===4?"Every telco has approved your KYC details. Nothing more to do here.":"The other telcos are still reviewing. You can carry on with the next steps.",b[2],"Team is open now."];
