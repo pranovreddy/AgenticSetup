@@ -3891,8 +3891,7 @@ function jump(w){
 (function(){var pm=$("pm");
   pm.innerHTML='<details class="pmg"><summary>Flow</summary>'+[["login","Login"],["gate","Agreements"],["plan","Setup plan"],["proc","AI processing"],["ready","Ready for review"],["r0","Review: KYC details"],["r1","Review: Team"],["r2","Review: Brands and LOBs"],["r3","Review: GTM partners"],["r4","Review: Templates"],["final","Finished"],["app","Migration + walkthrough"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
     '</details><details class="pmg"><summary>Card animation</summary>'+[["proc-form","From KYC details (rail starts)"],["proc-team","Team card"],["proc-brands","Brands card"],["proc-gtm","GTM partners card"],["proc-tpl","Templates card"],["proc-sources","Sources scan (before rail)"]].map(function(x){return '<button data-j="'+x[0]+'">'+x[1]+'</button>'}).join("")+
-    '</details>'+XMENU.map(function(g){return '<details class="pmg"><summary>'+g[0]+'<i>'+g[1].length+'</i></summary>'+g[1].map(function(x){return '<button data-x="'+x[1]+'">'+x[0]+'</button>'}).join("")+'</details>'}).join("")+
-    '<details class="pmg"><summary>Display</summary><button data-j="glyph">Pixels: use arrows</button><button data-j="pause">Pause motion</button></details>';
+    '</details>'+XMENU.map(function(g){return '<details class="pmg"><summary>'+g[0]+'<i>'+g[1].length+'</i></summary>'+g[1].map(function(x){return '<button data-x="'+x[1]+'">'+x[0]+'</button>'}).join("")+'</details>'}).join("");
   pm.insertAdjacentHTML("afterbegin",'<div class="pmq"><input id="pmq" type="search" placeholder="Search states" autocomplete="off" aria-label="Search states"></div>');
   /* the groups that belong to the page they are on come to the top, open, so they never have to scroll for them */
   var STEPG={profile:"KYC details",team:"Team",brands:"Brands and LOBs",gtm:"GTM partners",templates:"Templates"};
