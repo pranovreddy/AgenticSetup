@@ -915,7 +915,7 @@ html[data-px=light] .bs-in{color:var(--s-ink)}html[data-px=light] .bs-in>p,html[
 .pnav:focus-visible{outline:2px solid #fff;outline-offset:3px}
 /* overview of what was submitted and where it stands */
 .bov{display:grid;grid-template-columns:minmax(150px,1.5fr) repeat(3,minmax(0,1fr));width:min(560px,100%);margin:22px auto 0;border:1px solid var(--s-line);border-radius:14px;overflow:hidden;text-align:center;background:#fff}
-.bovpg{margin:6px 0 16px !important;width:min(640px,100%) !important}
+.bov.bovdk{background:rgba(255,255,255,.1) !important;border-color:rgba(255,255,255,.22) !important}.bov.bovdk>*{border-color:rgba(255,255,255,.18) !important}.bov.bovdk>.h{background:rgba(255,255,255,.08) !important;color:rgba(255,255,255,.75) !important}.bov.bovdk>.k,.bov.bovdk>.n{color:#fff !important}.bov.bovdk>.n.z{opacity:.5}.bov.bovdk>.n.rv{color:#ffd27a !important}.bov.bovdk>.n.ap{color:#8ff0bd !important}
 .bov>*{padding:11px 12px;border-top:1px solid var(--s-line)}
 .bov>.h{border-top:0;background:#f8fafd;font-size:12px;font-weight:600;color:var(--s-muted)}
 .bov>.k{text-align:left;font-size:14px;font-weight:600;color:var(--s-ink);white-space:nowrap}
@@ -2688,7 +2688,7 @@ function complete(i,title){F.doneAt=F.doneAt||{}; if(!F.doneAt[i]) F.doneAt[i]=n
   else if(i===2&&/set up$/.test(title)) title=BRANDS.length+" brands and "+lobCount()+" lines of business set up";
   else if(i===3) title="Confirmed your GTM partners and rates";
   else if(i===4) title="Templates mapped";
-  say({kick:STEPLINE(i), line:title, sub:lt?(i===1?"You can do this step later. No users have been invited.":i===4?"The mappings weren't confirmed. Map them whenever you're ready.":"You can do this step later."):"", extra:successFacts(i,t0,lt)+(i===0&&/approved/.test(title)?opsList(opsN()):""), status:[lt?"Marked for later":"Step done",lt?"still":"done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
+  say({kick:STEPLINE(i), line:title, sub:lt?(i===1?"You can do this step later. No users have been invited.":i===4?"The mappings weren't confirmed. Map them whenever you're ready.":"You can do this step later."):"", extra:(i===2&&!lt?brandsSentTable():successFacts(i,t0,lt))+(i===0&&/approved/.test(title)?opsList(opsN()):""), status:[lt?"Marked for later":"Step done",lt?"still":"done"], prog:{label:"Steps",items:STEPN,states:states(5,-1,i+1)}});
   upNext(i<4?STEPS[i+1].title:"Your migration window",function(){if(i<4){F.status[i+1]="review"; review(i+1)} else final()});
 }
 
@@ -3400,6 +3400,8 @@ function ovOpts(i){var st=STEPS[i], edit=st.k!=="profile";
   return '<div class="xopts one"><button class="xopt" data-a="ovedit"><span class="xoi">'+I("max")+'</span><span><b>'+(edit?"View and edit":"View")+'</b><small>'+(edit?"Open the full page":"Open the full page, read only")+'</small></span></button></div>'}
 function markOv(i){var li=document.querySelectorAll("#prog li"); li.forEach(function(e,k){e.classList.toggle("viewing",k===i)})}
 function setFace(i,f){F.face=f; f.i=i}
+function brandsSentTable(){var nb=BRANDS.length, nl=lobCount(), sent=brandsChanged(); /* sent for approval: everything waits; confirmed as drafted: all set up */
+  return bovHTML(sent?[nb,0,nb]:[nb,nb,0],sent?[nl,0,nl]:[nl,nl,0]).replace('class="bov"','class="bov bovdk"')}
 function bovHTML(b,l){ /* [submitted, approved, under review] for brands and for lines of business */
   var row=function(n){return n.map(function(v,j){return '<span class="n '+['','ap','rv'][j]+(v?'':' z')+'">'+v+'</span>'}).join("")};
   return '<div class="bov" role="table" aria-label="Brands and lines of business overview"><span class="h"></span><span class="h">Submitted</span><span class="h">Approved</span><span class="h">Under review</span>'+
@@ -3422,7 +3424,7 @@ function saveDlg(){var sk=STEPS[F.active].k;
   showDlg({title:"Save your changes?",text:SAVE_TXT[STEPS[F.active].k]||SAVE_TXT.team,btns:B("dkeep","Keep editing","ghost")+B("ddiscard","Discard changes","ghost")+B("dsave","Save changes")})}
 function xBig(i,o){ // notices, read-only, failures and save errors on the full page
   if(F.dfail) return {h:'<div class="xface xtall"><span class="xic or">'+I("warn")+'</span><h3>Couldn\'t load the details</h3><p>Your changes so far are kept.</p><div class="xbtns">'+B("xdretry","Try again")+'</div></div>',l:'',r:B("collapse","Back to cards","ghost")};
-  var bs=(F.bstates&&i===2)?itemStatesHtml():''; if(F.bsub&&i===2) bs=bovHTML([BRANDS.length,0,BRANDS.length],[lobCount(),0,lobCount()]).replace('class="bov"','class="bov bovpg"')+bs;
+  var bs=(F.bstates&&i===2)?itemStatesHtml():'';
   var n=bs+(F.notice&&F.notice.i===i?'<div class="xnote '+F.notice.kind+'">'+I(F.notice.kind==="late"?"spark":F.notice.kind==="warn"?"warn":"info")+'<span>'+esc(F.notice.text)+'</span>'+(F.notice.kind==="late"?B("xuse","Use the suggestion"):"")+'</div>':'');
   var h=n+(F.ro?'<div class="xro">'+o.h+'</div>':o.h), l=o.l, r=o.r;
   if(F.ro){l=''; r=B("collapse","Back to cards","ghost")}
@@ -3546,7 +3548,7 @@ var XMENU=[["Agreements",[["Can't be loaded","gate-fail"],["Acceptance refused",
   ["Agent messages",[["Welcome back","msg-back"],["After a decision","msg-next"]]],
   ["KYC details",[["Profile approved by none","gap-profile-none"],["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Something went wrong","err-kyc"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Locked fields not found: contact support","lock-profile-support"],["Verification animation: all 3 stages","kv-anim"],["Verification animation: slow motion","kv-anim-slow"],["Verification: couldn't send","kv-error"],["Approved by 2 out of 4 operators","pm-kyc"],["Completed: view, 4 out of 4 telcos","ov-profile-4"],["Completed: view, 2 out of 4 telcos","ov-profile-2"],["Profile view: none approved","ov-profile-0"]]],
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["Do it later","later-team"],["Success: invites sent","ok-team"],["Success: saved for later","ok-team-later"],["Coming back to a finished step","back-team"],["Details: nothing found","notice-team-nothing"],["Save changes dialog","dialog-team"]]],
-  ["Brands and LOBs",[["Sent for approval: approved and under review, card","pm-all"],["Sent for approval: approved and under review, page","bov-page"],["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["One brand, two LOBs suggested","brands-single"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: save failed","derr-brands"],["Success: sent for approval","ok-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["LOB removed: remapping","pm-remove-remap"]]],
+  ["Brands and LOBs",[["Sent for approval: in review card","pm-all"],["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["One brand, two LOBs suggested","brands-single"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: save failed","derr-brands"],["Success: sent for approval","ok-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["LOB removed: remapping","pm-remove-remap"]]],
   ["GTM partners",[["Couldn't prepare, first try","fail-gtm"],["Couldn't prepare, after two tries","fail2-gtm"],["No rate cards, locked","norate-gtm"],["Success: partners selected","ok-gtm"],["Save changes dialog","dialog-gtm"]]],
   ["Templates",[["Brands check before mapping","tpl-gate"],["Nothing found","nothing-templates"],["Trying again","busy-templates"],["Couldn't prepare, first try","fail-templates"],["Couldn't prepare, after two tries","fail2-templates"],["Success: templates mapped","ok-templates"],["Needs attention","attention-templates"],["Save changes dialog","dialog-templates"]]],
   ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
@@ -3589,7 +3591,6 @@ XS["gap-profile-restored"]=function(){rStep(0,function(){F.status=["review","loc
 XS["brands-single"]=function(){rStep(2,function(){BRANDS=[JSON.parse(BASE).B[0]]; BRANDS[0].lobs=BRANDS[0].lobs.slice(0,2); BRANDS0=JSON.stringify(BRANDS.map(function(b){return {n:b.name,l:b.lobs.slice()}}))})};
 XS["gap-brands-items-card"]=function(){rStep(2,function(){setFace(2,{chip:["Partly approved","amb"],head:"Brands and LOBs are partly approved",sum:"3 approved, 2 in review, 1 not approved.",icon:"clock",tone:"amb",h:"Approved items are locked",p:"Open the details to edit the others and resubmit only those.",extra:'<div class="xcountline"><span class="a">3 approved</span><span class="r">2 in review</span><span class="n">1 not approved</span></div>',btn:B("xview","View and edit","ghost")})})};
 XS["gap-brands-items-page"]=function(){bigStep(2,function(){F.bstates=true})};
-XS["bov-page"]=function(){bigStep(2,function(){F.bsub=true})};
 XS["gap-rc-brands-slow"]=function(){jump("plan"); PROFILE[3][1]="AAACH2702X"; F.rcSim="slow"; goStep(2)};
 XS["gap-rc-brands-fail"]=function(){jump("plan"); PROFILE[3][1]="AAACH2702X"; F.rcSim="fail"; goStep(2)};
 XS["gap-brands-some"]=function(){rStep(2,function(){setFace(2,{chip:["Partly approved","amb"],head:"Airtel withdrew approval of 1 brand",sum:"2 brands are still approved.",icon:"clock",tone:"amb",h:"1 brand withdrawn, 2 still approved",p:"Templates and migration stay open for the 2 approved brands. Edit the withdrawn one and resubmit when ready.",btn:B("xview","View and edit","ghost")})}); later(function(){toast("Airtel withdrew approval of Acme Wealth. 2 brands are still approved.")},REDUCE?700:1700)};
