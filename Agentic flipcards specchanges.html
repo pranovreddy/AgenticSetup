@@ -2410,7 +2410,7 @@ function heading(i){var k=STEPS[i].k;
   if(k==="brands") return BRANDS.length+(BRANDS.length===1?" brand and ":" brands and ")+lobCount()+(lobCount()===1?" line of business":" lines of business")+" drafted for you";
   if(k==="gtm"&&F.gpart) return "Karix takes all the volume for now";
   if(k==="gtm"){var pk0=picked(); return pk0.length===2?"Recommended: "+pk0[0].name+" and "+pk0[1].name+" for the best rates":"Choose two partners"}
-  if(k==="templates") return unmapped()?(100-unmapped())+" out of 100 templates are mapped to LOBs. Review or do it later.":"Your 100 templates are mapped to LOBs. Review or do it later.";
+  if(k==="templates") return unmapped()?(100-unmapped())+" out of 100 templates are mapped to LOBs.":"Your 100 templates are mapped to LOBs.";
   return STEPS[i].rh}
 function subline(i){var k=STEPS[i].k, u=unmapped();
   if(k==="profile"&&F.plock&&F.plsup) return "I couldn't find 3 official fields, so you can't move forward yet. Email support to get them added.";
