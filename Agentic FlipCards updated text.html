@@ -2403,7 +2403,7 @@ function primary(i){
   if(k==="profile") return F.punk?'<button class="btn" disabled><span class="spn w"></span>Submitting…</button>':'<button class="btn" data-a="submit"'+(F.auth&&!F.pf&&profOk()?'':' disabled')+'>Submit</button>';
   if(k==="team"){var n=onPeople().length; return '<button class="btn" data-a="invites"'+(n?'':' disabled')+'>Send '+n+' invite'+(n===1?'':'s')+'</button>'}
   if(k==="brands") return '<button class="btn" data-a="brands"'+(F.bok?'':' disabled')+'>'+(brandsChanged()?'Submit for approval':'Confirm')+'</button>';
-  if(k==="gtm") return '<button class="btn" data-a="gtm"'+((picked().length===2||F.gpart)&&F.gt?'':' disabled')+'>Confirm partners</button>';
+  if(k==="gtm") return '<button class="btn" data-a="gtm"'+((picked().length===2||F.gpart)&&F.gt&&(F.gpart||allocOk())?'':' disabled')+'>Confirm partners</button>';
   return '<button class="btn" data-a="tpl">'+(tplChanged()?"Submit for approval":"Confirm")+'</button>';
 }
 /* template mapping at a glance: donut, total, suggested (with confidence split), unsuggested */
