@@ -719,3 +719,6 @@ PM feedback file: the Prototype button and its menu moved to the top right; Prev
 **Edge-case review:** a published review lists 97 cases (https://claude.ai/artifact/28eXaQFCSogknbFGLAr8AD). Open P0s include: no browser history or deep links, refresh loses state, double-click on completion, hard timeout for stuck jobs, idempotent submits, "Mark as completed" skipping validation (defect), last Super Admin can be deleted.
 
 **Pending asks:** a trimmed copy "Agenti Cards trimmed" (prototype menu limited to the 8 listed sections) was requested but never confirmed. No `main` branch exists on this repo; the default branch is `claude/bold-mccarthy-bls1vj`.
+
+## 8i. Copy pass (28 Oct)
+`Agentic FlipCards updated text.html` is a duplicate of the prototype with copy updated per the onboarding copy spec (plan/ready screens, AI processing pills and headlines, agreements, KYC, success/finale, nothing-found/failed faces, full-page summaries). Behaviour is unchanged.
