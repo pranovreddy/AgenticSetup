@@ -2272,7 +2272,7 @@ function errHalt(s,i){var o=ERRV[s.id];
 function errMsg(s,o){
   var twice=ERR.tries>=1;
   say({kick:"Onboarding Agent",line:twice?"Still couldn't finish":o.t,sub:twice?"Two tries didn't work. You can try once more, or skip this step and come back to it.":"Nothing was lost. "+o.d,
-    extra:'<div class="xamb">'+(twice?"It usually clears in a few minutes.":"You can try again in a moment, or come back to this step later.")+'</div><div class="acts">'+B("perr-retry","Try again")+B("perr-skip","Do It Later","ghost")+'</div>',
+    extra:'<div class="xamb">'+(twice?"It usually clears in a few minutes.":"You can try again in a moment, or come back to this step later.")+'</div><div class="acts">'+B("perr-skip","Do It Later","ghost")+B("perr-retry","Try again")+'</div>',
     status:["Something went wrong","attn"],prog:{label:"Steps",items:s.grp==="src"?SRC:STEPN,states:states(5,s.prog,s.prog)}})}
 function nfScene(s){if(ERR&&s.id===ERR.id){var o=ERRV[ERR.id],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=null; r.err=1; return r}var key=NF==="all"?(s.id==="sources"?"sourcesAll":s.id):NF; if(NF&&(NF==="all"?NFV[key]:s.id===NF)){var o=NFV[key],r={}; for(var k in s) r[k]=s[k]; r.log=o.log; r.done=o.done; r.nf=1; return r} return s}
 function srcOv(lt){var o=$("srcov"); if(!o) return;
@@ -2358,7 +2358,7 @@ function recalc(kind,then){
   var sim=F.rcSim; F.rcSim=null;
   if(sim!=="fail") soloOn(b?"brands":"tpl");
   if(sim==="fail") later(function(){say({kick:"Onboarding Agent",line:"Couldn't recalculate your "+(b?"brands and LOBs":"templates"),sub:"Nothing was lost. Your earlier suggestion is kept. Try again, or fill this step in yourself.",
-    extra:'<div class="acts">'+B("rcretry","Try again")+B("rcself","Do it yourself","ghost")+'</div>',status:["Couldn't recalculate","attn"],prog:{label:"Steps",items:STEPN,states:states(5,b?2:4,b?2:4)}})},REDUCE?600:3200);
+    extra:'<div class="acts">'+B("rcself","Do it yourself","ghost")+B("rcretry","Try again")+'</div>',status:["Couldn't recalculate","attn"],prog:{label:"Steps",items:STEPN,states:states(5,b?2:4,b?2:4)}})},REDUCE?600:3200);
   else if(sim==="slow"){later(function(){say({sub:"This is taking longer than usual. You can keep waiting, or skip and come back later.",extra:'<div class="rcrow"><i></i>Still working on it</div><p class="rcnote">Large accounts can take a few minutes.</p><div class="acts"><button class="btn ghost" data-a="rcskip">Skip for now</button></div>'}); soloOn(b?"brands":"tpl")},REDUCE?600:3200);
     later(function(){F[b?"rcB":"rcT"]=true; then()},REDUCE?1200:9000)}
   else later(function(){F[b?"rcB":"rcT"]=true; then()},REDUCE?600:4800);
@@ -3385,7 +3385,7 @@ function noneFace(){return {chip:["Needs attention","or"],head:"Not approved by 
 function stepOverview(i){var st=STEPS[i], o=OV[st.k], later=!!F.later[i]||(i===1&&F.teamLater)||F.status[i]==="later";
   F.ovRet=F.ovRet!=null?F.ovRet:{mode:F.mode,i:F.active}; F.active=i;
   if(st.k==="profile"&&!later&&opsN()<4){var on0=opsN(), pf0=on0===0?noneFace():{chip:["Done","gr"],head:"Your KYC details are submitted. "+(4-on0)+" operators have not approved them.",sum:"Messages go through only the operators that have approved you. Reach out to support to get approval. You can continue to the next step for now.",icon:"check",tone:"gr",h:"Approved by "+on0+" out of 4 operators",p:"",extra:opsList(on0)};
-    pf0.l=on0===0?'':'<button class="btn ghost" data-a="ovedit">'+I("max")+'View</button>'; pf0.r=on0===0?B("xsupport","Contact support"):ovMove()+B("xsupport","Contact support","ghost"); if(on0===0) pf0.btn=''; document.body.classList.toggle("kycnone",on0===0);
+    pf0.l=on0===0?'':'<button class="btn ghost" data-a="ovedit">'+I("max")+'View</button>'; pf0.r=on0===0?B("xsupport","Contact support"):B("xsupport","Contact support","ghost")+ovMove(); if(on0===0) pf0.btn=''; document.body.classList.toggle("kycnone",on0===0);
     F.ovRet=F.ovRet!=null?F.ovRet:{mode:F.mode,i:F.active}; F.active=i; setFace(i,pf0);
     if(F.mode!=="review"){F.mode="review"; show("blank"); say({kick:"",line:"",sub:"",extra:"",status:["Step done","done"]}); showCard()} else refresh();
     var stx0=F.status.map(function(x){return x==="done"||x==="later"?"dn":""}); stx0[i]="on"; drawProg({label:"Steps",items:STEPN,states:stx0}); markOv(i); return}
@@ -3487,7 +3487,7 @@ var XS={
   "later-overview":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; F.later[1]=1; F.teamLater=true; goStep(2); later(function(){stepOverview(1)},400)},300)},
   "ov-team":function(){jump("plan"); later(function(){F.status=["done","done","review","locked","locked"]; goStep(2); later(function(){stepOverview(1)},400)},300)},
   "pm-kyc":function(){jump("plan"); F.opsA=2; later(function(){doneScreen(0,{chip:"Partly approved",line:"Your KYC details are submitted. 2 operators have not approved them.",sub:"Messages go through only the operators that have approved you. Reach out to support to get approval. You can continue to the next step for now.",
-    extra:opsList(2),btn:B("xgo","Continue to Team"+I("arrow"),"",1)+B("xsupport","Contact support","ghost")})},300)},
+    extra:opsList(2),btn:B("xsupport","Contact support","ghost")+B("xgo","Continue to Team"+I("arrow"),"",1)})},300)},
   "nothing-team":function(){rStep(1,function(){setFace(1,teamNothingFace())})},
   "fail-team":function(){rStep(1,function(){setFace(1,failFace(1,1))})},
   "fail2-team":function(){rStep(1,function(){setFace(1,failFace(1,2))})},
