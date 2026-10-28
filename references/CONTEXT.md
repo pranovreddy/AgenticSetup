@@ -737,6 +737,6 @@ PM feedback file: the Prototype button and its menu moved to the top right; Prev
 - Allocation does NOT redistribute. `gSam` sets only the edited value. `gTotHtml()` renders `#gtot`: empty when every process totals 100%, otherwise one amber line listing the off processes ("Migration 90%. Each process must total 100%. Edit the shares to fix it."). The primary CTA ("Confirm Partners") is disabled unless terms are ticked AND `allocOk()` (checked in `primary()` and `patchAlloc()`).
 - "Other requests" (was "Other partners"): collapsed by default (`F.gnro`, action `gnro`); open shows one compact line per partner with its rates, no price comparison.
 
-**Prototype menu:** The "Edge cases" group (was "PM gaps") no longer lists "Return mid-preparation" or "Ready, some not prepared". The "taking longer than usual" screen hides the bottom stepper (`slowEnd`); failure screens (`errMsg`) show it.
+**Prototype menu:** fixed order, never rearranged by the current page: Flow, Agreements, Agent messages, Card animation, AI processing, KYC details, Team, Brands and LOBs, GTM partners, Templates, Finale, then Finished steps, Whole screen, Edge cases. All groups start collapsed.  The "Edge cases" group (was "PM gaps") no longer lists "Return mid-preparation" or "Ready, some not prepared". The "taking longer than usual" screen hides the bottom stepper (`slowEnd`); failure screens (`errMsg`) show it.
 
 **Open / not started:** "Agenti Cards trimmed" copy; the full copy spec gaps above.
