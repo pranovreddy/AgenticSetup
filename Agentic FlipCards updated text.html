@@ -2462,7 +2462,7 @@ function gtmCard(){if(F.gpart) return gpartCard();
     return '<div class="gt'+(b?' bst':'')+'"><span>'+x+(b?I("check"):"")+'</span><b>₹'+p.r[k].toFixed(2)+'</b>'+(sh?'<em>'+sh+'%</em>':'')+'</div>'}).join("")+'</div>'+
     '<div class="gsc"><b>Scrubbing</b>'+["SMS","Call","RCS"].map(function(x,k){return '<span>'+x+' <b>₹'+p.s[k].toFixed(2)+'</b></span>'}).join("")+'</div>'}
   function head(p,right){return '<div class="gph"><i class="gav">'+p.name[0]+'</i><b>'+esc(p.name)+'</b>'+right+'</div>'}
-  var byP=false;
+  var byP=true;
   var c='<div class="gcountrow"><div class="gcount"><b>'+sel.length+' of '+PARTNERS.length+'</b> partners recommended</div></div>'+(byP?gPartnerView(sel,best):gPhaseTable(sel,best));
   var rest=PARTNERS.filter(function(p){return !p.pick});
   if(false&&sel.length===2) c+='<div class="gsp"><h6>Volume split by phase</h6>'+PH.map(function(x,k){var a=ALLOC[k];return '<div class="gsr"><span>'+x+'</span><div class="gbar"><i style="width:'+a+'%"><b>'+esc(sel[0].name)+' '+a+'%</b></i><i class="v" style="width:'+(100-a)+'%"><b>'+esc(sel[1].name)+' '+(100-a)+'%</b></i></div></div>'}).join("")+'</div>';
