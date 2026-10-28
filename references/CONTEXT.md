@@ -720,5 +720,21 @@ PM feedback file: the Prototype button and its menu moved to the top right; Prev
 
 **Pending asks:** a trimmed copy "Agenti Cards trimmed" (prototype menu limited to the 8 listed sections) was requested but never confirmed. No `main` branch exists on this repo; the default branch is `claude/bold-mccarthy-bls1vj`.
 
-## 8i. Copy pass (28 Oct)
-`Agentic FlipCards updated text.html` is a duplicate of the prototype with copy updated per the onboarding copy spec (plan/ready screens, AI processing pills and headlines, agreements, KYC, success/finale, nothing-found/failed faces, full-page summaries). Behaviour is unchanged.
+## 8i. Copy pass and GTM / Brands rework (28 Oct) — latest state; read this first
+
+**Files and rules**
+- Work ONLY on `Agentic FlipCards updated text.html` (artifact https://claude.ai/artifact/EkyymmXDNc8wgj521qnLof, version 20). The user said "update only the updated text file, do not edit others".
+- `flipcards-agentic-setup.html` (artifact BX2MzBk6eKmse8amgtw9DE, version 129) was overwritten with the updated copy earlier on "show the updated text by default", then received the GTM/Brands changes up to "scrubbing in one line". It has NOT received the allocation changes below. The pre-copy version is in git history. Both files differ only by the `<title>`.
+- Comments arrive on artifact 6f6ae62d-f00a-445e-adc2-15238c5b4086 (and 552c89f8-...); reply and resolve each thread via ArtifactComments.
+
+**Copy** follows `agentic-onboarding-copy-28oct.md` (CP-xx ids): plan/ready screens, AI-processing pills and headlines, agreements, KYC, success/finale, nothing-found/failed faces, step summaries (BSUM), "Do It Later", "out of". Not yet applied: agreements error states (CP-AG-13 to 20), log-out dialog and signed-out screen, migration-pill wording, most KYC result states, CP-FP-26 to 34 notices and save dialogs, CP-ER / CP-EL. The Prototype menu no longer has a "Display" group.
+
+**Brands and LOBs** (detail card): a tree. Enterprise header ("HDFC Bank Limited", counts), trunk with elbows to each brand (rounded-square logo, name, pill "N Line of Businesses" / "1 Line of Business"), LOBs as two-column rows on a subtle tile (dot, name, sub-text, evidence hover icon). Classes `.bt2*`. The old grid `.bg-card` CSS is unused.
+
+**GTM partners**
+- Heading "Recommended: Karix and Value First for the best rates" (the user asked for "Recommended").
+- Partner-first view only (no view toggle): per partner a card with logo, name, reason line under the name; Migration / Acquisition / Refresh cells each with rate and a small left-aligned % input (`.gpcell .gtin`, 56px); scrubbing as one line (`.gscl`, rates only, no allocation).
+- Allocation does NOT redistribute. `gSam` sets only the edited value. `gTotHtml()` renders `#gtot`: empty when every process totals 100%, otherwise one amber line listing the off processes ("Migration 90%. Each process must total 100%. Edit the shares to fix it."). The primary CTA ("Confirm Partners") is disabled unless terms are ticked AND `allocOk()` (checked in `primary()` and `patchAlloc()`).
+- "Other requests" (was "Other partners"): collapsed by default (`F.gnro`, action `gnro`); open shows one compact line per partner with its rates, no price comparison.
+
+**Open / not started:** "Agenti Cards trimmed" copy; the full copy spec gaps above.
