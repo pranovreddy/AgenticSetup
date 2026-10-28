@@ -3498,7 +3498,7 @@ function failFace(i,tries){var st=STEPS[i], ft=FAILT[st.k]||["Couldn't prepare t
     did:{ok:1,bad:didOf(st.k)[1]+": couldn't finish"},l:'',btn:(tries<=1&&i===3)?B("xretry","Try again"):'',r:tries>1?B("xretry","Try again","ghost")+B("xself","Add manually"):(i===3?'':B("xadd","Add manually","ghost")+B("xretry","Try again"))}} /* after two tries the primary action is Add manually, so it is not repeated on the left */
 function reviewFace(){return {chip:["In review","amb"],head:"Your team is in review",sum:"Your changes are being reviewed. You can carry on.",icon:"check",tone:"gr",h:"6 invites sent",p:"Submitted by Anita Kulkarni · 14 Oct, 11:42",btn:B("xview","View","ghost")}}
 var XMENU=[["Agreements",[["Can't be loaded","gate-fail"],["Acceptance refused","gate-refused"]]],
-  ["Agent messages",[["GTM waiting","msg-gtm"],["Welcome back","msg-back"],["After a decision","msg-next"]]],
+  ["Agent messages",[["Welcome back","msg-back"],["After a decision","msg-next"]]],
   ["KYC details",[["Profile approved by none","gap-profile-none"],["Edited: brands are recalculated","rc-brands"],["Done, who and when","done-profile"],["Needs attention","attention-profile"],["Partly prepared","partly-profile"],["Save failed","err-profile"],["Locked fields not found: update in DLT","lock-profile"],["Locked fields: still missing after retry","lock-profile-still"],["Locked fields not found: contact support","lock-profile-support"],["Verification animation: all 3 stages","kv-anim"],["Verification animation: slow motion","kv-anim-slow"],["Verification: couldn't send","kv-error"],["Approved by 2 out of 4 operators","pm-kyc"],["Completed: view, 4 out of 4 telcos","ov-profile-4"],["Completed: view, 2 out of 4 telcos","ov-profile-2"],["Profile view: none approved","ov-profile-0"]]],
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["Do it later","later-team"],["Success: invites sent","ok-team"],["Success: saved for later","ok-team-later"],["Coming back to a finished step","back-team"],["Details: nothing found","notice-team-nothing"],["Details: done by someone else","notice-team-someone"],["Save changes dialog","dialog-team"],["Done by someone else, on the card","conc-card"]]],
   ["Brands and LOBs",[["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["One brand, two LOBs suggested","brands-single"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: save failed","derr-brands"],["Success: sent for approval","ok-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["LOB removed: remapping","pm-remove-remap"]]],
@@ -3557,7 +3557,7 @@ XS["slow-end"]=function(){jump("proc"); SLOW=true; proc(STARTS[1])};
 XS["slow-end-quick"]=function(){jump("proc"); SLOW=true; proc(STARTS[6]+SDUR.tpl*.8)};
 XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
 XMENU.push(["AI processing",[["Step didn't finish (failed)","err-team"],["Nothing found","nf-team"],["Taking longer, jump to the end","slow-end-quick"]]]);
-XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Brands item states: card","gap-brands-items-card"],["Not eligible, on the review screen","gap-not-eligible"]]]);
+XMENU.push(["Edge cases",[["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Brands item states: card","gap-brands-items-card"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 /* a finished step opened again with View: the product page, not the review flow */
 var DVT={team:"User Management",brands:"Brands & LOBs",gtm:"GTM Partners",templates:"LOB-Promo Template Mapping"}, DV={};
 function dvOn(){return !!F.dv&&CARD.big&&F.mode==="review"&&!!DVT[STEPS[F.active].k]}
@@ -3934,8 +3934,8 @@ function jump(w){
     if(m==="plan") return ["Flow","Agent messages"];
     if(m==="proc") return ["Card animation","AI processing"];
     if(m==="kv"||m==="verify") return ["KYC details","Flow"];
-    if(m==="ready") return ["Agent messages","PM gaps","Flow"];
-    if(m==="review"||m==="pass") return (sg?[sg]:[]).concat(["PM gaps","Flow"]);
+    if(m==="ready") return ["Agent messages","Edge cases","Flow"];
+    if(m==="review"||m==="pass") return (sg?[sg]:[]).concat(["Edge cases","Flow"]);
     if(m==="final") return ["Finale","Flow"];
     if(m==="err") return ["Whole screen","Flow"];
     return ["Agent messages","Flow"]}
