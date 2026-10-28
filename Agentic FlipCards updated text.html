@@ -2802,7 +2802,7 @@ function loaderDoc(id, extra = "", doc = LOADER_DOC) {
 /* loader, speed, and the part of its 720-wide stage it actually draws in [x0,y0,x1,y1] (some scenes spill past the stage edge) */
 /* [loader, speed, variant]: sources = the checks scene (each source lit and ticked in turn), KYC details = the form-filling scene */
 var HYMAP={intro:["scan"],sources:["scan"],form:["kyc",1],team:["team",1],brands:["brand",1],gtm:["gtm",1],tpl:["match",1]}; // ~10-12s per scene
-var HYBOX={kycv1:[6,12,600,320],kycv0:[6,12,600,320],kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
+var HYBOX={kycv2:[6,12,600,320],kycv1:[6,12,600,320],kycv0:[6,12,600,320],kyc:[122,6,772,338],team:[4,-10,608,312],brand:[44,0,726,308],gtm:[10,-10,716,290],match:[4,-26,626,344]};
 var HY_P=170, HY_BW=720, HY_BH=330, HY_ZMAX=1.15; // padding round the stage inside the frame, then the scene frame in base px
 /* glass on the blue field: no pure white surfaces, light text, translucent tiles and skeletons; accents brightened to read on blue */
 var HY_GLASS=":root{--surface:rgba(236,243,255,.15) !important;--surface-2:rgba(236,243,255,.10) !important;--surface-3:rgba(236,243,255,.13) !important;"+
@@ -3170,7 +3170,7 @@ function startKV(o){o=o||{};
   say({kick:"",line:t[0],sub:t[1],extra:'<ul class="think" id="kvthink" data-s="kv"></ul>',status:["Verifying","still"],
     prog:{label:"Steps",items:STEPN,states:states(5,0,0)}});
   kvThink(); F.kv.iv2=setInterval(kvThink,50);
-  hyShow(["kycv",o.slow?.7:1.4,0]); var fr=HY.cur&&HY.cur.querySelector("iframe"); if(!fr){kvDone(); return}
+  hyShow(["kycv",o.slow?.7:1.4,2]); /* the operators scene only; the sources check is not shown here */ var fr=HY.cur&&HY.cur.querySelector("iframe"); if(!fr){kvDone(); return}
   var on=function(e){if(!F.kv||e.source!==fr.contentWindow||!e.data||!e.data.agLoader) return; if(e.data.step>=2&&F.kv.ph==="check") kvPhase("send")};
   addEventListener("message",on); F.kv.off=function(){removeEventListener("message",on)};
   F.kv.iv=setInterval(function(){ // each operator tile gets a reply badge, one by one, then the scene holds on all four
