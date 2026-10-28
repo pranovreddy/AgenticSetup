@@ -2538,6 +2538,7 @@ function cardHTML(){
   p.kick=kick; p.chips=chips; if(!CARD.big) p.sum=subline(i); return cardWrap(p);
 }
 function cardWrap(p){
+  p.chips=''; /* the state is already said in the text; no status chip on the card */
   return '<div class="cd-in"><div class="cd-hd"><div>'+(p.sum?'<h2>'+esc(p.title)+'</h2><div class="cd-asum"><span class="cd-ai" title="Agent summary"><canvas class="mblob" aria-label="Agent summary"></canvas></span><span class="t">'+esc(p.sum)+'</span></div>':(p.kick&&!p.back?'<small>'+p.kick+'</small>':'')+(p.titleHTML||(p.back?'<div class="cd-trow"><button type="button" class="cd-back" data-a="collapse" aria-label="Back to the summary" title="Back to the summary">'+I("back")+'</button><h2>'+esc(p.title)+'</h2></div>':'<h2>'+esc(p.title)+'</h2>')))+'</div>'+(p.chips||p.tog?'<div class="cd-side">'+(p.chips||'')+p.tog+'</div>':'')+'</div><div class="cd-bd">'+p.body+'</div>'+(p.extra||'')+(p.l||p.r?'<div class="cd-ft"><div style="display:flex;gap:8px;align-items:center">'+p.l+'</div><div style="display:flex;gap:10px;align-items:center">'+p.r+'</div></div>':'')+'</div>';
 }
 function railW(){return 24}
