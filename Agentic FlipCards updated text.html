@@ -1278,7 +1278,8 @@ body[data-m=proc] #sub{opacity:0;transform:translateY(-6px);max-height:0;margin-
 <style id="hybrid-css">
 /* hybrid approach: the pixel field stays, the agent-loader scene sits under the steps, no blob on top.
    The whole block (status, headline, steps, scene) is centred on the page. */
-body[data-m=proc] .stage,body[data-m=kv] .stage{top:calc(50% + 22px)}
+body[data-m=proc] .stage,body[data-m=kv] .stage,body.hysolo .stage{top:calc(50% + 22px)}
+body.retrysolo[data-m=proc] .hyCard:not(.is-front){opacity:0 !important;visibility:hidden !important}
 .stage{transition:top var(--dur-move) var(--ease-soft),opacity var(--dur-ui) var(--ease-out)}
 body[data-m=proc] .extra{min-height:116px}
 /* steps: three rows at most, newer ones scroll in from below */
@@ -1288,7 +1289,7 @@ body[data-m=proc] .think li{line-height:1.45}
 /* the scene: sits ON the blue pixel field (above canvas#px / #orb), never behind it */
 .hyL{display:block;position:relative;z-index:3;isolation:isolate;margin:0 auto;pointer-events:none;text-shadow:none;opacity:0;max-height:0;overflow:hidden;
   transition:opacity var(--dur-enter) var(--ease-out),max-height .55s var(--ease-move),margin var(--dur-move) var(--ease-soft),height .55s var(--ease-soft),width .55s var(--ease-soft)}
-body[data-m=proc] .hyL,body[data-m=kv] .hyL{opacity:1;max-height:90vh;margin:14px auto 0;overflow:visible}
+body[data-m=proc] .hyL,body[data-m=kv] .hyL,body.hysolo .hyL{opacity:1;max-height:90vh;margin:14px auto 0;overflow:visible}
 .hyL:before{content:"";position:absolute;z-index:0;left:-10%;right:-10%;top:-14%;bottom:-14%;border-radius:50%;
   background:radial-gradient(closest-side,rgba(170,205,255,.26),rgba(120,165,255,.10) 55%,rgba(120,165,255,0));animation:hyGlow 7s ease-in-out infinite;pointer-events:none}
 .hyL:after{content:"";position:absolute;z-index:0;left:24%;right:24%;bottom:-4%;height:10%;border-radius:50%;opacity:.6;pointer-events:none;
@@ -2099,7 +2100,7 @@ function setExtra(html,quiet){
 /* o: {kick, line, sub, extra, status:[text, cls], prog:{label, items, states}} ; only what changed animates */
 function say(o,quiet){
   var prevM=document.body.getAttribute("data-m");
-  document.body.setAttribute("data-m",F.mode); if(F.mode!=="proc"&&F.mode!=="kv"){hyClearDeck(); hyShow(null)};
+  document.body.setAttribute("data-m",F.mode); if(F.mode!=="proc"&&F.mode!=="kv"){hyClearDeck(); hyShow(null); document.body.classList.remove("hysolo")}; if(F.mode!=="proc") document.body.classList.remove("retrysolo");
   if(o.kick!=null&&o.kick!==said.kick){said.kick=o.kick; $("kick").innerHTML=o.kick}
   if(o.line!=null&&o.line!==said.line){said.line=o.line; setWords($("line"),o.line,true); if(F.mode!=="gate"&&F.mode!=="review") corePulse()}
   if(o.sub!=null&&o.sub!==said.sub){said.sub=o.sub; setWords($("sub"),o.sub,false)}
@@ -2328,6 +2329,8 @@ function ready(){
    See details grows it to full page, Show summary or finishing the step brings it back */
 /* reruns happen only after an edit: a profile change recalculates brands, a brands change remaps templates */
 function profEdited(){return PROFILE.some(function(r,k){return String(r[1])!==String(origP(k))})}
+/* a retry or a remap plays the step's own animation, on its own, in the middle: no neighbouring cards */
+function soloOn(k){var h=HYMAP[k]; if(!h) return; document.body.classList.add("hysolo"); hyShow(h); hyFit(); later(hyFit,60)}
 function recalc(kind,then){
   var b=kind==="brands";
   F.mode="msg"; show("blank"); hideCard();
@@ -2337,9 +2340,10 @@ function recalc(kind,then){
     status:[b?"Recreating":"Mapping","still"],prog:{label:"Steps",items:STEPN,states:states(5,b?2:4,b?2:4)}});
   corePulse(); F.rcKind=kind; F.rcThen=then;
   var sim=F.rcSim; F.rcSim=null;
+  if(sim!=="fail") soloOn(b?"brands":"tpl");
   if(sim==="fail") later(function(){say({kick:"Onboarding Agent",line:"Couldn't recalculate your "+(b?"brands and LOBs":"templates"),sub:"Nothing was lost. Your earlier suggestion is kept. Try again, or fill this step in yourself.",
     extra:'<div class="acts">'+B("rcretry","Try again")+B("rcself","Do it yourself","ghost")+'</div>',status:["Couldn't recalculate","attn"],prog:{label:"Steps",items:STEPN,states:states(5,b?2:4,b?2:4)}})},REDUCE?600:3200);
-  else if(sim==="slow"){later(function(){say({sub:"This is taking longer than usual. You can keep waiting, or skip and come back later.",extra:'<div class="rcrow"><i></i>Still working on it</div><p class="rcnote">Large accounts can take a few minutes.</p><div class="acts"><button class="btn ghost" data-a="rcskip">Skip for now</button></div>'})},REDUCE?600:3200);
+  else if(sim==="slow"){later(function(){say({sub:"This is taking longer than usual. You can keep waiting, or skip and come back later.",extra:'<div class="rcrow"><i></i>Still working on it</div><p class="rcnote">Large accounts can take a few minutes.</p><div class="acts"><button class="btn ghost" data-a="rcskip">Skip for now</button></div>'}); soloOn(b?"brands":"tpl")},REDUCE?600:3200);
     later(function(){F[b?"rcB":"rcT"]=true; then()},REDUCE?1200:9000)}
   else later(function(){F[b?"rcB":"rcT"]=true; then()},REDUCE?600:4800);
 }
@@ -3097,7 +3101,7 @@ function hyPlace(w){
       tx=(FW-bw*S)/2-(b[0]+HY_P)*S, ty=(FH-bh*S)/2-(b[1]+HY_P)*S;
   fr.style.transform="translate("+tx.toFixed(1)+"px,"+ty.toFixed(1)+"px) scale("+S.toFixed(4)+")"}
 function hyFit(){
-  var box=$("hyL"), ex=$("extra"); if(!box||(F.mode!=="proc"&&F.mode!=="kv")) return;
+  var box=$("hyL"), ex=$("extra"); if(!box||(F.mode!=="proc"&&F.mode!=="kv"&&!document.body.classList.contains("hysolo"))) return;
   var top=ex.offsetTop+ex.offsetHeight+14, avail=innerHeight-170-top;
   HY.s=Math.max(.4,Math.min(1.15,avail/HY_BH,innerWidth*.92/HY_BW));
   box.style.width=Math.round(HY_BW*HY.s)+"px"; box.style.height=Math.round(HY_BH*HY.s)+"px";
@@ -3768,7 +3772,12 @@ document.addEventListener("click",function(e){
   else if(a==="ddiscard"){var o=JSON.parse(F.snap); PROFILE=o.P; PEOPLE=o.E; BRANDS=o.B; PARTNERS=o.G; TPLS=o.T; ALLOC=o.A; F.am=null; hideDlg(); F.snap=null; collapseCard(); toast("Changes discarded")}
   else if(a==="xreview"){var v=el.dataset.v; F.face=null; if(v==="ret") F.pret=[4,5]; if(v==="tpart") F.tpart=true; refresh()}
   else if(a==="kvretry"){startKV()}
-  else if(a==="xretry"){var f=F.face; f.l=''; f.r=''; f.btn='<button class="btn" disabled><span class="spn w"></span>Trying again…</button>'; refresh(); later(function(){F.face=null; refresh(); toast(STEPS[F.active].title+" is ready to review")},REDUCE?300:2200)}
+  else if(a==="xretry"){var ri=F.active, rk=({team:"team",brands:"brands",gtm:"gtm",templates:"tpl"})[STEPS[ri].k];
+    if(!rk||REDUCE){F.face=null; refresh(); toast(STEPS[ri].title+" is ready to review")}
+    else{F.mode="msg"; show("blank"); hideCard();
+      say({kick:"Onboarding Agent",line:"Trying again",sub:"I'm preparing this step again.",extra:'<div class="rcrow"><i></i>Working on '+esc(STEPS[ri].title)+'</div>',status:["Trying again","still"],prog:{label:"Steps",items:STEPN,states:states(5,ri,ri)}});
+      corePulse(); soloOn(rk);
+      later(function(){F.face=null; document.body.classList.remove("hysolo"); _review0(ri); toast(STEPS[ri].title+" is ready to review")},5200)}}
   else if(a==="xself"||a==="xadd"){var kk=STEPS[F.active].k; F.nfFace=F.face; F.face=null; if(kk==="team"){PEOPLE.splice(0); F.addU=true} if(kk==="brands"){BRANDS.splice(0)} refresh(); later(expandCard,200)}
   else if(a==="xlater"){var ii=F.active; F.face=null; if(ii===1) F.teamLater=true; finishStep(function(){complete(ii,STEPS[ii].title+" saved for later")})}
   else if(a==="dvtab"){DV.tab=el.dataset.v; DV.m=-1; renderCard()}
@@ -3792,7 +3801,7 @@ document.addEventListener("click",function(e){
   else if(a==="ovedit"){var ka=F.active; F.ro=STEPS[ka].k==="profile"; F.dvNext=STEPS[ka].k!=="profile"&&F.status[ka]==="done"&&!(F.later&&F.later[ka])&&!(ka===1&&F.teamLater); expandCard()}
   else if(a==="xgo"){goStep(+el.dataset.v)}
   else if(a==="plretry"){F.plchk=true; refresh(); later(function(){F.plchk=false; if(F.plstill&&F.plock!==2){F.plock=2; refresh()} else {var b0=JSON.parse(BASE).P; [0,2,3].forEach(function(k){PROFILE[k][1]=b0[k][1]}); F.plock=0; F.plstill=0; refresh(); toast(F.plsup?"Found your details":"Found your details in DLT"); F.plsup=0}},REDUCE?600:1800)}
-  else if(a==="perr-retry"){var e0=ERR; e0.tries++; if(e0.tries>=e0.ok){ERR=null} proc(STARTS[e0.idx])}
+  else if(a==="perr-retry"){document.body.classList.add("retrysolo"); var e0=ERR; e0.tries++; if(e0.tries>=e0.ok){ERR=null} proc(STARTS[e0.idx])}
   else if(a==="perr-skip"){var e1=ERR; ERR=null; F.errSkip=e1.id; NF=e1.id; proc(STARTS[e1.idx+1])}
   else if(a==="tpx"){F.tpx=F.tpx||{}; var o0=el.dataset.o; F.tpx[o0]=F.tpx[o0]?0:1; el.classList.toggle("open",!!F.tpx[o0])}
   else if(a==="itab"){F.infoOpen=!F.infoOpen; var _t2=$("itab"), _p2=$("ipan"); _t2.classList.toggle("act",F.infoOpen); _p2.classList.toggle("on",F.infoOpen&&_t2.classList.contains("on"))}
