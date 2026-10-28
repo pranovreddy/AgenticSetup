@@ -2226,6 +2226,7 @@ function slowEnd(){F.mode="msg"; show("done");
   say({kick:"Onboarding Agent",line:"This is taking longer than usual",sub:"All five steps are drafted. I'm still checking the last details, so please wait. You don't need to do anything.",
     extra:'<div class="rcrow"><i></i>Putting the last details together</div><div class="xamb">It can take a few more minutes. You can leave this page and come back. Your progress is saved.</div>',
     status:["Still working","still"],prog:{label:"Steps",items:STEPN,states:states(5,-1,5)}});
+  $("prog").classList.add("off"); /* nothing to go back to while the last checks run */
   corePulse(); later(function(){SLOW=false; ready()},REDUCE?1200:9000)}
 var ERR=null;
 /* when a step fails the agent does not name a source: it says something went wrong and the step could not finish */
@@ -3556,7 +3557,7 @@ XS["slow-end"]=function(){jump("proc"); SLOW=true; proc(STARTS[1])};
 XS["slow-end-quick"]=function(){jump("proc"); SLOW=true; proc(STARTS[6]+SDUR.tpl*.8)};
 XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
 XMENU.push(["AI processing",[["Step didn't finish (failed)","err-team"],["Nothing found","nf-team"],["Taking longer, jump to the end","slow-end-quick"]]]);
-XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Return mid-preparation","gap-return-prep"],["Ready on return","gap-return-ready"],["Ready, some not prepared","gap-ready-partial"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
+XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 /* a finished step opened again with View: the product page, not the review flow */
 var DVT={team:"User Management",brands:"Brands & LOBs",gtm:"GTM Partners",templates:"LOB-Promo Template Mapping"}, DV={};
 function dvOn(){return !!F.dv&&CARD.big&&F.mode==="review"&&!!DVT[STEPS[F.active].k]}
