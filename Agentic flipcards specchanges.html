@@ -3603,12 +3603,11 @@ XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
 XMENU.push(["AI processing",[["Step didn't finish (failed)","err-team"],["Nothing found","nf-team"],["Taking longer, jump to the end","slow-end-quick"]]]);
 XS["spec-gtm-error"]=function(){rStep(3,function(){later(function(){var i=document.querySelector('#card input[data-c="sam"][data-k="0"]'); if(i){i.value=50; i.dispatchEvent(new Event("input",{bubbles:true}))}},5200)})};
 XMENU.push(["Spec review changes",[
- ["1 · GTM: recommended card, new CTAs and consent text","r3"],["1 · GTM: share error per phase","spec-gtm-error"],["1 · GTM: waiting for rate cards (Check Again)","norate-gtm"],
- ["2 · KYC: partly approved (2 of 4)","pm-kyc"],["2 · KYC: none approved","gap-profile-none"],["2 · KYC: completed view, 4 of 4","ov-profile-4"],["2 · KYC: completed view, 2 of 4","ov-profile-2"],
- ["3 · Brands and LOBs: chips, Submit for Approval","r2"],
+ ["1 · GTM: share error per phase","spec-gtm-error"],["1 · GTM: waiting for rate cards (Check Again)","norate-gtm"],
+ ["2 · KYC: partly approved (2 of 4)","pm-kyc"],["2 · KYC: none approved","gap-profile-none"],["2 · KYC: completed view, 2 of 4","ov-profile-2"],
+ 
  ["4 · Templates: single check screen","tpl-gate"],["4 · Templates: check screen with approval advisory","pm-partial-warn"],
- ["5 · Team: after two failed tries","fail2-team"],["5 · Team: saved for later screen","later-team"],["5 · Team: invites sent","ok-team"],
- ["7 · Closed migration window","fin-closed"]]]);
+ ["5 · Team: after two failed tries","fail2-team"],["5 · Team: saved for later screen","later-team"]]]);
 XMENU.push(["Edge cases",[["Another user accepts while you read","gap-race"],["Ready on return","gap-return-ready"],["Brands item states: card","gap-brands-items-card"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 /* a finished step opened again with View: the product page, not the review flow */
 var DVT={team:"User Management",brands:"Brands & LOBs",gtm:"GTM Partners",templates:"LOB-Promo Template Mapping"}, DV={};
