@@ -1279,7 +1279,7 @@ body[data-m=proc] #sub{opacity:0;transform:translateY(-6px);max-height:0;margin-
 /* hybrid approach: the pixel field stays, the agent-loader scene sits under the steps, no blob on top.
    The whole block (status, headline, steps, scene) is centred on the page. */
 body[data-m=proc] .stage,body[data-m=kv] .stage,body.hysolo .stage{top:calc(50% + 22px)}
-body.retrysolo[data-m=proc] .hyCard:not(.is-front){opacity:0 !important;visibility:hidden !important}
+body.retrysolo[data-m=proc] .hyCard:not(.is-front),body.hysolo .hyCard:not(.is-front){opacity:0 !important;visibility:hidden !important}
 .stage{transition:top var(--dur-move) var(--ease-soft),opacity var(--dur-ui) var(--ease-out)}
 body[data-m=proc] .extra{min-height:116px}
 /* steps: three rows at most, newer ones scroll in from below */
@@ -2330,7 +2330,7 @@ function ready(){
 /* reruns happen only after an edit: a profile change recalculates brands, a brands change remaps templates */
 function profEdited(){return PROFILE.some(function(r,k){return String(r[1])!==String(origP(k))})}
 /* a retry or a remap plays the step's own animation, on its own, in the middle: no neighbouring cards */
-function soloOn(k){var h=HYMAP[k]; if(!h) return; document.body.classList.add("hysolo"); hyShow(h); hyFit(); later(hyFit,60)}
+function soloOn(k){var ix=STEP_IX[k]; document.body.classList.add("hysolo"); if(ix!=null){hyBuildDeck(); hyFocusStep(ix,REDUCE)} else if(HYMAP[k]) hyShow(HYMAP[k]); hyFit(); later(hyFit,60)}
 function recalc(kind,then){
   var b=kind==="brands";
   F.mode="msg"; show("blank"); hideCard();
