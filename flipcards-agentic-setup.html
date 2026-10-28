@@ -3486,12 +3486,10 @@ XS["gap-tpl-partial"]=function(){rStep(4,function(){F.tplGate="ok"; setFace(4,{c
 XS["gap-not-eligible"]=function(){rStep(1); later(function(){showDlg({tone:"or",icon:"lock",title:"Your organisation isn't eligible",text:"An operator has blacklisted your organisation, so setup is paused on every screen. Still available: Contact support and Log out.",btns:B("xlogout","Log out","ghost")+B("xsupport","Contact support")})},REDUCE?700:1700)};
 [["sources",1,"Sources: website not found","nf-sources"],["team",3,"Team: no people found","nf-team"],["brands",4,"Brands: no headers found","nf-brands"],["gtm",5,"GTM: no rate cards","nf-gtm"],["tpl",6,"Templates: none found","nf-tpl"]].forEach(function(r){XS[r[3]]=function(){jump("proc"); NF=r[0]; proc(STARTS[r[1]])}});
 [["sources",1,"err-sources",1],["form",2,"err-form",1],["team",3,"err-team",1],["brands",4,"err-brands",1],["gtm",5,"err-gtm",1],["tpl",6,"err-tpl",1],["tpl",6,"err-tpl-twice",2]].forEach(function(r){XS[r[2]]=function(){jump("proc"); ERR={id:r[0],idx:r[1],tries:0,ok:r[3]}; proc(STARTS[r[1]])}});
-XMENU.push(["AI processing: it failed",[["Sources: step didn't finish","err-sources"],["KYC details: step didn't finish","err-form"],["Team: step didn't finish","err-team"],["Brands and LOBs: step didn't finish","err-brands"],["GTM partners: step didn't finish","err-gtm"],["Templates: step didn't finish","err-tpl"],["Templates: fails twice","err-tpl-twice"]]]);
 XS["slow-end"]=function(){jump("proc"); SLOW=true; proc(STARTS[1])};
 XS["slow-end-quick"]=function(){jump("proc"); SLOW=true; proc(STARTS[6]+SDUR.tpl*.8)};
-XMENU.push(["AI processing: taking longer",[["All steps done, last checks slow","slow-end"],["Same, jump to the end","slow-end-quick"]]]);
 XS["nf-all"]=function(){jump("proc"); NF="all"; proc(STARTS[1])};
-XMENU.push(["AI processing: nothing found",[["All steps: nothing found","nf-all"],["Sources: website not found","nf-sources"],["Team: no people found","nf-team"],["Brands: no sender headers","nf-brands"],["GTM: no rate cards","nf-gtm"],["Templates: none found","nf-tpl"]]]);
+XMENU.push(["AI processing",[["Step didn't finish (failed)","err-team"],["Nothing found","nf-team"],["Taking longer, jump to the end","slow-end-quick"]]]);
 XMENU.push(["PM gaps",[["Another user accepts while you read","gap-race"],["Return mid-preparation","gap-return-prep"],["Ready on return","gap-return-ready"],["Ready, some not prepared","gap-ready-partial"],["Profile approved by none (screen)","gap-profile-none"],["Profile approved by none (card)","gap-profile-none-card"],["Profile approval withdrawn","gap-profile-withdrawn"],["Profile approval restored","gap-profile-restored"],["Brands item states: card","gap-brands-items-card"],["Brands item states: full page","gap-brands-items-page"],["Brands recalculation slow","gap-rc-brands-slow"],["Brands recalculation failed","gap-rc-brands-fail"],["Brands: some still approved","gap-brands-some"],["Brands: none left","gap-brands-none"],["Templates: in review with counts","gap-tpl-review"],["Templates: some not approved","gap-tpl-partial"],["Not eligible, on the review screen","gap-not-eligible"]]]);
 /* a finished step opened again with View: the product page, not the review flow */
 var DVT={team:"User Management",brands:"Brands & LOBs",gtm:"GTM Partners",templates:"LOB-Promo Template Mapping"}, DV={};
@@ -3857,7 +3855,7 @@ function jump(w){
     if(b.classList.contains("appon")) return ["Finale","Flow"];
     if(m==="gate") return ["Agreements","Flow"];
     if(m==="plan") return ["Flow","Agent messages"];
-    if(m==="proc") return ["Card animation","AI processing: it failed","AI processing: nothing found","AI processing: taking longer"];
+    if(m==="proc") return ["Card animation","AI processing"];
     if(m==="kv"||m==="verify") return ["KYC details","Flow"];
     if(m==="ready") return ["Agent messages","PM gaps","Flow"];
     if(m==="review"||m==="pass") return (sg?[sg]:[]).concat(["PM gaps","Flow"]);
