@@ -275,7 +275,7 @@ select.inp{height:36px;padding:0 8px}
 .cd-hd{padding:30px 36px 6px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex:none}
 .cd-hd small{color:var(--s-muted);font-size:14px;display:flex;align-items:center;gap:8px}
 .cd-hd h2{margin:8px 0 0;font-size:28px;line-height:1.2;letter-spacing:-.025em;font-weight:650}
-.card.big .cd-hd{border-bottom:0;padding-top:18px;padding-bottom:2px}.card.big .cd-bc{font-size:15px;margin-top:0}
+.card.big .cd-hd{border-bottom:0;padding-top:18px;padding-bottom:2px}.card.big .cd-pt{margin:8px 0 0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.01em;color:var(--s-ink)}.card.big .cd-bc{font-size:15px;margin-top:0}
 .cd-bd{flex:1;min-height:0;overflow:auto;padding:6px 36px 28px}
 .cd-ft{flex:none;padding:16px 36px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--s-line)}
 .card.big .cd-hd,.card.big .cd-bd,.card.big .cd-ft{padding-left:max(28px,calc((100% - 1040px)/2));padding-right:max(28px,calc((100% - 1040px)/2))}
@@ -2579,7 +2579,7 @@ function bcInternal(i){var k=STEPS[i].k; if(F.bcAct) return F.bcAct;
     if(ed) return ed===1?"Editing a user":"Editing "+ed+" users"; if(sl) return sl+" selected"}
   if(F.ro) return "Read only"; return ""}
 function bcHTML(p){var i=F.active, st=STEPS[i], last=bcInternal(i), cr=[[st.title,1],[p.title,0]]; if(last) cr.push([last,0]);
-  return '<nav class="cd-bc" aria-label="Breadcrumb">'+cr.map(function(c,k){var cur=k===cr.length-1; return (k?'<i aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></i>':'')+(c[1]?'<button type="button" data-a="collapse" title="Back to the summary">'+esc(c[0])+'</button>':'<span'+(cur?' class="now" aria-current="page"':'')+'>'+esc(c[0])+'</span>')}).join("")+'</nav>'}
+  return '<nav class="cd-bc" aria-label="Breadcrumb">'+cr.map(function(c,k){var cur=k===cr.length-1; return (k?'<i aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></i>':'')+(c[1]?'<button type="button" data-a="collapse" title="Back to the summary">'+esc(c[0])+'</button>':'<span'+(cur?' class="now" aria-current="page"':'')+'>'+esc(c[0])+'</span>')}).join("")+'</nav><h2 class="cd-pt">'+esc(p.title)+'</h2>'}
 function cardWrap(p){
   /* only these statuses may show on a card: Queued, Preparing, Ready (no chip), Locked, In review, Needs attention, Do it later, Done */
   if(p.chips){var cm=/>([^<]*)</.exec(p.chips), ct=cm?cm[1]:""; ct=({"Something went wrong":"Needs attention","Needs review":"","Blocked":"","Nothing found":"","Partly approved":"","Before you map":"","Ready":""})[ct]===undefined?ct:({"Something went wrong":"Needs attention"})[ct]||"";
