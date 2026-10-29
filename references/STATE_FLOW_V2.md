@@ -47,3 +47,14 @@ Duplicate of `STATE_FLOW.md`, reworked against `AgenticOnboardingSpecsV2_2_1.md`
 - The prototype is in-memory only: no routing, history or saved progress. The Specs require saved progress for the organisation, the landing rule (LAND) and no browser Back between cards (LAND-001).
 - Auto-approval of brands and LOBs is a backend setting the user never sees (BRAND-025); the diagrams show both outcomes.
 - Numbers, dates and IDs in the prototype are sample data.
+
+## PM corrections applied (board V2, regenerated diagrams marked "(corrected)")
+- V2-01: Do It Later now leads to the blue "{Step} is saved for later" page (SUCC-009), not the success screen; opening cites OPEN-001 and OPEN-002.
+- V2-03: GTM opens with Brands' condition AND at least one rate card has arrived (FLOW-007, FLOW-020, GTM-003).
+- V2-08: Brands branches into manual (Submit for Approval) vs automatic (Confirm); box ticking is BRAND-017, the gate before the main button.
+- V2-09: MAN-015 sits on the waiting-for-rate-cards side; added failed-twice Add Manually path (RETRY-013/014, no Do It Later for GTM).
+- V2-10: added TPL-009, TMATCH-018, TMATCH-017, TMATCH-009 and the failed-twice path (Add Manually, Try Again, Do It Later).
+- V2-11: added session expiry (CASE-003, CASE-004).
+- V2-13: gate-other-accepted shows name on tab with message, no dialog (CONC-015); dialog only for same-moment accept (CONC-024); added CONC-009, CONC-012, CONC-017.
+- V2-14: after both accepted, gate closes and user lands by the landing rule.
+Unchanged: V2-02, 04, 05, 06, 07, 12. Old versions of the replaced diagrams were deleted from the board.
