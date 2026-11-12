@@ -925,6 +925,56 @@ body.agent6 #canvas{order:4}
 body.agent6 #bulk{order:9}
 body.agent6.a51-sel .a5-dock.idle{display:grid}
 @media(prefers-reduced-motion:reduce){.a6-zone::after,body.agent6 .a5-say h2.swap,body.agent6 .a5-dock,.a6-next{animation:none}}
+/* ---------- agent 7.0: the agent holds the files. They sit under its words while it works, and each becomes an action item when it is done ---------- */
+body:not(.agent7) .a7-only{display:none!important}
+body.agent7 .a5-head,body.agent7.is-empty .a5-head{margin-top:4px;padding:26px 28px 26px 22px;border-radius:30px;border:1px solid rgba(37,96,246,.18);background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.78));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 34px 80px -44px rgba(37,96,246,.55),0 1px 2px rgba(16,33,59,.05);transition:border-color .4s,box-shadow .4s}
+body.agent7 .a5-head[data-blob="wait"]{border-color:#f0d9a8;box-shadow:0 34px 80px -44px rgba(201,122,0,.5),0 1px 2px rgba(16,33,59,.05)}
+body.agent7 .a5-head[data-blob="done"]{border-color:#bfe6d2}
+body.agent7 .a5-head .a5-blob{width:108px;height:108px;margin:-4px 0 0 -4px}
+body.agent7 .a5-say{padding-top:6px}
+body.agent7 .a5-say h2{font-size:28px}
+body.agent7 .a51-hact{padding-top:4px}
+.a7-lbl{display:block!important;margin:20px 0 10px;font:600 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--a-mute)}
+.a7-files{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;align-items:start}
+.a7-tile{display:flex;flex-direction:column;gap:9px;min-width:0;padding:13px 14px;border-radius:16px;background:#fff;border:1px solid var(--a-line);box-shadow:0 10px 24px -20px rgba(16,33,59,.5);transition:border-color .4s,background .4s,box-shadow .4s}
+.a7-tile.in{animation:a7-in .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes a7-in{from{opacity:0;transform:translateY(-22px) scale(.94)}}
+.a7-tile.turn{animation:a7-turn .7s cubic-bezier(.22,1,.36,1)}
+@keyframes a7-turn{0%{transform:scale(.97)}40%{transform:scale(1.025);box-shadow:0 0 0 6px rgba(224,169,63,.22)}}
+.a7-tile.run{border-color:rgba(37,96,246,.22)}
+.a7-tile.need{border-color:#f0d9a8;background:linear-gradient(180deg,#fffaf0,#fff);box-shadow:0 14px 30px -20px rgba(201,122,0,.55)}
+.a7-top{display:flex;align-items:center;gap:10px;min-width:0}
+.a7-top .r-ico{width:32px;height:32px;border-radius:9px;flex-shrink:0}
+.a7-n{flex:1;min-width:0;display:flex;flex-direction:column}
+.a7-n b{font-size:13.5px;font-weight:650;color:var(--a-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a7-n small{font-size:11.5px;color:var(--a-mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a7-x{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--a-mute);flex-shrink:0;opacity:0;transition:opacity .15s,background .15s}
+.a7-tile:hover .a7-x,.a7-x:focus-visible{opacity:1}
+.a7-x:hover{background:var(--bg-2);color:var(--a-ink)}
+.a7-x svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.a7-seg{display:flex;gap:4px}
+.a7-seg i{flex:1;height:4px;border-radius:2px;background:var(--bg-2);overflow:hidden}
+.a7-seg u{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2560f6,#4ea0ff)}
+.a7-st{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--a-mute);min-width:0}
+.a7-st>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a7-st b{color:var(--a-bld);font-weight:650}
+.a7-pc{font:600 11.5px var(--mono);color:var(--a-ink2);white-space:nowrap}
+.a7-say{font-size:13px;line-height:1.45;color:var(--a-ink2)}
+.a7-say b{color:var(--a-ink);font-weight:650}
+.a7-why{align-self:flex-start;font-size:12px;font-weight:650;color:var(--a-bld);padding:1px 0}
+.a7-why:hover{text-decoration:underline}
+.a7-chips{display:flex;flex-wrap:wrap;gap:5px}
+.a7-chips span{display:inline-flex;align-items:baseline;gap:5px;padding:4px 8px;border-radius:8px;background:rgba(16,33,59,.05);font-size:11.5px;color:var(--a-ink2)}
+.a7-chips b{font-size:12.5px;font-weight:650;color:var(--a-ink);font-variant-numeric:tabular-nums}
+.a7-ev{width:100%;border-collapse:collapse;border:1px solid var(--a-line);border-radius:8px}
+.a7-ev td{font:500 11px var(--mono);padding:5px 8px;border-top:1px solid var(--a-line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.a7-ev tr:first-child td{border-top:0}
+.a7-ev .o{color:#b53a48;text-decoration:line-through}.a7-ev .n{color:#0b6d46}
+.a7-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+/* below the agent: only what has left its hands */
+body.agent7 .a5-tools{display:none!important}
+body.agent7 #canvas .file-row2:not(.ok):not(.cancelled),body.agent7 #canvas .a51-gh.g-needs,body.agent7 #canvas .a51-gh.g-run{display:none}
+@media(prefers-reduced-motion:reduce){.a7-tile.in,.a7-tile.turn{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1525,7 +1575,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="agent7" aria-pressed="false">Agent 7.0</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -1628,6 +1678,8 @@ span.r-pick{cursor:default}
               <p id="a5Sub">Each file becomes a run that I validate, fix and verify for you.</p>
               <p class="a5-live" id="a5Live" hidden><i class="a5-caret" aria-hidden="true"></i><span id="a5LiveT"></span></p>
               <div class="a6-only a6-next" id="a6Next" aria-live="polite" hidden></div>
+              <span class="a7-only a7-lbl" id="a7Lbl" hidden></span>
+              <div class="a7-only a7-files" id="a7Files" aria-label="Files the agent is holding" hidden></div>
             </div>
             <div class="a5-done" id="a5Done" hidden></div>
             <div class="a51-only a51-hact"><button type="button" class="a6-only a6-up" id="a6Up" aria-expanded="false" aria-controls="a5Drop"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></i>Upload files</button><button type="button" class="a51-pause" id="a51Pause" hidden></button></div>
@@ -3479,7 +3531,7 @@ span.r-pick{cursor:default}
     const live = jobs.some(isRunning) && !staged;
     $('#a5Sub').textContent = sub; $('#a5Sub').hidden = live; $('#a5Head').dataset.blob = blob;
     $('#a5Live').hidden = !live;
-    a51Console(); a6Next();
+    a51Console(); a6Next(); a7Render();
     if (a6On() && $('#a5Drop').hidden === (A6.open || A5.stage.length > 0 || !jobs.length)) { $('#a5Drop').hidden = !$('#a5Drop').hidden; $('#a6X').hidden = !jobs.length; $('#a6Up').hidden = !jobs.length && !A5.stage.length; }
     a5Paint(true);
     if (typeof AI_BLOB !== 'undefined') AI_BLOB.wake();
@@ -3489,7 +3541,7 @@ span.r-pick{cursor:default}
     if (skipTrack !== true) a5Track();
     let lead = null, k = 0;
     for (const j of jobs) { if (!isRunning(j)) continue; k++; if (!lead || (j.p || 0) > (lead.p || 0)) lead = j; }
-    a51Left();
+    a7Paint(); a51Left();
     if (!lead) return;
     /* a step that just finished is shown for a moment, then the line goes back to what is happening now */
     const el = $('#a5Live'), nt = A5.note && performance.now() - A5.note.t < 2800 ? A5.note : null, a = aiState(lead);
@@ -3696,11 +3748,11 @@ span.r-pick{cursor:default}
     if (g.gated.length) bits.push(`${num(nFail)} records failed checks in ${a5Fs(g.gated.length)}, which I can set aside`);
     if (g.ready.length) bits.push(`${a5Fs(g.ready.length)} ${g.ready.length > 1 ? 'are' : 'is'} ready to submit (${num(nRec)} records)`);
     let html = '';
-    if (bits.length) {
+    if (bits.length && !(a7On() && g.need.length < 2)) {
       const act = (g.fixable.length ? b('fix-all', `Fix ${g.fixable.length > 1 ? 'all ' : ''}${num(nFix)} errors`, lead === 'fix' ? 'btn-pri' : '') : '')
         + (g.gated.length ? b('skip-all', `Skip failed records in ${a5Fs(g.gated.length)}`, lead === 'skip' ? 'btn-pri' : '') : '')
         + (g.ready.length ? b('submit-all-arm', `Approve and submit ${a5Fs(g.ready.length)}`, lead === 'submit' ? 'btn-pri' : '') : '')
-        + (g.need.length > 1 ? b('review', 'Review one by one') : '');
+        + (g.need.length > 1 && !a7On() ? b('review', 'Review one by one') : '');
       html = `<p>${AG_SPARK}<span>${bits.join('. ')}. Your original rows are always kept.</span></p><div>${act}</div>`;
     } else if (g.fixing.length) html = `<p>${AG_SPARK}<span>Applying the fixes you approved in ${a5Fs(g.fixing.length)}. Back in a moment.</span></p>`;
     el.hidden = !html;
@@ -3715,6 +3767,81 @@ span.r-pick{cursor:default}
   $('#a6Zone').onclick = () => a5Browse();
   $('#a6Zone').onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === $('#a6Zone')) { e.preventDefault(); a5Browse(); } };
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && a6On() && A6.open && jobs.length && !$('#a51Dlg').open) a6Panel(false, true); });
+
+  /* ---------- agent 7.0: the files sit inside the agent, under its words, while it works on them; each one turns into an action item when the agent is done with it ---------- */
+  const a7On = () => document.body.classList.contains('agent7');
+  const A7 = { els: new Map(), why: new Set() };
+  const a7Need = j => needsYou(j) && !isPending(j);
+  const A7_FIX = [['Phone numbers', .61], ['Consent dates', .27], ['Names and emails', .12]];
+  const A7_ROWS = [['phone', '98765 43210', '+919876543210'], ['consent_date', '03/09/24', '2024-09-03'], ['email', '" asha.k@mail.com "', 'asha.k@mail.com']];
+  const a7Btn = (k, label, id, cls = '') => `<button type="button" class="btn btn-sm ${cls}" data-a7="${k}" data-id="${id}">${label}</button>`;
+  function a7Tile(j) {
+    const id = j.id, a = aiState(j), why = A7.why.has(id);
+    const segs = `<span class="a7-seg" aria-hidden="true">${[0, 1, 2, 3, 4].map(k => `<i><u data-a7-seg="${id}-${k}" style="width:${j.phase === 'fix_review' ? (k < 2 ? 100 : 0) : segFill(j, k).toFixed(0)}%"></u></i>`).join('')}</span>`;
+    const top = `<span class="a7-top"><span class="r-ico brand" aria-hidden="true">${BRAND_LOGO}</span><span class="a7-n"><b title="${esc(j.name)}">${esc(j.name)}</b><small>${esc(j.lob)} · ${num(j.total)} rows${j.autofix ? '' : ' · asks first'}</small></span>`;
+    if (isRunning(j)) return `${top}<button type="button" class="a7-x" data-a7="stop" data-id="${id}" aria-label="Stop ${esc(j.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></span>${segs}<span class="a7-st"><span><b data-a7-now="${id}">${a.now}</b> · <span data-a7-sub="${id}">${esc(a.sub)}</span></span><span class="a7-pc" data-a7-pct="${id}"></span></span>`;
+    let say, acts, chips = '', rows = '';
+    if (j.phase === 'fix_review') {
+      let left = j.fixed; const g = A7_FIX.map(([t, w], i) => { const v = i === 2 ? left : Math.round(j.fixed * w); left -= v; return [t, v]; });
+      say = j.fixing ? `Applying <b>${num(j.fixed)} fixes</b>…` : `I found <b>${num(j.fixed)} errors I can fix safely</b>. Your original rows are kept.`;
+      chips = g.map(([t, v]) => `<span><b>${num(v)}</b>${t}</span>`).join('');
+      rows = A7_ROWS.map(r => `<tr><td>${r[0]}</td><td class="o">${esc(r[1])}</td><td class="n">${esc(r[2])}</td></tr>`).join('');
+      acts = j.fixing ? '<span class="ag-busy"><i></i>Applying fixes…</span>' : a7Btn('fix', `Fix ${num(j.fixed)} errors`, id, 'btn-pri') + a7Btn('skip', 'Skip', id);
+    } else if (isPending(j)) {
+      say = `Appeal raised for <b>${num(j.failed)} records</b>. Submission is on hold until it is decided.`;
+      acts = a7Btn('appeal-cancel', 'Cancel appeal', id);
+    } else if (isGated(j)) {
+      say = `<b>${num(j.failed)} records failed consent checks</b>. The other ${num(j.verified)} are fine.`;
+      chips = failReasons(j).map(([t, v]) => `<span><b>${num(v)}</b>${t}</span>`).join('');
+      acts = a7Btn('setaside', 'Set aside and continue', id, 'btn-pri') + a7Btn('appeal', 'Appeal', id);
+    } else {
+      say = `Done. <b>${num(j.verified)} records</b> are verified and ready to submit.`;
+      chips = `<span><b>${num(j.total - j.verified)}</b>Left out</span><span><b>${inr2(j.verified * .05)}</b>Estimate</span>`;
+      acts = a7Btn('submit', 'Approve and submit', id, 'btn-pri');
+    }
+    return `${top}</span><span class="a7-say">${say}</span>${chips ? `<button type="button" class="a7-why" data-a7="why" data-id="${id}" aria-expanded="${why}">${why ? 'Hide details' : 'See what I found'}</button>${why ? `<span class="a7-chips">${chips}</span>${rows ? `<table class="a7-ev">${rows}</table>` : ''}` : ''}` : ''}<span class="a7-acts">${acts}</span>`;
+  }
+  function a7Render() {
+    const host = $('#a7Files'); if (!a7On()) { host.hidden = true; return; }
+    const rank = j => a7Need(j) ? 0 : isRunning(j) ? 1 : 2;
+    const list = jobs.filter(j => !isDone(j)).sort((x, y) => rank(x) - rank(y) || y.id - x.id), live = new Set();
+    host.hidden = !list.length; $('#a7Lbl').hidden = !list.length;
+    const nNeed = list.filter(a7Need).length;
+    $('#a7Lbl').textContent = list.length ? `${a5Fs(list.length)} with me${nNeed ? ` · ${nNeed} waiting for your answer` : ''}` : '';
+    list.forEach((j, i) => {
+      live.add(j.id); let el = A7.els.get(j.id);
+      if (!el) { el = document.createElement('article'); el.dataset.id = j.id; el.className = 'a7-tile in'; A7.els.set(j.id, el); }
+      const cls = a7Need(j) ? 'need' : isRunning(j) ? 'run' : 'hold';
+      const sig = `${cls}|${j.phase}|${isRunning(j) ? aiState(j).i : ''}|${j.fixing ? 1 : 0}${j.skipAppeal ? 1 : 0}${j.appealed ? 1 : 0}${j.appealDone ? 1 : 0}|${A7.why.has(j.id)}`;
+      if (el.dataset.sig !== sig) { const was = el.dataset.cls; el.dataset.sig = sig; el.dataset.cls = cls; el.className = `a7-tile ${cls}${el.classList.contains('in') ? ' in' : ''}${was && was !== cls && cls === 'need' ? ' turn' : ''}`; el.innerHTML = a7Tile(j); el.setAttribute('aria-label', `${j.name}: ${cls === 'need' ? 'needs your answer' : cls === 'run' ? 'being processed' : 'on hold'}`); }
+      if (host.children[i] !== el) host.insertBefore(el, host.children[i] || null);
+    });
+    for (const [id, el] of A7.els) if (!live.has(id)) { el.remove(); A7.els.delete(id); A7.why.delete(id); }
+    a7Paint();
+  }
+  function a7Paint() {
+    if (!a7On()) return;
+    for (const j of jobs) {
+      if (!isRunning(j)) continue;
+      const a = aiState(j), sub = $(`[data-a7-sub="${j.id}"]`); if (sub && sub.textContent !== a.sub) sub.textContent = a.sub;
+      const pc = $(`[data-a7-pct="${j.id}"]`), t = `${Math.round(j.p || 0)}% · ${fmtDur(Math.max(0, a51Eta(j)))}`; if (pc && pc.textContent !== t) pc.textContent = t;
+      for (let k = 0; k < 5; k++) { const u = $(`[data-a7-seg="${j.id}-${k}"]`); if (u) u.style.width = `${segFill(j, k).toFixed(0)}%`; }
+    }
+  }
+  $('#a7Files').addEventListener('click', e => {
+    const b = e.target.closest('[data-a7]'); if (!b) return;
+    const j = jobs.find(x => x.id === +b.dataset.id), k = b.dataset.a7; if (!j) return;
+    const row = a5Row(j.id);
+    if (k === 'why') { A7.why.has(j.id) ? A7.why.delete(j.id) : A7.why.add(j.id); a7Render(); return; }
+    if (k === 'fix') { doAction('apply', row); render(); }
+    else if (k === 'skip') a51Do([j], () => doAction('skip', row), `${j.name} continues without fixes`);
+    else if (k === 'setaside') a51Do([j], () => { j.skipAppeal = true; render(); }, `${num(j.failed)} failed records set aside`);
+    else if (k === 'appeal') { j.skipAppeal = false; j.appealed = true; j.appealOpen = false; j.appealAt = Date.now(); j.appealStage = 0; render(); a51Snack(`Appeal raised for ${num(j.failed)} records`); }
+    else if (k === 'appeal-cancel') doAction('appeal-cancel', row);
+    else if (k === 'submit') a51Confirm([j]);
+    else if (k === 'stop') a51Do([j], () => { j.cancelAsk = false; j.phase = 'cancelled'; render(); }, `${j.name} stopped`);
+  });
+  $('#a7Files').addEventListener('animationend', e => { if (e.target.classList) e.target.classList.remove('in', 'turn'); });
 
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
@@ -3832,14 +3959,14 @@ span.r-pick{cursor:default}
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
-    const a51v = v === 'agent51' || v === 'agent6', a5v = v === 'agent5' || a51v;
-    a5Mount(a5v, v === 'agent6');
+    const six = v === 'agent6' || v === 'agent7', a51v = v === 'agent51' || six, a5v = v === 'agent5' || a51v;
+    a5Mount(a5v, six);
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
     document.body.classList.toggle('agent5', a5v);
-    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', v === 'agent6');
+    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', six); document.body.classList.toggle('agent7', v === 'agent7');
     if (a51v) { filter = 'all'; sortBy = 'needs'; }
-    if (v === 'agent6' && A5.paused) { A5.paused = false; lastT = performance.now(); }
+    if (six && A5.paused) { A5.paused = false; lastT = performance.now(); }
     if (!a51v) { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
     selected.clear();
     $('#ag5View').hidden = !a5v;
@@ -3869,7 +3996,7 @@ span.r-pick{cursor:default}
   setUpCol(upCol);
   $('#trayDock').onclick = () => { closeTray(); setUpCol(false); setTimeout(() => $('#upInline').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }), 60); };
   function openTray() {
-    if (upView === 'agent6') { a6Panel(true, true); return; }
+    if (upView === 'agent6' || upView === 'agent7') { a6Panel(true, true); return; }
     if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
     if (upView === 'agent') { $('#agDrop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); $('#agDrop').focus({ preventScroll: true }); return; }
@@ -3900,7 +4027,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'agent7') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
