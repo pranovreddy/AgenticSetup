@@ -963,8 +963,8 @@ body.v7 .a5-empty{order:3}
 .v7-table td small{display:block;color:var(--ink-4);font-size:11px}
 .v7-table .c-ok{color:#0b6d46}.v7-table .c-w{color:#8a5a00;font-weight:650}.v7-table .c-r{color:#154ace}.v7-table .c-n{color:#b6bfd0}
 .v7-table input[type=checkbox]{width:16px;height:16px;accent-color:#2457e6;cursor:pointer}
-.v7-table .v7-actc{text-align:right}
-.v7-table .v7-actc .btn{white-space:nowrap}
+.v7-table .act{text-align:right}
+.v7-table .act .btn{white-space:nowrap}
 /* B: review desk */
 .v7-desk{order:3;display:grid!important;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:14px;align-items:start}
 .v7-q{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto}
@@ -1013,97 +1013,6 @@ body.v7 .a5-empty{order:3}
 .v7-x svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 body.v7 .a51-pause{display:none!important}
 @media(prefers-reduced-motion:reduce){.v7-agent.run .v7-orb,.v7-drawer{animation:none}}
-/* ---------- three scene layouts on the review-desk engine: the line, the river, the deck ---------- */
-.sc-card{order:3;display:block!important;border-radius:20px;border:1px solid var(--line);overflow:hidden;position:relative}
-.sc-card svg{display:block;width:100%;height:auto}
-.sc-h{order:4;display:block!important;font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);margin:6px 2px -6px}
-body.v7c .v7-tablewrap,body.v7d .v7-tablewrap,body.v7e .v7-tablewrap{order:5}
-/* the line */
-.ln{background:radial-gradient(900px 420px at 30% 0,#eaf0ff,transparent 70%),linear-gradient(180deg,#f7f9fe,#eef1f8)}
-.ln-grid{stroke:rgba(37,96,246,.07);stroke-width:1}
-.ln-sb.f-t{fill:#fff}.ln-sb.f-y{fill:#dfe6f5}.ln-sb.f-x{fill:#c9d3ea}
-.ln-st .ln-sb{transition:fill .4s}
-.ln-st.lit .ln-sb.f-t{fill:#7fa2ff}.ln-st.lit .ln-sb.f-y{fill:#2f63ee}.ln-st.lit .ln-sb.f-x{fill:#1d4ac9}
-.ln-beam{fill:rgba(96,140,255,0);transition:fill .4s}
-.ln-st.lit .ln-beam{fill:rgba(96,140,255,.34);animation:ln-scan 1.4s ease-in-out infinite}
-@keyframes ln-scan{50%{fill:rgba(96,140,255,.12)}}
-.ln-sl{font:650 13px var(--font);fill:#10213b}
-.ln-sc{font:600 11px var(--mono);fill:#2457e6}
-.ln-belt.f-t{fill:#27314d}.ln-belt.f-y{fill:#1a2238}.ln-belt.f-x{fill:#141b2e}
-.ln-run{stroke:rgba(255,255,255,.28);stroke-width:2;stroke-dasharray:10 16;animation:ln-move 1.1s linear infinite}
-@keyframes ln-move{to{stroke-dashoffset:-26}}
-body.a51-paused .ln-run{animation-play-state:paused}
-.ln-apron{fill:rgba(224,169,63,.14);stroke:#e0a93f;stroke-width:1.2;stroke-dasharray:6 6}
-.ln-al{font:650 12px var(--mono);fill:#8a5a00;letter-spacing:.05em;text-transform:uppercase}
-.ln-dock.f-t{fill:#d9f2e6}.ln-dock.f-y{fill:#a9dcc4}.ln-dock.f-x{fill:#8fcdb0}
-.ln-dl{font:650 12px var(--mono);fill:#0b6d46;letter-spacing:.05em;text-transform:uppercase}
-.ln-in.f-t{fill:#e8eeff}.ln-in.f-y{fill:#bfd0fb}.ln-in.f-x{fill:#a6bdf7}
-.ln-intake{cursor:pointer}.ln-intake:hover .ln-in.f-t{fill:#d5e1ff}
-.ln-il{font:650 12px var(--font);fill:#154ace}
-.ln-crate{cursor:pointer;outline:none}
-.ln-crate .ln-c{transition:fill .3s;stroke:rgba(16,33,59,.25);stroke-width:.6}
-.ln-crate.run .f-t{fill:#9db8ff}.ln-crate.run .f-y{fill:#3d6ff0}.ln-crate.run .f-x{fill:#2553cf}
-.ln-crate.need .f-t{fill:#ffdf9c}.ln-crate.need .f-y{fill:#e6a52b}.ln-crate.need .f-x{fill:#c98712}
-.ln-crate.done .f-t{fill:#a8ecd0}.ln-crate.done .f-y{fill:#27a875}.ln-crate.done .f-x{fill:#12845a}
-.ln-crate.off .f-t{fill:#dfe4ee}.ln-crate.off .f-y{fill:#b6bfd0}.ln-crate.off .f-x{fill:#9aa5ba}
-.ln-crate.hold .f-t{fill:#ddd2ff}.ln-crate.hold .f-y{fill:#8b6ee6}.ln-crate.hold .f-x{fill:#6b4fcf}
-.ln-crate.need{animation:ln-bob 1.8s ease-in-out infinite}
-@keyframes ln-bob{50%{translate:0 -4px}}
-.ln-crate:hover .ln-c,.ln-crate:focus-visible .ln-c,.ln-crate.sel .ln-c{stroke:#10213b;stroke-width:1.6}
-.ln-cl{font:650 11px var(--font);fill:#10213b;paint-order:stroke;stroke:#f5f7fc;stroke-width:3.5px;stroke-linejoin:round}
-.ln-cs{font:600 10px var(--mono);fill:#4a5670;paint-order:stroke;stroke:#f5f7fc;stroke-width:3px;stroke-linejoin:round}
-.ln-crate.need .ln-cs{fill:#8a5a00}.ln-crate.run .ln-cs{fill:#154ace}
-.ln-crate.done text{display:none}
-.ln-orb{transition:transform .9s cubic-bezier(.22,1,.36,1)}
-.ln-orb .core{fill:url(#lnOrbG)}.ln-orb .halo{fill:rgba(36,87,230,.16);animation:ln-halo 1.8s ease-in-out infinite}
-.ln-orb line{stroke:rgba(36,87,230,.45);stroke-width:1.5;stroke-dasharray:3 5}
-.ln-orb.wait .core{fill:url(#lnOrbW)}.ln-orb.wait .halo{fill:rgba(213,138,12,.18)}.ln-orb.wait line{stroke:rgba(213,138,12,.5)}
-.ln-orb.done .core{fill:url(#lnOrbD)}.ln-orb.done .halo{fill:rgba(18,132,90,.16);animation:none}.ln-orb.done line{stroke:rgba(18,132,90,.4)}
-@keyframes ln-halo{50%{r:28px;opacity:.5}}
-/* the river */
-.rv{background:linear-gradient(180deg,#0f1a33,#16244a)}
-.rv-bed{stroke:rgba(255,255,255,.12);stroke-width:1;stroke-dasharray:4 8;fill:none}
-.rv-band{fill:url(#rvG);transition:d .8s ease}
-.rv-flow{stroke:rgba(255,255,255,.35);stroke-width:2;stroke-dasharray:4 22;fill:none;animation:ln-move 1s linear infinite}
-.rv-out{fill:none;stroke:rgba(182,191,208,.4);stroke-linecap:round}
-.rv-ol{font:600 11px var(--mono);fill:#aab6d3}
-.rv-sl{font:650 13px var(--font);fill:#fff}
-.rv-tick{stroke:rgba(255,255,255,.1);stroke-width:1}
-.rv-n{font:650 13px var(--mono);fill:#dfe6f7}
-.rv-cap{font:500 10.5px var(--mono);fill:#8f9cc0;letter-spacing:.05em;text-transform:uppercase}
-.rv-pool{cursor:pointer;outline:none}
-.rv-pool rect{fill:#3a2c10;stroke:#e0a93f;stroke-width:1.4}
-.rv-pool:hover rect,.rv-pool:focus-visible rect{fill:#4a3814}
-.rv-pool line{stroke:#e0a93f;stroke-width:1.4;stroke-dasharray:3 5}
-.rv-pool .t{font:650 12.5px var(--font);fill:#ffdf9c}.rv-pool .s{font:500 11.5px var(--font);fill:#e9c98a}
-.rv-lake circle{fill:rgba(39,168,117,.2);stroke:#4fca98;stroke-width:1.4;transition:r .6s ease}
-.rv-lake .t{font:700 24px var(--font);fill:#a8ecd0}.rv-lake .s{font:600 10.5px var(--mono);fill:#6fe0ad;letter-spacing:.05em;text-transform:uppercase}
-.rv-file{cursor:pointer;outline:none;transition:transform .5s linear}
-.rv-file rect{fill:#fff;stroke:rgba(16,33,59,.2)}
-.rv-file text{font:600 10.5px var(--font);fill:#10213b}
-.rv-file.need rect{fill:#ffdf9c;stroke:#c98712}
-.rv-file:hover rect,.rv-file:focus-visible rect{stroke:#fff;stroke-width:2}
-/* the deck */
-.dk{height:600px;background:radial-gradient(520px 320px at 22% 18%,rgba(124,92,255,.32),transparent 70%),radial-gradient(560px 360px at 78% 30%,rgba(37,96,246,.34),transparent 70%),radial-gradient(700px 300px at 50% 100%,rgba(18,148,95,.2),transparent 70%),#0e1430}
-.dk-stage{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 38%;transform-style:preserve-3d}
-.dk-card{position:absolute;left:50%;top:50%;width:236px;margin:-80px 0 0 -118px;display:flex;flex-direction:column;gap:7px;padding:14px 15px;border-radius:18px;text-align:left;color:#fff;background:linear-gradient(145deg,rgba(255,255,255,.26),rgba(255,255,255,.08));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.4);box-shadow:0 24px 50px -18px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.5);cursor:pointer;transition:transform .9s cubic-bezier(.22,1,.36,1),opacity .6s,box-shadow .3s,filter .6s}
-.dk-card b{font-size:13.5px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dk-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.dk-lob{font:500 10.5px var(--mono);color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dk-sub{font-size:12px;color:rgba(255,255,255,.85)}
-.dk-seg{display:flex;gap:3px;margin-top:2px}
-.dk-seg i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.2);overflow:hidden}
-.dk-seg u{display:block;height:100%;background:#fff;border-radius:inherit}
-.dk-cta{margin-top:4px;font-size:12px;font-weight:650;color:#ffdf9c}
-.dk-card.front{width:252px;margin-left:-126px;border-color:rgba(255,214,140,.9);box-shadow:0 0 0 1px rgba(255,214,140,.5),0 30px 70px -18px rgba(224,169,63,.55),inset 0 1px 0 rgba(255,255,255,.6)}
-.dk-card.front .dk-seg u{background:#ffdf9c}
-.dk-card.back{filter:saturate(.9) brightness(.94)}
-.dk-card.side{filter:brightness(.85)}
-.dk-card.s-ok{border-color:rgba(120,230,180,.7)}.dk-card.s-ok .dk-seg u{background:#7fe6b8}
-.dk-card:hover,.dk-card:focus-visible{box-shadow:0 0 0 2px #fff,0 30px 70px -18px rgba(0,0,0,.6);filter:none;outline:none}
-.dk-l{position:absolute;font:600 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.7);pointer-events:none}
-#dkL1{left:0;right:0;bottom:22px;text-align:center;color:#ffdf9c}#dkL2{left:0;right:0;top:20px;text-align:center}#dkL3{right:34px;bottom:120px;color:#7fe6b8}#dkL4{left:34px;bottom:120px}
-@media(prefers-reduced-motion:reduce){.ln-run,.rv-flow,.ln-crate.need,.ln-orb .halo,.ln-st.lit .ln-beam{animation:none}.dk-card,.ln-orb,.rv-file{transition:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1704,7 +1613,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="ledger" aria-pressed="false">A · Ledger</button><button type="button" class="chip-btn" data-upview="desk" aria-pressed="false">B · Review desk</button><button type="button" class="chip-btn" data-upview="line" aria-pressed="false">1 · The Line</button><button type="button" class="chip-btn" data-upview="river" aria-pressed="false">2 · The River</button><button type="button" class="chip-btn" data-upview="deck" aria-pressed="false">3 · The Deck</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="ledger" aria-pressed="false">A · Ledger</button><button type="button" class="chip-btn" data-upview="desk" aria-pressed="false">B · Review desk</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -1836,10 +1745,6 @@ span.r-pick{cursor:default}
             <div class="a5-util" id="a5Util"></div>
           </div>
           <div class="v7-only v7-agent" id="v7Agent" aria-live="polite" hidden><i class="v7-orb" aria-hidden="true"></i><span class="t" id="v7AgentT"></span><span class="a" id="v7AgentA"></span></div>
-          <div class="v7-only sc-card ln" id="v7Line" hidden><svg id="lnSvg" viewBox="20 30 1290 570" role="group" aria-label="The line: files move through five stations"></svg></div>
-          <div class="v7-only sc-card rv" id="v7River" hidden><svg id="rvSvg" viewBox="0 0 1260 400" role="group" aria-label="The river: records flowing from uploaded to migrated"><defs><linearGradient id="rvG" x1="0" x2="1"><stop offset="0" stop-color="#3b74ff"/><stop offset=".55" stop-color="#31c4d8"/><stop offset="1" stop-color="#3ddc97"/></linearGradient></defs><g id="rvStatic"></g><g id="rvFiles"></g></svg></div>
-          <div class="v7-only sc-card dk" id="v7Deck" hidden><div class="dk-stage" id="dkStage"></div><span class="dk-l" id="dkL2"></span><span class="dk-l" id="dkL1"></span><span class="dk-l" id="dkL3"></span><span class="dk-l" id="dkL4"></span></div>
-          <div class="v7-only sc-h" id="v7ListH" hidden>All files</div>
           <div class="v7-only v7-tablewrap" id="v7TableWrap" hidden></div>
           <div class="v7-only v7-desk" id="v7Desk" hidden><nav class="v7-q" id="v7Q" aria-label="Files"></nav><div id="v7Pane"></div></div>
           <div class="v7-only v7-scrim" id="v7Scrim" hidden></div>
@@ -3937,7 +3842,7 @@ span.r-pick{cursor:default}
     const rows = v7Sorted().map(j => {
       const [c, l] = v7Status(j);
       const act = v7Need(j) ? v7Btn('open', 'Review', j.id, 'btn-pri') : isRunning(j) ? `<span class="v7-mono" data-a51-eta="${j.id}"></span>` : j.phase === 'submitted' ? v7Btn('open', 'Receipt', j.id) : j.phase === 'cancelled' ? v7Btn('retry', 'Run again', j.id) : v7Btn('open', 'View', j.id);
-      return `<tr class="${v7Need(j) ? 'need' : ''}${V7.open && V7.sel === j.id ? ' sel' : ''}" data-v7row="${j.id}"><td><input type="checkbox" data-v7pick="${j.id}" aria-label="Select ${esc(j.name)}"${selected.has(j.id) ? ' checked' : ''}></td><td><b>${esc(j.name)}</b><small>${esc(j.lob)} · MIG-2026-${String(j.id).padStart(4, '0')}${j.autofix ? '' : ' · Asks first'}</small></td>${[0, 1, 2, 3, 4].map(k => v7Cell(j, k)).join('')}<td><span class="v7-pill ${c}">${l}</span></td><td class="v7-actc">${act}</td></tr>`;
+      return `<tr class="${v7Need(j) ? 'need' : ''}${V7.open && V7.sel === j.id ? ' sel' : ''}" data-v7row="${j.id}"><td><input type="checkbox" data-v7pick="${j.id}" aria-label="Select ${esc(j.name)}"${selected.has(j.id) ? ' checked' : ''}></td><td><b>${esc(j.name)}</b><small>${esc(j.lob)} · MIG-2026-${String(j.id).padStart(4, '0')}${j.autofix ? '' : ' · Asks first'}</small></td>${[0, 1, 2, 3, 4].map(k => v7Cell(j, k)).join('')}<td><span class="v7-pill ${c}">${l}</span></td><td class="act">${act}</td></tr>`;
     }).join('');
     return `<table class="v7-table"><thead><tr><th><input type="checkbox" data-v7all aria-label="Select every file"${jobs.length && jobs.every(j => selected.has(j.id)) ? ' checked' : ''}></th><th>File</th><th>Analyze</th><th>Validate</th><th>Autofix</th><th>Verify consent</th><th>Prepare</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
   }
@@ -3986,10 +3891,9 @@ span.r-pick{cursor:default}
   }
   function v7Render() {
     if (!v7On()) return;
-    const n = jobs.length, mode = lnOn() ? 'c' : rvOn() ? 'd' : dkOn() ? 'e' : v7A() ? 'a' : 'b', scene = 'cde'.includes(mode), a = mode === 'a' || scene;
+    const n = jobs.length, a = v7A();
     if (!jobs.some(j => j.id === V7.sel)) { V7.sel = (v7Sorted()[0] || {}).id || 0; if (a) V7.open = false; }
     $('#v7Agent').hidden = !n; $('#v7TableWrap').hidden = !a || !n; $('#v7Desk').hidden = a || !n;
-    $('#v7Line').hidden = mode !== 'c' || !n; $('#v7River').hidden = mode !== 'd' || !n; $('#v7Deck').hidden = mode !== 'e' || !n; $('#v7ListH').hidden = !scene || !n;
     $('#v7Scrim').hidden = $('#v7Drawer').hidden = !(a && V7.open && n);
     if (!n) return;
     /* the agent's line: what it is doing, and the calls it can take off your hands in one go */
@@ -4000,11 +3904,11 @@ span.r-pick{cursor:default}
     const asig = acts + run + g.need.length;
     $('#v7Agent').classList.toggle('run', run > 0);
     if (asig !== V7.asig) { V7.asig = asig; $('#v7AgentA').innerHTML = acts; }
-    const sig = mode + V7.sel + (V7.open ? 'o' : '') + '|' + jobs.map(j => `${j.id}:${j.phase}:${isRunning(j) ? aiState(j).i : ''}:${j.fixing ? 1 : 0}${j.appealed ? 1 : 0}${j.appealDone ? 1 : 0}${j.skipAppeal ? 1 : 0}${selected.has(j.id) ? 's' : ''}`).join('|');
+    const sig = (a ? 'a' : 'b') + V7.sel + (V7.open ? 'o' : '') + '|' + jobs.map(j => `${j.id}:${j.phase}:${isRunning(j) ? aiState(j).i : ''}:${j.fixing ? 1 : 0}${j.appealed ? 1 : 0}${j.appealDone ? 1 : 0}${j.skipAppeal ? 1 : 0}${selected.has(j.id) ? 's' : ''}`).join('|');
     if (sig !== V7.sig) {
       V7.sig = sig;
       const j = jobs.find(x => x.id === V7.sel);
-      if (a) { $('#v7TableWrap').innerHTML = v7Table(); $('#v7DrawerBody').innerHTML = V7.open ? v7Detail(j) : ''; if (mode === 'd') rvRender(); if (mode === 'e') dkRender(); if (mode === 'c') lnStart(); }
+      if (a) { $('#v7TableWrap').innerHTML = v7Table(); $('#v7DrawerBody').innerHTML = V7.open ? v7Detail(j) : ''; }
       else { $('#v7Q').innerHTML = v7Queue(); $('#v7Pane').innerHTML = v7Detail(j); }
     }
     v7Paint();
@@ -4024,7 +3928,6 @@ span.r-pick{cursor:default}
     const need = jobs.filter(v7Need).length;
     const nt = A5.note && performance.now() - A5.note.t < 2800 ? A5.note.text : '';
     const t = nt || (lead ? `${aiState(lead).now} ${lead.name}${k > 1 ? ` and ${k - 1} more` : ''}` : need ? 'Waiting for you' : 'All caught up');
-    rvPaint(); dkPaint();
     const html = `<b>Agent</b> · ${esc(t)}${need ? ` · ${need} file${need > 1 ? 's' : ''} need${need > 1 ? '' : 's'} your call` : ''}`;
     if ($('#v7AgentT').innerHTML !== html) $('#v7AgentT').innerHTML = html;
     a51Left();
@@ -4057,164 +3960,6 @@ span.r-pick{cursor:default}
     const r = e.target.closest('[data-v7row]'); if (r && !e.target.closest('button,input,a')) v7Act('open', r.dataset.v7row);
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && v7On() && V7.open && !$('#a51Dlg').open) { V7.open = false; V7.sig = ''; v7Render(); } });
-
-  /* ---------- the line: files are crates on an isometric conveyor that passes five stations; the agent floats over the one it is working at ---------- */
-  const LN = { pos: new Map(), els: new Map(), raf: 0, built: false, order: '' };
-  const lnOn = () => document.body.classList.contains('v7c');
-  const lnP = (x, y, z) => [170 + (x - y) * 8.2, 150 + (x + y) * 3 - z * 7];
-  const lnPts = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
-  /* an isometric box as its three visible faces; rel = points relative to the box's own origin, for crates that move */
-  function lnBox(x, y, z, w, d, h, cls, rel) {
-    const o = rel ? lnP(x, y, z) : [0, 0], P = (a, b, c) => { const p = lnP(a, b, c); return [p[0] - o[0], p[1] - o[1]]; };
-    const x1 = x + w, y1 = y + d, z1 = z + h;
-    return `<polygon class="${cls} f-y" points="${lnPts([P(x, y1, z1), P(x1, y1, z1), P(x1, y1, z), P(x, y1, z)])}"/><polygon class="${cls} f-x" points="${lnPts([P(x1, y, z1), P(x1, y1, z1), P(x1, y1, z), P(x1, y, z)])}"/><polygon class="${cls} f-t" points="${lnPts([P(x, y, z1), P(x1, y, z1), P(x1, y1, z1), P(x, y1, z1)])}"/>`;
-  }
-  const LN_X0 = 8, LN_SEG = 17;
-  const lnBelt = p => { let i = AI_AT.findIndex((a, k) => p >= a && p < AI_AT[k + 1]); if (i < 0) i = p >= 100 ? 4 : 0; const f = Math.min(1, Math.max(0, (p - AI_AT[i]) / (AI_AT[i + 1] - AI_AT[i]))); return LN_X0 + (i + f) * LN_SEG; };
-  function lnBuild() {
-    const svg = $('#lnSvg'); let h = '<defs><radialGradient id="lnOrbG" cx="35%" cy="30%"><stop offset="0" stop-color="#a9c2ff"/><stop offset="1" stop-color="#2457e6"/></radialGradient><radialGradient id="lnOrbW" cx="35%" cy="30%"><stop offset="0" stop-color="#ffe2a3"/><stop offset="1" stop-color="#d58a0c"/></radialGradient><radialGradient id="lnOrbD" cx="35%" cy="30%"><stop offset="0" stop-color="#a8ecd0"/><stop offset="1" stop-color="#12845a"/></radialGradient></defs>';
-    /* floor grid */
-    for (let x = -20; x <= 130; x += 10) h += `<line class="ln-grid" x1="${lnP(x, -34, 0)[0]}" y1="${lnP(x, -34, 0)[1]}" x2="${lnP(x, 34, 0)[0]}" y2="${lnP(x, 34, 0)[1]}"/>`;
-    for (let y = -30; y <= 30; y += 10) h += `<line class="ln-grid" x1="${lnP(-20, y, 0)[0]}" y1="${lnP(-20, y, 0)[1]}" x2="${lnP(130, y, 0)[0]}" y2="${lnP(130, y, 0)[1]}"/>`;
-    /* stations stand behind the belt */
-    AI_STEPS.forEach((s, k) => { const x = LN_X0 + k * LN_SEG + 3; const t = lnP(x + 5.5, -13, 6); h += `<g class="ln-st" data-st="${k}">${lnBox(x + 1, -17, 0, 9, 8, 6, 'ln-sb')}<polygon class="ln-beam" points="${lnPts([lnP(x - 3, -6, 2.1), lnP(x + 14, -6, 2.1), lnP(x + 14, 6, 2.1), lnP(x - 3, 6, 2.1)])}"/><text class="ln-sl" x="${t[0]}" y="${t[1] - 26}" text-anchor="middle">${s}</text><text class="ln-sc" data-stc="${k}" x="${t[0]}" y="${t[1] - 12}" text-anchor="middle"></text></g>`; });
-    /* intake, belt, the amber apron for decisions, the dock */
-    h += `<g class="ln-intake" id="lnIntake" role="button" tabindex="0" aria-label="Upload files">${lnBox(-16, -7, 0, 12, 14, 4, 'ln-in')}<text class="ln-il" x="${lnP(-10, 0, 4)[0]}" y="${lnP(-10, 0, 4)[1] - 12}" text-anchor="middle">+ Upload</text></g>`;
-    h += lnBox(-4, -6, 0, 104, 12, 2, 'ln-belt');
-    h += `<line class="ln-run" x1="${lnP(-3, 0, 2.05)[0]}" y1="${lnP(-3, 0, 2.05)[1]}" x2="${lnP(99, 0, 2.05)[0]}" y2="${lnP(99, 0, 2.05)[1]}"/>`;
-    h += `<polygon class="ln-apron" points="${lnPts([lnP(14, 10, 0), lnP(100, 10, 0), lnP(100, 31, 0), lnP(14, 31, 0)])}"/><text class="ln-al" x="${lnP(16, 33, 0)[0]}" y="${lnP(16, 33, 0)[1] + 14}">Needs you</text>`;
-    h += lnBox(100, -10, 0, 24, 20, 1.5, 'ln-dock') + `<text class="ln-dl" id="lnDockL" x="${lnP(112, -10, 1.5)[0]}" y="${lnP(112, -10, 1.5)[1] - 12}" text-anchor="middle">Submitted</text>`;
-    h += '<g id="lnCrates"></g><g id="lnOrb" class="ln-orb"><line x1="0" y1="14" x2="0" y2="92"/><circle class="halo" r="22"/><circle class="core" r="13"/></g>';
-    svg.innerHTML = h; LN.built = true; LN.els.clear(); LN.pos.clear(); LN.order = '';
-  }
-  /* where a file's crate belongs right now */
-  function lnTarget(j, idx) {
-    if (j.phase === 'submitted') return [103 + (idx.done % 3) * 6.5, -7 + (Math.floor(idx.done / 3) % 2) * 8, 1.5 + Math.floor(idx.done++ / 6) * 5.2];
-    if (j.phase === 'cancelled') return [-14 + (idx.off % 2) * 7, 14 + Math.floor(idx.off++ / 2) * 7, 0];
-    if (j.phase === 'fix_review') return [LN_X0 + 2 * LN_SEG - 2 - (idx.fix % 3) * 13, 15 + Math.floor(idx.fix++ / 3) * 9, 0];
-    if (j.phase === 'ready') return [92 - (idx.rdy % 3) * 13, 15 + Math.floor(idx.rdy++ / 3) * 9, 0];
-    return [lnBelt(j.p || 0), [0, -3.4, 3.4][idx.run++ % 3], 2];
-  }
-  function lnPaint() {
-    if (!lnOn() || !jobs.length) return;
-    if (!LN.built) lnBuild();
-    const host = $('#lnCrates'), idx = { done: 0, off: 0, fix: 0, rdy: 0, run: 0 }, live = new Set(), at = [0, 0, 0, 0, 0];
-    const list = [...jobs].sort((a, b) => a.id - b.id); const order = [];
-    for (const j of list) {
-      live.add(j.id);
-      const t = lnTarget(j, idx), cur = LN.pos.get(j.id) || [-10, 0, 4];
-      const nx = cur.map((v, i) => Math.abs(t[i] - v) < .05 ? t[i] : v + (t[i] - v) * (RM ? 1 : .14)); LN.pos.set(j.id, nx);
-      const run = isRunning(j); if (run) at[aiState(j).i]++;
-      const cls = v7Need(j) ? 'need' : run ? 'run' : isPending(j) ? 'hold' : j.phase === 'submitted' ? 'done' : 'off';
-      let g = LN.els.get(j.id);
-      if (!g) { g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('data-crate', j.id); g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.innerHTML = lnBox(0, 0, 0, 5, 5, 4.6, 'ln-c', true) + '<text class="ln-cl" text-anchor="middle" x="20" y="-40"></text><text class="ln-cs" text-anchor="middle" x="20" y="-28"></text>'; LN.els.set(j.id, g); host.appendChild(g); }
-      const sp = lnP(nx[0] - 2.5, nx[1] - 2.5, nx[2]);
-      g.setAttribute('transform', `translate(${sp[0].toFixed(1)},${sp[1].toFixed(1)})`);
-      const c = 'ln-crate ' + cls + (V7.open && V7.sel === j.id ? ' sel' : ''); if (g.getAttribute('class') !== c) g.setAttribute('class', c);
-      const nm = j.name.replace(/\.csv$/i, ''), lab = nm.length > 18 ? nm.slice(0, 17) + '…' : nm;
-      const st = cls === 'need' ? (j.phase === 'fix_review' ? `${num(j.fixed)} errors to fix` : isGated(j) ? `${num(j.failed)} failed checks` : 'Ready to submit') : run ? `${Math.round(j.p || 0)}%` : cls === 'hold' ? 'Appeal on hold' : cls === 'off' ? 'Stopped' : '';
-      const [tl, ts] = g.querySelectorAll('text'); if (tl.textContent !== lab) { tl.textContent = lab; g.setAttribute('aria-label', `${j.name}: ${st || 'submitted'}`); } if (ts.textContent !== st) ts.textContent = st;
-      order.push([nx[0] + nx[1] + nx[2] * .01, j.id]);
-    }
-    for (const [id, g] of LN.els) if (!live.has(id)) { g.remove(); LN.els.delete(id); LN.pos.delete(id); }
-    /* nearer crates are drawn over farther ones */
-    const key = order.sort((a, b) => a[0] - b[0]).map(o => o[1]).join(',');
-    if (key !== LN.order) { LN.order = key; order.forEach(o => host.appendChild(LN.els.get(o[1]))); }
-    at.forEach((n, k) => { const s = $(`[data-st="${k}"]`); s.classList.toggle('lit', n > 0 && !A5.paused); const c = $(`[data-stc="${k}"]`), t = n ? `${n} file${n > 1 ? 's' : ''}` : ''; if (c.textContent !== t) c.textContent = t; });
-    const nd = idx.done; if ($('#lnDockL').textContent !== `Submitted · ${nd}`) $('#lnDockL').textContent = `Submitted · ${nd}`;
-    /* the agent hovers over the busiest point: the furthest station at work, else the decisions waiting, else the dock */
-    const lead = at.reduce((m, n, k) => n ? k : m, -1), need = idx.fix + idx.rdy, orb = $('#lnOrb');
-    const op = lead >= 0 ? lnP(LN_X0 + lead * LN_SEG + 8.5, -13, 22) : need ? lnP(60, 20, 20) : lnP(112, 0, 22);
-    orb.style.transform = `translate(${op[0].toFixed(0)}px,${op[1].toFixed(0)}px)`;
-    const oc = 'ln-orb ' + (lead >= 0 ? 'run' : need ? 'wait' : 'done'); if (orb.getAttribute('class') !== oc) orb.setAttribute('class', oc);
-  }
-  function lnLoop() { LN.raf = 0; if (!lnOn()) return; lnPaint(); LN.raf = requestAnimationFrame(lnLoop); }
-  const lnStart = () => { if (lnOn() && !LN.raf) LN.raf = requestAnimationFrame(lnLoop); };
-  $('#lnSvg').addEventListener('click', e => { const c = e.target.closest('[data-crate]'); if (c) { v7Act('open', c.dataset.crate); return; } if (e.target.closest('#lnIntake')) a6Panel(true, true); });
-  $('#lnSvg').addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const c = e.target.closest('[data-crate]'); if (c) { e.preventDefault(); v7Act('open', c.dataset.crate); } else if (e.target.closest('#lnIntake')) { e.preventDefault(); a6Panel(true, true); } });
-
-  /* ---------- the river: the whole migration as one stream of records that narrows where rows drop out ---------- */
-  const RV = { X: [100, 300, 500, 700, 900, 1100], cy: 215, els: new Map() };
-  const rvOn = () => document.body.classList.contains('v7d');
-  const rvStage = j => j.phase === 'cancelled' ? -1 : j.phase === 'fix_review' ? 2 : (j.phase === 'ready' || j.phase === 'submitted') ? 5 : aiState(j).i;
-  function rvRender() {
-    const L = jobs.filter(j => j.phase !== 'cancelled'), fa = j => j.fixedApplied || 0;
-    const W = [L.reduce((t, j) => t + j.total, 0),
-      L.filter(j => rvStage(j) >= 1).reduce((t, j) => t + j.total, 0),
-      L.filter(j => rvStage(j) >= 2).reduce((t, j) => t + j.valid + j.fixed, 0),
-      L.filter(j => rvStage(j) >= 3).reduce((t, j) => t + j.valid + fa(j), 0),
-      L.filter(j => rvStage(j) >= 4).reduce((t, j) => t + (rvStage(j) === 5 ? j.verified : j.valid + fa(j)), 0),
-      L.filter(j => j.phase === 'submitted').reduce((t, j) => t + j.verified, 0)];
-    const max = W[0] || 1, T = W.map(w => w ? Math.max(8, w / max * 150) : 0), X = RV.X, cy = RV.cy;
-    const edge = s => { let d = `M${X[0]},${cy + s * T[0] / 2}`; for (let k = 1; k < 6; k++) { const m = (X[k - 1] + X[k]) / 2; d += ` C${m},${cy + s * T[k - 1] / 2} ${m},${cy + s * T[k] / 2} ${X[k]},${cy + s * T[k] / 2}`; } return d; };
-    const back = (() => { let d = ` L${X[5]},${cy + T[5] / 2}`; for (let k = 4; k >= 0; k--) { const m = (X[k + 1] + X[k]) / 2; d += ` C${m},${cy + T[k + 1] / 2} ${m},${cy + T[k] / 2} ${X[k]},${cy + T[k] / 2}`; } return d + 'Z'; })();
-    const out1 = L.filter(j => rvStage(j) >= 2).reduce((t, j) => t + j.manual + j.dup, 0), out2 = L.filter(j => rvStage(j) === 5).reduce((t, j) => t + j.failed, 0);
-    const rib = (x, n) => n ? `<path class="rv-out" style="stroke-width:${Math.max(3, n / max * 150).toFixed(1)}" d="M${x},${cy + 4} C${x + 10},${cy + 90} ${x + 60},${cy + 120} ${x + 130},${cy + 128}"/><text class="rv-ol" x="${x + 60}" y="${cy + 152}">Left out · ${num(n)}</text>` : '';
-    const fixJ = jobs.filter(j => j.phase === 'fix_review'), rdyJ = jobs.filter(j => j.phase === 'ready' && !isPending(j)), doneN = jobs.filter(j => j.phase === 'submitted').length;
-    const pool = (x, list, text) => list.length ? `<g class="rv-pool" data-rvpool="${list[0].id}" role="button" tabindex="0"><line x1="${x}" y1="${cy - 96}" x2="${x}" y2="${cy - 10}"/><rect x="${x - 110}" y="${cy - 150}" width="220" height="54" rx="14"/><text class="t" x="${x}" y="${cy - 128}" text-anchor="middle">Waiting for you · ${a5Fs(list.length)}</text><text class="s" x="${x}" y="${cy - 110}" text-anchor="middle">${text}</text></g>` : '';
-    $('#rvStatic').innerHTML = `<path class="rv-bed" d="M${X[0]},${cy - 75} L${X[5]},${cy - 75} M${X[0]},${cy + 75} L${X[5]},${cy + 75}"/>`
-      + rib(X[2] + 20, out1) + rib(X[4] + 20, out2)
-      + `<path class="rv-band" d="${edge(-1)}${back}"/><path class="rv-flow" d="M${X[0]},${cy} L${X[5]},${cy}"/>`
-      + AI_STEPS.map((s, k) => `<text class="rv-sl" x="${(X[k] + X[k + 1]) / 2}" y="34" text-anchor="middle">${s}</text>`).join('')
-      + W.map((w, k) => `<line class="rv-tick" x1="${X[k]}" y1="46" x2="${X[k]}" y2="${cy + 100}"/><text class="rv-n" x="${X[k]}" y="${cy + 118}" text-anchor="middle">${w ? num(w) : '–'}</text>`).join('')
-      + `<text class="rv-cap" x="${X[0]}" y="${cy + 134}" text-anchor="middle">uploaded</text><text class="rv-cap" x="${X[5]}" y="${cy + 134}" text-anchor="middle">migrated</text>`
-      + pool(X[2] + 70, fixJ, `${num(fixJ.reduce((t, j) => t + j.fixed, 0))} errors I can fix`) + pool(X[5] - 90, rdyJ, `${num(rdyJ.reduce((t, j) => t + j.verified, 0))} records ready to submit`)
-      + `<g class="rv-lake"><circle cx="${X[5] + 78}" cy="${cy}" r="${40 + Math.min(30, doneN * 5)}"/><text class="t" x="${X[5] + 78}" y="${cy - 2}" text-anchor="middle">${doneN}</text><text class="s" x="${X[5] + 78}" y="${cy + 15}" text-anchor="middle">submitted</text></g>`;
-  }
-  function rvPaint() {
-    if (!rvOn() || !jobs.length) return;
-    const host = $('#rvFiles'), live = new Set(), X = RV.X, lanes = {};
-    for (const j of [...jobs].sort((a, b) => a.id - b.id)) {
-      if (j.phase === 'submitted' || j.phase === 'cancelled') continue;
-      live.add(j.id);
-      const run = isRunning(j), p = j.phase === 'fix_review' ? 42 : j.phase === 'ready' ? 100 : (j.p || 0);
-      let i = AI_AT.findIndex((a, k) => p >= a && p < AI_AT[k + 1]); if (i < 0) i = 4;
-      const f = p >= 100 ? 1 : (p - AI_AT[i]) / (AI_AT[i + 1] - AI_AT[i]);
-      const x = j.phase === 'ready' ? X[5] - 90 : j.phase === 'fix_review' ? X[2] + 70 : X[i] + f * (X[i + 1] - X[i]);
-      const slot = Math.round(x / 150), ln = lanes[slot] = (lanes[slot] || 0) + 1;
-      const y = RV.cy + (run ? ((ln % 2 ? 1 : -1) * Math.ceil((ln - 1) / 2) * 24) : -62 + ln * 24 - 24 + (j.phase === 'ready' ? 0 : 0));
-      let g = RV.els.get(j.id);
-      if (!g) { g = document.createElementNS('http://www.w3.org/2000/svg', 'g'); g.setAttribute('data-rvfile', j.id); g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.innerHTML = '<rect x="-64" y="-10" width="128" height="20" rx="10"/><text text-anchor="middle" y="4"></text>'; RV.els.set(j.id, g); host.appendChild(g); }
-      g.style.transform = `translate(${x.toFixed(0)}px,${(run ? y : RV.cy - 62 - (ln - 1) * 0 + (ln - 1) * 24 - 0).toFixed(0)}px)`;
-      const c = 'rv-file ' + (v7Need(j) ? 'need' : run ? 'run' : 'hold'); if (g.getAttribute('class') !== c) g.setAttribute('class', c);
-      const nm = j.name.replace(/\.csv$/i, ''), t = (nm.length > 15 ? nm.slice(0, 14) + '…' : nm) + (run ? ` ${Math.round(p)}%` : ''); const te = g.lastElementChild; if (te.textContent !== t) te.textContent = t;
-    }
-    for (const [id, g] of RV.els) if (!live.has(id)) { g.remove(); RV.els.delete(id); }
-  }
-  $('#rvSvg').addEventListener('click', e => { const f = e.target.closest('[data-rvfile]'); if (f) { v7Act('open', f.dataset.rvfile); return; } const p = e.target.closest('[data-rvpool]'); if (p) v7Act('open', p.dataset.rvpool); });
-  $('#rvSvg').addEventListener('keydown', e => { if (e.key !== 'Enter' && e.key !== ' ') return; const f = e.target.closest('[data-rvfile],[data-rvpool]'); if (f) { e.preventDefault(); v7Act('open', f.dataset.rvfile || f.dataset.rvpool); } });
-
-  /* ---------- the deck: every file is a glass card; the agent slides a card to the front when it needs you ---------- */
-  const DK = { els: new Map() };
-  const dkOn = () => document.body.classList.contains('v7e');
-  function dkRender() {
-    const host = $('#dkStage'), live = new Set();
-    const G = { need: [], run: [], done: [], off: [] };
-    for (const j of v7Sorted()) (v7Need(j) ? G.need : (isRunning(j) || isPending(j)) ? G.run : j.phase === 'submitted' ? G.done : G.off).push(j);
-    const place = (j, tf, cls, z) => {
-      live.add(j.id); let el = DK.els.get(j.id);
-      if (!el) { el = document.createElement('button'); el.type = 'button'; el.dataset.dk = j.id; el.style.transform = 'translate3d(0,-420px,-600px) rotateX(40deg)'; el.style.opacity = '0'; DK.els.set(j.id, el); host.appendChild(el); void el.offsetWidth; }
-      const [c, l] = v7Status(j), a = aiState(j);
-      const sub = j.phase === 'fix_review' ? `${num(j.fixed)} errors I can fix` : v7Need(j) ? (isGated(j) ? `${num(j.failed)} records failed checks` : `${num(j.verified)} ready to submit`) : isRunning(j) ? `<span data-dk-now="${j.id}">${a.now}</span> · <span data-dk-pct="${j.id}">${Math.round(j.p || 0)}%</span>` : isPending(j) ? 'Appeal with the registrar' : j.phase === 'submitted' ? `${num(j.verified)} records migrated` : 'Stopped by you';
-      const sig = `${cls}|${j.phase}|${c}|${isRunning(j) ? a.i : ''}|${j.skipAppeal ? 1 : 0}${j.fixing ? 1 : 0}`;
-      if (el.dataset.sig !== sig) { el.dataset.sig = sig; el.className = `dk-card ${cls} s-${c}`; el.setAttribute('aria-label', `${j.name}: ${l}`);
-        el.innerHTML = `<span class="dk-top"><span class="v7-pill ${c}">${l}</span><span class="dk-lob">${esc(j.lob)}</span></span><b>${esc(j.name)}</b><span class="dk-sub">${sub}</span><span class="dk-seg">${[0, 1, 2, 3, 4].map(k => `<i><u data-dk-seg="${j.id}-${k}" style="width:${j.phase === 'fix_review' ? (k < 2 ? 100 : k === 2 ? 30 : 0) : j.phase === 'cancelled' ? 0 : segFill(j, k).toFixed(0)}%"></u></i>`).join('')}</span>${cls === 'front' ? '<span class="dk-cta">Open to decide →</span>' : ''}`; }
-      el.style.transform = tf; el.style.opacity = '1'; el.style.zIndex = z;
-    };
-    const fan = (l, i, gap) => (i - (l.length - 1) / 2) * gap;
-    G.need.forEach((j, i) => place(j, `translate3d(${fan(G.need, i, Math.min(262, 800 / Math.max(1, G.need.length - 1 || 1)))}px,96px,150px) rotateY(${-fan(G.need, i, 4)}deg)`, 'front', 50 + i));
-    G.run.forEach((j, i) => place(j, `translate3d(${fan(G.run, i, Math.min(250, 900 / Math.max(1, G.run.length - 1 || 1)))}px,-150px,-260px) rotateX(6deg)`, 'back', 20 + i));
-    G.done.forEach((j, i) => place(j, `translate3d(${430 + i * 9}px,${40 - i * 16}px,${-120 - i * 26}px) rotateY(-34deg)`, 'side', 10 + G.done.length - i));
-    G.off.forEach((j, i) => place(j, `translate3d(${-430 - i * 9}px,${40 - i * 16}px,${-120 - i * 26}px) rotateY(34deg)`, 'side', 10 + G.off.length - i));
-    for (const [id, el] of DK.els) if (!live.has(id)) { el.remove(); DK.els.delete(id); }
-    $('#dkL1').textContent = G.need.length ? `Needs you · ${G.need.length}` : 'Nothing needs you'; $('#dkL2').textContent = `Working · ${G.run.length}`;
-    $('#dkL3').textContent = `Submitted · ${G.done.length}`; $('#dkL4').textContent = G.off.length ? `Stopped · ${G.off.length}` : '';
-  }
-  function dkPaint() {
-    if (!dkOn()) return;
-    for (const j of jobs) { if (!isRunning(j)) continue; const pc = $(`[data-dk-pct="${j.id}"]`); if (pc) pc.textContent = `${Math.round(j.p || 0)}%`; for (let k = 0; k < 5; k++) { const s = $(`[data-dk-seg="${j.id}-${k}"]`); if (s) s.style.width = `${segFill(j, k).toFixed(0)}%`; } }
-  }
-  $('#dkStage').addEventListener('click', e => { const c = e.target.closest('[data-dk]'); if (c) v7Act('open', c.dataset.dk); });
 
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
@@ -4332,12 +4077,12 @@ span.r-pick{cursor:default}
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
-    const v7 = v === 'ledger' || v === 'desk' || v === 'line' || v === 'river' || v === 'deck', six = v === 'agent6' || v7, a51v = v === 'agent51' || six, a5v = v === 'agent5' || a51v;
+    const v7 = v === 'ledger' || v === 'desk', six = v === 'agent6' || v7, a51v = v === 'agent51' || six, a5v = v === 'agent5' || a51v;
     a5Mount(a5v, six);
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
     document.body.classList.toggle('agent5', a5v);
-    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', six); document.body.classList.toggle('v7', v7); document.body.classList.toggle('v7a', v === 'ledger'); document.body.classList.toggle('v7b', v === 'desk'); document.body.classList.toggle('v7c', v === 'line'); document.body.classList.toggle('v7d', v === 'river'); document.body.classList.toggle('v7e', v === 'deck'); if (v === 'line') { LN.built = false; lnStart(); } V7.sig = ''; V7.open = false;
+    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', six); document.body.classList.toggle('v7', v7); document.body.classList.toggle('v7a', v === 'ledger'); document.body.classList.toggle('v7b', v === 'desk'); V7.sig = ''; V7.open = false;
     if (a51v) { filter = 'all'; sortBy = 'needs'; }
     if (six && A5.paused) { A5.paused = false; lastT = performance.now(); }
     if (!a51v) { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
@@ -4369,7 +4114,7 @@ span.r-pick{cursor:default}
   setUpCol(upCol);
   $('#trayDock').onclick = () => { closeTray(); setUpCol(false); setTimeout(() => $('#upInline').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }), 60); };
   function openTray() {
-    if (upView === 'agent6' || upView === 'ledger' || upView === 'desk' || upView === 'line' || upView === 'river' || upView === 'deck') { a6Panel(true, true); return; }
+    if (upView === 'agent6' || upView === 'ledger' || upView === 'desk') { a6Panel(true, true); return; }
     if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
     if (upView === 'agent') { $('#agDrop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); $('#agDrop').focus({ preventScroll: true }); return; }
@@ -4400,7 +4145,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'ledger' || v === 'desk' || v === 'line' || v === 'river' || v === 'deck') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'ledger' || v === 'desk') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
