@@ -1104,99 +1104,6 @@ body.a51-paused .ln-run{animation-play-state:paused}
 .dk-l{position:absolute;font:600 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.7);pointer-events:none}
 #dkL1{left:0;right:0;bottom:22px;text-align:center;color:#ffdf9c}#dkL2{left:0;right:0;top:20px;text-align:center}#dkL3{right:34px;bottom:120px;color:#7fe6b8}#dkL4{left:34px;bottom:120px}
 @media(prefers-reduced-motion:reduce){.ln-run,.rv-flow,.ln-crate.need,.ln-orb .halo,.ln-st.lit .ln-beam{animation:none}.dk-card,.ln-orb,.rv-file{transition:none}}
-/* ---------- the island: a quiet list and one floating bar ---------- */
-body:not(.v7f) .isl-only{display:none!important}
-body.v7f #metrics,body.v7f .a51-hact,body.v7f .a5-dock,body.v7f .a5-empty,body.v7f #bulk{display:none!important}
-body.v7f .a5{max-width:920px;gap:6px;padding:44px 32px 300px;min-height:100vh}
-body.v7f .a5-head{display:block}
-body.v7f .v7-title{font-size:26px;letter-spacing:-.02em}
-body.v7f .a51-snack{top:16px;bottom:auto;transform:translate(-50%,-14px)}
-body.v7f .a51-snack.on{transform:translate(-50%,0)}
-.isl-sum{order:1;display:block!important;font-size:14px;color:var(--ink-3);margin-bottom:18px}
-.isl-empty{order:2;display:flex!important;flex-direction:column;align-items:flex-start;gap:12px;padding:40px 0;color:var(--ink-3);font-size:14.5px;line-height:1.55;max-width:52ch}
-.isl-empty div{display:flex;gap:8px}
-.isl-list{order:2;display:flex!important;flex-direction:column}
-.isl-row{display:grid;grid-template-columns:10px minmax(0,1fr) 150px minmax(150px,auto);align-items:center;gap:16px;width:100%;padding:13px 10px;border-top:1px solid var(--line);text-align:left;border-radius:10px;transition:background .15s}
-.isl-row:first-child{border-top-color:transparent}
-.isl-row:hover,.isl-row.sel{background:#fff}
-.isl-row.sel{box-shadow:0 0 0 1px var(--line)}
-.isl-row:focus-visible{outline:2px solid #2457e6;outline-offset:-2px}
-.isl-row .d{width:8px;height:8px;border-radius:50%;background:#c9d1e0}
-.isl-row.run .d{background:#2457e6;animation:pulse 1.4s ease-in-out infinite}.isl-row.need .d{background:#e0a93f;box-shadow:0 0 0 4px rgba(224,169,63,.2)}.isl-row.done .d{background:#27a875}.isl-row.hold .d{background:#8b6ee6}
-.isl-row .n{display:flex;flex-direction:column;min-width:0}
-.isl-row .n b{font-size:14px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.isl-row .n small{font-size:12px;color:var(--ink-4)}
-.isl-row .sg{display:flex;gap:3px}
-.isl-row .sg i{flex:1;height:3px;border-radius:2px;background:var(--bg-2);overflow:hidden}
-.isl-row .sg u{display:block;height:100%;background:#2457e6;border-radius:inherit}
-.isl-row.need .sg u{background:#e0a93f}.isl-row.done .sg u{background:#27a875}
-.isl-row .s{font-size:12.5px;color:var(--ink-3);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-.isl-row.need .s{color:#8a5a00;font-weight:650}
-.isl-row.done .n b,.isl-row.off .n b{color:var(--ink-3);font-weight:500}
-/* the bar */
-.isl{position:fixed;left:calc(50% + var(--sidebar) / 2);bottom:22px;z-index:40;transform:translateX(-50%);display:flex!important;flex-direction:column;width:min(440px,calc(100vw - 280px));border-radius:26px;color:#fff;background:linear-gradient(180deg,#1a2850,#0f1a33);border:1px solid rgba(125,165,255,.35);box-shadow:0 0 0 5px rgba(37,96,246,.08),0 30px 70px -24px rgba(15,26,51,.8);transition:width .45s cubic-bezier(.22,1,.36,1),border-radius .3s,box-shadow .3s;overflow:hidden}
-.isl[data-mode="bar"]{width:min(560px,calc(100vw - 280px))}
-.isl.exp{width:min(660px,calc(100vw - 280px))}
-.isl-top{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.22,1,.36,1)}
-.isl.exp .isl-top{grid-template-rows:1fr}
-.isl-top>div{min-height:0;overflow:hidden}
-.isl-card{display:flex;flex-direction:column;gap:10px;padding:16px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1);animation:isl-in .4s cubic-bezier(.22,1,.36,1) both}
-@keyframes isl-in{from{opacity:0;transform:translateY(8px)}}
-.isl-ch{display:flex;align-items:center;gap:8px;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#aab6d3}
-.isl-ch .t{flex:1}
-.isl-ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#aab6d3;font-size:17px;line-height:1}
-.isl-ic:hover{background:rgba(255,255,255,.12);color:#fff}
-.isl-ic svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
-.isl-fn{font-size:15px;font-weight:650;overflow-wrap:anywhere}
-.isl-say{font-size:14px;line-height:1.5;color:#dfe6f7}
-.isl-say b{color:#fff;font-weight:650}
-.isl-chips{display:flex;flex-wrap:wrap;gap:6px}
-.isl-chips span{display:inline-flex;align-items:baseline;gap:6px;padding:5px 10px;border-radius:9px;background:rgba(255,255,255,.08);font-size:12px;color:#c5d0ea}
-.isl-chips b{font-size:13px;font-weight:650;color:#fff;font-variant-numeric:tabular-nums}
-.isl-more{align-self:flex-start;font-size:12.5px;font-weight:600;color:#a9c4ff;padding:2px 0}
-.isl-more:hover{color:#fff}
-.isl-ev{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;background:rgba(0,0,0,.2)}
-.isl-ev td{font:500 11.5px var(--mono);padding:6px 10px;border-top:1px solid rgba(255,255,255,.08);color:#c5d0ea;white-space:nowrap}
-.isl-ev tr:first-child td{border-top:0}
-.isl-ev .o{color:#ff9aa5;text-decoration:line-through}.isl-ev .n{color:#7fe6b8}.isl-ev .w{color:#ffcf7a}
-.isl-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px}
-.isl-acts .sp{flex:1}
-.isl-b{height:38px;padding:0 15px;border-radius:11px;font-size:13.5px;font-weight:650;color:#fff;background:rgba(255,255,255,.1);white-space:nowrap;transition:background .15s,transform .12s}
-.isl-b:hover{background:rgba(255,255,255,.2)}.isl-b:active{transform:scale(.97)}
-.isl-b.pri{background:#3b74ff;box-shadow:0 10px 22px -10px rgba(59,116,255,.9)}.isl-b.pri:hover{background:#5187ff}
-.isl-b.ghost{background:none;color:#a9c4ff}.isl-b.ghost:hover{background:rgba(255,255,255,.08);color:#fff}
-.isl-b:disabled{background:rgba(255,255,255,.08);color:#8492b8;box-shadow:none;cursor:not-allowed}
-.isl button:focus-visible,.isl select:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.isl-busy{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#c5d0ea}
-.isl-busy i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;animation:spin .8s linear infinite}
-.isl-files{list-style:none;display:flex;flex-direction:column;gap:6px;max-height:190px;overflow:auto;scrollbar-width:thin}
-.isl-files li{display:grid;grid-template-columns:minmax(0,1fr) 170px auto;gap:8px;align-items:center;padding:8px 6px 8px 12px;border-radius:12px;background:rgba(255,255,255,.07)}
-.isl-files li.bad{box-shadow:inset 0 0 0 1px rgba(224,169,63,.7)}
-.isl-files .n{display:flex;flex-direction:column;min-width:0}
-.isl-files .n b{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.isl-files .n small{font:500 11px var(--mono);color:#7fe6b8}
-.isl-files select{height:32px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.1);color:#fff;font:inherit;font-size:12px;padding:0 8px}
-.isl-files option{color:#0f1a33}
-.isl-tg{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#c5d0ea;cursor:pointer}
-.isl-tg input{width:16px;height:16px;accent-color:#3b74ff}
-.isl-bar{display:flex;align-items:center;gap:12px;padding:9px 10px 9px 9px;min-height:60px}
-.isl-add{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:#3b74ff;color:#fff;box-shadow:0 8px 18px -8px rgba(59,116,255,.9);transition:background .15s,transform .12s}
-.isl-add:hover{background:#5187ff}.isl-add:active{transform:scale(.94)}
-.isl-add svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
-.isl-orb{width:12px;height:12px;border-radius:50%;flex-shrink:0;background:#8492b8}
-.isl-orb.run{background:radial-gradient(circle at 35% 30%,#a9c2ff,#3b74ff);box-shadow:0 0 0 4px rgba(59,116,255,.25);animation:pulse 1.4s ease-in-out infinite}
-.isl-orb.w{background:#e9b454;box-shadow:0 0 0 4px rgba(233,180,84,.22)}.isl-orb.g{background:#4fca98}
-.isl-t{flex:1;min-width:0;font-size:13.5px;color:#eef1f8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.isl-pct{font:600 12px var(--mono);color:#a9c4ff;flex-shrink:0}
-.isl-need{height:34px;padding:0 13px;border-radius:999px;font-size:12.5px;font-weight:650;background:#e9b454;color:#3a2300;flex-shrink:0;white-space:nowrap}
-.isl-need:hover{background:#f5c468}
-.isl-try{height:34px;padding:0 12px;border-radius:999px;font-size:12.5px;font-weight:650;color:#a9c4ff;flex-shrink:0;white-space:nowrap}
-.isl-try:hover{background:rgba(255,255,255,.1);color:#fff}
-.isl-drop{display:none;align-items:center;justify-content:center;gap:10px;min-height:120px;font-size:15px;font-weight:650;color:#dbe7ff}
-.a5.dragging~* .isl,.a5.dragging .isl{width:min(520px,calc(100vw - 280px));border-color:#7da5ff;box-shadow:0 0 0 8px rgba(59,116,255,.2),0 30px 70px -24px rgba(15,26,51,.8)}
-.a5.dragging .isl .isl-top,.a5.dragging .isl .isl-bar{display:none}
-.a5.dragging .isl .isl-drop{display:flex}
-@media(prefers-reduced-motion:reduce){.isl,.isl-top{transition:none}.isl-card{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1797,7 +1704,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="ledger" aria-pressed="false">A · Ledger</button><button type="button" class="chip-btn" data-upview="desk" aria-pressed="false">B · Review desk</button><button type="button" class="chip-btn" data-upview="line" aria-pressed="false">1 · The Line</button><button type="button" class="chip-btn" data-upview="river" aria-pressed="false">2 · The River</button><button type="button" class="chip-btn" data-upview="deck" aria-pressed="false">3 · The Deck</button><button type="button" class="chip-btn" data-upview="island" aria-pressed="false">The Island</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="ledger" aria-pressed="false">A · Ledger</button><button type="button" class="chip-btn" data-upview="desk" aria-pressed="false">B · Review desk</button><button type="button" class="chip-btn" data-upview="line" aria-pressed="false">1 · The Line</button><button type="button" class="chip-btn" data-upview="river" aria-pressed="false">2 · The River</button><button type="button" class="chip-btn" data-upview="deck" aria-pressed="false">3 · The Deck</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -1927,14 +1834,6 @@ span.r-pick{cursor:default}
             </div>
             <div class="a51-only a51-find"><label class="sr" for="a51Q">Search runs</label><input type="search" id="a51Q" placeholder="Search files" autocomplete="off"></div>
             <div class="a5-util" id="a5Util"></div>
-          </div>
-          <p class="isl-only isl-sum" id="islSum"></p>
-          <div class="isl-only isl-empty" id="islEmpty"><span>Drop CSV files anywhere on this page, or use the bar below. I’ll validate, fix and verify each one, and ask you only when a decision is yours.</span><div><button type="button" class="btn btn-pri" id="islChoose">Choose files</button><button type="button" class="btn" id="islSample2">Try sample files</button></div></div>
-          <div class="isl-only isl-list" id="islList" hidden></div>
-          <div class="isl-only isl" id="isl" data-mode="idle" role="region" aria-label="Migration agent">
-            <div class="isl-top" aria-live="polite"><div id="islTop"></div></div>
-            <div class="isl-bar"><button type="button" class="isl-add" data-isl="add" aria-label="Add CSV files"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><i class="isl-orb" id="islOrb" aria-hidden="true"></i><span class="isl-t" id="islT"></span><span class="isl-pct" id="islPct"></span><button type="button" class="isl-need" id="islNeed" data-isl="ask" hidden></button><button type="button" class="isl-try" id="islTry" data-isl="sample">Try sample files</button></div>
-            <div class="isl-drop" aria-hidden="true">Drop to hand files to the agent</div>
           </div>
           <div class="v7-only v7-agent" id="v7Agent" aria-live="polite" hidden><i class="v7-orb" aria-hidden="true"></i><span class="t" id="v7AgentT"></span><span class="a" id="v7AgentA"></span></div>
           <div class="v7-only sc-card ln" id="v7Line" hidden><svg id="lnSvg" viewBox="20 30 1290 570" role="group" aria-label="The line: files move through five stations"></svg></div>
@@ -4087,7 +3986,6 @@ span.r-pick{cursor:default}
   }
   function v7Render() {
     if (!v7On()) return;
-    if (islOn()) { islRender(); return; }
     const n = jobs.length, mode = lnOn() ? 'c' : rvOn() ? 'd' : dkOn() ? 'e' : v7A() ? 'a' : 'b', scene = 'cde'.includes(mode), a = mode === 'a' || scene;
     if (!jobs.some(j => j.id === V7.sel)) { V7.sel = (v7Sorted()[0] || {}).id || 0; if (a) V7.open = false; }
     $('#v7Agent').hidden = !n; $('#v7TableWrap').hidden = !a || !n; $('#v7Desk').hidden = a || !n;
@@ -4112,7 +4010,6 @@ span.r-pick{cursor:default}
     v7Paint();
   }
   function v7Paint() {
-    if (islOn()) { islPaint(); return; }
     if (!v7On() || !jobs.length) return;
     let lead = null, k = 0;
     for (const j of jobs) {
@@ -4319,117 +4216,6 @@ span.r-pick{cursor:default}
   }
   $('#dkStage').addEventListener('click', e => { const c = e.target.closest('[data-dk]'); if (c) v7Act('open', c.dataset.dk); });
 
-  /* ---------- the island: a quiet list of files, and one floating bar that is the agent. It rests as a pill, takes files, reports progress and asks its questions, all in the same place ---------- */
-  const ISL = { cur: 0, peek: 0, open: true, rows: false, need: 0, lsig: '', isig: '' };
-  const islOn = () => document.body.classList.contains('v7f');
-  const islB = (k, label, cls = '', id = '') => `<button type="button" class="isl-b ${cls}" data-isl="${k}"${id ? ` data-id="${id}"` : ''}>${label}</button>`;
-  const ISL_X = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-  function islList() {
-    const L = v7Sorted();
-    return L.map(j => {
-      const need = v7Need(j), run = isRunning(j), c = need ? 'need' : run ? 'run' : j.phase === 'submitted' ? 'done' : isPending(j) ? 'hold' : 'off';
-      const st = need ? 'Needs you' : run ? `<span data-isl-st="${j.id}"></span>` : j.phase === 'submitted' ? `Submitted · ${num(j.verified)} records` : isPending(j) ? 'Appeal on hold' : 'Stopped';
-      return `<button type="button" class="isl-row ${c}${(ISL.peek || ISL.cur) === j.id && ISL.open ? ' sel' : ''}" data-isl-row="${j.id}"><i class="d" aria-hidden="true"></i><span class="n"><b>${esc(j.name)}</b><small>${esc(j.lob)} · ${num(j.total)} rows</small></span><span class="sg" aria-hidden="true">${[0, 1, 2, 3, 4].map(k => `<i><u data-isl-seg="${j.id}-${k}" style="width:${j.phase === 'fix_review' ? (k < 2 ? 100 : 0) : j.phase === 'cancelled' ? 0 : segFill(j, k).toFixed(0)}%"></u></i>`).join('')}</span><span class="s">${st}</span></button>`;
-    }).join('');
-  }
-  /* the question the agent is asking about one file, with just enough evidence to answer it */
-  function islAsk(j, i, n) {
-    const id = j.id, same = k => jobs.filter(x => v7Need(x) && k(x)).length;
-    let say, chips = '', rows = '', acts;
-    if (j.phase === 'fix_review') {
-      const g = v7Groups(j), m = same(x => x.phase === 'fix_review');
-      say = j.fixing ? `Applying <b>${num(j.fixed)} fixes</b> to this file…` : `I found <b>${num(j.fixed)} errors I can fix safely</b>. Your original rows are kept.`;
-      chips = g.map(([t, d, v]) => `<span><b>${num(v)}</b>${t}</span>`).join('');
-      rows = V7_FIXROWS.slice(0, 3).map(r => `<tr><td>${r[1]}</td><td class="o">${esc(r[2])}</td><td class="n">${esc(r[3])}</td></tr>`).join('');
-      acts = j.fixing ? '<span class="isl-busy"><i></i>Fixing</span>' : islB('fix', `Fix ${num(j.fixed)} errors`, 'pri', id) + islB('skip', 'Skip fixes', '', id) + (m > 1 ? islB('fix-all', `Fix in all ${m} files`, 'ghost') : '');
-    } else if (isGated(j)) {
-      const m = same(x => x.phase === 'ready' && isGated(x));
-      say = `<b>${num(j.failed)} records failed consent checks</b>, and I can’t fix those. The other ${num(j.verified)} are fine.`;
-      chips = failReasons(j).map(([t, v]) => `<span><b>${num(v)}</b>${t}</span>`).join('');
-      rows = V7_FAILROWS.slice(0, 3).map(r => `<tr><td>${r[1]}</td><td class="w" colspan="2">${r[2]}</td></tr>`).join('');
-      acts = islB('setaside', 'Set them aside', 'pri', id) + islB('appeal', 'Appeal', '', id) + (m > 1 ? islB('aside-all', `Set aside in all ${m} files`, 'ghost') : '');
-    } else {
-      const m = same(x => x.phase === 'ready' && !isGated(x));
-      say = `Ready to go: <b>${num(j.verified)} verified records</b>, ${num(j.total - j.verified)} left out. Submitting cannot be undone.`;
-      chips = `<span><b>${inr2(j.verified * .05)}</b>Estimate</span>`;
-      acts = islB('submit', `Submit ${num(j.verified)} records`, 'pri', id) + (m > 1 ? islB('submit-all', `Submit all ${m} files`, 'ghost') : '');
-    }
-    return `<div class="isl-card"><div class="isl-ch"><i class="isl-orb w" aria-hidden="true"></i><span class="t">Needs your call${n > 1 ? ` · ${i + 1} of ${n}` : ''}</span>${n > 1 ? `<button type="button" class="isl-ic" data-isl="prev" aria-label="Previous question">‹</button><button type="button" class="isl-ic" data-isl="next" aria-label="Next question">›</button>` : ''}<button type="button" class="isl-ic" data-isl="min" aria-label="Minimise">${ISL_X}</button></div><b class="isl-fn">${esc(j.name)}</b><p class="isl-say">${say}</p>${chips ? `<div class="isl-chips">${chips}</div>` : ''}${rows ? `<button type="button" class="isl-more" data-isl="rows" aria-expanded="${ISL.rows}">${ISL.rows ? 'Hide' : 'See'} sample rows</button>${ISL.rows ? `<table class="isl-ev">${rows}</table>` : ''}` : ''}<div class="isl-acts">${acts}</div></div>`;
-  }
-  /* any other file, opened from the list */
-  function islPeek(j) {
-    const id = j.id, a = aiState(j), [, l] = v7Status(j);
-    const say = isRunning(j) ? `I’m <b>${a.now.toLowerCase()}</b> this file. <span data-isl-psub="${id}">${esc(a.sub)}</span>.` : j.phase === 'submitted' ? `Submitted. <b>${num(j.verified)} records</b> migrated, ${num(j.total - j.verified)} left out.` : isPending(j) ? `An appeal for <b>${num(j.failed)} records</b> is with the registrar. Submission is on hold.` : 'You stopped this file. Nothing from it was submitted.';
-    const acts = isRunning(j) ? islB('stop', 'Stop this file', '', id) : j.phase === 'submitted' ? islB('receipt', 'Download receipt', '', id) : isPending(j) ? islB('appeal-cancel', 'Cancel appeal', '', id) : islB('retry', 'Run again', 'pri', id) + islB('remove', 'Remove', '', id);
-    return `<div class="isl-card"><div class="isl-ch"><i class="isl-orb" aria-hidden="true"></i><span class="t">${l}</span><button type="button" class="isl-ic" data-isl="min" aria-label="Close">${ISL_X}</button></div><b class="isl-fn">${esc(j.name)}</b><p class="isl-say">${say}</p><div class="isl-acts">${acts}</div></div>`;
-  }
-  function islStaged() {
-    const n = A5.stage.length, miss = A5.stage.filter(f => !a5Eff(f)).length, open = A5.stage.filter(f => !f.sealed).length, auto = $('#a5Auto').checked;
-    return `<div class="isl-card"><div class="isl-ch"><span class="t">${a5Fs(n)} to hand over</span><button type="button" class="isl-ic" data-isl="clear" aria-label="Remove all files">${ISL_X}</button></div><ul class="isl-files">${A5.stage.map(f => { const e = a5Eff(f); return `<li class="${e ? '' : 'bad'}"><span class="n"><b>${esc(f.name)}</b><small>${f.sealed ? `Encrypted · ${f.hash}` : 'Encrypting…'}</small></span><select data-isl-lob="${f.id}" aria-label="Line of business for ${esc(f.name)}"><option value=""${e ? '' : ' selected'}>Line of business…</option>${AG_LOBS.map(l => `<option${l === e ? ' selected' : ''}>${l}</option>`).join('')}</select><button type="button" class="isl-ic" data-isl="rm" data-id="${f.id}" aria-label="Remove ${esc(f.name)}">${ISL_X}</button></li>`; }).join('')}</ul><div class="isl-acts"><label class="isl-tg"><input type="checkbox" data-isl-auto${auto ? ' checked' : ''}><span>${auto ? 'I’ll fix safe errors myself' : 'I’ll ask before fixing anything'}</span></label><span class="sp"></span><button type="button" class="isl-b pri" data-isl="hand"${miss || open ? ' disabled' : ''}>${miss ? 'Pick a line of business' : open ? 'Encrypting…' : `Hand ${a5Fs(n)} to the agent`}</button></div></div>`;
-  }
-  function islRender() {
-    ['#v7Agent', '#v7TableWrap', '#v7Desk', '#v7Line', '#v7River', '#v7Deck', '#v7ListH', '#v7Scrim', '#v7Drawer'].forEach(q => { $(q).hidden = true; });
-    const n = jobs.length, needL = v7Sorted().filter(v7Need), staged = A5.stage.length;
-    if (needL.length > ISL.need) { ISL.open = true; ISL.peek = 0; } ISL.need = needL.length;
-    if (!needL.some(j => j.id === ISL.cur)) ISL.cur = (needL[0] || {}).id || 0;
-    if (ISL.peek && (!jobs.some(j => j.id === ISL.peek) || v7Need(jobs.find(j => j.id === ISL.peek)))) { const pj = jobs.find(j => j.id === ISL.peek); if (pj && v7Need(pj)) ISL.cur = pj.id; ISL.peek = 0; }
-    const done = jobs.filter(j => j.phase === 'submitted'), run = jobs.filter(isRunning).length;
-    $('#islSum').textContent = n ? [a5Fs(n), needL.length ? `${needL.length} need${needL.length > 1 ? '' : 's'} you` : '', run ? `${run} in progress` : '', done.length ? `${num(done.reduce((t, j) => t + j.verified, 0))} records migrated` : ''].filter(Boolean).join(' · ') : 'Nothing uploaded yet.';
-    $('#islEmpty').hidden = n > 0; $('#islList').hidden = !n;
-    const lsig = jobs.map(j => `${j.id}:${j.phase}:${isPending(j) ? 1 : 0}`).join('|') + `|${ISL.cur}|${ISL.peek}|${ISL.open}`;
-    if (lsig !== ISL.lsig) { ISL.lsig = lsig; $('#islList').innerHTML = islList(); }
-    /* what the island shows above its bar: files to hand over, a question, a file you opened, or nothing */
-    const pj = ISL.peek ? jobs.find(j => j.id === ISL.peek) : null, cj = jobs.find(j => j.id === ISL.cur);
-    const mode = staged ? 'stage' : !ISL.open ? '' : pj ? 'peek' : cj ? 'ask' : '';
-    const isig = mode + '|' + (staged ? A5.stage.map(f => `${f.id}${f.sealed ? 1 : 0}${a5Eff(f)}`).join(',') + $('#a5Auto').checked : mode === 'peek' ? `${pj.id}:${pj.phase}:${isRunning(pj) ? aiState(pj).i : ''}` : mode === 'ask' ? `${cj.id}:${cj.phase}:${cj.fixing ? 1 : 0}${cj.skipAppeal ? 1 : 0}:${needL.length}:${ISL.rows}` : '');
-    if (isig !== ISL.isig) { ISL.isig = isig; $('#islTop').innerHTML = mode === 'stage' ? islStaged() : mode === 'peek' ? islPeek(pj) : mode === 'ask' ? islAsk(cj, needL.indexOf(cj), needL.length) : ''; }
-    const el = $('#isl'); el.dataset.mode = mode || (n ? 'bar' : 'idle'); el.classList.toggle('exp', !!mode);
-    $('#islTry').hidden = n > 0 || staged > 0;
-    islPaint();
-  }
-  function islPaint() {
-    if (!islOn()) return;
-    let lead = null, k = 0, sum = 0;
-    for (const j of jobs) {
-      if (!isRunning(j)) continue; k++; sum += j.p || 0; if (!lead || (j.p || 0) > (lead.p || 0)) lead = j;
-      const a = aiState(j), st = $(`[data-isl-st="${j.id}"]`), t = `${a.now} · ${fmtDur(Math.max(0, a51Eta(j)))} left`; if (st && st.textContent !== t) st.textContent = t;
-      for (let s = 0; s < 5; s++) { const u = $(`[data-isl-seg="${j.id}-${s}"]`); if (u) u.style.width = `${segFill(j, s).toFixed(0)}%`; }
-      const ps = $(`[data-isl-psub="${j.id}"]`); if (ps && ps.textContent !== a.sub) ps.textContent = a.sub;
-    }
-    const need = jobs.filter(v7Need).length, n = jobs.length, nt = A5.note && performance.now() - A5.note.t < 2800 ? A5.note.text : '';
-    const orb = $('#islOrb'); orb.className = 'isl-orb' + (need && !lead ? ' w' : !lead && n ? ' g' : lead ? ' run' : '');
-    const t = !n ? 'Add files and I’ll take it from there' : nt || (lead ? `${aiState(lead).now} ${lead.name}${k > 1 ? ` and ${k - 1} more` : ''}` : need ? `Waiting for you on ${a5Fs(need)}` : 'All done. Add more files any time');
-    if ($('#islT').textContent !== t) $('#islT').textContent = t;
-    const pc = $('#islPct'), pt = k ? `${Math.round(sum / k)}%` : ''; if (pc.textContent !== pt) pc.textContent = pt;
-    const nb = $('#islNeed'); nb.hidden = !need || ISL.open && !ISL.peek && !A5.stage.length; if (!nb.hidden) nb.textContent = need === 1 ? '1 question' : `${need} questions`;
-  }
-  function islAct(k, id) {
-    const j = id ? jobs.find(x => x.id === +id) : null, needL = v7Sorted().filter(v7Need);
-    if (k === 'add') return a5Browse();
-    if (k === 'sample') return a5Sample();
-    if (k === 'min') { ISL.open = false; ISL.peek = 0; }
-    else if (k === 'ask') { ISL.open = true; ISL.peek = 0; }
-    else if (k === 'rows') ISL.rows = !ISL.rows;
-    else if (k === 'next' || k === 'prev') { const i = needL.findIndex(x => x.id === ISL.cur), m = needL.length; if (m) ISL.cur = needL[(i + (k === 'next' ? 1 : m - 1)) % m].id; ISL.rows = false; }
-    else if (k === 'clear') { A5.stage = []; a5Stage(); }
-    else if (k === 'rm') { A5.stage = A5.stage.filter(f => f.id !== +id); a5Stage(); }
-    else if (k === 'hand') a5HandOver();
-    else if (k === 'fix-all') a5Bulk('fix-all');
-    else if (k === 'aside-all') a5Bulk('skip-all');
-    else if (k === 'submit' && j) { j.authz = true; j.confirming = false; j.phase = 'submitted'; render(); a51Snack(`${j.name} submitted · ${num(j.verified)} records migrated`); }
-    else if (k === 'submit-all') { const l = needL.filter(x => x.phase === 'ready' && !isGated(x)); l.forEach(x => { x.authz = true; x.phase = 'submitted'; }); render(); a51Snack(`${a5Fs(l.length)} submitted`); }
-    else if (j) { v7Act(k, id); if (k === 'stop' || k === 'remove') ISL.peek = 0; }
-    ISL.isig = ''; ISL.lsig = ''; islRender();
-  }
-  $('#isl').addEventListener('click', e => { const b = e.target.closest('[data-isl]'); if (b && !b.disabled) islAct(b.dataset.isl, b.dataset.id); });
-  $('#isl').addEventListener('change', e => {
-    if (e.target.matches('[data-isl-lob]')) { const f = A5.stage.find(x => x.id === +e.target.dataset.islLob); if (f) { f.lob = e.target.value; a5Stage(); } }
-    if (e.target.matches('[data-isl-auto]')) { $('#a5Auto').checked = e.target.checked; a5Stage(); }
-  });
-  $('#islList').addEventListener('click', e => { const r = e.target.closest('[data-isl-row]'); if (!r) return; const j = jobs.find(x => x.id === +r.dataset.islRow); if (!j) return; ISL.open = true; ISL.rows = false; if (v7Need(j)) { ISL.cur = j.id; ISL.peek = 0; } else ISL.peek = j.id; ISL.isig = ''; ISL.lsig = ''; islRender(); });
-  $('#islChoose').onclick = () => a5Browse(); $('#islSample2').onclick = () => a5Sample();
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && islOn() && $('#isl').classList.contains('exp') && !A5.stage.length) islAct('min'); });
-
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
   function agUpload(list) {
@@ -4546,12 +4332,12 @@ span.r-pick{cursor:default}
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
-    const v7 = v === 'ledger' || v === 'desk' || v === 'line' || v === 'river' || v === 'deck' || v === 'island', six = v === 'agent6' || v7, a51v = v === 'agent51' || six, a5v = v === 'agent5' || a51v;
+    const v7 = v === 'ledger' || v === 'desk' || v === 'line' || v === 'river' || v === 'deck', six = v === 'agent6' || v7, a51v = v === 'agent51' || six, a5v = v === 'agent5' || a51v;
     a5Mount(a5v, six);
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
     document.body.classList.toggle('agent5', a5v);
-    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', six); document.body.classList.toggle('v7', v7); document.body.classList.toggle('v7a', v === 'ledger'); document.body.classList.toggle('v7b', v === 'desk'); document.body.classList.toggle('v7c', v === 'line'); document.body.classList.toggle('v7d', v === 'river'); document.body.classList.toggle('v7e', v === 'deck'); document.body.classList.toggle('v7f', v === 'island'); ISL.lsig = ''; ISL.isig = ''; if (v === 'line') { LN.built = false; lnStart(); } V7.sig = ''; V7.open = false;
+    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', six); document.body.classList.toggle('v7', v7); document.body.classList.toggle('v7a', v === 'ledger'); document.body.classList.toggle('v7b', v === 'desk'); document.body.classList.toggle('v7c', v === 'line'); document.body.classList.toggle('v7d', v === 'river'); document.body.classList.toggle('v7e', v === 'deck'); if (v === 'line') { LN.built = false; lnStart(); } V7.sig = ''; V7.open = false;
     if (a51v) { filter = 'all'; sortBy = 'needs'; }
     if (six && A5.paused) { A5.paused = false; lastT = performance.now(); }
     if (!a51v) { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
@@ -4584,7 +4370,6 @@ span.r-pick{cursor:default}
   $('#trayDock').onclick = () => { closeTray(); setUpCol(false); setTimeout(() => $('#upInline').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }), 60); };
   function openTray() {
     if (upView === 'agent6' || upView === 'ledger' || upView === 'desk' || upView === 'line' || upView === 'river' || upView === 'deck') { a6Panel(true, true); return; }
-    if (upView === 'island') { a5Browse(); return; }
     if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
     if (upView === 'agent') { $('#agDrop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); $('#agDrop').focus({ preventScroll: true }); return; }
@@ -4615,7 +4400,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'ledger' || v === 'desk' || v === 'line' || v === 'river' || v === 'deck' || v === 'island') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'ledger' || v === 'desk' || v === 'line' || v === 'river' || v === 'deck') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
