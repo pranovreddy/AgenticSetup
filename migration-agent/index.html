@@ -856,15 +856,18 @@ body.agent6 .a5-dock{order:1;position:relative;bottom:auto;max-width:none;displa
 @keyframes a6-open{from{opacity:0;transform:translateY(-10px) scale(.99)}}
 body.agent6 .a5-fade,body.agent6 .a5-foot,body.agent6 .a51-try,body.agent6 .a5-clip,body.agent6 .a5-dt{display:none!important}
 body.agent6 .a5-bar{display:contents}
-body.agent6 .a5-fld{grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:stretch;gap:7px;height:auto;margin:18px 18px 0;padding:0;border:0;background:none;cursor:default}
+body.agent6 .a5-fld{grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:stretch;gap:10px;height:auto;margin:18px 18px 0;padding:0;border:0;background:none;cursor:default}
 body.agent6 .a5-fld>svg{display:none}
 body.agent6 .a5-fld:focus-within{box-shadow:none}
-body.agent6 .a5-fld b{font-size:14px;font-weight:650;color:var(--a-ink)}
-body.agent6 .a5-fld select{height:48px;max-width:none;width:100%;padding:0 38px 0 14px;border:1px solid rgba(37,96,246,.28);border-radius:13px;background-color:#fff;background-position:right 12px center;background-size:16px;font-size:14.5px;font-weight:600}
+.a6-step{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;color:var(--a-ink)}
+.a6-step i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:11.5px;font-weight:700;background:var(--blue-soft);color:var(--a-bld);border:1px solid var(--blue-border)}
+.a6-s2{grid-column:1;grid-row:2;margin:18px 18px 0}
+body.agent6 #a6LobH{display:none}
+body.agent6 .a5-fld select{height:48px;max-width:none;width:100%;padding:0 38px 0 14px;border:1px solid var(--a-line);border-radius:13px;background-color:#fff;background-position:right 12px center;background-size:16px;font-size:14.5px;font-weight:600}
 body.agent6 .a5-fld select:hover{border-color:rgba(37,96,246,.5)}
 body.agent6 .a5-fld select:focus-visible{border-color:var(--a-bl);box-shadow:0 0 0 3px rgba(37,96,246,.14)}
 body.agent6 .a5-fld small{font-size:12px;line-height:1.45;font-weight:500;color:var(--a-mute)}
-body.agent6 .a5-opt{grid-column:1;grid-row:4;align-self:end;display:flex;align-items:flex-start;gap:12px;height:auto;margin:18px;padding:11px 12px;border-radius:12px;border:1px solid var(--a-line);background:#fff}
+body.agent6 .a5-opt{grid-column:1;grid-row:3 / 5;align-self:start;display:flex;align-items:flex-start;gap:12px;height:auto;margin:10px 18px 18px;padding:13px 14px;border-radius:13px;border:1px solid var(--a-line);background:#fff}
 body.agent6 .a5-opt .switch{margin-top:2px}
 body.agent6 #a5AutoT{display:none}
 .a6-ot{flex:1;min-width:0}
@@ -1661,7 +1664,8 @@ span.r-pick{cursor:default}
             <div class="a5-bar">
               <button type="button" class="a5-clip" id="a5Clip" aria-label="Add CSV files"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
               <button type="button" class="a5-dt" id="a5Dt"><b id="a5DtT">Add files for the agent</b><span id="a5Hint"></span></button>
-              <label class="a5-pill a5-fld" title="Line of business for new files"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg><span class="sr">Line of business</span><b class="a6-only" aria-hidden="true">Line of business</b><select id="a5Lob" aria-label="Line of business for new files"><option value="">Auto-detect line of business</option><option>Credit Cards</option><option>Personal Loans</option><option>Savings Accounts</option><option>Home Loans</option><option>Insurance</option></select><small class="a6-only" id="a6LobH"></small></label>
+              <label class="a5-pill a5-fld" title="Line of business for new files"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg><span class="sr">Line of business</span><b class="a6-only a6-step" aria-hidden="true"><i>1</i>Line of business</b><select id="a5Lob" aria-label="Line of business for new files"><option value="">Auto-detect from file name</option><option>Credit Cards</option><option>Personal Loans</option><option>Savings Accounts</option><option>Home Loans</option><option>Insurance</option></select><small class="a6-only" id="a6LobH"></small></label>
+              <b class="a6-only a6-step a6-s2" aria-hidden="true"><i>2</i>How should I handle it?</b>
               <label class="a5-pill a5-opt" title="Phone numbers, dates and stray spaces are repaired for you. Your original rows are always kept."><span class="switch"><input type="checkbox" id="a5Auto" checked aria-label="Fix safe errors automatically"><span class="track"></span></span><span id="a5AutoT">Auto-fix on</span><span class="a6-only a6-ot"><b>Fix safe errors myself</b><small>Phone numbers, dates, stray spaces. Originals are always kept.</small></span></label>
               <button type="button" class="a51-try" id="a51Try">Try sample files</button>
               <button type="button" class="a5-go solo" id="a5Go" disabled aria-label="Hand over to the agent"><span id="a5GoT"></span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></i></button>
