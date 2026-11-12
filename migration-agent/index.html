@@ -769,48 +769,48 @@ body.agent51 #toast{display:none}
 .a51-dnote{margin:12px 22px 0;padding:10px 12px;border-radius:12px;background:#fff8ea;border:1px solid #f0d9a8;font-size:12.5px;line-height:1.45;color:#7a5410}
 .a51-df{display:flex;justify-content:flex-end;gap:8px;padding:18px 22px 20px}
 /* agent 5.1 dock: one dark floating surface at the bottom, so it never reads as another row. It rests as a small pill and opens when files arrive */
-body.agent51 .a5-dock{max-width:1040px;border-radius:24px;background:linear-gradient(180deg,#18274f,#0f1a33);border:1px solid rgba(125,165,255,.42);color:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 0 0 5px rgba(37,96,246,.1),0 28px 60px -22px rgba(15,26,51,.75);transition:max-width .4s var(--ease-out),border-color .2s,box-shadow .25s}
-body.agent51 .a5-dock:focus-within{border-color:#7da5ff;box-shadow:0 0 0 5px rgba(37,96,246,.2),0 28px 60px -22px rgba(15,26,51,.75)}
-body.agent51 .a5-dock.rest{max-width:520px;border-radius:999px}
-body.agent51 .a5-dock.rest .a5-bar{padding:8px 10px 8px 8px}
-body.agent51 .a5-dock.idle .a5-fld,body.agent51 .a5-dock.idle .a5-opt,body.agent51 .a5-dock.idle .a5-go,body.agent51 .a5-dock.idle .a5-foot{display:none!important}
-body.agent51 .a5-dock.rest .a5-clip{border-radius:50%}
+body.agent51:not(.agent6) .a5-dock{max-width:1040px;border-radius:24px;background:linear-gradient(180deg,#18274f,#0f1a33);border:1px solid rgba(125,165,255,.42);color:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 0 0 5px rgba(37,96,246,.1),0 28px 60px -22px rgba(15,26,51,.75);transition:max-width .4s var(--ease-out),border-color .2s,box-shadow .25s}
+body.agent51:not(.agent6) .a5-dock:focus-within{border-color:#7da5ff;box-shadow:0 0 0 5px rgba(37,96,246,.2),0 28px 60px -22px rgba(15,26,51,.75)}
+body.agent51:not(.agent6) .a5-dock.rest{max-width:520px;border-radius:999px}
+body.agent51:not(.agent6) .a5-dock.rest .a5-bar{padding:8px 10px 8px 8px}
+body.agent51:not(.agent6) .a5-dock.idle .a5-fld,body.agent51:not(.agent6) .a5-dock.idle .a5-opt,body.agent51:not(.agent6) .a5-dock.idle .a5-go,body.agent51:not(.agent6) .a5-dock.idle .a5-foot{display:none!important}
+body.agent51:not(.agent6) .a5-dock.rest .a5-clip{border-radius:50%}
 .a51-try{display:none}
-body.agent51 .a5-dock.idle .a51-try{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:650;color:#a9c4ff;white-space:nowrap;flex-shrink:0}
-body.agent51 .a5-dock.idle .a51-try:hover{background:rgba(255,255,255,.1);color:#fff}
-body.agent51 .a5-dock button:focus-visible{outline:2px solid #fff;outline-offset:2px}
-body.agent51 .a5-clip{background:var(--a-bl);border-color:transparent;color:#fff;box-shadow:0 8px 18px -8px rgba(37,96,246,.9)}
-body.agent51 .a5-clip:hover{background:#3b74ff}
-body.agent51 .a5-dt b{color:#fff}body.agent51 .a5-dt:hover b{color:#cfe0ff}
-body.agent51 .a5-dt span{color:#aab6d3}body.agent51 .a5-dt.warn span{color:#ffcf7a}
-body.agent51 .a5-pill{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#dfe6f7}
-body.agent51 .a5-pill:hover{border-color:rgba(255,255,255,.4)}
-body.agent51 .a5-pill>svg{stroke:#aab6d3}
-body.agent51 .a5-fld select,body.agent51 .a5-sel{color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c5d2f0' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
-body.agent51 .a5-dock option{color:#0f1a33;background:#fff}
-body.agent51 .a5-dock .switch .track{background:rgba(255,255,255,.28)}
-body.agent51 .a5-dock .switch input:checked+.track{background:#3b74ff}
-body.agent51 .a5-go{background:#3b74ff;box-shadow:0 10px 24px -8px rgba(59,116,255,.9)}
-body.agent51 .a5-go:hover{background:#5187ff}
-body.agent51 .a5-go:disabled{background:rgba(255,255,255,.1);color:#8492b8;box-shadow:none}
-body.agent51 .a5-foot{color:#8f9cc0}
-body.agent51 .a5-foot button,body.agent51 .a5-dock .a5-lk{color:#a9c4ff}
-body.agent51 .a5-foot button:hover,body.agent51 .a5-dock .a5-lk:hover{background:rgba(255,255,255,.1)}
-body.agent51 .a51-kbd kbd{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#dfe6f7}
-body.agent51 .a5-tray{border-bottom-color:rgba(255,255,255,.12)}
-body.agent51 .a5-th small{color:#aab6d3}
-body.agent51 .a5-th .lk{background:rgba(255,255,255,.1);color:#a9c4ff}
-body.agent51 .a5-tray.locked .a5-th .lk{background:rgba(18,148,95,.28);color:#6fe0ad}
-body.agent51 .a5-tray.locked .a5-th small,body.agent51 .a5-staged .fn small.enc{color:#6fe0ad}
-body.agent51 .a5-staged li{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
-body.agent51 .a5-staged li.bad{background:rgba(224,169,63,.14);border-color:rgba(224,169,63,.55)}
-body.agent51 .a5-staged .fi i{border-color:#16244a}
-body.agent51 .a5-staged .fn small{color:#aab6d3}
-body.agent51 .a5-staged .pbar{background:rgba(255,255,255,.16)}body.agent51 .a5-staged .pbar b{background:#6f9bff}
-body.agent51 .a5-sel{background-color:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
-body.agent51 .a5-rm{color:#aab6d3}body.agent51 .a5-rm:hover{background:rgba(255,255,255,.12);color:#fff}
-body.agent51 .a51-rej li{background:rgba(194,58,58,.2);border-color:rgba(255,130,140,.45);color:#ffd0d5}
-body.agent51 .a5-dropmsg{background:#16244a;border-color:#7da5ff;color:#dbe7ff}
+body.agent51:not(.agent6) .a5-dock.idle .a51-try{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;font-weight:650;color:#a9c4ff;white-space:nowrap;flex-shrink:0}
+body.agent51:not(.agent6) .a5-dock.idle .a51-try:hover{background:rgba(255,255,255,.1);color:#fff}
+body.agent51:not(.agent6) .a5-dock button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+body.agent51:not(.agent6) .a5-clip{background:var(--a-bl);border-color:transparent;color:#fff;box-shadow:0 8px 18px -8px rgba(37,96,246,.9)}
+body.agent51:not(.agent6) .a5-clip:hover{background:#3b74ff}
+body.agent51:not(.agent6) .a5-dt b{color:#fff}body.agent51:not(.agent6) .a5-dt:hover b{color:#cfe0ff}
+body.agent51:not(.agent6) .a5-dt span{color:#aab6d3}body.agent51:not(.agent6) .a5-dt.warn span{color:#ffcf7a}
+body.agent51:not(.agent6) .a5-pill{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#dfe6f7}
+body.agent51:not(.agent6) .a5-pill:hover{border-color:rgba(255,255,255,.4)}
+body.agent51:not(.agent6) .a5-pill>svg{stroke:#aab6d3}
+body.agent51:not(.agent6) .a5-fld select,body.agent51:not(.agent6) .a5-sel{color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c5d2f0' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+body.agent51:not(.agent6) .a5-dock option{color:#0f1a33;background:#fff}
+body.agent51:not(.agent6) .a5-dock .switch .track{background:rgba(255,255,255,.28)}
+body.agent51:not(.agent6) .a5-dock .switch input:checked+.track{background:#3b74ff}
+body.agent51:not(.agent6) .a5-go{background:#3b74ff;box-shadow:0 10px 24px -8px rgba(59,116,255,.9)}
+body.agent51:not(.agent6) .a5-go:hover{background:#5187ff}
+body.agent51:not(.agent6) .a5-go:disabled{background:rgba(255,255,255,.1);color:#8492b8;box-shadow:none}
+body.agent51:not(.agent6) .a5-foot{color:#8f9cc0}
+body.agent51:not(.agent6) .a5-foot button,body.agent51:not(.agent6) .a5-dock .a5-lk{color:#a9c4ff}
+body.agent51:not(.agent6) .a5-foot button:hover,body.agent51:not(.agent6) .a5-dock .a5-lk:hover{background:rgba(255,255,255,.1)}
+body.agent51:not(.agent6) .a51-kbd kbd{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#dfe6f7}
+body.agent51:not(.agent6) .a5-tray{border-bottom-color:rgba(255,255,255,.12)}
+body.agent51:not(.agent6) .a5-th small{color:#aab6d3}
+body.agent51:not(.agent6) .a5-th .lk{background:rgba(255,255,255,.1);color:#a9c4ff}
+body.agent51:not(.agent6) .a5-tray.locked .a5-th .lk{background:rgba(18,148,95,.28);color:#6fe0ad}
+body.agent51:not(.agent6) .a5-tray.locked .a5-th small,body.agent51:not(.agent6) .a5-staged .fn small.enc{color:#6fe0ad}
+body.agent51:not(.agent6) .a5-staged li{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+body.agent51:not(.agent6) .a5-staged li.bad{background:rgba(224,169,63,.14);border-color:rgba(224,169,63,.55)}
+body.agent51:not(.agent6) .a5-staged .fi i{border-color:#16244a}
+body.agent51:not(.agent6) .a5-staged .fn small{color:#aab6d3}
+body.agent51:not(.agent6) .a5-staged .pbar{background:rgba(255,255,255,.16)}body.agent51:not(.agent6) .a5-staged .pbar b{background:#6f9bff}
+body.agent51:not(.agent6) .a5-sel{background-color:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+body.agent51:not(.agent6) .a5-rm{color:#aab6d3}body.agent51:not(.agent6) .a5-rm:hover{background:rgba(255,255,255,.12);color:#fff}
+body.agent51:not(.agent6) .a51-rej li{background:rgba(194,58,58,.2);border-color:rgba(255,130,140,.45);color:#ffd0d5}
+body.agent51:not(.agent6) .a5-dropmsg{background:#16244a;border-color:#7da5ff;color:#dbe7ff}
 /* while runs are ticked, the selection bar takes the dock's place: one floating bar, one place to act */
 body.agent51 #bulk{order:2;top:auto;bottom:14px;align-self:center;width:100%;max-width:1040px;padding:10px 10px 10px 20px;border-radius:999px;border:1px solid rgba(125,165,255,.42);background:linear-gradient(180deg,#18274f,#0f1a33);box-shadow:0 0 0 5px rgba(37,96,246,.1),0 28px 60px -22px rgba(15,26,51,.75)}
 body.agent51 #bulk button{height:36px;border-radius:999px;padding:0 14px}
@@ -851,33 +851,64 @@ body.agent6 .a51-hact{flex-direction:column;align-items:flex-end;gap:10px;paddin
 .a6-up svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .a6-up[aria-expanded="true"]{background:#0f1a33;box-shadow:none}
 body.agent6 .a51-pause{background:rgba(255,255,255,.8)}
-/* the upload panel opens under the hero when asked for, and steps aside once the files are handed over */
-body.agent6 .a5-dock{order:1;position:relative;bottom:auto;max-width:none;border-radius:24px;animation:a6-open .35s var(--ease-out)}
+/* agent 6.0 upload panel, as in agent 4.0: where files go and how they are handled on the left, the drop zone (then the encrypted folder) on the right */
+body.agent6 .a5-dock{order:1;position:relative;bottom:auto;max-width:none;display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);grid-template-rows:auto auto 1fr auto;column-gap:0;padding:0;border-radius:24px;border:1px solid rgba(37,96,246,.2);background:linear-gradient(var(--a-line),var(--a-line)) 360px 0/1px 100% no-repeat,rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 28px 64px -32px rgba(37,96,246,.4),0 1px 2px rgba(16,33,59,.05);animation:a6-open .35s var(--ease-out)}
 @keyframes a6-open{from{opacity:0;transform:translateY(-10px) scale(.99)}}
-body.agent6 .a5-dock.rest{max-width:none;border-radius:24px}
-body.agent6 .a5-fade{display:none}
+body.agent6 .a5-fade,body.agent6 .a5-foot,body.agent6 .a51-try,body.agent6 .a5-clip,body.agent6 .a5-dt{display:none!important}
+body.agent6 .a5-bar{display:contents}
+body.agent6 .a5-fld{grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:stretch;gap:7px;height:auto;margin:18px 18px 0;padding:0;border:0;background:none;cursor:default}
+body.agent6 .a5-fld>svg{display:none}
+body.agent6 .a5-fld:focus-within{box-shadow:none}
+body.agent6 .a5-fld b{font-size:14px;font-weight:650;color:var(--a-ink)}
+body.agent6 .a5-fld select{height:48px;max-width:none;width:100%;padding:0 38px 0 14px;border:1px solid rgba(37,96,246,.28);border-radius:13px;background-color:#fff;background-position:right 12px center;background-size:16px;font-size:14.5px;font-weight:600}
+body.agent6 .a5-fld select:hover{border-color:rgba(37,96,246,.5)}
+body.agent6 .a5-fld select:focus-visible{border-color:var(--a-bl);box-shadow:0 0 0 3px rgba(37,96,246,.14)}
+body.agent6 .a5-fld small{font-size:12px;line-height:1.45;font-weight:500;color:var(--a-mute)}
+body.agent6 .a5-opt{grid-column:1;grid-row:4;align-self:end;display:flex;align-items:flex-start;gap:12px;height:auto;margin:18px;padding:11px 12px;border-radius:12px;border:1px solid var(--a-line);background:#fff}
+body.agent6 .a5-opt .switch{margin-top:2px}
+body.agent6 #a5AutoT{display:none}
+.a6-ot{flex:1;min-width:0}
+.a6-ot b{display:block;font-size:13px;font-weight:650;color:var(--a-ink)}
+.a6-ot small{display:block;margin-top:1px;font-size:12px;line-height:1.4;font-weight:500;color:var(--a-mute)}
+.a6-zone{grid-column:2;grid-row:1 / -1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:232px;margin:16px;padding:22px 18px;text-align:center;border:1.5px dashed rgba(37,96,246,.35);border-radius:18px;background:linear-gradient(180deg,rgba(237,243,255,.7),rgba(255,255,255,.5));cursor:pointer;overflow:hidden;transition:border-color .2s,background .2s,box-shadow .25s}
+.a6-zone::after{content:'';position:absolute;top:0;bottom:0;left:-40%;width:35%;background:linear-gradient(100deg,transparent,rgba(37,96,246,.07),transparent);animation:ag-sweep 5.5s ease-in-out infinite;pointer-events:none}
+.a6-zone:hover,.a5.dragging .a6-zone{border-style:solid;border-color:var(--a-bl);background:linear-gradient(180deg,#eaf1ff,#fff);box-shadow:0 0 0 4px rgba(37,96,246,.08)}
+.a6-zone:focus-visible{outline:2px solid var(--a-bl);outline-offset:3px}
+.a6-zone .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:#fff;border:1px solid var(--blue-border);color:var(--a-bl);box-shadow:0 6px 18px -8px rgba(37,96,246,.5);margin-bottom:4px;transition:transform .25s}
+.a6-zone:hover .ic,.a5.dragging .a6-zone .ic{transform:translateY(-3px)}
+.a6-zone .ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.a6-zone>b{font-size:16px;font-weight:650;color:var(--a-ink)}
+.a6-zone>small{font-size:12.5px;color:var(--a-mute)}
+.a6-zone>small strong{color:var(--a-ink);font-weight:650}
+.a6-zone .bt{display:flex;gap:8px;margin-top:10px}
+.a6-zone .bt button{height:38px;padding:0 16px;border-radius:11px;font-size:13px;font-weight:650;background:var(--a-bl);color:#fff;border:1px solid transparent;box-shadow:0 1px 2px rgba(21,74,206,.3);transition:background .15s,transform .12s}
+.a6-zone .bt button:hover{background:var(--a-bld)}.a6-zone .bt button:active{transform:scale(.97)}
+.a6-zone .bt button.gh{background:#fff;color:var(--a-ink2);border-color:var(--a-line);box-shadow:none}.a6-zone .bt button.gh:hover{background:var(--bg-2)}
+.a6-zone .lock{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11.5px;color:#66738f}
+.a6-zone .lock svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.agent6.a5-dragging .a5-dropmsg,body.agent6 .a5.dragging .a5-dock.idle .a5-dropmsg{display:none}
+.a6-x{position:absolute;top:8px;right:8px;z-index:3;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--a-mute);background:rgba(255,255,255,.9)}
+.a6-x:hover{background:var(--bg-2);color:var(--a-ink)}
+.a6-x svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+/* files added: they sit in the encrypted folder until handed over */
+body.agent6 .a5-tray{grid-column:2;grid-row:1 / 4;margin:16px 16px 0;padding:12px;border:1px solid #cfdcf5;border-radius:16px;background:linear-gradient(180deg,#f4f8ff,#fff);transition:border-color .4s,background .4s,box-shadow .4s}
+body.agent6 .a5-tray.locked{border-color:#a9dcc4;background:linear-gradient(180deg,#f0faf5,#fff);box-shadow:0 10px 26px -18px rgba(18,148,95,.5)}
+body.agent6 .a5-th{padding:0 34px 2px 2px}
+body.agent6 .a5-th .lk{width:30px;height:30px;border-radius:10px}
+body.agent6 .a5-th .lk svg{width:15px;height:15px}
+body.agent6 .a5-th b{font-size:14px}
+body.agent6 .a5-staged{grid-template-columns:minmax(0,1fr);max-height:176px}
+body.agent6 .a5-staged li{background:#fbfcfe;grid-template-columns:auto minmax(0,1fr) minmax(0,176px) auto}
+body.agent6 .a5-staged li.bad{background:#fff8ea}
+.a6-more{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px 0 10px;border-radius:999px;border:1px solid var(--blue-border);background:var(--blue-soft);font-size:12px;font-weight:650;color:var(--a-bld);white-space:nowrap}
+.a6-more:hover{background:#dce8ff;border-color:var(--a-bl)}
+.a6-more svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+body.agent6 .a5-go{grid-column:2;grid-row:4;height:42px;margin:10px 16px 16px;padding:0 16px;border-radius:11px;box-shadow:0 1px 2px rgba(21,74,206,.3)}
+body.agent6 .a5-go i{display:none}
+body.agent6 .a5-go.solo{display:none}
+body.agent6 .a5-go:disabled{background:#dfe5f1;color:#8793ad}
 body.agent6 .a51-snack{top:auto;bottom:88px;transform:translate(-50%,14px)}
 body.agent6 .a51-snack.on{transform:translate(-50%,0)}
-body.agent6 .a51-try,body.agent6 .a5-dock.idle .a51-try{display:none}
-body.agent6 .a5-dock.idle .a5-fld,body.agent6 .a5-dock.idle .a5-opt{display:flex!important}
-body.agent6 .a5-dock.idle .a5-clip,body.agent6 .a5-dock.idle .a5-dt{display:none}
-body.agent6 .a5-dock.idle .a5-bar,body.agent6 .a5-dock.rest .a5-bar{padding:0 14px 14px;justify-content:center}
-body.agent6 .a5-dock.idle .a5-foot{display:flex!important;justify-content:center;padding-bottom:14px}
-body.agent6 .a5-foot #a5Sample,body.agent6 .a5-foot .sp{display:none}
-.a6-zone{display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px;padding:26px 18px 22px;border-radius:16px;border:1.5px dashed rgba(125,165,255,.55);background:rgba(255,255,255,.04);text-align:center;cursor:pointer;transition:background .2s,border-color .2s}
-.a6-zone:hover{background:rgba(255,255,255,.08);border-color:#7da5ff}
-.a6-zone .ic{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--a-bl);margin-bottom:6px;box-shadow:0 10px 22px -8px rgba(37,96,246,.9)}
-.a6-zone .ic svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.a6-zone b{font-size:16px;font-weight:650;color:#fff}
-.a6-zone small{font-size:12.5px;color:#aab6d3}
-.a6-zone .bt{display:flex;gap:8px;margin-top:10px}
-.a6-zone .bt button{height:38px;padding:0 16px;border-radius:11px;font-size:13px;font-weight:650;background:#3b74ff;color:#fff}
-.a6-zone .bt button:hover{background:#5187ff}
-.a6-zone .bt button.gh{background:rgba(255,255,255,.1)}.a6-zone .bt button.gh:hover{background:rgba(255,255,255,.2)}
-.a6-x{position:absolute;top:10px;right:10px;z-index:3;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#aab6d3}
-.a6-x:hover{background:rgba(255,255,255,.12);color:#fff}
-.a6-x svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
-body.agent6 .a5-th{padding-right:40px}
 body.agent6 .a51-kpi{order:2;margin-top:0;border-radius:20px}
 body.agent6 .a5-empty{order:3;flex:0 1 auto;padding:22px;border:0;background:none}
 body.agent6 .a5-empty .a5-eb{display:none}
@@ -885,8 +916,8 @@ body.agent6 .a5-deck{display:none!important}
 body.agent6 .a5-tools{order:3}
 body.agent6 #canvas{order:4}
 body.agent6 #bulk{order:9}
-body.agent6.a51-sel .a5-dock.idle{display:flex}
-@media(prefers-reduced-motion:reduce){body.agent6 .a5-say h2.swap,body.agent6 .a5-dock,.a6-next{animation:none}}
+body.agent6.a51-sel .a5-dock.idle{display:grid}
+@media(prefers-reduced-motion:reduce){.a6-zone::after,body.agent6 .a5-say h2.swap,body.agent6 .a5-dock,.a6-next{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1621,17 +1652,17 @@ span.r-pick{cursor:default}
           <div class="a5-dock" id="a5Drop">
             <input type="file" id="a5File" accept=".csv,text/csv" multiple hidden>
             <button type="button" class="a6-only a6-x" id="a6X" aria-label="Close the upload panel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-            <div class="a6-only a6-zone" id="a6Zone" role="button" tabindex="0" aria-label="Drop CSV files here, or press Enter to choose files"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Drop CSV files here</b><small>I’ll encrypt them in your browser and hold them until you hand over.</small><div class="bt"><button type="button" id="a6Choose">Choose files</button><button type="button" class="gh" id="a6Sample">Try sample files</button></div></div>
+            <div class="a6-only a6-zone" id="a6Zone" role="button" tabindex="0" aria-label="Drop CSV files here, or press Enter to choose files"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Drop CSVs here</b><small id="a6Hint"></small><div class="bt"><button type="button" id="a6Choose">Choose files</button><button type="button" class="gh" id="a6Sample">Try sample</button></div><span class="lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted in your browser</span></div>
             <div class="a5-tray" id="a5Tray" hidden>
-              <div class="a5-th"><span class="lk" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><b id="a5TrT"></b><small id="a5TrS"></small><button type="button" class="a5-lk a51-only" id="a51RejX" hidden>Dismiss errors</button><button type="button" class="a5-lk" id="a5Clear">Clear all</button></div>
+              <div class="a5-th"><span class="lk" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><b id="a5TrT"></b><small id="a5TrS"></small><button type="button" class="a5-lk a51-only" id="a51RejX" hidden>Dismiss errors</button><button type="button" class="a6-only a6-more" id="a6More"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add more</button><button type="button" class="a5-lk" id="a5Clear">Clear all</button></div>
               <ul class="a5-staged" id="a5Staged" aria-label="Files waiting to be handed over"></ul>
               <ul class="a51-only a51-rej" id="a51Rej" aria-label="Files that could not be added" hidden></ul>
             </div>
             <div class="a5-bar">
               <button type="button" class="a5-clip" id="a5Clip" aria-label="Add CSV files"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
               <button type="button" class="a5-dt" id="a5Dt"><b id="a5DtT">Add files for the agent</b><span id="a5Hint"></span></button>
-              <label class="a5-pill a5-fld" title="Line of business for new files"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg><span class="sr">Line of business</span><select id="a5Lob" aria-label="Line of business for new files"><option value="">Auto-detect line of business</option><option>Credit Cards</option><option>Personal Loans</option><option>Savings Accounts</option><option>Home Loans</option><option>Insurance</option></select></label>
-              <label class="a5-pill a5-opt" title="Phone numbers, dates and stray spaces are repaired for you. Your original rows are always kept."><span class="switch"><input type="checkbox" id="a5Auto" checked aria-label="Fix safe errors automatically"><span class="track"></span></span><span id="a5AutoT">Auto-fix on</span></label>
+              <label class="a5-pill a5-fld" title="Line of business for new files"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg><span class="sr">Line of business</span><b class="a6-only" aria-hidden="true">Line of business</b><select id="a5Lob" aria-label="Line of business for new files"><option value="">Auto-detect line of business</option><option>Credit Cards</option><option>Personal Loans</option><option>Savings Accounts</option><option>Home Loans</option><option>Insurance</option></select><small class="a6-only" id="a6LobH"></small></label>
+              <label class="a5-pill a5-opt" title="Phone numbers, dates and stray spaces are repaired for you. Your original rows are always kept."><span class="switch"><input type="checkbox" id="a5Auto" checked aria-label="Fix safe errors automatically"><span class="track"></span></span><span id="a5AutoT">Auto-fix on</span><span class="a6-only a6-ot"><b>Fix safe errors myself</b><small>Phone numbers, dates, stray spaces. Originals are always kept.</small></span></label>
               <button type="button" class="a51-try" id="a51Try">Try sample files</button>
               <button type="button" class="a5-go solo" id="a5Go" disabled aria-label="Hand over to the agent"><span id="a5GoT"></span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></i></button>
             </div>
@@ -3403,6 +3434,9 @@ span.r-pick{cursor:default}
     $('#a5Hint').textContent = !n && a51On() ? 'Drop CSVs anywhere, or click to browse' : !n ? (working ? 'Drop CSVs anywhere on this page. They join the queue while I keep working.' : 'Drop CSVs anywhere on this page, paste them, or browse.')
       : miss ? `Pick a line of business for ${a5Fs(miss)} to continue.` : open ? 'Encrypting. Ready in a moment.' : auto ? 'I’ll fix safe errors myself and ask you about the rest.' : 'I’ll pause at every error and ask before fixing.';
     $('#a5Dt').classList.toggle('warn', n > 0 && miss > 0);
+    $('#a6Hint').innerHTML = `Sending to <strong>${esc($('#a5Lob').value || 'Auto-detect')}</strong> · Auto-fix <strong>${auto ? 'on' : 'off'}</strong>`;
+    $('#a6LobH').textContent = $('#a5Lob').value ? `Every file you add goes to ${$('#a5Lob').value}.` : 'I read the line of business from each file name and ask only when I can’t tell.';
+    if (a6On() && n) { $('#a5TrT').textContent = 'Encrypted folder'; $('#a5TrS').textContent = miss ? `Pick a line of business for ${a5Fs(miss)} to continue` : open ? `${a5Fs(n)} · encrypting ${open} more…` : `${a5Fs(n)} · encrypted and locked`; }
     const go = $('#a5Go'); go.disabled = !n || miss > 0 || open > 0;
     go.classList.toggle('solo', !n);
     $('#a5GoT').textContent = n ? `Hand ${a5Fs(n)} to the agent` : '';
@@ -3667,6 +3701,7 @@ span.r-pick{cursor:default}
   }
   $('#a6Up').onclick = () => a6Panel(!A6.open || !jobs.length, true);
   $('#a6X').onclick = () => a6Panel(false, true);
+  $('#a6More').onclick = () => a5Browse();
   $('#a6Choose').onclick = e => { e.stopPropagation(); a5Browse(); };
   $('#a6Sample').onclick = e => { e.stopPropagation(); a5Sample(); };
   $('#a6Zone').onclick = () => a5Browse();
