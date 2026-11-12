@@ -1218,6 +1218,13 @@ body.sb4:not(.is-empty) .ag-mint b{color:var(--ag-ink);font-size:13.5px}
 body.sb4:not(.is-empty) .ag-mint small{display:block}
 body.sb4:not(.is-empty) .ag-dock{margin:10px 14px 14px;width:auto;border-color:rgba(37,96,246,.3)}
 /* file cards */
+/* the agent zone is part of the page: a full-height column with a divider, not a floating card */
+body.sb4:not(.is-empty) .agent{max-width:none;margin:0;padding:0 26px 48px 0;column-gap:26px;grid-template-rows:auto auto auto 1fr}
+body.sb4:not(.is-empty) .sb4-ai{top:0;height:100vh;border:0;border-right:1px solid var(--line);border-radius:0;background:rgba(255,255,255,.5);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+body.sb4:not(.is-empty) .ag-hero{background:none;padding:18px 20px 16px}
+body.sb4:not(.is-empty) .sb4-body{padding:20px 20px 8px}
+body.sb4.pad-min:not(.is-empty) .ag-minbar,body.sb4:not(.is-empty) .ag-dock{margin:10px 16px 18px}
+body.sb4:not(.is-empty) #metrics{margin-top:20px}
 body.sb4 #canvas .row-list{gap:10px}
 body.sb4 .agent{overflow:visible}
 body.sb4 #toast{display:none}
