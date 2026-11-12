@@ -1172,6 +1172,99 @@ body.sb4.is-empty .ag-cfg{border-right:1px solid var(--ag-line);border-bottom:0;
 body.sb4.is-empty .ag-drop2{margin:16px;min-height:230px}
 body.sb4.is-empty .ag-files li{grid-template-columns:auto minmax(0,1fr) minmax(0,176px) auto}
 body.sb4.is-empty .ag-files .ag-fsel{grid-column:auto;grid-row:auto}
+/* ---------- side bar 4.0, second pass ---------- */
+.sb4-only{display:none}
+/* agent zone */
+body.sb4:not(.is-empty) .sb4-ai{gap:0;padding:0;overflow:hidden}
+body.sb4:not(.is-empty) .ag-hero{flex-direction:row;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--ag-line);background:linear-gradient(180deg,rgba(237,243,255,.7),rgba(255,255,255,0))}
+body.sb4:not(.is-empty) .ag-hero .ag-blob{width:52px;height:52px;margin:-4px 0 -4px -6px;flex-shrink:0}
+body.sb4:not(.is-empty) .ag-hero .ag-blob .mark{width:18px;height:18px;box-shadow:0 0 0 3px rgba(255,255,255,.92)}
+body.sb4:not(.is-empty) .ag-say,body.sb4:not(.is-empty) .ag-stats{display:none}
+body.sb4:not(.is-empty) .sb4-hd{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sb4-hd b{font-size:14px;font-weight:650;color:var(--ag-ink)}
+.sb4-state{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;height:22px;padding:0 9px 0 8px;border-radius:999px;font-size:11.5px;font-weight:650;background:var(--blue-soft);color:var(--ag-bld)}
+.sb4-state i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.sb4-state.r i{animation:pulse 1.4s ease-in-out infinite}
+.sb4-state.w{background:#fdf1d8;color:#8a5a00}.sb4-state.g{background:#e3f5ec;color:#0b6d46}
+body.sb4:not(.is-empty) .sb4-body{display:flex;flex-direction:column;gap:18px;flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding:18px 18px 8px}
+.s4-msg h2{font-size:22px;line-height:1.15;font-weight:650;letter-spacing:-.02em;color:var(--ag-ink);text-wrap:balance}
+.s4-msg p{margin-top:6px;font-size:13.5px;line-height:1.5;color:var(--ag-mute)}
+.s4-sec{display:flex;flex-direction:column;gap:8px}
+.s4-sec h4{display:flex;align-items:center;justify-content:space-between;font:600 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ag-faint)}
+.s4-sec h4 button{font:650 11.5px var(--font);letter-spacing:0;text-transform:none;color:var(--ag-bld);padding:2px 4px;border-radius:6px}
+.s4-sec h4 button:hover{background:var(--blue-soft)}
+.s4-sec h4 span{font:650 12px var(--mono);letter-spacing:0;color:var(--ag-bld)}
+.s4-sug{list-style:none;display:flex;flex-direction:column;gap:8px}
+.s4-sug li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;padding:11px 11px 11px 12px;border-radius:14px;background:#fff;border:1px solid #f0d9a8;box-shadow:0 10px 22px -18px rgba(201,122,0,.6);animation:ag-in .4s cubic-bezier(.22,1,.36,1) both}
+.s4-sug b{display:block;font-size:13.5px;font-weight:650;color:var(--ag-ink);line-height:1.25}
+.s4-sug small{display:block;margin-top:2px;font-size:11.5px;line-height:1.35;color:var(--ag-mute)}
+.s4-sug .btn{white-space:nowrap}
+.s4-si{width:30px;height:30px;border-radius:10px;background:#fdf1d8 center/16px no-repeat}
+.s4-si.fx{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a5a00' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 6.5a4 4 0 00-5.2 5.2L4 17l3 3 5.3-5.3a4 4 0 005.2-5.2l-2.6 2.6-2.4-.6-.6-2.4z'/%3E%3C/svg%3E")}
+.s4-si.fl{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a5a00' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4l9 16H3z'/%3E%3Cpath d='M12 10v4M12 17v.01'/%3E%3C/svg%3E")}
+.s4-si.ok{background-color:#e3f5ec;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b6d46' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E")}
+.s4-now{list-style:none;display:flex;flex-direction:column;gap:9px;padding:12px;border-radius:14px;background:var(--blue-soft)}
+.s4-now li{display:grid;grid-template-columns:minmax(0,1fr) 64px 36px;align-items:center;gap:10px;font-size:12.5px;color:var(--ag-ink2)}
+.s4-now span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.s4-now i{height:4px;border-radius:2px;background:rgba(37,96,246,.16);overflow:hidden}
+.s4-now u{display:block;height:100%;border-radius:inherit;background:var(--ag-bl);transition:width .25s linear}
+.s4-now b{font:650 12px var(--mono);color:var(--ag-bld);text-align:right;font-variant-numeric:tabular-nums}
+.s4-more,.s4-note{font-size:12px;color:var(--ag-mute)}
+/* upload sits at the foot of the agent zone as a quiet strip, and opens into the upload box */
+body.sb4.pad-min:not(.is-empty) .ag-minbar{margin:10px 14px 14px;width:auto;height:54px;padding:0 14px;gap:11px;justify-content:flex-start;border-radius:14px;border:1.5px dashed rgba(37,96,246,.4);background:rgba(237,243,255,.6);box-shadow:none;color:var(--ag-ink)}
+body.sb4.pad-min:not(.is-empty) .ag-minbar:hover,body.sb4:not(.is-empty) .agent:has(.ag-drag) .ag-minbar{border-style:solid;border-color:var(--ag-bl);background:#e3ecff;box-shadow:0 0 0 4px rgba(37,96,246,.1)}
+body.sb4:not(.is-empty) .ag-minic{width:30px;height:30px;background:#fff;border-color:var(--blue-border);color:var(--ag-bl)}
+body.sb4:not(.is-empty) .ag-mint b{color:var(--ag-ink);font-size:13.5px}
+body.sb4:not(.is-empty) .ag-mint small{display:block}
+body.sb4:not(.is-empty) .ag-dock{margin:10px 14px 14px;width:auto;border-color:rgba(37,96,246,.3)}
+/* file cards */
+body.sb4 #canvas .row-list{gap:10px}
+body.sb4 .agent{overflow:visible}
+body.sb4 #toast{display:none}
+body.sb4 .a51-snack{top:auto;bottom:24px;transform:translate(-50%,14px)}
+body.sb4 .a51-snack.on{transform:translate(-50%,0)}
+.s4-gh{display:flex;align-items:center;gap:8px;padding:8px 4px 0;font-size:12.5px;font-weight:650;color:var(--ink-3);cursor:pointer;user-select:none;border-radius:8px}
+.s4-gh:first-child{padding-top:0}
+.s4-gh span{min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:grid;place-items:center;font:700 11px var(--mono);background:rgba(16,33,59,.07)}
+.s4-gh::after{content:'';flex:1;height:1px;background:rgba(16,33,59,.08)}
+.s4-gh svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.s4-gh.fold svg{transform:rotate(-90deg)}
+.s4-gh.g-need{color:#8a5a00}.s4-gh.g-need span{background:#f0b03c;color:#3a2300}
+.s4-gh.g-done span{background:#e3f5ec;color:#0b6d46}
+.s4-gh:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+body.sb4 .file-row2.s4{--tone:#2560f6;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) auto;column-gap:16px;row-gap:0;align-items:center;padding:13px 14px;border-radius:16px;border:1px solid var(--line);background:#fff;box-shadow:0 10px 24px -22px rgba(16,33,59,.5)}
+body.sb4 .file-row2.s4:hover{transform:none;box-shadow:0 16px 30px -22px rgba(16,33,59,.55);border-color:#d3dbea}
+body.sb4 .file-row2.s4.needs{--tone:#d58a0c;background:linear-gradient(180deg,#fffaf0,#fff);border-color:#f0d9a8}
+body.sb4 .file-row2.s4.done{--tone:#27a875}
+body.sb4 .file-row2.s4.cancelled{--tone:#9aa5ba}
+.s4-file{display:flex;align-items:center;gap:12px;min-width:0}
+.s4-ring{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:conic-gradient(var(--tone) var(--fill,0%),#e9edf5 0)}
+.s4-ring span{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--tone)}
+.s4-ring svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.file-row2.s4.done .s4-ring span{background:#e3f5ec}.file-row2.s4.needs .s4-ring span{background:#fdf1d8}
+.s4-nm{min-width:0;display:flex;flex-direction:column;gap:1px}
+.s4-nm b{font-size:14px;font-weight:650;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s4-nm small{font-size:12px;color:var(--ink-4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s4-file .info{flex-shrink:0;opacity:0;transition:opacity .15s}
+.file-row2.s4:hover .info,.s4-file .info:focus-visible{opacity:1}
+.s4-mid{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;row-gap:2px;min-width:0}
+.s4-pct{font-size:20px;font-weight:650;letter-spacing:-.02em;color:var(--tone);font-variant-numeric:tabular-nums;min-width:52px}
+.s4-bar{height:6px;border-radius:999px;background:#e9edf5;overflow:hidden}
+.s4-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2560f6,#4ea0ff);transition:width .25s linear}
+.s4-eta{grid-column:1 / -1;font-size:11.5px;color:var(--ink-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s4-say{grid-column:1 / -1;font-size:13.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s4-say b{font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums}
+.file-row2.s4.needs .s4-say b{color:#6b4500}.file-row2.s4.done .s4-say b{color:#0b6d46}
+.s4-chips{grid-column:1 / -1;display:flex;gap:6px;flex-wrap:wrap}
+.s4-chip{display:inline-flex;align-items:baseline;gap:6px;padding:3px 9px;border-radius:8px;background:var(--bg-2);font-size:11.5px;font-weight:600;color:var(--ink-4);white-space:nowrap}
+.s4-chip b{font-size:13px;font-weight:650;font-variant-numeric:tabular-nums}
+.s4-chip.ok{background:#e3f5ec;color:#0b6d46}.s4-chip.w{background:#fdf1d8;color:#8a5a00}
+.s4-act{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.s4-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--ink-4);opacity:0;transition:opacity .15s,background .15s}
+.file-row2.s4:hover .s4-ic,.s4-ic:focus-visible{opacity:1}
+.s4-ic:hover{background:var(--bg-2);color:var(--ink)}
+.s4-ic svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+body.sb4 .ag-sh3{display:none!important}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -1776,6 +1869,7 @@ span.r-pick{cursor:default}
           <div class="sb4-ai" id="sb4Ai">
           <div class="ag-hero" id="agHero" data-blob="run">
             <span class="ai-blob ag-blob" aria-hidden="true"><canvas></canvas><span class="mark"></span></span>
+            <div class="sb4-only sb4-hd"><b>Migration agent</b><span class="sb4-state" id="sb4State"><i></i><span></span></span></div>
             <div class="ag-say" aria-live="polite">
               <h2 id="agSay">Drop your files. I’ll handle the rest.</h2>
               <p id="agSub"></p>
@@ -1784,9 +1878,10 @@ span.r-pick{cursor:default}
             </div>
             <dl class="ag-stats" id="agStats"></dl>
           </div>
+          <div class="sb4-only sb4-body" id="sb4Body" aria-live="polite"></div>
           <button type="button" class="ag-minbar" id="agMin" aria-label="Open the upload panel">
             <span class="ag-minic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span>
-            <span class="ag-mint"><b>Upload files</b></span>
+            <span class="ag-mint"><b>Upload files</b><small class="sb4-only">Click, or drop CSVs anywhere</small></span>
           </button>
           <div class="ag-scrim" id="agScrim" aria-hidden="true"></div>
           <div class="ag-dock" id="agDrop">
@@ -2004,7 +2099,7 @@ span.r-pick{cursor:default}
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const num = n => Number(n||0).toLocaleString('en-IN');
   const toast = msg => {
-    if (document.body.classList.contains('agent51')) return a51Snack(msg);
+    if (document.body.classList.contains('agent51') || document.body.classList.contains('sb4')) return a51Snack(msg);
     const t=$('#toast'); t.textContent=msg; t.classList.add('is-on');
     clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('is-on'),2200);
   };
@@ -2332,7 +2427,7 @@ span.r-pick{cursor:default}
       ${V3 && canExpand(j) ? xDetails(j) : ''}
     </article>`;
   }
-  const fileList = (list, view) => `<div class="row-list" data-view="rowsx-${view}">${a51On() ? a51List(list) : list.map(fileRow).join('')}</div>`;
+  const fileList = (list, view) => `<div class="row-list" data-view="rowsx-${view}">${sb4On() ? sb4List(list) : a51On() ? a51List(list) : list.map(fileRow).join('')}</div>`;
   function paintRow(j) {
     const row = $(`#canvas .file-row2[data-id="${j.id}"]`);
     if (!row) return;
@@ -3497,8 +3592,8 @@ span.r-pick{cursor:default}
     $('#agTabFocus').tabIndex = AG.fin ? -1 : 0; $('#agTabFin').tabIndex = AG.fin ? 0 : -1;
     $('#agTabFocus').classList.toggle('on', !AG.fin); $('#agTabFocus').setAttribute('aria-selected', String(!AG.fin));
     $('#agTabFin').classList.toggle('on', AG.fin); $('#agTabFin').setAttribute('aria-selected', String(AG.fin));
-    $('#canvas').classList.toggle('hide-fin', a3 && !AG.fin);
-    $('#canvas').classList.toggle('hide-focus', a3 && AG.fin);
+    $('#canvas').classList.toggle('hide-fin', a3 && !AG.fin && !sb4On());
+    $('#canvas').classList.toggle('hide-focus', a3 && AG.fin && !sb4On()); sb4Render();
     const none = AG.fin ? !nFin : jobs.length - nFin === 0;
     $('#agTabEmpty').hidden = !(a3 && jobs.length && none);
     $('#agTabEmpty').textContent = AG.fin ? 'Nothing finished yet. Files you submit appear here.' : 'Nothing in focus. Everything is finished.';
@@ -3527,6 +3622,7 @@ span.r-pick{cursor:default}
   }
   /* live bits (ring, percentage, current step) update in place so cards do not flicker */
   function paintAgent() {
+    sb4Paint();
     for (const j of jobs) {
       if (!isRunning(j)) continue;
       const row = $(`#agMissions .file-row2[data-id="${j.id}"]`); if (!row) continue;
@@ -4197,6 +4293,96 @@ span.r-pick{cursor:default}
   $('#nv').addEventListener('drop', e => { $('#nv').classList.remove('drag'); if (!nvFiles(e)) return; e.preventDefault(); nvAdd([...e.dataTransfer.files]); });
   $('#nv').addEventListener('animationend', e => { if (e.target.classList && e.target.classList.contains('flash')) e.target.classList.remove('flash'); });
 
+  /* ---------- side bar 4.0, second pass: its own file cards and its own agent zone ---------- */
+  const sb4On = () => document.body.classList.contains('sb4');
+  const S4 = { fold: new Set(['done']), sig: '' };
+  const s4Date = t => `${new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}, ${new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+  const s4Eta = j => `${fmtDur(Math.max(0, ((!j.autofix && !j.fixDone ? 42 : 100) - (j.p || 0)) / RATE))} left`;
+  const S4_GL = { csv: '<svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg>', ok: '<svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg>', ask: '<svg viewBox="0 0 24 24"><path d="M12 7v6M12 16.5v.01"/></svg>', off: '<svg viewBox="0 0 24 24"><path d="M8 8l8 8M16 8l-8 8"/></svg>' };
+  /* one file as a card: a progress ring round the file, its name with line of business and upload time, one status, and the next step */
+  function sb4Row(j) {
+    if (!j.up) j.up = (j.at && j.at.upload) || Date.now();
+    const id = j.id, pct = progress(j), run = isRunning(j), isOpen = openRow === id && canExpand(j), fa = j.fixedApplied || 0;
+    const b = (attr, label, cls = '') => `<button type="button" class="btn btn-sm ${cls}" ${attr}>${label}</button>`;
+    const chip = (t, n, c = '') => `<span class="s4-chip ${c}">${t}<b>${num(n)}</b></span>`;
+    let gl = S4_GL.csv, mid = '', act = '';
+    if (run) {
+      mid = `<b class="s4-pct" data-live-pct="${id}">${pct}%</b><span class="s4-bar"><i data-live-bar="${id}" style="width:${pct}%"></i></span><small class="s4-eta" data-s4-eta="${id}">${s4Eta(j)}</small>`;
+      act = j.cancelAsk ? b('data-do="cancel-keep"', 'Keep') + b('data-do="cancel-yes"', 'Stop', 'btn-stop') : `<button type="button" class="s4-ic" data-do="cancel-ask" aria-label="Stop ${esc(j.name)}" title="Stop this file"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`;
+    } else if (j.phase === 'fix_review') {
+      gl = S4_GL.ask;
+      mid = j.fixing ? '<span class="ag-busy"><i></i>Fixing errors…</span>' : `<span class="s4-say"><b>${num(j.fixed)}</b> errors I can fix</span><small class="s4-eta">${num(j.manual + j.dup)} more need manual edits</small>`;
+      act = j.fixing ? '' : b('data-do="skip"', 'Skip') + b('data-do="apply"', 'Fix errors', 'btn-pri');
+    } else if (j.phase === 'ready' && isPending(j)) {
+      gl = S4_GL.ask; mid = `<span class="s4-say">Appeal in review</span><small class="s4-eta">${num(j.failed)} records · submission on hold</small>`; act = b('data-act="review"', 'View appeal');
+    } else if (j.phase === 'ready' && isGated(j)) {
+      gl = S4_GL.ask; mid = `<span class="s4-chips">${chip('Ready', j.verified, 'ok')}${chip('Failed', j.failed, 'w')}</span>`;
+      act = b('data-a4="appeal"', 'Appeal') + b('data-a4="go"', 'Continue', 'btn-pri');
+    } else if (j.phase === 'ready') {
+      gl = S4_GL.ok; mid = `<span class="s4-say"><b>${num(j.verified)}</b> ready to migrate</span>${j.failed ? `<small class="s4-eta">${num(j.failed)} failed records left out</small>` : ''}`;
+      act = b(`data-s4="submit"`, 'Submit', 'btn-pri');
+    } else if (j.phase === 'submitted') {
+      gl = S4_GL.ok; mid = `<span class="s4-say"><b>${num(j.verified)}</b> migrated</span><small class="s4-eta">${num(j.total - j.verified)} left out</small>`;
+    } else { gl = S4_GL.off; mid = `<span class="s4-say">Stopped</span>`; act = b('data-do="retry"', 'Run again') + b('data-do="remove"', 'Remove', 'btn-ghost tert'); }
+    const tip = `File ID: MIG-2026-${String(id).padStart(4, '0')}\nSize: ${fmtSize(sizeOf(j))}\nRows: ${num(j.total)}\nErrors: ${j.autofix ? 'fixed automatically' : 'ask first'}${fa ? `\nFixed: ${num(fa)}` : ''}`;
+    return `<article class="file-row2 s4 ${tileClass(j)}${isOpen ? ' open' : ''}${canExpand(j) ? '' : ' no-x'}" style="--fill:${pct}%" data-key="t${id}" data-sig="s4|${j.phase}${j.fixing ? '|f' : ''}${j.cancelAsk ? '|c' : ''}${j.appealed ? '|a' + (j.appealStage || 0) : ''}${j.appealDone ? 'd' : ''}${j.skipAppeal ? '|s' : ''}" data-fk="t${id}" data-to="${pct}" data-id="${id}" data-step="${aiState(j).i}" aria-label="${esc(j.name)}, ${pct}%">
+      <div class="s4-file"><span class="s4-ring" aria-hidden="true"><span>${gl}</span></span><div class="s4-nm"><b title="${esc(j.name)}">${esc(j.name)}</b><small>${esc(j.lob)} · ${s4Date(j.up)}</small></div><span class="info" tabindex="0" role="img" data-tip="${esc(tip)}" aria-label="File details"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span></div>
+      <div class="s4-mid">${mid}</div>
+      <div class="s4-act">${act}${canExpand(j) ? `<button type="button" class="x-caret" data-caret aria-expanded="${isOpen}" aria-label="Details for ${esc(j.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>` : ''}</div>
+      ${canExpand(j) ? xDetails(j) : ''}
+    </article>`;
+  }
+  const S4_G = [['need', 'Needs you', j => needsYou(j)], ['run', 'In progress', j => isRunning(j)], ['off', 'Stopped', j => j.phase === 'cancelled'], ['done', 'Completed', j => j.phase === 'submitted']];
+  function sb4List(list) {
+    return S4_G.map(([k, label, test]) => {
+      const g = list.filter(test); if (!g.length) return '';
+      const fold = S4.fold.has(k);
+      return `<div class="s4-gh g-${k}${fold ? ' fold' : ''}" role="button" tabindex="0" aria-expanded="${!fold}" data-s4g="${k}" data-key="s4g-${k}" data-sig="${g.length}${fold ? 'f' : ''}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>${label}<span>${g.length}</span></div>${fold ? '' : g.map(sb4Row).join('')}`;
+    }).join('');
+  }
+  /* the agent zone: who is speaking and in what state, what it is processing right now, and the answers it suggests */
+  function sb4Render() {
+    if (!sb4On() || !jobs.length) return;
+    const need = jobs.filter(j => needsYou(j) && !isPending(j)), run = jobs.filter(isRunning), done = jobs.filter(j => j.phase === 'submitted'), pend = jobs.filter(j => j.phase === 'ready' && isPending(j));
+    const fix = need.filter(j => j.phase === 'fix_review' && !j.fixing), gated = need.filter(j => j.phase === 'ready' && isGated(j)), ready = need.filter(j => j.phase === 'ready' && !isGated(j));
+    const state = need.length ? ['w', 'Waiting for you'] : run.length ? ['r', 'Working'] : ['g', 'All done'];
+    const say = need.length ? (need.length === 1 ? 'One file needs your call' : `${need.length} files need your call`) : run.length ? `Working on ${a5Fs(run.length)}` : 'All caught up';
+    const sub = need.length ? (run.length ? `I’ve lined up the quickest answers below. ${a5Fs(run.length)} still processing.` : 'I’ve lined up the quickest answers below.') : run.length ? 'I’ll stop and ask only when a decision is yours.' : `${a5Fs(done.length)} migrated · ${num(done.reduce((t, j) => t + j.verified, 0))} records.`;
+    const sug = (ic, t, d, btn) => `<li><span class="s4-si ${ic}" aria-hidden="true"></span><div><b>${t}</b><small>${d}</small></div>${btn}</li>`;
+    const sb = (k, label, cls = 'btn-pri') => `<button type="button" class="btn btn-sm ${cls}" data-s4a="${k}">${label}</button>`;
+    const nFix = fix.reduce((t, j) => t + j.fixed, 0), nFail = gated.reduce((t, j) => t + j.failed, 0), nRec = ready.reduce((t, j) => t + j.verified, 0);
+    const sugs = (fix.length ? sug('fx', `Fix ${num(nFix)} errors`, `${a5Fs(fix.length)} · safe fixes, originals kept`, sb('fix-all', 'Fix all')) : '')
+      + (gated.length ? sug('fl', `${num(nFail)} records failed checks`, `${a5Fs(gated.length)} · or appeal on a file`, sb('skip-all', 'Continue', fix.length ? '' : 'btn-pri')) : '')
+      + (ready.length ? sug('ok', `${a5Fs(ready.length)} ready to submit`, `${num(nRec)} records · est. ${inr2(nRec * .05)}`, sb('submit-all', 'Submit', fix.length || gated.length ? '' : 'btn-pri')) : '');
+    const avg = run.length ? Math.round(run.reduce((t, j) => t + (j.p || 0), 0) / run.length) : 0;
+    const now = run.length ? `<section class="s4-sec"><h4>Processing now<span data-s4-avg>${avg}%</span></h4><ul class="s4-now">${[...run].sort((a, b) => (b.p || 0) - (a.p || 0)).slice(0, 4).map(j => `<li><span title="${esc(j.name)}">${esc(j.name)}</span><i><u data-live-bar="${j.id}" style="width:${Math.round(j.p || 0)}%"></u></i><b data-live-pct="${j.id}">${Math.round(j.p || 0)}%</b></li>`).join('')}</ul>${run.length > 4 ? `<small class="s4-more">+${run.length - 4} more in the queue</small>` : ''}</section>` : '';
+    const html = `<div class="s4-msg"><h2>${say}</h2><p>${sub}</p></div>${sugs ? `<section class="s4-sec"><h4>Suggested${need.length > 1 ? '<button type="button" data-s4a="review">Review one by one</button>' : ''}</h4><ul class="s4-sug">${sugs}</ul></section>` : ''}${now}${pend.length ? `<p class="s4-note">${pend.length} appeal${pend.length > 1 ? 's are' : ' is'} with the registrar. I’ll tell you when ${pend.length > 1 ? 'they are' : 'it is'} decided.</p>` : ''}`;
+    const sig = html.replace(/style="width:\d+%"|>\d+%</g, '');
+    $('#sb4State').className = 'sb4-state ' + state[0]; $('#sb4State').lastElementChild.textContent = state[1];
+    if (sig !== S4.sig) { S4.sig = sig; $('#sb4Body').innerHTML = html; }
+  }
+  function sb4Paint() {
+    if (!sb4On()) return;
+    let sum = 0, n = 0;
+    for (const j of jobs) { if (!isRunning(j)) continue; sum += j.p || 0; n++; const e = $(`[data-s4-eta="${j.id}"]`), t = s4Eta(j); if (e && e.textContent !== t) e.textContent = t; }
+    const a = $('[data-s4-avg]'); if (a && n) a.textContent = `${Math.round(sum / n)}%`;
+  }
+  $('#sb4Body').addEventListener('click', e => {
+    const b = e.target.closest('[data-s4a]'); if (!b) return;
+    const k = b.dataset.s4a, need = jobs.filter(j => needsYou(j) && !isPending(j)), rowOf = j => $(`#canvas .file-row2[data-id="${j.id}"]`);
+    if (S4.fold.has('need')) { S4.fold.delete('need'); render(); }
+    if (k === 'fix-all') { need.filter(j => j.phase === 'fix_review' && !j.fixing).forEach(j => doAction('apply', rowOf(j))); render(); }
+    else if (k === 'skip-all') { const l = need.filter(j => j.phase === 'ready' && isGated(j)); a51Do(l, () => { l.forEach(j => { j.skipAppeal = true; }); render(); }, `Failed records left out in ${a5Fs(l.length)}`); }
+    else if (k === 'submit-all') { const l = need.filter(j => j.phase === 'ready' && !isGated(j)); a51Do(l, () => { l.forEach(j => { j.authz = true; j.confirming = false; j.phase = 'submitted'; }); render(); }, `${a5Fs(l.length)} submitted · ${num(l.reduce((t, j) => t + j.verified, 0))} records`); }
+    else if (k === 'review') { const j = [...need].sort((x, y) => agRank(x) - agRank(y))[0], row = j && rowOf(j); if (row) { toggleRow(row, true); row.scrollIntoView({ block: 'center', behavior: RM ? 'auto' : 'smooth' }); } }
+  });
+  $('#canvas').addEventListener('click', e => {
+    const g = e.target.closest('[data-s4g]'); if (g) { e.stopPropagation(); const k = g.dataset.s4g; S4.fold.has(k) ? S4.fold.delete(k) : S4.fold.add(k); render(); return; }
+    const b = e.target.closest('[data-s4]'); if (!b) return; e.stopPropagation();
+    const j = jobs.find(x => x.id === +b.closest('.file-row2').dataset.id); if (j) a51Do([j], () => { j.authz = true; j.confirming = false; j.phase = 'submitted'; render(); }, `${j.name} submitted · ${num(j.verified)} records`);
+  }, true);
+  $('#canvas').addEventListener('keydown', e => { const g = e.target.closest && e.target.closest('[data-s4g]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.click(); } });
+
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
   function agUpload(list) {
@@ -4316,7 +4502,7 @@ span.r-pick{cursor:default}
     const sb4 = v === 'sidebar4', ag = v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4, a3 = v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4;
     document.body.classList.toggle('agent-on', ag);
     document.body.classList.toggle('agent3', a3);
-    document.body.classList.toggle('agent4', v === 'agent4' || sb4); document.body.classList.toggle('sb4', sb4); SB4.has = jobs.length > 0;
+    document.body.classList.toggle('agent4', v === 'agent4' || sb4); document.body.classList.toggle('sb4', sb4); SB4.has = jobs.length > 0; S4.sig = '';
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
