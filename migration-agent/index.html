@@ -1100,6 +1100,19 @@ body.agent4 .ag-mint b{color:#fff;font-size:14px}
 body.agent4 .ag-live:not([hidden]){display:flex;align-items:center;gap:8px;margin:7px 0 0;font-size:12.5px;color:var(--ag-ink2)}
 .ag-live i{width:7px;height:7px;border-radius:50%;background:var(--ag-bl);flex-shrink:0;animation:pulse 1.4s ease-in-out infinite}
 .ag-live span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(min-width:1180px){body.agent4 .file-row2{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) 310px}}
+body.agent4 .x-main{display:none}
+body.agent4 .x-cols,body.agent4 .x-cols.even{grid-template-columns:minmax(0,1fr)}
+body.agent4 .r-act .tile-pct{display:none}
+.a4-bar{display:flex;align-items:center;gap:12px;padding:5px 0 2px}
+.a4-bar i{flex:1;height:6px;border-radius:999px;background:var(--bg-2);overflow:hidden}
+.a4-bar i b{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2560f6,#4ea0ff);transition:width .25s linear}
+.a4-bar span{font:650 13px var(--mono);color:var(--blue-d);min-width:40px;text-align:right;font-variant-numeric:tabular-nums}
+.a4-sum{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 0}
+.a4-sum span{display:inline-flex;align-items:baseline;gap:6px;padding:3px 9px;border-radius:8px;background:var(--bg-2);font-size:11.5px;font-weight:600;color:var(--ink-4);white-space:nowrap}
+.a4-sum b{font-size:13px;font-weight:650;color:var(--ink);font-variant-numeric:tabular-nums}
+.a4-sum .w{background:#fdf1d8;color:#8a5a00}.a4-sum .w b{color:#6b4500}
+.a4-sum .ok{background:var(--green-soft);color:var(--green)}.a4-sum .ok b{color:var(--green)}
 body.agent4 #canvas .file-row2.attn{background:linear-gradient(180deg,#fffaf0,#fff);border-color:#f0d9a8}
 /* the upload panel leads with the line of business and the files; auto-fix is a quiet footer */
 body.agent4 .ag-dock{grid-template-columns:minmax(0,360px) minmax(0,1fr)}
@@ -2237,6 +2250,20 @@ span.r-pick{cursor:default}
     const p = progressF(j);
     return Math.max(0, Math.min(100, (p - AI_AT[k]) / (AI_AT[k + 1] - AI_AT[k]) * 100));
   }
+  /* agent 4.0 shows no stages: a single percentage while a file is processed, then the numbers that matter and the choice to appeal or go on */
+  function a4Mid(j, pct) {
+    const fa = j.fixedApplied || 0, st = (n, t, c = '', tip = '') => `<span class="${c}"${tip ? ` title="${tip}"` : ''}>${t}<b>${num(n)}</b></span>`;
+    const b = (k, label, cls = '') => `<button type="button" class="btn btn-sm ${cls}" data-a4="${k}">${label}</button>`;
+    if (isRunning(j)) return { now: 'Processing', html: `<div class="a4-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Progress for ${esc(j.name)}"><i><b data-live-bar="${j.id}" style="width:${pct}%"></b></i><span data-live-pct="${j.id}">${pct}%</span></div>` };
+    if (j.phase === 'fix_review') return { now: j.fixing ? 'Fixing errors' : 'Errors found', html: `<div class="a4-sum">${st(j.fixed, 'Fixable', 'w', 'Errors the agent can fix safely')}${st(j.manual + j.dup, 'Manual', '', 'Rows that need manual edits or are duplicates')}</div>` };
+    if (j.phase === 'ready') {
+      const pend = isPending(j), gated = isGated(j);
+      return { now: pend ? 'Appeal pending' : 'Processed', html: `<div class="a4-sum">${st(j.verified, 'Ready', 'ok', 'Records ready to migrate')}${st(j.failed, pend ? 'Appealed' : 'Failed', j.failed && !j.skipAppeal ? 'w' : '', 'Records that failed the authenticity check')}${st(fa || j.fixed, fa ? 'Fixed' : 'Skipped', '', fa ? 'Errors fixed automatically' : 'Fixable errors that were skipped')}</div>`,
+        act: gated ? b('appeal', 'Appeal') + b('go', 'Continue without them', 'btn-pri') : '' };
+    }
+    if (j.phase === 'submitted') return { now: 'Submitted', html: `<div class="a4-sum">${st(j.verified, 'Migrated', 'ok')}${st(j.total - j.verified, 'Left out', '', 'Records not migrated')}</div>` };
+    return { now: 'Stopped', html: '' };
+  }
   function fileRow(j) {
     const pct = progress(j), st = stageInfo(j), a = aiState(j), res = aiResult(j);
     const act = j.phase==='ready' ? (j.appealed && !j.appealDone) ? `<button class="btn btn-sm" data-act="review">View appeal</button>` : `<button class="btn btn-pri btn-sm" data-act="review">Review &amp; submit</button>`
@@ -2246,21 +2273,22 @@ span.r-pick{cursor:default}
     const a5 = a5On() ? a5Act(j) : null;
     const stamp = j.phase==='submitted' ? CHECK : `<svg viewBox="0 0 24 24"><path d="${STAMP[j.phase] || ''}"/></svg>`;
     const now = j.phase === 'fix_review' ? 'Paused at autofix' : j.phase === 'ready' && j.appealed ? (j.appealDone ? `Appeal ${(APPEAL_OUT[j.appealOutcome] || 'decided').toLowerCase()}` : 'Appeal pending') : a.now;
+    const a4 = document.body.classList.contains('agent4'), a4m = a4 ? a4Mid(j, pct) : null;
     const isOpen = V3 && openRow === j.id && canExpand(j);
     /* processing files can be cancelled: a quiet text button first, then a short confirm in the same spot */
     const cancelUI = !isRunning(j) ? ''
       : j.cancelAsk ? `<button type="button" class="btn btn-sm" data-do="cancel-keep" aria-label="Keep processing ${esc(j.name)}">Keep</button><button type="button" class="btn btn-sm btn-stop" data-do="cancel-yes" aria-label="Stop processing ${esc(j.name)}">Stop</button>`
       : `<button type="button" class="btn btn-ghost btn-sm tert" data-do="cancel-ask" aria-label="Cancel ${esc(j.name)}">Cancel</button>`;
-    return `<article class="file-row2 ${tileClass(j)}${isOpen ? ' open' : ''}${selected.has(j.id) ? ' picked' : ''}${canExpand(j) ? '' : ' no-x'}" style="--fill:${pct}%" data-key="t${j.id}" data-sig="${j.phase}${j.fixing ? '|f' : ''}${j.cancelAsk ? '|c' : ''}${V3 ? '|x' : ''}${j.appealed ? '|a' + (j.appealStage || 0) : ''}${j.appealDone ? 'd' : ''}${j.skipAppeal ? '|s' : ''}${a5On() ? '|5' + (a51On() ? '1' : '') + (A5.arm === j.id ? 'a' : '') : ''}" data-fk="t${j.id}" data-to="${pct}" data-id="${j.id}" data-step="${a.i}" aria-label="${esc(j.name)}, ${pct}% ${st.label}">
+    return `<article class="file-row2 ${tileClass(j)}${isOpen ? ' open' : ''}${selected.has(j.id) ? ' picked' : ''}${canExpand(j) ? '' : ' no-x'}" style="--fill:${pct}%" data-key="t${j.id}" data-sig="${j.phase}${j.fixing ? '|f' : ''}${j.cancelAsk ? '|c' : ''}${V3 ? '|x' : ''}${j.appealed ? '|a' + (j.appealStage || 0) : ''}${j.appealDone ? 'd' : ''}${j.skipAppeal ? '|s' : ''}${a5On() ? '|5' + (a51On() ? '1' : '') + (A5.arm === j.id ? 'a' : '') : ''}${a4 ? '|4' : ''}" data-fk="t${j.id}" data-to="${pct}" data-id="${j.id}" data-step="${a.i}" aria-label="${esc(j.name)}, ${pct}% ${st.label}">
       <div class="r-file">${pickable(j) ? `<label class="r-pick" title="Select for bulk submit"><input type="checkbox" data-pick aria-label="Select ${esc(j.name)}"${selected.has(j.id) ? ' checked' : ''}><i aria-hidden="true"></i></label>` : '<span class="r-pick" aria-hidden="true"></span>'}<span class="r-ico brand" aria-hidden="true">${BRAND_LOGO}<span class="st">${stamp}</span></span>
         <div style="min-width:0"><b title="${esc(j.name)}">${esc(j.name)}</b><div class="r-meta"><span class="r-lob">${esc(j.lob)}</span><span class="r-id">MIG-2026-${String(j.id).padStart(4, '0')}</span>${a51On() && !j.autofix ? '<span class="a51-mode ask" title="Auto-fix was off for this file: the agent pauses and asks before fixing">Asks first</span>' : ''}<span class="info" tabindex="0" role="img" data-tip="${esc(`File size: ${fmtSize(sizeOf(j))}\nUploaded records: ${num(j.total)}${j.phase === 'ready' ? `\nReady for review: ${num(j.verified)}` : ''}\nStarted: ${j.at && j.at.upload ? `${fmtDay(j.at.upload)} ${new Date(j.at.upload).getFullYear()}, ${fmtTime(j.at.upload)}` : 'just now'}\nAutofix: ${j.autofix ? 'automatic' : 'ask first'}${j.phase === 'ready' || j.phase === 'submitted' ? `\nProcessing time: ${fmtDur(60000)}` : ''}`)}" aria-label="File details"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span></div></div></div>
       <div class="r-ai">
         <div class="ai-body">
-        <div class="ai-top">${j.phase === 'submitted' ? '<span class="ai-done" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2 8.8-9.4"/></svg></span>' : `<span class="ai-blob" aria-hidden="true"><canvas></canvas><span class="mark">${AI_MARK}</span></span>`}<span class="ai-now" data-live-now="${j.id}">${now}</span></div>
-        <div class="ai-seg${j.phase === 'submitted' || j.phase === 'cancelled' ? ' is-hidden' : ''}" role="progressbar" aria-label="Progress for ${esc(j.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">${AI_STEPS.map((t, k) => `<i class="${j.phase === 'fix_review' && k === 2 ? 'paused' : ''}"><b style="width:${j.phase === 'fix_review' && k === 2 ? 30 : segFill(j, k)}%"></b></i>`).join('')}</div>
+        <div class="ai-top">${j.phase === 'submitted' ? '<span class="ai-done" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2 8.8-9.4"/></svg></span>' : `<span class="ai-blob" aria-hidden="true"><canvas></canvas><span class="mark">${AI_MARK}</span></span>`}<span class="ai-now" data-live-now="${j.id}">${a4 ? a4m.now : now}</span></div>
+        ${a4 ? a4m.html : ''}<div class="ai-seg${a4 || j.phase === 'submitted' || j.phase === 'cancelled' ? ' is-hidden' : ''}" role="progressbar" aria-label="Progress for ${esc(j.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">${AI_STEPS.map((t, k) => `<i class="${j.phase === 'fix_review' && k === 2 ? 'paused' : ''}"><b style="width:${j.phase === 'fix_review' && k === 2 ? 30 : segFill(j, k)}%"></b></i>`).join('')}</div>
         </div>
       </div>
-      <div class="r-act"><div class="tile-row">${isRunning(j) && !j.cancelAsk ? `${a51On() ? `<span class="a51-eta" data-a51-eta="${j.id}"></span>` : ''}<span class="tile-pct" data-live-pct="${j.id}">${pct}%</span>` : ''}${a5 ?? act}${cancelUI}${V3 && canExpand(j) ? `<button type="button" class="x-caret" data-caret aria-expanded="${isOpen}" aria-label="Details for ${esc(j.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>` : ''}</div></div>
+      <div class="r-act"><div class="tile-row">${isRunning(j) && !j.cancelAsk ? `${a51On() ? `<span class="a51-eta" data-a51-eta="${j.id}"></span>` : ''}<span class="tile-pct" data-live-pct="${j.id}">${pct}%</span>` : ''}${a4 && a4m.act ? a4m.act : a5 ?? act}${cancelUI}${V3 && canExpand(j) ? `<button type="button" class="x-caret" data-caret aria-expanded="${isOpen}" aria-label="Details for ${esc(j.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>` : ''}</div></div>
       ${V3 && canExpand(j) ? xDetails(j) : ''}
     </article>`;
   }
@@ -2274,7 +2302,7 @@ span.r-pick{cursor:default}
     const a = aiState(j);
     if (row.dataset.step !== String(a.i)) {
       row.dataset.step = a.i;
-      $('[data-live-now]', row).textContent = a.now;
+      if (!document.body.classList.contains('agent4')) $('[data-live-now]', row).textContent = a.now;
       if (V3) {
         const m = $('.r-more', row);
         if (m) { m.outerHTML = xDetails(j); mountXaLoaders(row); }
@@ -3254,6 +3282,7 @@ span.r-pick{cursor:default}
   }
   function agLiveSub() {
     const j = jobs.find(isRunning); if (!j || AG.stage.length || jobs.some(needsYou)) return null;
+    if (document.body.classList.contains('agent4')) return `Processing ${j.name} · ${Math.round(j.p || 0)}%`;
     const a = aiState(j); return `${j.name} · ${a.now.toLowerCase()}: ${String(a.sub || '').toLowerCase()}.`;
   }
 
@@ -3398,7 +3427,7 @@ span.r-pick{cursor:default}
     const el = $('#agLive'), j = jobs.find(isRunning);
     if (!document.body.classList.contains('agent4') || !j) { el.hidden = true; return; }
     const a = aiState(j); el.hidden = false;
-    $('span', el).textContent = `${a.now} · ${j.name}`;
+    const run = jobs.filter(isRunning).length; $('span', el).textContent = `Processing ${j.name} · ${Math.round(j.p || 0)}%${run > 1 ? ` · ${run - 1} more in the queue` : ''}`;
   }
   function renderAgent() {
     if (!agOn()) return;
@@ -4210,6 +4239,13 @@ span.r-pick{cursor:default}
     showSegPop(seg, k);
   });
   $('#agMissions').addEventListener('mouseleave', hideSegPop);
+  $('#canvas').addEventListener('click', e => {
+    const b = e.target.closest('[data-a4]'); if (!b) return;
+    e.stopPropagation();
+    const row = b.closest('.file-row2'), j = jobs.find(x => x.id === +row.dataset.id); if (!j) return;
+    if (b.dataset.a4 === 'go') { j.skipAppeal = true; render(); toast(`${num(j.failed)} failed records left out · ${j.name} is ready to submit`); }
+    else { j.skipAppeal = false; j.appealOpen = true; openRow = j.id; render(); const r = $(`#canvas .file-row2[data-id="${j.id}"]`); if (r) { toggleRow(r, true); rerenderRow(r, j); } }
+  }, true);
   $('#agMin').onclick = () => agPad('pop', true);
   $('.ag-tabs').addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
