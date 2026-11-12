@@ -669,6 +669,106 @@ body.agent5 .r-act .tile-row{justify-content:flex-end;flex-wrap:wrap}
 @media(max-width:560px){.a5-staged{max-height:124px}.a5-staged li{grid-template-columns:auto minmax(0,1fr) auto}.a5-staged .a5-sel{grid-column:2 / -1;grid-row:2}.a5-go:not(.solo){flex:1 1 100%}.a5-fld{min-width:0}.a5-th small{display:none}.a5-th b{flex:1}.a5-pipe li span{font-size:10px}}
 @media(pointer:coarse){.a5-filters button,.a5-lk,.a5-rm,.a5-foot button{min-height:44px}.a5-rm{width:44px}}
 @media(prefers-reduced-motion:reduce){.a5-caret,.a5-staged li.new,.a5-props li,.a5-tray,.a5-dock.sent,.a5-dropmsg svg{animation:none}}
+/* ---------- agent 5.1: agent 5.0 plus the enterprise layer (status console, grouped board, select-anything bulk bar, confirm dialog, undo, pause) ---------- */
+body:not(.agent51) .a51-only{display:none!important}
+body.agent51 .a5-done{display:none}
+body.agent51 .a5{gap:14px;padding-top:22px}
+body.agent51 .a5-head{grid-template-columns:auto minmax(0,1fr) auto;gap:16px;padding:16px 18px 16px 14px;border-radius:20px 20px 0 0;background:#fff;border:1px solid var(--a-line);border-bottom:0;box-shadow:0 18px 40px -32px rgba(16,33,59,.4)}
+body.agent51 .a5-head .a5-blob{width:68px;height:68px;margin:0}
+body.agent51 .a5-head .a5-blob .mark{width:22px;height:22px}
+body.agent51 .a5-say h2{font-size:22px;letter-spacing:-.015em}
+body.agent51 .a5-say p{margin-top:3px}
+body.agent51 .a5-say p.a5-live{margin-top:5px}
+.a51-hact{display:flex!important;gap:8px;align-items:center}
+.a51-pause{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 13px 0 10px;border-radius:10px;border:1px solid var(--a-line);background:#fff;font-size:12.5px;font-weight:650;color:var(--a-ink2);transition:background .15s,border-color .15s}
+.a51-pause:hover{background:var(--bg-2)}
+.a51-pause svg{width:15px;height:15px;fill:currentColor}
+.a51-pause.on{background:#fff4de;border-color:#f0d9a8;color:#8a5a00}
+.a51-kpi{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:-14px;border-radius:0 0 20px 20px;background:#fff;border:1px solid var(--a-line);box-shadow:0 18px 40px -32px rgba(16,33,59,.4);overflow:hidden}
+.a51-kpi>div{display:flex;flex-direction:column;gap:2px;padding:12px 18px 13px;border-left:1px solid var(--a-line);min-width:0}
+.a51-kpi>div:first-child{border-left:0}
+.a51-kpi dt{font-size:11.5px;font-weight:600;color:var(--a-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a51-kpi dd{font-size:19px;font-weight:650;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--a-ink);white-space:nowrap}
+.a51-kpi dd small{margin-left:6px;font-size:11.5px;font-weight:600;color:var(--a-mute);letter-spacing:0}
+.a51-kpi .hot dd{color:var(--a-am)}.a51-kpi .ok dd{color:var(--a-gr)}
+.a51-kpi button{all:unset;display:flex;flex-direction:column;gap:2px;cursor:pointer;border-radius:8px}
+.a51-kpi button:focus-visible{outline:2px solid var(--a-bl);outline-offset:4px}
+.a51-kpi>.a51-fleet{grid-column:1 / -1;flex-direction:row;align-items:center;gap:14px;padding:10px 18px 12px;border-top:1px solid var(--a-line);background:#fafbfe}
+.a51-fbar{flex:1;min-width:120px;display:flex;gap:2px;height:8px;border-radius:999px;overflow:hidden;background:#e6edfb}
+.a51-fbar i{height:100%;min-width:0;transition:flex-grow .5s var(--ease-out)}
+.a51-fbar .f-done{background:var(--a-gr)}.a51-fbar .f-need{background:#e0a93f}.a51-fbar .f-run{background:linear-gradient(90deg,#2560f6,#4ea0ff);background-size:200% 100%;animation:a51-flow 2s linear infinite}.a51-fbar .f-off{background:#b4bdcc}
+body.a51-paused .a51-fbar .f-run{animation-play-state:paused;opacity:.5}
+@keyframes a51-flow{to{background-position:-200% 0}}
+.a51-fkey{display:flex;gap:14px;font-size:11.5px;font-weight:600;color:var(--a-mute);white-space:nowrap}
+.a51-fkey span{display:inline-flex;align-items:center;gap:6px}
+.a51-fkey i{width:8px;height:8px;border-radius:50%}
+/* board toolbar: select everything in view, search, sort */
+.a51-all{display:inline-flex!important;align-items:center;gap:8px;height:38px;padding:0 12px 0 10px;border-radius:11px;font-size:12.5px;font-weight:650;color:var(--a-ink2);cursor:pointer}
+.a51-all:hover{background:var(--bg-2)}
+.a51-all input{width:17px;height:17px;accent-color:var(--a-bl);cursor:pointer}
+.a51-find{display:flex!important;gap:8px;align-items:center;margin-left:auto}
+.a51-find input,.a51-find select{height:36px;border-radius:10px;border:1px solid var(--a-line);background:#fff;font:inherit;font-size:12.5px;color:var(--a-ink);padding:0 11px}
+.a51-find input{width:210px;padding-left:32px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235d6b8e' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='M16 16l4 4'/%3E%3C/svg%3E") 10px center/15px no-repeat}
+.a51-find input:focus-visible,.a51-find select:focus-visible{outline:none;border-color:var(--a-bl);box-shadow:0 0 0 3px rgba(37,96,246,.14)}
+body.agent51 .a5-tools{flex-wrap:nowrap}
+body.agent51 .a5-util{flex-shrink:0}
+/* the board is grouped by what each run needs */
+.a51-gh{display:flex;align-items:center;gap:8px;padding:10px 4px 0;font-size:12px;font-weight:650;letter-spacing:.02em;color:var(--a-mute, #5d6b8e)}
+.a51-gh:first-child{padding-top:0}
+.a51-gh span{min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:grid;place-items:center;font-size:11px;font-weight:700;background:rgba(16,33,59,.07)}
+.a51-gh.g-needs{color:#8a5a00}.a51-gh.g-needs span{background:#ffe9bd}
+.a51-gh::after{content:'';flex:1;height:1px;background:rgba(16,33,59,.08)}
+.a51-mode{font-size:11px;font-weight:650;padding:1px 7px;border-radius:999px;background:var(--bg-2);color:var(--ink-3);white-space:nowrap}
+.a51-mode.ask{background:#fff4de;color:#8a5a00}
+.a51-eta{font:500 11.5px var(--mono);color:var(--ink-4);white-space:nowrap}
+body.agent51 .file-row2{border-radius:16px}
+body.agent51 .r-meta{flex-wrap:nowrap}
+@media(min-width:1180px){body.agent51 .file-row2{grid-template-columns:minmax(0,1.15fr) minmax(0,1.1fr) 318px}}
+body.agent51 .file-row2.picked{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,96,246,.12)}
+body.agent51.a51-paused .file-row2.run .ai-seg b{opacity:.45}
+/* selection bar: appears once anything is ticked, offers only what applies */
+body.agent51 #bulk{position:sticky;top:12px;z-index:7;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 8px 8px 16px;border-radius:14px;border:0;background:#0f1a33;color:#fff;box-shadow:0 18px 40px -16px rgba(15,26,51,.6);animation:a5-rise .25s var(--ease-out) both}
+body.agent51 #bulk>b{font-size:13px;font-weight:650;margin-right:auto}
+body.agent51 #bulk>b small{margin-left:8px;font-size:12px;font-weight:500;color:#aab6d3}
+body.agent51 #bulk button{height:32px;padding:0 12px;border-radius:9px;font-size:12.5px;font-weight:650;color:#fff;background:rgba(255,255,255,.1);white-space:nowrap;transition:background .15s}
+body.agent51 #bulk button:hover{background:rgba(255,255,255,.2)}
+body.agent51 #bulk button.pri{background:var(--a-bl, #2560f6)}body.agent51 #bulk button.pri:hover{background:#3b74ff}
+body.agent51 #bulk button.quiet{background:none;color:#aab6d3}body.agent51 #bulk button.quiet:hover{color:#fff}
+body.agent51 #bulk button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* composer extras */
+.a51-rej{list-style:none;display:flex!important;flex-direction:column;gap:4px}
+.a51-rej li{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:#fff1f2;border:1px solid #f5c2c8;font-size:12.5px;color:#8f2433}
+.a51-rej li b{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a51-rej li span{flex:1;white-space:nowrap}
+.a51-rej svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.a51-kbd{display:inline-flex!important;align-items:center;gap:5px}
+.a51-kbd kbd{font:600 10.5px var(--mono);padding:1px 5px;border-radius:5px;border:1px solid var(--a-line);background:#f7f9fe;color:var(--a-ink2)}
+body.agent51 #toast{display:none}
+/* messages with undo, top centre so they never sit on the composer */
+.a51-snack{position:fixed;top:16px;left:calc(50% + var(--sidebar) / 2);z-index:90;transform:translate(-50%,-14px);display:flex;align-items:center;gap:12px;max-width:min(640px,calc(100vw - 280px));padding:9px 10px 9px 16px;border-radius:12px;background:#0f1a33;color:#fff;font-size:13px;box-shadow:0 18px 40px -14px rgba(15,26,51,.6);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s var(--ease-out)}
+.a51-snack.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.a51-snack span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:5px 0}
+.a51-snack button{height:30px;padding:0 11px;border-radius:8px;font-size:12.5px;font-weight:700;color:#8fb4ff;flex-shrink:0}
+.a51-snack button:hover{background:rgba(255,255,255,.12)}
+.a51-snack button:focus-visible{outline:2px solid #fff;outline-offset:1px}
+/* irreversible steps are confirmed in a dialog that spells out exactly what will be sent */
+.a51-dlg{width:min(620px,calc(100vw - 32px));max-height:calc(100vh - 48px);margin:auto;padding:0;border:0;border-radius:20px;background:#fff;color:#0f1a33;box-shadow:0 40px 90px -30px rgba(15,26,51,.6);overflow:hidden}
+.a51-dlg::backdrop{background:rgba(15,26,51,.42);backdrop-filter:blur(3px)}
+.a51-dlg[open]{display:flex;flex-direction:column;animation:a51-pop .28s var(--ease-out)}
+@keyframes a51-pop{from{opacity:0;transform:translateY(10px) scale(.98)}}
+.a51-dh{padding:20px 22px 14px}
+.a51-dh h3{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.a51-dh p{margin-top:5px;font-size:13px;line-height:1.5;color:#5d6b8e}
+.a51-dtab{margin:0 22px;border:1px solid rgba(16,33,59,.1);border-radius:14px;overflow:auto;min-height:0}
+.a51-dtab table{width:100%;border-collapse:collapse;font-size:12.5px}
+.a51-dtab th{position:sticky;top:0;background:#f7f9fe;text-align:left;font-size:11px;font-weight:650;color:#5d6b8e;padding:8px 12px}
+.a51-dtab td{padding:9px 12px;border-top:1px solid rgba(16,33,59,.08)}
+.a51-dtab td:first-child{font-weight:650;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a51-dtab .r{text-align:right;font-variant-numeric:tabular-nums}
+.a51-dtab tfoot td{font-weight:700;background:#fafbfe}
+.a51-dnote{margin:12px 22px 0;padding:10px 12px;border-radius:12px;background:#fff8ea;border:1px solid #f0d9a8;font-size:12.5px;line-height:1.45;color:#7a5410}
+.a51-df{display:flex;justify-content:flex-end;gap:8px;padding:18px 22px 20px}
+@media(prefers-reduced-motion:reduce){.a51-fbar .f-run,.a51-dlg[open],body.agent51 #bulk{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1269,7 +1369,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -1373,7 +1473,9 @@ span.r-pick{cursor:default}
               <p class="a5-live" id="a5Live" hidden><i class="a5-caret" aria-hidden="true"></i><span id="a5LiveT"></span></p>
             </div>
             <div class="a5-done" id="a5Done" hidden></div>
+            <div class="a51-only a51-hact"><button type="button" class="a51-pause" id="a51Pause" hidden></button></div>
           </header>
+          <dl class="a51-only a51-kpi" id="a51Kpi" aria-label="Migration status" hidden></dl>
           <div class="a5-empty" id="a5Empty">
             <h3>Here is how I’ll handle each file</h3>
             <ol class="a5-how">
@@ -1386,20 +1488,23 @@ span.r-pick{cursor:default}
             <section class="a5-card a5-ask" id="a5Ask" aria-label="Decisions waiting for you" aria-live="polite"></section>
           </div>
           <div class="a5-tools" id="a5Tools" hidden>
+            <label class="a51-only a51-all" title="Select every run in this view"><input type="checkbox" id="a51All" aria-label="Select every run in this view">Select all</label>
             <div class="a5-filters" role="group" aria-label="Filter runs">
               <button type="button" class="on" data-a5f="all" aria-pressed="true">All <span id="a5cAll">0</span></button>
               <button type="button" data-a5f="needs" aria-pressed="false">Needs you <span id="a5cNeeds">0</span></button>
               <button type="button" data-a5f="run" aria-pressed="false">Working <span id="a5cRun">0</span></button>
               <button type="button" data-a5f="done" aria-pressed="false">Finished <span id="a5cDone">0</span></button>
             </div>
+            <div class="a51-only a51-find"><label class="sr" for="a51Q">Search runs</label><input type="search" id="a51Q" placeholder="Search files" autocomplete="off"><label class="sr" for="a51Sort">Sort runs</label><select id="a51Sort"><option value="needs">Needs you first</option><option value="new">Newest first</option><option value="size">Largest first</option></select></div>
             <div class="a5-util" id="a5Util"></div>
           </div>
           <div class="a5-fade" id="a5Fade" aria-hidden="true"></div>
           <div class="a5-dock" id="a5Drop">
             <input type="file" id="a5File" accept=".csv,text/csv" multiple hidden>
             <div class="a5-tray" id="a5Tray" hidden>
-              <div class="a5-th"><span class="lk" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><b id="a5TrT"></b><small id="a5TrS"></small><button type="button" class="a5-lk" id="a5Clear">Clear all</button></div>
+              <div class="a5-th"><span class="lk" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><b id="a5TrT"></b><small id="a5TrS"></small><button type="button" class="a5-lk a51-only" id="a51RejX" hidden>Dismiss errors</button><button type="button" class="a5-lk" id="a5Clear">Clear all</button></div>
               <ul class="a5-staged" id="a5Staged" aria-label="Files waiting to be handed over"></ul>
+              <ul class="a51-only a51-rej" id="a51Rej" aria-label="Files that could not be added" hidden></ul>
             </div>
             <div class="a5-bar">
               <button type="button" class="a5-clip" id="a5Clip" aria-label="Add CSV files"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -1408,7 +1513,7 @@ span.r-pick{cursor:default}
               <label class="a5-pill a5-opt" title="Phone numbers, dates and stray spaces are repaired for you. Your original rows are always kept."><span class="switch"><input type="checkbox" id="a5Auto" checked aria-label="Fix safe errors automatically"><span class="track"></span></span><span id="a5AutoT">Auto-fix on</span></label>
               <button type="button" class="a5-go solo" id="a5Go" disabled aria-label="Hand over to the agent"><span id="a5GoT"></span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></i></button>
             </div>
-            <div class="a5-foot"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted in your browser before anything leaves it</span><span>CSV · up to 500 MB each</span><span class="sp"></span><button type="button" id="a5Sample">Try sample files</button></div>
+            <div class="a5-foot"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted in your browser before anything leaves it</span><span>CSV · up to 500 MB each</span><span class="a51-only a51-kbd"><kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>Enter</kbd> to hand over</span><span class="sp"></span><button type="button" id="a5Sample">Try sample files</button></div>
             <div class="a5-dropmsg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg>Drop to add to the queue</div>
           </div>
         </section>
@@ -1474,6 +1579,8 @@ span.r-pick{cursor:default}
 </div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="a51-snack" id="a51Snack" role="status" aria-live="polite"></div>
+<dialog class="a51-dlg" id="a51Dlg" aria-labelledby="a51DlgT"></dialog>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <linearGradient id="fBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4d5d9"/><stop offset="1" stop-color="#bdbec3"/></linearGradient>
 </defs></svg>
@@ -1502,6 +1609,7 @@ span.r-pick{cursor:default}
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const num = n => Number(n||0).toLocaleString('en-IN');
   const toast = msg => {
+    if (document.body.classList.contains('agent51')) return a51Snack(msg);
     const t=$('#toast'); t.textContent=msg; t.classList.add('is-on');
     clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('is-on'),2200);
   };
@@ -1606,8 +1714,9 @@ span.r-pick{cursor:default}
 
   /* select one or more ready files; the action bar appears on top once something is selected */
   const selected = new Set();
-  const pickable = j => j.phase === 'ready' && !(j.appealed && !j.appealDone);
+  const pickable = j => document.body.classList.contains('agent51') || (j.phase === 'ready' && !(j.appealed && !j.appealDone));
   function renderBulk() {
+    if (a51On()) return a51BulkBar();
     const box = $('#bulk');
     [...selected].forEach(id => { const j = jobs.find(x => x.id === id); if (!j || !pickable(j)) selected.delete(id); });
     const sel = jobs.filter(j => selected.has(j.id)), all = jobs.filter(pickable);
@@ -1800,20 +1909,20 @@ span.r-pick{cursor:default}
     const cancelUI = !isRunning(j) ? ''
       : j.cancelAsk ? `<button type="button" class="btn btn-sm" data-do="cancel-keep" aria-label="Keep processing ${esc(j.name)}">Keep</button><button type="button" class="btn btn-sm btn-stop" data-do="cancel-yes" aria-label="Stop processing ${esc(j.name)}">Stop</button>`
       : `<button type="button" class="btn btn-ghost btn-sm tert" data-do="cancel-ask" aria-label="Cancel ${esc(j.name)}">Cancel</button>`;
-    return `<article class="file-row2 ${tileClass(j)}${isOpen ? ' open' : ''}${selected.has(j.id) ? ' picked' : ''}${canExpand(j) ? '' : ' no-x'}" style="--fill:${pct}%" data-key="t${j.id}" data-sig="${j.phase}${j.fixing ? '|f' : ''}${j.cancelAsk ? '|c' : ''}${V3 ? '|x' : ''}${j.appealed ? '|a' + (j.appealStage || 0) : ''}${j.appealDone ? 'd' : ''}${j.skipAppeal ? '|s' : ''}${a5On() ? '|5' + (A5.arm === j.id ? 'a' : '') : ''}" data-fk="t${j.id}" data-to="${pct}" data-id="${j.id}" data-step="${a.i}" aria-label="${esc(j.name)}, ${pct}% ${st.label}">
+    return `<article class="file-row2 ${tileClass(j)}${isOpen ? ' open' : ''}${selected.has(j.id) ? ' picked' : ''}${canExpand(j) ? '' : ' no-x'}" style="--fill:${pct}%" data-key="t${j.id}" data-sig="${j.phase}${j.fixing ? '|f' : ''}${j.cancelAsk ? '|c' : ''}${V3 ? '|x' : ''}${j.appealed ? '|a' + (j.appealStage || 0) : ''}${j.appealDone ? 'd' : ''}${j.skipAppeal ? '|s' : ''}${a5On() ? '|5' + (a51On() ? '1' : '') + (A5.arm === j.id ? 'a' : '') : ''}" data-fk="t${j.id}" data-to="${pct}" data-id="${j.id}" data-step="${a.i}" aria-label="${esc(j.name)}, ${pct}% ${st.label}">
       <div class="r-file">${pickable(j) ? `<label class="r-pick" title="Select for bulk submit"><input type="checkbox" data-pick aria-label="Select ${esc(j.name)}"${selected.has(j.id) ? ' checked' : ''}><i aria-hidden="true"></i></label>` : '<span class="r-pick" aria-hidden="true"></span>'}<span class="r-ico brand" aria-hidden="true">${BRAND_LOGO}<span class="st">${stamp}</span></span>
-        <div style="min-width:0"><b title="${esc(j.name)}">${esc(j.name)}</b><div class="r-meta"><span class="r-lob">${esc(j.lob)}</span><span class="r-id">MIG-2026-${String(j.id).padStart(4, '0')}</span><span class="info" tabindex="0" role="img" data-tip="${esc(`File size: ${fmtSize(sizeOf(j))}\nUploaded records: ${num(j.total)}${j.phase === 'ready' ? `\nReady for review: ${num(j.verified)}` : ''}\nStarted: ${j.at && j.at.upload ? `${fmtDay(j.at.upload)} ${new Date(j.at.upload).getFullYear()}, ${fmtTime(j.at.upload)}` : 'just now'}\nAutofix: ${j.autofix ? 'automatic' : 'ask first'}${j.phase === 'ready' || j.phase === 'submitted' ? `\nProcessing time: ${fmtDur(60000)}` : ''}`)}" aria-label="File details"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span></div></div></div>
+        <div style="min-width:0"><b title="${esc(j.name)}">${esc(j.name)}</b><div class="r-meta"><span class="r-lob">${esc(j.lob)}</span><span class="r-id">MIG-2026-${String(j.id).padStart(4, '0')}</span>${a51On() && !j.autofix ? '<span class="a51-mode ask" title="Auto-fix was off for this file: the agent pauses and asks before fixing">Asks first</span>' : ''}<span class="info" tabindex="0" role="img" data-tip="${esc(`File size: ${fmtSize(sizeOf(j))}\nUploaded records: ${num(j.total)}${j.phase === 'ready' ? `\nReady for review: ${num(j.verified)}` : ''}\nStarted: ${j.at && j.at.upload ? `${fmtDay(j.at.upload)} ${new Date(j.at.upload).getFullYear()}, ${fmtTime(j.at.upload)}` : 'just now'}\nAutofix: ${j.autofix ? 'automatic' : 'ask first'}${j.phase === 'ready' || j.phase === 'submitted' ? `\nProcessing time: ${fmtDur(60000)}` : ''}`)}" aria-label="File details"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span></div></div></div>
       <div class="r-ai">
         <div class="ai-body">
         <div class="ai-top">${j.phase === 'submitted' ? '<span class="ai-done" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2 8.8-9.4"/></svg></span>' : `<span class="ai-blob" aria-hidden="true"><canvas></canvas><span class="mark">${AI_MARK}</span></span>`}<span class="ai-now" data-live-now="${j.id}">${now}</span></div>
         <div class="ai-seg${j.phase === 'submitted' || j.phase === 'cancelled' ? ' is-hidden' : ''}" role="progressbar" aria-label="Progress for ${esc(j.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">${AI_STEPS.map((t, k) => `<i class="${j.phase === 'fix_review' && k === 2 ? 'paused' : ''}"><b style="width:${j.phase === 'fix_review' && k === 2 ? 30 : segFill(j, k)}%"></b></i>`).join('')}</div>
         </div>
       </div>
-      <div class="r-act"><div class="tile-row">${isRunning(j) && !j.cancelAsk ? `<span class="tile-pct" data-live-pct="${j.id}">${pct}%</span>` : ''}${a5 ?? act}${cancelUI}${V3 && canExpand(j) ? `<button type="button" class="x-caret" data-caret aria-expanded="${isOpen}" aria-label="Details for ${esc(j.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>` : ''}</div></div>
+      <div class="r-act"><div class="tile-row">${isRunning(j) && !j.cancelAsk ? `${a51On() ? `<span class="a51-eta" data-a51-eta="${j.id}"></span>` : ''}<span class="tile-pct" data-live-pct="${j.id}">${pct}%</span>` : ''}${a5 ?? act}${cancelUI}${V3 && canExpand(j) ? `<button type="button" class="x-caret" data-caret aria-expanded="${isOpen}" aria-label="Details for ${esc(j.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>` : ''}</div></div>
       ${V3 && canExpand(j) ? xDetails(j) : ''}
     </article>`;
   }
-  const fileList = (list, view) => `<div class="row-list" data-view="rowsx-${view}">${list.map(fileRow).join('')}</div>`;
+  const fileList = (list, view) => `<div class="row-list" data-view="rowsx-${view}">${a51On() && filter === 'all' && sortBy === 'needs' ? a51List(list) : list.map(fileRow).join('')}</div>`;
   function paintRow(j) {
     const row = $(`#canvas .file-row2[data-id="${j.id}"]`);
     if (!row) return;
@@ -2495,7 +2604,7 @@ span.r-pick{cursor:default}
   let raf = 0, lastT = 0, lastPaint = 0;
   function startTicker() { if (!raf && jobs.some(isRunning)) { lastT = performance.now(); raf = requestAnimationFrame(tick); } }
   function tick(now) {
-    const dt = Math.max(0, Math.min(100, now - lastT)) || 0; lastT = now;
+    const dt = A5.paused && a5On() ? 0 : Math.max(0, Math.min(100, now - lastT)) || 0; lastT = now;
     let changed = false;
     for (const j of jobs) {
       if (!isRunning(j)) continue;
@@ -3037,7 +3146,7 @@ span.r-pick{cursor:default}
   const a5Arm = k => { A5.arm = k; clearTimeout(A5.armT); A5.armT = setTimeout(() => { A5.arm = 0; render(); }, 4500); render(); };
   const a5Disarm = () => { clearTimeout(A5.armT); A5.arm = 0; };
   /* sweeping actions need every row on the board */
-  const a5ShowAll = () => { if (filter !== 'all' || query) { filter = 'all'; query = ''; render(); } };
+  const a5ShowAll = () => { if (filter !== 'all' || query) { filter = 'all'; query = ''; $('#a51Q').value = ''; render(); } };
 
   /* ---- telemetry: each finished step is announced for a moment on the line under the headline ---- */
   function a5Note(j, kind, text) {
@@ -3127,13 +3236,16 @@ span.r-pick{cursor:default}
     if (html !== A5.util) { A5.util = html; $('#a5Util').innerHTML = html; }
   }
   function a5Bulk(a) {
+    if (a.startsWith('sel-')) return a51Bulk(a);
     const g = a5Groups();
     if (a === 'review') { a5ShowAll(); const j = [...g.need].sort((x, y) => agRank(x) - agRank(y))[0], row = j && a5Row(j.id); if (row) { toggleRow(row, true); row.scrollIntoView({ block: 'center', behavior: RM ? 'auto' : 'smooth' }); } return; }
     if (a === 'fix-all') { a5ShowAll(); g.fixable.forEach(j => doAction('apply', a5Row(j.id))); render(); }
     else if (a === 'skipfix-all') { a5ShowAll(); g.fixable.forEach(j => doAction('skip', a5Row(j.id))); toast(`Continuing ${a5Fs(g.fixable.length)} without fixes`); }
+    else if (a51On() && a === 'skip-all') a51Do(g.gated, () => { g.gated.forEach(j => { j.skipAppeal = true; }); render(); }, `Failed records set aside in ${a5Fs(g.gated.length)}`);
+    else if (a51On() && a === 'submit-all-arm') a51Confirm(g.ready);
+    else if (a51On() && a === 'stop-all-arm') a51Do(g.run, () => { g.run.forEach(j => { j.cancelAsk = false; j.phase = 'cancelled'; }); render(); }, `${a5Fs(g.run.length)} stopped`);
     else if (a === 'skip-all') { g.gated.forEach(j => { j.skipAppeal = true; }); render(); toast(`Failed records set aside in ${a5Fs(g.gated.length)}`); }
-    else if (a === 'submit-all-arm') a5Arm('all');
-    else if (a === 'submit-all-go') {
+    else if (a === 'submit-all-arm' || a === 'submit-all-go') {
       a5Disarm();
       g.ready.forEach(j => { j.authz = true; j.phase = 'submitted'; j.confirming = false; selected.delete(j.id); });
       flip(render, g.ready.map(j => j.id)); toast(`${a5Fs(g.ready.length)} submitted`);
@@ -3147,14 +3259,17 @@ span.r-pick{cursor:default}
   const a5Eff = f => f.lob || $('#a5Lob').value || (AG_LOB.find(([re]) => re.test(f.name)) || [])[1] || '';
   function a5Stage() {
     const n = A5.stage.length, miss = A5.stage.filter(f => !a5Eff(f)).length, open = A5.stage.filter(f => !f.sealed).length;
-    $('#a5Tray').hidden = !n;
+    const rej = a51On() ? A51.rej : [];
+    $('#a5Tray').hidden = !n && !rej.length;
+    $('#a51Rej').hidden = $('#a51RejX').hidden = !rej.length; $('#a5Clear').hidden = !n;
+    $('#a51Rej').innerHTML = rej.map(([nm, why]) => `<li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg><b>${esc(nm)}</b><span>not added · ${why}</span></li>`).join('');
     $('#a5Tray').classList.toggle('locked', n > 0 && !open);
     $('#a5Staged').innerHTML = A5.stage.map(f => {
       const eff = a5Eff(f), isNew = !f.seen; f.seen = true;
       return `<li class="${[eff ? '' : 'bad', f.sealed ? 'sealed' : '', isNew ? 'new' : ''].join(' ').trim()}" data-fid="${f.id}"><span class="fi" aria-hidden="true">CSV${AG_CHK}</span><span class="fn"><b title="${esc(f.name)}">${esc(f.name)}</b>${f.sealed ? `<small class="enc">Encrypted · SHA-256 ${f.hash}</small>` : `<small>${fmtSize(f.size)} · encrypting…</small><span class="pbar"><b></b></span>`}</span><select class="a5-sel" data-fid="${f.id}" aria-label="Line of business for ${esc(f.name)}"><option value=""${eff ? '' : ' selected'}>Pick line of business…</option>${AG_LOBS.map(l => `<option${l === eff ? ' selected' : ''}>${l}</option>`).join('')}</select><button type="button" class="a5-rm" data-rm="${f.id}" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`;
     }).join('');
-    $('#a5TrT').textContent = `${a5Fs(n)} waiting`;
-    $('#a5TrS').textContent = open ? `Encrypting ${open} in your browser…` : 'Encrypted and locked. Nothing starts until you hand over.';
+    $('#a5TrT').textContent = n ? `${a5Fs(n)} waiting${a51On() ? ` · ${fmtSize(A5.stage.reduce((t, f) => t + f.size, 0))}` : ''}` : `${a5Fs(rej.length)} not added`;
+    $('#a5TrS').textContent = !n ? '' : open ? `Encrypting ${open} in your browser…` : 'Encrypted and locked. Nothing starts until you hand over.';
     const auto = $('#a5Auto').checked, working = jobs.some(isRunning);
     $('#a5AutoT').textContent = auto ? 'Auto-fix on' : 'Auto-fix off';
     $('#a5DtT').textContent = n ? 'Add more files' : jobs.length ? 'Add more files for the agent' : 'Add files for the agent';
@@ -3187,6 +3302,7 @@ span.r-pick{cursor:default}
     if (staged) { blob = 'wait'; if (miss) { say = 'Which line of business is this?'; sub = `${a5Fs(miss)} can’t be placed yet. Pick one in the bar below.`; } else { say = `${a5Fs(staged)} ready to hand over`; sub = run ? `Hand them over and they join the ${run} I’m already working on.` : 'Check the line of business, then hand them over.'; } }
     else if (n) {
       if (need) { say = need === 1 ? '1 run needs your call' : `${need} runs need your call`; sub = 'Everything else is done.'; blob = 'wait'; }
+      else if (run && A5.paused) { say = 'Paused'; sub = ''; blob = 'wait'; }
       else if (run) { say = run === 1 ? 'Working on 1 file' : `Working on ${run} files`; sub = 'Add more files any time. They join the queue.'; blob = 'run'; }
       else { say = 'All caught up'; sub = `${a5Fs(done)} submitted. Add more below to start new runs.`; blob = 'done'; }
     }
@@ -3194,6 +3310,7 @@ span.r-pick{cursor:default}
     const live = jobs.some(isRunning) && !staged;
     $('#a5Sub').textContent = sub; $('#a5Sub').hidden = live; $('#a5Head').dataset.blob = blob;
     $('#a5Live').hidden = !live;
+    a51Console();
     a5Paint(true);
     if (typeof AI_BLOB !== 'undefined') AI_BLOB.wake();
   }
@@ -3202,25 +3319,26 @@ span.r-pick{cursor:default}
     if (skipTrack !== true) a5Track();
     let lead = null, k = 0;
     for (const j of jobs) { if (!isRunning(j)) continue; k++; if (!lead || (j.p || 0) > (lead.p || 0)) lead = j; }
+    a51Left();
     if (!lead) return;
     /* a step that just finished is shown for a moment, then the line goes back to what is happening now */
     const el = $('#a5Live'), nt = A5.note && performance.now() - A5.note.t < 2800 ? A5.note : null, a = aiState(lead);
-    const t = nt ? nt.text : `${$('#a5Head').dataset.blob === 'wait' ? `${k} still running · ` : ''}${lead.name} › ${a.now.toLowerCase()} · ${a.sub}`;
-    el.className = `a5-live${nt ? ` note k-${nt.kind}` : ''}`;
+    const t = A5.paused ? `Paused by you · ${a5Fs(k)} holding at ${Math.round(lead.p || 0)}%` : nt ? nt.text : `${$('#a5Head').dataset.blob === 'wait' ? `${k} still running · ` : ''}${lead.name} › ${a.now.toLowerCase()} · ${a.sub}`;
+    el.className = `a5-live${A5.paused ? ' note k-need' : nt ? ` note k-${nt.kind}` : ''}`;
     if ($('#a5LiveT').textContent !== t) $('#a5LiveT').textContent = t;
   }
   /* files in: checked, encrypted and held in the composer; nothing starts until the user hands them over */
   function a5Attach(list) {
     const bad = []; let caught = 0;
     for (const f of list) {
-      if (!/\.csv$/i.test(f.name) && f.type !== 'text/csv') { bad.push(`${f.name} is not a CSV`); continue; }
-      if (f.size > 500 * 1048576) { bad.push(`${f.name} is over 500 MB`); continue; }
-      if (jobs.some(j => j.name === f.name && j.phase !== 'cancelled') || A5.stage.some(s => s.name === f.name)) { bad.push(`${f.name} is already here`); continue; }
+      if (!/\.csv$/i.test(f.name) && f.type !== 'text/csv') { bad.push(`${f.name} is not a CSV`); A51.rej.push([f.name, 'Only CSV files can be migrated']); continue; }
+      if (f.size > 500 * 1048576) { bad.push(`${f.name} is over 500 MB`); A51.rej.push([f.name, 'Over the 500 MB limit']); continue; }
       const item = { id: ++A5.fid, name: f.name, size: f.size, lob: '', sealed: false, hash: '', seen: false };
       A5.stage.push(item); caught++;
       setTimeout(() => { item.sealed = true; item.hash = `${hex(4)}…${hex(4)}`; if (A5.stage.includes(item)) a5Stage(); }, 900 + caught * 320);
     }
-    if (bad.length) toast(bad.join(' · '));
+    if (bad.length && !a51On()) toast(bad.join(' · '));
+    if (!a51On()) A51.rej = [];
     a5Stage();
     if (caught) { $('#a5Staged').scrollTop = 1e6; $('#a5Go').focus({ preventScroll: true }); }
   }
@@ -3262,14 +3380,120 @@ span.r-pick{cursor:default}
     if (a === 'fix') { doAction('apply', row); render(); }
     else if (a === 'skip') doAction('skip', row);
     else if (a === 'skip-appeal') { j.skipAppeal = true; render(); }
-    else if (a === 'submit-arm') a5Arm(id);
-    else if (a === 'submit-go') { a5Disarm(); j.authz = true; j.confirming = false; j.phase = 'submitted'; selected.delete(id); flip(render, id); toast(`${j.name} submitted`); }
+    else if (a === 'submit-arm' && a51On()) a51Confirm([j]);
+    else if (a === 'submit-arm' || a === 'submit-go') { a5Disarm(); j.authz = true; j.confirming = false; j.phase = 'submitted'; selected.delete(id); flip(render, id); toast(`${j.name} submitted`); }
   }, true);
   $('#ag5View').addEventListener('click', e => {
     const b = e.target.closest('[data-a5b]'); if (b) { a5Bulk(b.dataset.a5b); return; }
     const f = e.target.closest('[data-a5f]'); if (f) { setFilter(f.dataset.a5f); a5Sync(); return; }
   });
   $('#a5Head .mark').innerHTML = AI_MARK;
+
+  /* ---------- agent 5.1: the enterprise layer on top of agent 5.0 ---------- */
+  const a51On = () => document.body.classList.contains('agent51');
+  const A51 = { rej: [], snackT: 0, undo: null, kpi: '' };
+  /* messages: top centre, optionally with an undo */
+  function a51Snack(msg, undo) {
+    const el = $('#a51Snack');
+    A51.undo = undo || null;
+    el.innerHTML = `<span>${esc(msg)}</span>${undo ? '<button type="button">Undo</button>' : ''}`;
+    el.classList.add('on');
+    clearTimeout(A51.snackT); A51.snackT = setTimeout(() => el.classList.remove('on'), undo ? 7000 : 2600);
+  }
+  $('#a51Snack').addEventListener('click', e => { if (!e.target.closest('button') || !A51.undo) return; const u = A51.undo; A51.undo = null; $('#a51Snack').classList.remove('on'); u(); });
+  /* reversible actions are done at once and can be taken back; only the affected runs are restored */
+  function a51Do(list, fn, msg) {
+    const snap = list.map(j => ({ at: jobs.indexOf(j), ref: j, copy: { ...j } }));
+    fn();
+    a51Snack(msg, () => {
+      snap.forEach(s => { Object.keys(s.ref).forEach(k => delete s.ref[k]); Object.assign(s.ref, s.copy); if (!jobs.includes(s.ref)) jobs.splice(Math.min(s.at, jobs.length), 0, s.ref); });
+      render(); startTicker(); a51Snack('Undone');
+    });
+  }
+  /* submitting cannot be undone, so it is always confirmed against the exact numbers */
+  function a51Confirm(list, skipped = 0) {
+    if (!list.length) { a51Snack(skipped ? 'Nothing to submit yet: resolve the failed records in those files first' : 'Nothing to submit yet'); return; }
+    const recs = list.reduce((t, j) => t + j.verified, 0), out = list.reduce((t, j) => t + (j.total - j.verified), 0), left = list.filter(j => !j.appealed).reduce((t, j) => t + j.failed, 0);
+    const d = $('#a51Dlg');
+    d.innerHTML = `<div class="a51-dh"><h3 id="a51DlgT">Submit ${a5Fs(list.length)} for migration?</h3><p>${num(recs)} verified records go to the registrar. This cannot be undone.</p></div>
+      <div class="a51-dtab"><table><thead><tr><th>File</th><th>Line of business</th><th class="r">Submitting</th><th class="r">Left out</th></tr></thead><tbody>${list.map(j => `<tr><td title="${esc(j.name)}">${esc(j.name)}</td><td>${esc(j.lob)}</td><td class="r">${num(j.verified)}</td><td class="r">${num(j.total - j.verified)}</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td>Estimate ${inr2(recs * .05)}</td><td class="r">${num(recs)}</td><td class="r">${num(out)}</td></tr></tfoot></table></div>
+      ${left ? `<p class="a51-dnote">${num(left)} records that failed checks stay out and can no longer be appealed once you submit.</p>` : ''}${skipped ? `<p class="a51-dnote">${a5Fs(skipped)} in your selection ${skipped > 1 ? 'are' : 'is'} not included because failed records there still need a decision.</p>` : ''}
+      <div class="a51-df"><button type="button" class="btn" data-x>Cancel</button><button type="button" class="btn btn-pri" id="a51Go" autofocus>Submit ${num(recs)} records</button></div>`;
+    $('[data-x]', d).onclick = () => d.close();
+    $('#a51Go').onclick = () => {
+      d.close();
+      list.forEach(j => { j.authz = true; j.phase = 'submitted'; j.confirming = false; selected.delete(j.id); });
+      flip(render, list.map(j => j.id)); a51Snack(`${a5Fs(list.length)} submitted · ${num(recs)} records migrated`);
+    };
+    d.showModal();
+  }
+  $('#a51Dlg').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+  /* the status console: the numbers an operator checks first, and a bar of where every run stands */
+  function a51Console() {
+    if (!a51On()) return;
+    const n = jobs.length; $('#a51Kpi').hidden = !n; $('#a51Pause').hidden = !(jobs.some(isRunning) || A5.paused);
+    $('#a51Pause').classList.toggle('on', !!A5.paused);
+    $('#a51Pause').innerHTML = A5.paused ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Resume agent' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>Pause agent';
+    document.body.classList.toggle('a51-paused', !!A5.paused);
+    if (!n) return;
+    const done = jobs.filter(j => j.phase === 'submitted'), need = jobs.filter(j => needsYou(j) && !isPending(j)), run = jobs.filter(j => isRunning(j) || isPending(j)), off = jobs.filter(j => j.phase === 'cancelled');
+    const flight = jobs.filter(j => !isDone(j)).reduce((t, j) => t + j.total, 0), mig = done.reduce((t, j) => t + (j.verified || 0), 0);
+    const html = `<div><dt>Files</dt><dd>${num(n)}<small>${done.length} finished</small></dd></div>
+      <div><dt>Records in progress</dt><dd>${num(flight)}</dd></div>
+      <div class="${need.length ? 'hot' : ''}"><button type="button" data-a5f="needs" aria-label="Show the ${need.length} runs that need you"><dt>Need your call</dt><dd>${num(need.length)}</dd></button></div>
+      <div class="${mig ? 'ok' : ''}"><dt>Records migrated</dt><dd>${num(mig)}${mig ? `<small>${inr2(mig * .05)}</small>` : ''}</dd></div>
+      <div><dt>Time left</dt><dd data-a51-left>–</dd></div>
+      <div class="a51-fleet"><div class="a51-fbar" role="img" aria-label="${done.length} finished, ${need.length} need you, ${run.length} working, ${off.length} stopped">${[['done', done.length], ['need', need.length], ['run', run.length], ['off', off.length]].map(([k, v]) => `<i class="f-${k}" style="flex-grow:${v}"></i>`).join('')}</div><div class="a51-fkey"><span><i style="background:var(--a-gr)"></i>Finished ${done.length}</span><span><i style="background:#e0a93f"></i>Needs you ${need.length}</span><span><i style="background:var(--a-bl)"></i>Working ${run.length}</span>${off.length ? `<span><i style="background:#b4bdcc"></i>Stopped ${off.length}</span>` : ''}</div></div>`;
+    if (html !== A51.kpi) { A51.kpi = html; $('#a51Kpi').innerHTML = html; }
+    const fl = filtered(), all = $('#a51All');
+    all.checked = fl.length > 0 && fl.every(j => selected.has(j.id)); all.indeterminate = !all.checked && fl.some(j => selected.has(j.id));
+    if ($('#a51Q').value.trim().toLowerCase() !== query) $('#a51Q').value = query;
+    a51Left();
+  }
+  /* how long until every running file reaches its next stop (a pause for you, or ready) */
+  const a51Eta = j => ((!j.autofix && !j.fixDone ? 42 : 100) - (j.p || 0)) / RATE;
+  function a51Left() {
+    if (!a51On()) return;
+    let max = 0;
+    for (const j of jobs) { if (!isRunning(j)) continue; const ms = Math.max(0, a51Eta(j)); max = Math.max(max, ms); const el = $(`[data-a51-eta="${j.id}"]`); if (el) { const t = A5.paused ? 'paused' : `${fmtDur(ms)} left`; if (el.textContent !== t) el.textContent = t; } }
+    const el = $('[data-a51-left]'); if (el) { const t = !jobs.some(isRunning) ? '–' : A5.paused ? 'Paused' : `~${fmtDur(max)}`; if (el.textContent !== t) el.textContent = t; }
+  }
+  /* any run can be ticked; the bar offers only the actions that apply to the selection */
+  function a51Sel() {
+    const sel = jobs.filter(j => selected.has(j.id));
+    return { sel, fix: sel.filter(j => j.phase === 'fix_review' && !j.fixing), gated: sel.filter(j => j.phase === 'ready' && isGated(j)), ready: sel.filter(j => j.phase === 'ready' && !isGated(j) && !isPending(j)), run: sel.filter(isRunning), off: sel.filter(j => j.phase === 'cancelled') };
+  }
+  function a51BulkBar() {
+    const box = $('#bulk');
+    [...selected].forEach(id => { if (!jobs.some(j => j.id === id)) selected.delete(id); });
+    const s = a51Sel();
+    if (!s.sel.length) { box.hidden = true; box.innerHTML = ''; box.dataset.sig = ''; syncPicks(); return; }
+    const b = (k, label, n, cls = '') => n ? `<button type="button" class="${cls}" data-a5b="${k}">${label} (${n})</button>` : '';
+    const html = `<b>${s.sel.length} selected<small>${num(s.sel.reduce((t, j) => t + j.total, 0))} records</small></b>${b('sel-fix', 'Fix errors', s.fix.length, 'pri')}${b('sel-skipfail', 'Skip failed', s.gated.length)}${b('sel-submit', 'Approve and submit', s.ready.length + s.gated.length, s.fix.length ? '' : 'pri')}${b('sel-stop', 'Stop', s.run.length)}${b('sel-retry', 'Run again', s.off.length)}${b('sel-remove', 'Remove', s.off.length)}<button type="button" class="quiet" data-a5b="sel-clear">Clear</button>`;
+    box.hidden = false;
+    if (box.dataset.sig !== html) { box.dataset.sig = html; box.innerHTML = html; }
+    syncPicks();
+  }
+  function a51Bulk(a) {
+    const s = a51Sel(), done = () => { selected.clear(); render(); };
+    if (a === 'sel-clear') done();
+    else if (a === 'sel-fix') { s.fix.forEach(j => doAction('apply', a5Row(j.id))); done(); }
+    else if (a === 'sel-skipfail') a51Do(s.gated, () => { s.gated.forEach(j => { j.skipAppeal = true; }); done(); }, `Failed records set aside in ${a5Fs(s.gated.length)}`);
+    else if (a === 'sel-submit') a51Confirm(s.ready, s.gated.length);
+    else if (a === 'sel-stop') a51Do(s.run, () => { s.run.forEach(j => { j.cancelAsk = false; j.phase = 'cancelled'; }); done(); }, `${a5Fs(s.run.length)} stopped`);
+    else if (a === 'sel-retry') { s.off.forEach(j => doAction('retry', a5Row(j.id))); done(); }
+    else if (a === 'sel-remove') a51Do(s.off, () => { jobs = jobs.filter(j => !s.off.includes(j)); done(); }, `${a5Fs(s.off.length)} removed`);
+  }
+  /* the board, grouped by what each run needs from you */
+  const A51_G = [['needs', 'Needs you', j => needsYou(j)], ['run', 'Working', j => isRunning(j)], ['off', 'Stopped', j => j.phase === 'cancelled'], ['done', 'Finished', j => j.phase === 'submitted']];
+  function a51List(list) {
+    return A51_G.map(([k, label, test]) => { const g = list.filter(test); return g.length ? `<div class="a51-gh g-${k}" data-key="gh-${k}" data-sig="${g.length}">${label}<span>${g.length}</span></div>${g.map(fileRow).join('')}` : ''; }).join('');
+  }
+  $('#a51Pause').onclick = () => { A5.paused = !A5.paused; lastT = performance.now(); render(); a51Snack(A5.paused ? 'Agent paused. Every run holds its place.' : 'Agent resumed'); };
+  $('#a51Q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); render(); });
+  $('#a51Sort').addEventListener('change', e => { sortBy = e.target.value; $('#sort').value = sortBy; render(); });
+  $('#a51All').addEventListener('change', e => { const fl = filtered(); fl.forEach(j => e.target.checked ? selected.add(j.id) : selected.delete(j.id)); render(); });
+  $('#a51RejX').onclick = () => { A51.rej = []; a5Stage(); };
 
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
@@ -3278,7 +3502,6 @@ span.r-pick{cursor:default}
     for (const f of list) {
       if (!/\.csv$/i.test(f.name)) { bad.push(`${f.name} is not a CSV`); continue; }
       if (f.size > 500 * 1048576) { bad.push(`${f.name} is over 500 MB`); continue; }
-      if (jobs.some(j => j.name === f.name && j.phase !== 'cancelled') || AG.stage.some(s => s.name === f.name)) { bad.push(`${f.name} is already here`); continue; }
       const item = { id: ++AG.fid, name: f.name, size: f.size, lob: '', sealed: false, hash: '', seen: false };
       AG.stage.push(item); caught++;
       setTimeout(() => { item.sealed = true; item.hash = `${hex(4)}…${hex(4)}`; if (AG.stage.includes(item)) { renderStage(); renderAgent(); } }, 1000 + AG.stage.length * 380);
@@ -3388,12 +3611,16 @@ span.r-pick{cursor:default}
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
-    a5Mount(v === 'agent5');
+    const a5v = v === 'agent5' || v === 'agent51';
+    a5Mount(a5v);
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
-    document.body.classList.toggle('agent5', v === 'agent5');
-    $('#ag5View').hidden = v !== 'agent5';
-    if (v === 'agent5') { closeTray(); a5Stage(); }
+    document.body.classList.toggle('agent5', a5v);
+    document.body.classList.toggle('agent51', v === 'agent51');
+    if (v !== 'agent51') { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
+    selected.clear();
+    $('#ag5View').hidden = !a5v;
+    if (a5v) { closeTray(); a5Stage(); }
     render();
     if (ag) { closeTray(); renderAgent(); }
     $$('[data-upview]').forEach(b => { const on = b.dataset.upview === v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
@@ -3419,7 +3646,7 @@ span.r-pick{cursor:default}
   setUpCol(upCol);
   $('#trayDock').onclick = () => { closeTray(); setUpCol(false); setTimeout(() => $('#upInline').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }), 60); };
   function openTray() {
-    if (upView === 'agent5') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
+    if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
     if (upView === 'agent') { $('#agDrop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); $('#agDrop').focus({ preventScroll: true }); return; }
     if (upDocked()) {
@@ -3449,7 +3676,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
