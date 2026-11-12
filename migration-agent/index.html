@@ -850,7 +850,7 @@ body.agent6 .a51-hact{flex-direction:column;align-items:flex-end;gap:10px;paddin
 .a6-up i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38)}
 .a6-up svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .a6-up[aria-expanded="true"]{background:#0f1a33;box-shadow:none}
-body.agent6 .a51-pause{background:rgba(255,255,255,.8)}
+body.agent6 .a51-pause{display:none!important}
 /* agent 6.0 upload panel, as in agent 4.0: where files go and how they are handled on the left, the drop zone (then the encrypted folder) on the right */
 body.agent6 .a5-dock{order:1;position:relative;bottom:auto;max-width:none;display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);grid-template-rows:auto auto 1fr auto;column-gap:0;padding:0;border-radius:24px;border:1px solid rgba(37,96,246,.2);background:linear-gradient(var(--a-line),var(--a-line)) 360px 0/1px 100% no-repeat,rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 28px 64px -32px rgba(37,96,246,.4),0 1px 2px rgba(16,33,59,.05);animation:a6-open .35s var(--ease-out)}
 @keyframes a6-open{from{opacity:0;transform:translateY(-10px) scale(.99)}}
@@ -3835,6 +3835,7 @@ span.r-pick{cursor:default}
     document.body.classList.toggle('agent5', a5v);
     document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', v === 'agent6');
     if (a51v) { filter = 'all'; sortBy = 'needs'; }
+    if (v === 'agent6' && A5.paused) { A5.paused = false; lastT = performance.now(); }
     if (!a51v) { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
     selected.clear();
     $('#ag5View').hidden = !a5v;
