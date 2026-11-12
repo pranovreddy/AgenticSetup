@@ -912,7 +912,11 @@ body.agent6 .a5-go.solo{display:none}
 body.agent6 .a5-go:disabled{background:#dfe5f1;color:#8793ad}
 body.agent6 .a51-snack{top:auto;bottom:88px;transform:translate(-50%,14px)}
 body.agent6 .a51-snack.on{transform:translate(-50%,0)}
-body.agent6 .a51-kpi{order:2;margin-top:0;border-radius:20px}
+/* 6.0 leads with the same migration status bar the side panel layout uses; the agent sits under it */
+body.agent6 .a51-kpi{display:none!important}
+body.agent6 #metrics{order:-1;min-width:0}
+body.agent6 .a5{padding-top:22px}
+body.agent6 .a5-head{margin-top:10px}
 body.agent6 .a5-empty{order:3;flex:0 1 auto;padding:22px;border:0;background:none}
 body.agent6 .a5-empty .a5-eb{display:none}
 body.agent6 .a5-deck{display:none!important}
@@ -3284,10 +3288,10 @@ span.r-pick{cursor:default}
   const a5Row = id => $(`#canvas .file-row2[data-id="${id}"]`);
   const a5Fs = n => `${n} file${n === 1 ? '' : 's'}`;
   /* the board (bulk bar and rows) is the same one every other layout uses, so rows expand, appeal and submit exactly as they do there */
-  function a5Mount(on) {
+  function a5Mount(on, six) {
     const host = $('#ag5View');
-    if (on) { host.insertBefore(AGM.b, $('#a5Fade')); host.insertBefore(AGM.c, $('#a5Fade')); }
-    else if (AGM.c.parentNode === host) { AGM.st.insertBefore(AGM.c, AGM.cNext); AGM.st.insertBefore(AGM.b, AGM.bNext); }
+    if (on) { host.insertBefore(AGM.b, $('#a5Fade')); host.insertBefore(AGM.c, $('#a5Fade')); if (six) host.insertBefore(AGM.m, host.firstChild); }
+    else if (AGM.c.parentNode === host) { AGM.st.insertBefore(AGM.c, AGM.cNext); AGM.st.insertBefore(AGM.b, AGM.bNext); if (AGM.m.parentNode === host) AGM.st.insertBefore(AGM.m, AGM.mNext); }
   }
   /* one-click decisions on the row itself, as in the first Agent layout */
   function a5Act(j) {
@@ -3829,7 +3833,7 @@ span.r-pick{cursor:default}
     a5Mount(false);
     agMount(a3);
     const a51v = v === 'agent51' || v === 'agent6', a5v = v === 'agent5' || a51v;
-    a5Mount(a5v);
+    a5Mount(a5v, v === 'agent6');
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
     document.body.classList.toggle('agent5', a5v);
