@@ -925,6 +925,94 @@ body.agent6 #canvas{order:4}
 body.agent6 #bulk{order:9}
 body.agent6.a51-sel .a5-dock.idle{display:grid}
 @media(prefers-reduced-motion:reduce){.a6-zone::after,body.agent6 .a5-say h2.swap,body.agent6 .a5-dock,.a6-next{animation:none}}
+/* ---------- ledger (A) and review desk (B): the list is the product, the agent is a status line, review sits beside the evidence ---------- */
+body:not(.v7) .v7-only{display:none!important}
+body.v7 .a5{gap:14px;padding-top:20px}
+body.v7 .a5::before{display:none}
+body.v7 .a5-head,body.v7.is-empty .a5-head{order:-2;align-items:center;margin:0;padding:0;grid-template-columns:minmax(0,1fr) auto}
+body.v7 .a5-head .a5-blob,body.v7 .a5-head .a5-say,body.v7 .a5-done{display:none}
+.v7-title{font-size:20px;font-weight:650;letter-spacing:-.01em;color:var(--a-ink)}
+body.v7 .a51-hact{flex-direction:row;padding:0}
+body.v7 .a6-up{height:38px;padding:0 16px 0 6px;border-radius:10px;font-size:13.5px;box-shadow:none}
+body.v7 .a6-up i{width:26px;height:26px;border-radius:7px}
+body.v7 .a5-tools,body.v7 #canvas,body.v7 .a5-deck{display:none!important}
+body.v7 .a5-empty{order:3}
+.v7-agent{order:2;display:flex!important;align-items:center;gap:10px;padding:9px 10px 9px 14px;border-radius:12px;background:#e8eeff;font-size:13px;color:var(--a-ink);min-width:0}
+.v7-orb{width:18px;height:18px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 35% 30%,#8fb0ff,#2457e6);box-shadow:0 0 0 4px rgba(36,87,230,.14)}
+.v7-agent.run .v7-orb{animation:v7-pulse 1.6s ease-in-out infinite}
+@keyframes v7-pulse{50%{box-shadow:0 0 0 7px rgba(36,87,230,.06)}}
+.v7-agent .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v7-agent .t b{font-weight:650}
+.v7-agent .a{display:flex;gap:6px;flex-shrink:0}
+.v7-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:650;white-space:nowrap}
+.v7-pill.w{background:#fdf1d8;color:#8a5a00}.v7-pill.ok{background:#e3f5ec;color:#0b6d46}.v7-pill.r{background:#e8eeff;color:#154ace}.v7-pill.n{background:var(--bg-2);color:var(--ink-3)}.v7-pill.h{background:#efe9ff;color:#5b3fc4}
+.v7-mono{font:500 11.5px var(--mono);color:var(--ink-4);white-space:nowrap}
+.v7-mini{height:4px;border-radius:2px;background:var(--bg-2);margin-top:5px;overflow:hidden}
+.v7-mini i{display:block;height:100%;background:#2457e6;border-radius:inherit}
+/* A: ledger */
+.v7-tablewrap{order:3;display:block!important;border:1px solid var(--line);border-radius:14px;background:#fff;overflow-x:auto}
+.v7-table{width:100%;min-width:980px;border-collapse:collapse;font-size:12.5px}
+.v7-table th{position:sticky;top:0;text-align:left;font:600 10.5px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);padding:10px 12px;background:#fafbfd;border-bottom:1px solid var(--line);white-space:nowrap}
+.v7-table td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle;font-variant-numeric:tabular-nums;white-space:nowrap}
+.v7-table tr:last-child td{border-bottom:0}
+.v7-table tbody tr{cursor:pointer;transition:background .15s}
+.v7-table tbody tr:hover td{background:#f7f9fe}
+.v7-table tr.need td{background:#fffaf0}.v7-table tr.need:hover td{background:#fff4de}
+.v7-table tr.sel td{background:#e8eeff}
+.v7-table td b{font-weight:600;font-size:13px}
+.v7-table td small{display:block;color:var(--ink-4);font-size:11px}
+.v7-table .c-ok{color:#0b6d46}.v7-table .c-w{color:#8a5a00;font-weight:650}.v7-table .c-r{color:#154ace}.v7-table .c-n{color:#b6bfd0}
+.v7-table input[type=checkbox]{width:16px;height:16px;accent-color:#2457e6;cursor:pointer}
+.v7-table .act{text-align:right}
+.v7-table .act .btn{white-space:nowrap}
+/* B: review desk */
+.v7-desk{order:3;display:grid!important;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:14px;align-items:start}
+.v7-q{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto}
+.v7-q h4{display:flex;justify-content:space-between;font:600 10.5px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);padding:12px 14px 6px}
+.v7-q h4.w{color:#8a5a00}
+.v7-qi{display:flex;flex-direction:column;gap:2px;width:100%;padding:9px 14px;border-top:1px solid var(--line);text-align:left;cursor:pointer;transition:background .15s}
+.v7-qi:hover{background:#f7f9fe}
+.v7-qi b{font-size:12.5px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v7-qi span{font-size:11.5px;color:var(--ink-4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v7-qi.sel{background:#e8eeff;box-shadow:inset 3px 0 0 #2457e6}
+.v7-qi:focus-visible{outline:2px solid #2457e6;outline-offset:-2px}
+/* the decision panel: used as the desk's right side and as the ledger's drawer */
+.v7-det{display:flex;flex-direction:column;gap:14px;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:#fff;min-width:0;min-height:420px}
+.v7-dh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.v7-dh h2{font-size:17px;font-weight:650;margin-right:4px;overflow-wrap:anywhere}
+.v7-dh .sp{flex:1}
+.v7-say{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:var(--ink-2);max-width:70ch}
+.v7-say .v7-orb{margin-top:2px}
+.v7-say b{color:var(--ink);font-weight:650}
+.v7-grp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.v7-grp div{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.v7-grp b{display:block;font-size:17px;font-weight:650;font-variant-numeric:tabular-nums}
+.v7-grp span{font-size:11.5px;color:var(--ink-4)}
+.v7-ev{border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+.v7-ev table{width:100%;border-collapse:collapse}
+.v7-ev th{text-align:left;font:600 10.5px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);padding:8px 12px;background:#fafbfd;border-bottom:1px solid var(--line)}
+.v7-ev td{font:500 11.5px var(--mono);padding:7px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.v7-ev tr:last-child td{border-bottom:0}
+.v7-ev .o{color:#b53a48;text-decoration:line-through}.v7-ev .n{color:#0b6d46}.v7-ev .wy{color:#8a5a00}
+.v7-steps{list-style:none;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px}
+.v7-steps li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:9px 12px;border-top:1px solid var(--line);font-size:12.5px}
+.v7-steps li:first-child{border-top:0}
+.v7-steps b{font-weight:600}.v7-steps .now b{color:#154ace}.v7-steps .todo{color:#b6bfd0}
+.v7-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
+.v7-acts .sp{flex:1}
+.v7-next{font:500 11.5px var(--mono);color:var(--ink-3);padding:6px 8px;border-radius:7px}
+.v7-next:hover{background:var(--bg-2);color:var(--ink)}
+.v7-none{display:grid;place-items:center;min-height:300px;color:var(--ink-4);font-size:13px;text-align:center}
+/* ledger drawer */
+.v7-scrim{position:fixed;inset:0;z-index:70;background:rgba(15,26,51,.32);display:block!important}
+.v7-drawer{position:fixed;top:0;right:0;bottom:0;z-index:71;width:min(620px,100vw);display:flex!important;flex-direction:column;background:var(--bg);box-shadow:-24px 0 60px -30px rgba(15,26,51,.5);padding:14px;overflow-y:auto;animation:v7-in .28s var(--ease-out)}
+@keyframes v7-in{from{transform:translateX(30px);opacity:0}}
+.v7-drawer .v7-det{flex:1}
+.v7-x{align-self:flex-end;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--ink-3);margin-bottom:6px}
+.v7-x:hover{background:var(--bg-2);color:var(--ink)}
+.v7-x svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+body.v7 .a51-pause{display:none!important}
+@media(prefers-reduced-motion:reduce){.v7-agent.run .v7-orb,.v7-drawer{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1525,7 +1613,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="ledger" aria-pressed="false">A · Ledger</button><button type="button" class="chip-btn" data-upview="desk" aria-pressed="false">B · Review desk</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -1623,6 +1711,7 @@ span.r-pick{cursor:default}
         <section class="a5" id="ag5View" aria-label="Migration agent" hidden>
           <header class="a5-head" id="a5Head" data-blob="ready">
             <span class="ai-blob a5-blob" aria-hidden="true"><canvas></canvas><span class="mark"></span></span>
+            <h1 class="v7-only v7-title">Migration</h1>
             <div class="a5-say">
               <h2 id="a5Say" aria-live="polite">Add files below. I’ll take it from there.</h2>
               <p id="a5Sub">Each file becomes a run that I validate, fix and verify for you.</p>
@@ -1655,6 +1744,11 @@ span.r-pick{cursor:default}
             <div class="a51-only a51-find"><label class="sr" for="a51Q">Search runs</label><input type="search" id="a51Q" placeholder="Search files" autocomplete="off"></div>
             <div class="a5-util" id="a5Util"></div>
           </div>
+          <div class="v7-only v7-agent" id="v7Agent" aria-live="polite" hidden><i class="v7-orb" aria-hidden="true"></i><span class="t" id="v7AgentT"></span><span class="a" id="v7AgentA"></span></div>
+          <div class="v7-only v7-tablewrap" id="v7TableWrap" hidden></div>
+          <div class="v7-only v7-desk" id="v7Desk" hidden><nav class="v7-q" id="v7Q" aria-label="Files"></nav><div id="v7Pane"></div></div>
+          <div class="v7-only v7-scrim" id="v7Scrim" hidden></div>
+          <aside class="v7-only v7-drawer" id="v7Drawer" tabindex="-1" aria-label="File review" hidden><button type="button" class="v7-x" id="v7X" aria-label="Close review"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div id="v7DrawerBody"></div></aside>
           <div class="a5-fade" id="a5Fade" aria-hidden="true"></div>
           <div class="a5-dock" id="a5Drop">
             <input type="file" id="a5File" accept=".csv,text/csv" multiple hidden>
@@ -3479,7 +3573,7 @@ span.r-pick{cursor:default}
     const live = jobs.some(isRunning) && !staged;
     $('#a5Sub').textContent = sub; $('#a5Sub').hidden = live; $('#a5Head').dataset.blob = blob;
     $('#a5Live').hidden = !live;
-    a51Console(); a6Next();
+    a51Console(); a6Next(); v7Render();
     if (a6On() && $('#a5Drop').hidden === (A6.open || A5.stage.length > 0 || !jobs.length)) { $('#a5Drop').hidden = !$('#a5Drop').hidden; $('#a6X').hidden = !jobs.length; $('#a6Up').hidden = !jobs.length && !A5.stage.length; }
     a5Paint(true);
     if (typeof AI_BLOB !== 'undefined') AI_BLOB.wake();
@@ -3489,7 +3583,7 @@ span.r-pick{cursor:default}
     if (skipTrack !== true) a5Track();
     let lead = null, k = 0;
     for (const j of jobs) { if (!isRunning(j)) continue; k++; if (!lead || (j.p || 0) > (lead.p || 0)) lead = j; }
-    a51Left();
+    v7Paint(); a51Left();
     if (!lead) return;
     /* a step that just finished is shown for a moment, then the line goes back to what is happening now */
     const el = $('#a5Live'), nt = A5.note && performance.now() - A5.note.t < 2800 ? A5.note : null, a = aiState(lead);
@@ -3716,6 +3810,157 @@ span.r-pick{cursor:default}
   $('#a6Zone').onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === $('#a6Zone')) { e.preventDefault(); a5Browse(); } };
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && a6On() && A6.open && jobs.length && !$('#a51Dlg').open) a6Panel(false, true); });
 
+  /* ---------- ledger (A) and review desk (B) ---------- */
+  const v7On = () => document.body.classList.contains('v7');
+  const v7A = () => document.body.classList.contains('v7a');
+  const V7 = { sel: 0, open: false, sig: '', asig: '' };
+  const v7Need = j => needsYou(j) && !isPending(j);
+  const v7Rank = j => v7Need(j) ? (j.phase === 'fix_review' ? 0 : 1) : isRunning(j) ? 2 : isPending(j) ? 3 : j.phase === 'cancelled' ? 4 : 5;
+  const v7Sorted = () => [...jobs].sort((a, b) => v7Rank(a) - v7Rank(b));
+  const v7Status = j => v7Need(j) ? ['w', 'Needs you'] : isRunning(j) ? ['r', 'Working'] : isPending(j) ? ['h', 'On hold'] : j.phase === 'submitted' ? ['ok', 'Submitted'] : ['n', 'Stopped'];
+  const v7Btn = (k, label, id, cls = '') => `<button type="button" class="btn btn-sm ${cls}" data-v7="${k}" data-id="${id}">${label}</button>`;
+  /* errors grouped by cause, with a few of the rows themselves, so the decision is made against evidence */
+  const V7_FIX = [['Phone numbers', 'missing country code or stray spaces', .61], ['Consent dates', 'DD/MM/YY rewritten as ISO dates', .27], ['Names and emails', 'leading or trailing spaces', .12]];
+  const V7_FIXROWS = [[18, 'phone', '98765 43210', '+919876543210'], [42, 'consent_date', '03/09/24', '2024-09-03'], [57, 'email', '" asha.k@mail.com "', 'asha.k@mail.com'], [91, 'phone', '022-2765-1100', '+912227651100']];
+  const V7_FAILROWS = [[112, 'CUST-88213', 'No opt-in history found'], [347, 'CUST-90172', 'Outside retention window'], [512, 'CUST-77420', 'Purpose mismatch'], [689, 'CUST-81035', 'No opt-in history found']];
+  function v7Groups(j) { let left = j.fixed; return V7_FIX.map(([t, d, w], i) => { const v = i === V7_FIX.length - 1 ? left : Math.round(j.fixed * w); left -= v; return [t, d, v]; }); }
+  /* one stage of one file, as the ledger shows it */
+  function v7Cell(j, k) {
+    if (j.phase === 'cancelled') return '<td class="c-n">–</td>';
+    const fin = j.phase === 'ready' || j.phase === 'submitted', i = j.phase === 'fix_review' ? 2 : fin ? 5 : aiState(j).i;
+    if (j.phase === 'fix_review' && k === 2) return `<td class="c-w">${num(j.fixed)} to fix</td>`;
+    if (k > i || (j.phase === 'fix_review' && k > 2)) return '<td class="c-n">–</td>';
+    if (k === i && isRunning(j)) return `<td class="c-r"><span data-v7-now="${j.id}">${['Reading', 'Checking', 'Fixing', 'Verifying', 'Preparing'][k]}… <span data-v7-pct="${j.id}">${Math.round(segFill(j, k))}%</span></span><div class="v7-mini"><i data-v7-bar="${j.id}" style="width:${segFill(j, k).toFixed(0)}%"></i></div></td>`;
+    const fa = j.fixedApplied || 0;
+    if (k === 0) return `<td class="c-ok">${num(j.total)} rows</td>`;
+    if (k === 1) return `<td class="c-ok">${num(j.valid)} valid</td>`;
+    if (k === 2) return fa ? `<td class="c-ok">${num(fa)} fixed</td>` : '<td class="c-n">Skipped</td>';
+    if (k === 3) return fin && j.failed && !j.skipAppeal && j.phase !== 'submitted' ? `<td class="c-w">${num(j.failed)} failed</td>` : `<td class="c-ok">${num(fin ? j.verified : j.valid + fa)} valid</td>`;
+    return `<td class="c-ok">${num(j.verified)}${j.phase === 'submitted' ? ' sent' : ' ready'}</td>`;
+  }
+  function v7Table() {
+    const rows = v7Sorted().map(j => {
+      const [c, l] = v7Status(j);
+      const act = v7Need(j) ? v7Btn('open', 'Review', j.id, 'btn-pri') : isRunning(j) ? `<span class="v7-mono" data-a51-eta="${j.id}"></span>` : j.phase === 'submitted' ? v7Btn('open', 'Receipt', j.id) : j.phase === 'cancelled' ? v7Btn('retry', 'Run again', j.id) : v7Btn('open', 'View', j.id);
+      return `<tr class="${v7Need(j) ? 'need' : ''}${V7.open && V7.sel === j.id ? ' sel' : ''}" data-v7row="${j.id}"><td><input type="checkbox" data-v7pick="${j.id}" aria-label="Select ${esc(j.name)}"${selected.has(j.id) ? ' checked' : ''}></td><td><b>${esc(j.name)}</b><small>${esc(j.lob)} · MIG-2026-${String(j.id).padStart(4, '0')}${j.autofix ? '' : ' · Asks first'}</small></td>${[0, 1, 2, 3, 4].map(k => v7Cell(j, k)).join('')}<td><span class="v7-pill ${c}">${l}</span></td><td class="act">${act}</td></tr>`;
+    }).join('');
+    return `<table class="v7-table"><thead><tr><th><input type="checkbox" data-v7all aria-label="Select every file"${jobs.length && jobs.every(j => selected.has(j.id)) ? ' checked' : ''}></th><th>File</th><th>Analyze</th><th>Validate</th><th>Autofix</th><th>Verify consent</th><th>Prepare</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  function v7Queue() {
+    const G = [['Needs you', v7Need, 'w'], ['Working', isRunning, ''], ['On hold', isPending, ''], ['Stopped', j => j.phase === 'cancelled', ''], ['Submitted', j => j.phase === 'submitted', '']];
+    const sub = j => j.phase === 'fix_review' ? `${num(j.fixed)} errors I can fix · paused` : v7Need(j) ? (isGated(j) ? `${num(j.failed)} records failed checks` : `${num(j.verified)} ready to submit`) : isRunning(j) ? `<span data-v7-qs="${j.id}"></span>` : isPending(j) ? 'Appeal with the registrar' : j.phase === 'submitted' ? `${num(j.verified)} records migrated` : 'Stopped by you';
+    return G.map(([t, f, c]) => { const l = v7Sorted().filter(f); return l.length ? `<h4 class="${c}"><span>${t}</span><span>${l.length}</span></h4>` + l.map(j => `<button type="button" class="v7-qi${V7.sel === j.id ? ' sel' : ''}" data-v7sel="${j.id}"><b>${esc(j.name)}</b><span>${sub(j)}</span>${isRunning(j) ? `<div class="v7-mini"><i data-v7-qbar="${j.id}" style="width:${(j.p || 0).toFixed(0)}%"></i></div>` : ''}</button>`).join('') : ''; }).join('');
+  }
+  function v7Detail(j) {
+    if (!j) return `<div class="v7-det"><div class="v7-none">${jobs.length ? 'Select a file to see what I did with it.' : 'Upload files and I’ll start on them. Each one shows up here with what I found.'}</div></div>`;
+    const [c, l] = v7Status(j), id = j.id, fa = j.fixedApplied || 0;
+    let say = '', body = '', acts = '';
+    if (j.phase === 'fix_review') {
+      const g = v7Groups(j);
+      say = j.fixing ? `Applying the <b>${num(j.fixed)} fixes</b> you approved. This takes a moment.` : `I validated all ${num(j.total)} rows and stopped before fixing, because auto-fix was off for this file. I found <b>${num(j.fixed)} errors I can fix safely</b> in three groups. Your original rows are kept either way.`;
+      body = `<div class="v7-grp">${g.map(([t, d, v]) => `<div><b>${num(v)}</b><span>${t} · ${d}</span></div>`).join('')}</div><div class="v7-ev"><table><tr><th>Row</th><th>Column</th><th>In your file</th><th>After my fix</th></tr>${V7_FIXROWS.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="o">${esc(r[2])}</td><td class="n">${esc(r[3])}</td></tr>`).join('')}</table></div><span class="v7-mono" style="white-space:normal">Showing 4 of ${num(j.fixed)} · ${num(j.manual)} rows need manual edits and ${num(j.dup)} duplicates are left out</span>`;
+      acts = j.fixing ? '<span class="ag-busy"><i></i>Applying fixes…</span>' : v7Btn('fix', `Fix ${num(j.fixed)} errors and continue`, id, 'btn-pri') + v7Btn('skip', 'Continue without fixing', id) + v7Btn('dl', 'Download all as CSV', id, 'btn-ghost tert');
+    } else if (j.phase === 'ready' && isPending(j)) {
+      say = `You raised an appeal for <b>${num(j.failed)} records</b>. The submission is on hold until the registrar decides, which I’ll report here.`;
+      body = `<div class="v7-grp"><div><b>${num(j.verified)}</b><span>Verified and waiting</span></div><div><b>${num(j.failed)}</b><span>Under appeal</span></div></div>`;
+      acts = v7Btn('appeal-cancel', 'Cancel appeal and set them aside', id);
+    } else if (j.phase === 'ready' && isGated(j)) {
+      const fr = failReasons(j);
+      say = `I verified consent on ${num(j.valid + fa)} records. <b>${num(j.failed)} failed checks</b> and I can’t fix those myself. Set them aside and submit the ${num(j.verified)} that passed, or appeal once before you submit.`;
+      body = `<div class="v7-grp">${fr.map(([t, v]) => `<div><b>${num(v)}</b><span>${t}</span></div>`).join('')}</div><div class="v7-ev"><table><tr><th>Row</th><th>Customer</th><th>Why it failed</th></tr>${V7_FAILROWS.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="wy">${r[2]}</td></tr>`).join('')}</table></div><span class="v7-mono" style="white-space:normal">Showing 4 of ${num(j.failed)} failed records</span>`;
+      acts = v7Btn('setaside', `Set ${num(j.failed)} aside and continue`, id, 'btn-pri') + v7Btn('appeal', 'Appeal these records', id) + v7Btn('dl', 'Download failed records', id, 'btn-ghost tert');
+    } else if (j.phase === 'ready') {
+      say = `This file is prepared. <b>${num(j.verified)} records</b> are verified and ready to go to the registrar. Submitting cannot be undone.`;
+      body = `<div class="v7-grp"><div><b>${num(j.verified)}</b><span>Submitting</span></div><div><b>${num(j.total - j.verified)}</b><span>Left out (failed, manual or duplicate)</span></div><div><b>${inr2(j.verified * .05)}</b><span>Estimate</span></div></div>`;
+      acts = v7Btn('submit', 'Approve and submit', id, 'btn-pri');
+    } else if (isRunning(j)) {
+      const a = aiState(j);
+      say = `I’m working on this file now: <b data-v7-dnow="${id}">${a.now.toLowerCase()}</b>. <span data-v7-dsub="${id}">${esc(a.sub)}</span>. ${j.autofix ? 'I’ll fix safe errors myself and ask you about anything else.' : 'I’ll pause and ask before fixing anything.'}`;
+      body = `<ol class="v7-steps">${AI_STEPS.map((s, k) => `<li class="${k < a.i ? '' : k === a.i ? 'now' : 'todo'}"><b>${s}</b><span>${k < a.i ? stepFacts(j, k).slice(0, 3).map(f => `${f[1]} ${f[2]}`).join(' · ') : k === a.i ? 'In progress' : 'Not started'}</span></li>`).join('')}</ol>`;
+      acts = `<span class="v7-mono" data-a51-eta="${id}"></span>` + v7Btn('stop', 'Stop this file', id);
+    } else if (j.phase === 'submitted') {
+      say = `Submitted. <b>${num(j.verified)} records</b> were migrated and ${num(j.total - j.verified)} were left out.`;
+      body = `<div class="v7-grp"><div><b>MIG-2026-${String(id).padStart(4, '0')}</b><span>Reference</span></div><div><b>${num(j.verified)}</b><span>Records migrated</span></div><div><b>${inr2(j.verified * .05)}</b><span>Amount</span></div></div>`;
+      acts = v7Btn('receipt', 'Download receipt', id);
+    } else {
+      say = 'You stopped this file. Nothing from it was submitted.';
+      acts = v7Btn('retry', 'Run again', id, 'btn-pri') + v7Btn('remove', 'Remove', id);
+    }
+    const nx = v7Sorted().filter(v7Need).find(x => x.id !== id);
+    return `<div class="v7-det"><div class="v7-dh"><h2>${esc(j.name)}</h2><span class="v7-pill ${c}">${l}</span>${j.autofix ? '' : '<span class="v7-pill n">Asks first</span>'}<span class="sp"></span><span class="v7-mono">${esc(j.lob)} · MIG-2026-${String(id).padStart(4, '0')} · ${num(j.total)} rows</span></div><div class="v7-say"><i class="v7-orb" aria-hidden="true"></i><span>${say}</span></div>${body}<div class="v7-acts">${acts}<span class="sp"></span>${nx ? `<button type="button" class="v7-next" data-v7sel="${nx.id}">Next: ${esc(nx.name)} →</button>` : ''}</div></div>`;
+  }
+  function v7Render() {
+    if (!v7On()) return;
+    const n = jobs.length, a = v7A();
+    if (!jobs.some(j => j.id === V7.sel)) { V7.sel = (v7Sorted()[0] || {}).id || 0; if (a) V7.open = false; }
+    $('#v7Agent').hidden = !n; $('#v7TableWrap').hidden = !a || !n; $('#v7Desk').hidden = a || !n;
+    $('#v7Scrim').hidden = $('#v7Drawer').hidden = !(a && V7.open && n);
+    if (!n) return;
+    /* the agent's line: what it is doing, and the calls it can take off your hands in one go */
+    const g = a5Groups(), run = g.run.length;
+    const b = (k, label, cls = '') => `<button type="button" class="btn btn-sm ${cls}" data-a5b="${k}">${label}</button>`;
+    const nFix = g.fixable.reduce((t, x) => t + x.fixed, 0);
+    const acts = (g.fixable.length ? b('fix-all', `Fix ${num(nFix)} errors`, 'btn-pri') : '') + (g.gated.length ? b('skip-all', `Set failed aside in ${a5Fs(g.gated.length)}`, g.fixable.length ? '' : 'btn-pri') : '') + (g.ready.length ? b('submit-all-arm', `Approve and submit ${a5Fs(g.ready.length)}`, g.fixable.length || g.gated.length ? '' : 'btn-pri') : '');
+    const asig = acts + run + g.need.length;
+    $('#v7Agent').classList.toggle('run', run > 0);
+    if (asig !== V7.asig) { V7.asig = asig; $('#v7AgentA').innerHTML = acts; }
+    const sig = (a ? 'a' : 'b') + V7.sel + (V7.open ? 'o' : '') + '|' + jobs.map(j => `${j.id}:${j.phase}:${isRunning(j) ? aiState(j).i : ''}:${j.fixing ? 1 : 0}${j.appealed ? 1 : 0}${j.appealDone ? 1 : 0}${j.skipAppeal ? 1 : 0}${selected.has(j.id) ? 's' : ''}`).join('|');
+    if (sig !== V7.sig) {
+      V7.sig = sig;
+      const j = jobs.find(x => x.id === V7.sel);
+      if (a) { $('#v7TableWrap').innerHTML = v7Table(); $('#v7DrawerBody').innerHTML = V7.open ? v7Detail(j) : ''; }
+      else { $('#v7Q').innerHTML = v7Queue(); $('#v7Pane').innerHTML = v7Detail(j); }
+    }
+    v7Paint();
+  }
+  function v7Paint() {
+    if (!v7On() || !jobs.length) return;
+    let lead = null, k = 0;
+    for (const j of jobs) {
+      if (!isRunning(j)) continue; k++; if (!lead || (j.p || 0) > (lead.p || 0)) lead = j;
+      const a = aiState(j), f = segFill(j, a.i);
+      const bar = $(`[data-v7-bar="${j.id}"]`); if (bar) bar.style.width = `${f.toFixed(0)}%`;
+      const pc = $(`[data-v7-pct="${j.id}"]`); if (pc) pc.textContent = `${Math.round(f)}%`;
+      const qb = $(`[data-v7-qbar="${j.id}"]`); if (qb) qb.style.width = `${(j.p || 0).toFixed(0)}%`;
+      const qs = $(`[data-v7-qs="${j.id}"]`); if (qs) { const t = `${a.now} · ${fmtDur(Math.max(0, a51Eta(j)))} left`; if (qs.textContent !== t) qs.textContent = t; }
+      const ds = $(`[data-v7-dsub="${j.id}"]`); if (ds && ds.textContent !== a.sub) ds.textContent = a.sub;
+    }
+    const need = jobs.filter(v7Need).length;
+    const nt = A5.note && performance.now() - A5.note.t < 2800 ? A5.note.text : '';
+    const t = nt || (lead ? `${aiState(lead).now} ${lead.name}${k > 1 ? ` and ${k - 1} more` : ''}` : need ? 'Waiting for you' : 'All caught up');
+    const html = `<b>Agent</b> · ${esc(t)}${need ? ` · ${need} file${need > 1 ? 's' : ''} need${need > 1 ? '' : 's'} your call` : ''}`;
+    if ($('#v7AgentT').innerHTML !== html) $('#v7AgentT').innerHTML = html;
+    a51Left();
+  }
+  function v7Select(id, open) { V7.sel = +id; if (open !== undefined) V7.open = open; V7.sig = ''; v7Render(); }
+  function v7Act(k, id) {
+    const j = jobs.find(x => x.id === +id); if (!j) return;
+    const row = a5Row(j.id);
+    if (k === 'open') { v7Select(id, true); const d = $('#v7Drawer'); if (!d.hidden) d.focus({ preventScroll: true }); }
+    else if (k === 'fix') { doAction('apply', row); render(); }
+    else if (k === 'skip') a51Do([j], () => doAction('skip', row), `${j.name} continues without fixes`);
+    else if (k === 'setaside') a51Do([j], () => { j.skipAppeal = true; render(); }, `${num(j.failed)} failed records set aside`);
+    else if (k === 'appeal') { j.skipAppeal = false; j.appealed = true; j.appealOpen = false; j.appealAt = Date.now(); j.appealStage = 0; render(); a51Snack(`Appeal raised for ${num(j.failed)} records`); }
+    else if (k === 'appeal-cancel') doAction('appeal-cancel', row);
+    else if (k === 'submit') a51Confirm([j]);
+    else if (k === 'stop') a51Do([j], () => { j.cancelAsk = false; j.phase = 'cancelled'; render(); }, `${j.name} stopped`);
+    else if (k === 'retry') doAction('retry', row);
+    else if (k === 'remove') a51Do([j], () => { jobs = jobs.filter(x => x !== j); render(); }, `${j.name} removed`);
+    else if (k === 'receipt') a51Snack('Receipt downloaded');
+    else if (k === 'dl') a51Snack(`Records for ${j.name} downloaded`);
+    V7.sig = ''; v7Render();
+  }
+  $('#ag5View').addEventListener('click', e => {
+    if (!v7On()) return;
+    const b = e.target.closest('[data-v7]'); if (b) { e.stopPropagation(); v7Act(b.dataset.v7, b.dataset.id); return; }
+    const s = e.target.closest('[data-v7sel]'); if (s) { v7Select(s.dataset.v7sel); return; }
+    if (e.target.closest('#v7Scrim, #v7X')) { V7.open = false; V7.sig = ''; v7Render(); return; }
+    const pk = e.target.closest('[data-v7pick]'); if (pk) { pk.checked ? selected.add(+pk.dataset.v7pick) : selected.delete(+pk.dataset.v7pick); render(); return; }
+    const all = e.target.closest('[data-v7all]'); if (all) { jobs.forEach(j => all.checked ? selected.add(j.id) : selected.delete(j.id)); render(); return; }
+    const r = e.target.closest('[data-v7row]'); if (r && !e.target.closest('button,input,a')) v7Act('open', r.dataset.v7row);
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && v7On() && V7.open && !$('#a51Dlg').open) { V7.open = false; V7.sig = ''; v7Render(); } });
+
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
   function agUpload(list) {
@@ -3832,14 +4077,14 @@ span.r-pick{cursor:default}
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
-    const a51v = v === 'agent51' || v === 'agent6', a5v = v === 'agent5' || a51v;
-    a5Mount(a5v, v === 'agent6');
+    const v7 = v === 'ledger' || v === 'desk', six = v === 'agent6' || v7, a51v = v === 'agent51' || six, a5v = v === 'agent5' || a51v;
+    a5Mount(a5v, six);
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
     document.body.classList.toggle('agent5', a5v);
-    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', v === 'agent6');
+    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', six); document.body.classList.toggle('v7', v7); document.body.classList.toggle('v7a', v === 'ledger'); document.body.classList.toggle('v7b', v === 'desk'); V7.sig = ''; V7.open = false;
     if (a51v) { filter = 'all'; sortBy = 'needs'; }
-    if (v === 'agent6' && A5.paused) { A5.paused = false; lastT = performance.now(); }
+    if (six && A5.paused) { A5.paused = false; lastT = performance.now(); }
     if (!a51v) { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
     selected.clear();
     $('#ag5View').hidden = !a5v;
@@ -3869,7 +4114,7 @@ span.r-pick{cursor:default}
   setUpCol(upCol);
   $('#trayDock').onclick = () => { closeTray(); setUpCol(false); setTimeout(() => $('#upInline').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }), 60); };
   function openTray() {
-    if (upView === 'agent6') { a6Panel(true, true); return; }
+    if (upView === 'agent6' || upView === 'ledger' || upView === 'desk') { a6Panel(true, true); return; }
     if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
     if (upView === 'agent') { $('#agDrop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); $('#agDrop').focus({ preventScroll: true }); return; }
@@ -3900,7 +4145,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'ledger' || v === 'desk') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
