@@ -975,6 +975,119 @@ body.agent7 .a51-hact{padding-top:4px}
 body.agent7 .a5-tools{display:none!important}
 body.agent7 #canvas .file-row2:not(.ok):not(.cancelled),body.agent7 #canvas .a51-gh.g-needs,body.agent7 #canvas .a51-gh.g-run{display:none}
 @media(prefers-reduced-motion:reduce){.a7-tile.in,.a7-tile.turn{animation:none}}
+/* ---------- fresh layout: the agent invites the upload, files become cards, cards stack by status, the agent collates its action items ---------- */
+body.nvon .stage>*:not(#nv){display:none!important}
+body.nvon .stage{padding:0;gap:0}
+body.nvon #toast{display:none}
+body.nvon .a51-snack{top:auto;bottom:26px;transform:translate(-50%,14px)}
+body.nvon .a51-snack.on{transform:translate(-50%,0)}
+.nv{--n-ink:#0f1a33;--n-ink2:#3a4763;--n-mute:#66738f;--n-line:#e3e8f1;--n-bl:#2457e6;--n-bld:#1746c4;--n-am:#b46f04;--n-ams:#fff6e3;--n-amb:#f1d9a6;--n-gr:#0f8457;--n-grs:#e6f6ee;display:flex;flex-direction:column;gap:22px;width:100%;max-width:1180px;margin:0 auto;padding:36px 32px 80px;min-height:100vh;color:var(--n-ink)}
+.nv[hidden],.nv [hidden]{display:none!important}
+.nv button:focus-visible,.nv select:focus-visible,.nv [tabindex]:focus-visible{outline:2px solid var(--n-bl);outline-offset:2px}
+/* the agent speaks */
+.nv-agent{display:flex;align-items:flex-start;gap:16px;transition:all .5s cubic-bezier(.22,1,.36,1)}
+.nv-orb{position:relative;width:46px;height:46px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 32% 28%,#c7d7ff,#5c86ff 45%,#2457e6 75%);box-shadow:0 0 0 7px rgba(36,87,230,.1),0 12px 26px -10px rgba(36,87,230,.7);transition:background .5s,box-shadow .5s}
+.nv-orb::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:2px solid transparent;border-top-color:rgba(36,87,230,.55);opacity:0}
+.nv-orb.run::after{opacity:1;animation:spin 1.3s linear infinite}
+.nv-orb.w{background:radial-gradient(circle at 32% 28%,#ffe9bd,#f0b03c 50%,#c98712 80%);box-shadow:0 0 0 7px rgba(224,169,63,.16),0 12px 26px -10px rgba(201,135,18,.7)}
+.nv-orb.g{background:radial-gradient(circle at 32% 28%,#c5f3dd,#3fbf8a 50%,#0f8457 80%);box-shadow:0 0 0 7px rgba(15,132,87,.12),0 12px 26px -10px rgba(15,132,87,.6)}
+.nv-who{display:block;font:600 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--n-mute);margin-bottom:3px}
+.nv-say{font-size:24px;line-height:1.2;font-weight:650;letter-spacing:-.02em}
+.nv-sub{margin-top:5px;font-size:14.5px;line-height:1.5;color:var(--n-ink2);max-width:74ch;min-height:1.5em}
+/* the upload dialog: centre stage when the page is empty, a slim bar once files exist */
+.nv-drop{position:relative;display:flex;align-items:center;gap:14px;padding:12px 14px 12px 16px;border-radius:16px;border:1.5px dashed #b9c8ee;background:#fff;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .25s}
+.nv-drop:hover,.nv.drag .nv-drop{border-color:var(--n-bl);border-style:solid;background:#f3f7ff;box-shadow:0 0 0 5px rgba(36,87,230,.08)}
+.nv-di{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#e8eeff;color:var(--n-bl);flex-shrink:0}
+.nv-di svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.nv-dt{flex:1;min-width:0}
+.nv-dt b{display:block;font-size:14.5px;font-weight:650}
+.nv-dt span{display:none;font-size:12.5px;color:var(--n-mute)}
+.nv.nv0 .nv-dt span{display:block}
+.nv-dbtn{display:flex;gap:8px;align-items:center}
+.nv-auto{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--n-ink2);cursor:pointer;white-space:nowrap}
+.nv-auto .switch{margin:0}
+.nv-links{display:none}
+.nv-rej{list-style:none;display:flex;flex-direction:column;gap:4px;margin-top:-10px}
+.nv-rej li{padding:8px 12px;border-radius:10px;background:#fdecee;color:#8f2433;font-size:12.5px}
+.nv.nv0{justify-content:center;align-items:center;gap:26px;padding-bottom:120px}
+.nv.nv0 .nv-agent{flex-direction:column;align-items:center;text-align:center;gap:18px}
+.nv.nv0 .nv-orb{width:72px;height:72px}
+.nv.nv0 .nv-say{font-size:32px}
+.nv.nv0 .nv-sub{font-size:15.5px;max-width:52ch}
+.nv.nv0 .nv-drop{flex-direction:column;gap:10px;width:min(640px,100%);padding:38px 28px 26px;border-radius:24px;text-align:center;box-shadow:0 30px 70px -46px rgba(36,87,230,.6)}
+.nv.nv0 .nv-di{width:60px;height:60px;border-radius:18px}
+.nv.nv0 .nv-di svg{width:28px;height:28px}
+.nv.nv0 .nv-dt b{font-size:18px}
+.nv.nv0 .nv-dt span{font-size:13.5px}
+.nv.nv0 .nv-dbtn{flex-direction:column;gap:14px;margin-top:8px}
+.nv.nv0 .nv-links{display:flex;gap:16px;font-size:12.5px}
+.nv-links button{color:var(--n-bld);font-weight:600}
+.nv-links button:hover{text-decoration:underline}
+.nv.nv0 .nv-count{display:none}
+.nv-count{font:500 12px var(--mono);color:var(--n-mute);white-space:nowrap}
+.nv-b{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--n-line);background:#fff;font-size:13px;font-weight:650;color:var(--n-ink);white-space:nowrap;transition:background .15s,border-color .15s,transform .12s}
+.nv-b:hover{background:#f4f6fb}.nv-b:active{transform:scale(.97)}
+.nv-b.pri{background:var(--n-bl);border-color:var(--n-bl);color:#fff;box-shadow:0 8px 18px -10px rgba(36,87,230,.8)}.nv-b.pri:hover{background:var(--n-bld)}
+/* the agent's action items */
+.nv-todo{border-radius:18px;border:1px solid var(--n-amb);background:linear-gradient(180deg,var(--n-ams),#fff 70%);box-shadow:0 22px 50px -36px rgba(180,111,4,.6);overflow:hidden}
+.nv-th{display:flex;align-items:center;gap:8px;padding:13px 18px 10px;font:600 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--n-am)}
+.nv-todo ul{list-style:none}
+.nv-todo li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:13px 18px;border-top:1px solid rgba(180,111,4,.16);animation:nv-in .4s cubic-bezier(.22,1,.36,1) both}
+@keyframes nv-in{from{opacity:0;transform:translateY(6px)}}
+.nv-tn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#f0b03c;color:#3a2300;font:700 13px var(--mono)}
+.nv-tt b{font-size:14.5px;font-weight:650}
+.nv-tt p{margin-top:2px;font-size:13px;line-height:1.45;color:var(--n-ink2);max-width:70ch}
+.nv-tf{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.nv-tf button{font:500 11px var(--mono);padding:2px 8px;border-radius:6px;background:rgba(15,26,51,.06);color:var(--n-ink2)}
+.nv-tf button:hover{background:rgba(15,26,51,.12);color:var(--n-ink)}
+.nv-tf em{font:500 11px var(--mono);font-style:normal;color:var(--n-mute);padding:2px 4px}
+.nv-ta{display:flex;gap:8px;flex-shrink:0}
+/* cards, stacked by status */
+.nv-sec{display:flex;flex-direction:column;gap:12px}
+.nv-sec h3{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:650}
+.nv-sec h3 span{min-width:22px;height:22px;padding:0 7px;border-radius:999px;display:grid;place-items:center;font:700 11.5px var(--mono);background:#e9edf5;color:var(--n-ink2)}
+.nv-sec h3::after{content:'';flex:1;height:1px;background:var(--n-line)}
+#nvG-need h3{color:var(--n-am)}#nvG-need h3 span{background:#f0b03c;color:#3a2300}
+#nvG-done h3 span{background:var(--n-grs);color:var(--n-gr)}
+.nv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;align-items:start}
+.nv-card{display:flex;flex-direction:column;gap:12px;min-width:0;padding:16px;border-radius:18px;background:#fff;border:1px solid var(--n-line);box-shadow:0 14px 30px -26px rgba(15,26,51,.5);transition:border-color .4s,box-shadow .4s}
+.nv-card.need{border-color:var(--n-amb);box-shadow:0 18px 36px -26px rgba(180,111,4,.6)}
+.nv-card.done{background:#fcfdfd}
+.nv-card.flash{animation:nv-flash 1.4s ease-out}
+@keyframes nv-flash{0%,40%{box-shadow:0 0 0 5px rgba(36,87,230,.3)}}
+.nv-ch{display:flex;align-items:center;gap:11px;min-width:0}
+.nv-fi{width:38px;height:46px;border-radius:8px;flex-shrink:0;display:grid;place-items:end center;padding-bottom:6px;font:800 9px var(--mono);letter-spacing:.05em;color:var(--n-bld);background:linear-gradient(135deg,transparent 0 11px,#fff 0) top right/100% 100% no-repeat,#eef3ff;border:1px solid #cfdbf7;clip-path:polygon(0 0,calc(100% - 11px) 0,100% 11px,100% 100%,0 100%)}
+.nv-card.need .nv-fi{color:var(--n-am);background:#fff3d9;border-color:var(--n-amb)}
+.nv-card.done .nv-fi{color:var(--n-gr);background:var(--n-grs);border-color:#bfe6d2}
+.nv-card.off .nv-fi{color:var(--n-mute);background:#eef1f6;border-color:var(--n-line)}
+.nv-cn{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.nv-cn b{font-size:14.5px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nv-id{align-self:flex-start;font:600 11px var(--mono);padding:1px 7px;border-radius:6px;background:#eef1f6;color:var(--n-ink2)}
+.nv-x{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--n-mute);flex-shrink:0}
+.nv-x:hover{background:#eef1f6;color:var(--n-ink)}
+.nv-x svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.nv-meta{display:grid;grid-template-columns:1.25fr 1fr auto;gap:10px;padding:10px 12px;border-radius:12px;background:#f7f9fc}
+.nv-meta dt,.nv-det dt{font-size:10.5px;font-weight:600;color:var(--n-mute);margin-bottom:1px}
+.nv-meta dd{font-size:12.5px;font-weight:600;color:var(--n-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nv-prog{display:flex;align-items:center;gap:14px}
+.nv-pct{font-size:30px;line-height:1;font-weight:650;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-width:74px;color:var(--n-bl)}
+.nv-card.need .nv-pct{color:var(--n-am)}.nv-card.done .nv-pct{color:var(--n-gr)}.nv-card.off .nv-pct{color:var(--n-mute)}
+.nv-pt{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.nv-bar{height:6px;border-radius:999px;background:#e9edf5;overflow:hidden}
+.nv-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2457e6,#5c9bff);transition:width .25s linear}
+.nv-card.need .nv-bar i{background:#f0b03c}.nv-card.done .nv-bar i{background:#3fbf8a}.nv-card.off .nv-bar i{background:#b6bfd0}
+.nv-stt{font-size:12.5px;color:var(--n-ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nv-ask{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--n-ams);font-size:13px;line-height:1.45;color:#5a3d07}
+.nv-ask b{color:#3a2300;font-weight:650}
+.nv-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;background:#f0b03c;box-shadow:0 0 0 3px rgba(240,176,60,.25)}
+.nv-cf{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nv-cf .sp{flex:1}
+.nv-lk{font-size:12.5px;font-weight:600;color:var(--n-bld);padding:4px 2px}
+.nv-lk:hover{text-decoration:underline}
+.nv-sel{height:36px;flex:1 1 230px;min-width:230px;padding:0 10px;border-radius:10px;border:1px solid var(--n-amb);background:#fff;font:inherit;font-size:13px;font-weight:600;color:var(--n-ink)}
+.nv-det{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;padding-top:12px;border-top:1px solid var(--n-line)}
+.nv-det dd{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){.nv-orb.run::after,.nv-todo li,.nv-card.flash{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1575,7 +1688,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="agent7" aria-pressed="false">Agent 7.0</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="agent7" aria-pressed="false">Agent 7.0</button><button type="button" class="chip-btn" data-upview="fresh" aria-pressed="false">Fresh</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -1669,6 +1782,22 @@ span.r-pick{cursor:default}
           <div class="ag-sh3" id="agSh3" hidden><div class="ag-tabs" role="tablist" aria-label="Files"><button type="button" class="ag-tab on" role="tab" aria-selected="true" id="agTabFocus">In focus <span id="agFocusN">0</span></button><button type="button" class="ag-tab" role="tab" aria-selected="false" id="agTabFin">Finished <span id="agFinN">0</span></button></div></div>
           <div class="ag-empty ag-tabempty" id="agTabEmpty" hidden></div>
           <div class="ag-missions" id="agMissions"></div>
+        </section>
+        <section class="nv nv0" id="nv" aria-label="Migration" hidden>
+          <div class="nv-agent"><span class="nv-orb" id="nvOrb" aria-hidden="true"></span><div><span class="nv-who">Migration agent</span><p class="nv-say" id="nvSay" aria-live="polite"></p><p class="nv-sub" id="nvSub"></p></div></div>
+          <div class="nv-drop" id="nvDrop" role="button" tabindex="0" aria-label="Upload CSV files: drop them here or press Enter to choose">
+            <span class="nv-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span>
+            <div class="nv-dt"><b id="nvDT">Drop CSV files here, or click to choose</b><span>Up to 500 MB each · encrypted in your browser before anything leaves it</span></div>
+            <span class="nv-count" id="nvCount"></span>
+            <div class="nv-dbtn"><label class="nv-auto"><span class="switch"><input type="checkbox" id="nvAuto" checked aria-label="Fix safe errors automatically"><span class="track"></span></span><span id="nvAutoT">Fix safe errors automatically</span></label><button type="button" class="nv-b pri" id="nvChoose">Upload files</button><div class="nv-links"><button type="button" id="nvSample">Try sample files</button><button type="button" id="nvBusy">Load a busy example</button></div></div>
+          </div>
+          <ul class="nv-rej" id="nvRej" aria-live="polite" hidden></ul>
+          <input type="file" id="nvFile" accept=".csv,text/csv" multiple hidden>
+          <section class="nv-todo" id="nvTodo" aria-label="Action items from the agent" hidden><div class="nv-th">Action items from the agent</div><ul id="nvTodoL"></ul></section>
+          <section class="nv-sec" id="nvG-need" hidden><h3>Needs you <span></span></h3><div class="nv-grid"></div></section>
+          <section class="nv-sec" id="nvG-run" hidden><h3>In progress <span></span></h3><div class="nv-grid"></div></section>
+          <section class="nv-sec" id="nvG-done" hidden><h3>Completed <span></span></h3><div class="nv-grid"></div></section>
+          <section class="nv-sec" id="nvG-off" hidden><h3>Stopped <span></span></h3><div class="nv-grid"></div></section>
         </section>
         <section class="a5" id="ag5View" aria-label="Migration agent" hidden>
           <header class="a5-head" id="a5Head" data-blob="ready">
@@ -2654,7 +2783,7 @@ span.r-pick{cursor:default}
 
   function render() {
     if (typeof placePane === 'function') placePane();
-    agSync(); a5Sync();
+    agSync(); a5Sync(); nvSync();
     stampPhases();
     renderMetrics();
     renderBulk();
@@ -2852,7 +2981,7 @@ span.r-pick{cursor:default}
   }
   function paintLive() {
     if (document.body.classList.contains('agent-on')) paintAgent();
-    a5Paint();
+    a5Paint(); nvPaint();
     for (const j of jobs) {
       if (!isRunning(j)) continue;
       const pr = `${Math.round(j.p)}%`;
@@ -3843,6 +3972,155 @@ span.r-pick{cursor:default}
   });
   $('#a7Files').addEventListener('animationend', e => { if (e.target.classList) e.target.classList.remove('in', 'turn'); });
 
+  /* ---------- fresh layout. The story: the agent invites the upload at the centre of the page; files become cards with their ID, name, upload date and a percentage; cards stack by status; the agent collates what it needs into action items, and asks on the card when an answer is specific to one file ---------- */
+  const NV = { auto: true, els: new Map(), open: new Set(), rej: [], rejT: 0, todo: '', sampleN: 0 };
+  const nvOn = () => document.body.classList.contains('nvon');
+  const nvId = j => `MIG-2026-${String(j.id).padStart(4, '0')}`;
+  const nvNeed = j => j.phase === 'lob' || (needsYou(j) && !isPending(j));
+  const nvGroup = j => nvNeed(j) ? 'need' : j.phase === 'submitted' ? 'done' : j.phase === 'cancelled' ? 'off' : 'run';
+  const nvPct = j => j.phase === 'lob' ? 0 : j.phase === 'cancelled' ? Math.round(j.p || 0) : Math.round(progressF(j));
+  const nvDate = t => `${new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}, ${new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+  const nvB = (k, label, id, cls = '') => `<button type="button" class="nv-b ${cls}" data-nv="${k}"${id ? ` data-id="${id}"` : ''}>${label}</button>`;
+  const NV_FIX = [['Phone numbers', .61], ['Consent dates', .27], ['Stray spaces', .12]];
+  const nvFixParts = j => { let left = j.fixed; return NV_FIX.map(([t, w], i) => { const v = i === 2 ? left : Math.round(j.fixed * w); left -= v; return `${num(v)} ${t.toLowerCase()}`; }).join(' · '); };
+  /* one file card: who it is, when it arrived, how far along it is as a percentage, and what the agent needs for it */
+  function nvCard(j) {
+    const id = j.id, g = nvGroup(j), pct = nvPct(j), fa = j.fixedApplied || 0;
+    let st, ask = '', acts = '';
+    if (j.phase === 'lob') { st = 'Waiting for a line of business'; ask = 'I couldn’t tell which line of business this belongs to. Pick one and I’ll start.'; acts = `<select class="nv-sel" data-nv-lob="${id}" aria-label="Line of business for ${esc(j.name)}"><option value="">Choose line of business…</option>${AG_LOBS.map(l => `<option>${l}</option>`).join('')}</select>`; }
+    else if (j.phase === 'fix_review') { st = j.fixing ? 'Applying fixes' : 'Paused for your answer'; ask = j.fixing ? `Applying ${num(j.fixed)} fixes…` : `I found <b>${num(j.fixed)} errors I can fix safely</b>: ${nvFixParts(j)}. Your original rows are kept.`; acts = j.fixing ? '' : nvB('fix', `Fix ${num(j.fixed)} errors`, id, 'pri') + nvB('skip', 'Skip', id); }
+    else if (j.phase === 'ready' && isPending(j)) { st = 'On hold: appeal with the registrar'; acts = nvB('appeal-cancel', 'Cancel appeal', id); }
+    else if (j.phase === 'ready' && isGated(j)) { st = 'Processed · needs your answer'; ask = `<b>${num(j.failed)} records failed consent checks</b> and I can’t repair them. The other ${num(j.verified)} are verified.`; acts = nvB('setaside', 'Set aside and continue', id, 'pri') + nvB('appeal', 'Appeal', id); }
+    else if (j.phase === 'ready') { st = 'Processed · ready to submit'; ask = `<b>${num(j.verified)} records</b> are verified and ready to go.`; acts = nvB('submit', 'Approve and submit', id, 'pri'); }
+    else if (j.phase === 'submitted') { st = `Migrated · ${num(j.verified)} records`; acts = nvB('receipt', 'Receipt', id); }
+    else if (j.phase === 'cancelled') { st = 'Stopped by you'; acts = nvB('retry', 'Run again', id, 'pri') + nvB('remove', 'Remove', id); }
+    else st = `<span data-nv-st="${id}">${esc(aiState(j).sub)}</span>`;
+    const open = NV.open.has(id), known = j.phase !== 'lob' && (pct >= 30 || !isRunning(j));
+    const det = open ? `<dl class="nv-det"><div><dt>Rows uploaded</dt><dd>${num(j.total)}</dd></div>${known ? `<div><dt>Valid</dt><dd>${num(j.valid)}</dd></div><div><dt>Fixable errors</dt><dd>${num(j.fixed)}${fa ? ' · fixed' : ''}</dd></div><div><dt>Manual or duplicate</dt><dd>${num(j.manual + j.dup)}</dd></div>` : ''}${j.phase === 'ready' || j.phase === 'submitted' ? `<div><dt>Failed consent checks</dt><dd>${num(j.failed)}</dd></div><div><dt>${j.phase === 'submitted' ? 'Migrated' : 'Ready to submit'}</dt><dd>${num(j.verified)}</dd></div>` : ''}<div><dt>Error handling</dt><dd>${j.autofix ? 'Fix safe errors automatically' : 'Ask before fixing'}</dd></div></dl>` : '';
+    return `<header class="nv-ch"><span class="nv-fi" aria-hidden="true">CSV</span><div class="nv-cn"><b title="${esc(j.name)}">${esc(j.name)}</b><span class="nv-id">${nvId(j)}</span></div>${isRunning(j) ? `<button type="button" class="nv-x" data-nv="stop" data-id="${id}" aria-label="Stop ${esc(j.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>` : ''}</header>
+      <dl class="nv-meta"><div><dt>Uploaded</dt><dd>${nvDate(j.up)}</dd></div><div><dt>Line of business</dt><dd>${j.lob ? esc(j.lob) : '–'}</dd></div><div><dt>Size</dt><dd>${fmtSize(sizeOf(j))}</dd></div></dl>
+      <div class="nv-prog"><b class="nv-pct"><span data-nv-pct="${id}">${pct}</span>%</b><div class="nv-pt"><div class="nv-bar"><i data-nv-bar="${id}" style="width:${pct}%"></i></div><span class="nv-stt">${st}${isRunning(j) ? ` · <span data-nv-eta="${id}"></span>` : ''}</span></div></div>
+      ${ask ? `<p class="nv-ask"><i class="nv-dot" aria-hidden="true"></i><span>${ask}</span></p>` : ''}
+      <footer class="nv-cf">${acts}<span class="sp"></span><button type="button" class="nv-lk" data-nv="det" data-id="${id}" aria-expanded="${open}">${open ? 'Hide details' : 'Details'}</button></footer>${det}`;
+  }
+  /* what the agent needs, collated: one item per kind of answer, so several files can be answered at once */
+  function nvTodo() {
+    const lob = jobs.filter(j => j.phase === 'lob'), fix = jobs.filter(j => j.phase === 'fix_review' && !j.fixing), gated = jobs.filter(j => j.phase === 'ready' && !isPending(j) && isGated(j)), ready = jobs.filter(j => j.phase === 'ready' && !isPending(j) && !isGated(j));
+    const files = l => `<span class="nv-tf">${l.slice(0, 4).map(j => `<button type="button" data-nv="goto" data-id="${j.id}">${esc(j.name)}</button>`).join('')}${l.length > 4 ? `<em>+${l.length - 4} more</em>` : ''}</span>`;
+    const item = (l, t, d, a) => l.length ? `<li><span class="nv-tn">${l.length}</span><div class="nv-tt"><b>${t}</b><p>${d}</p>${files(l)}</div><div class="nv-ta">${a}</div></li>` : '';
+    const nFix = fix.reduce((t, j) => t + j.fixed, 0), nFail = gated.reduce((t, j) => t + j.failed, 0), nRec = ready.reduce((t, j) => t + j.verified, 0);
+    return item(fix, `Fix ${num(nFix)} errors in ${a5Fs(fix.length)}`, 'Phone numbers, consent dates and stray spaces. I can repair these safely and your original rows are kept.', nvB('fix-all', fix.length > 1 ? 'Fix all' : 'Fix them', 0, 'pri') + nvB('skip-all', 'Skip'))
+      + item(gated, `${num(nFail)} records failed consent checks in ${a5Fs(gated.length)}`, 'I can’t repair these. Set them aside and I’ll continue with the verified records, or appeal on a card.', nvB('aside-all', gated.length > 1 ? `Set aside in all ${gated.length}` : 'Set aside and continue', 0, 'pri'))
+      + item(ready, `${a5Fs(ready.length)} ready to submit`, `${num(nRec)} verified records · estimate ${inr2(nRec * .05)}. You can undo for a few seconds after submitting.`, nvB('submit-all', ready.length > 1 ? `Approve and submit all ${ready.length}` : 'Approve and submit', 0, 'pri'))
+      + item(lob, `${a5Fs(lob.length)} need${lob.length > 1 ? '' : 's'} a line of business`, 'I couldn’t tell from the file name, and this is different for each file, so I’ve asked on each card.', nvB('goto', 'Show me', lob[0] && lob[0].id));
+  }
+  function nvSync() {
+    if (!nvOn()) return;
+    const n = jobs.length, root = $('#nv');
+    jobs.forEach(j => { if (!j.up) j.up = (j.at && j.at.upload) || Date.now(); });
+    root.classList.toggle('nv0', !n);
+    /* cards, kept as elements so they can glide to their new place when their status changes */
+    const first = new Map([...NV.els].map(([id, el]) => [id, el.isConnected ? el.getBoundingClientRect() : null]));
+    const G = [['need', 'Needs you'], ['run', 'In progress'], ['done', 'Completed'], ['off', 'Stopped']], live = new Set();
+    for (const [k, label] of G) {
+      const list = jobs.filter(j => nvGroup(j) === k).sort((a, b) => b.id - a.id), sec = $(`#nvG-${k}`), grid = $('.nv-grid', sec);
+      sec.hidden = !list.length; $('h3 span', sec).textContent = list.length;
+      list.forEach((j, i) => {
+        live.add(j.id); let el = NV.els.get(j.id);
+        if (!el) { el = document.createElement('article'); el.className = 'nv-card'; el.dataset.id = j.id; el.dataset.fresh = '1'; NV.els.set(j.id, el); }
+        const sig = `${k}|${j.phase}|${j.lob}|${j.fixing ? 1 : 0}${j.skipAppeal ? 1 : 0}${j.appealed ? 1 : 0}${j.appealDone ? 1 : 0}|${NV.open.has(j.id)}|${isRunning(j) && nvPct(j) >= 30}`;
+        if (el.dataset.sig !== sig) { el.dataset.sig = sig; el.className = `nv-card ${k}`; el.innerHTML = nvCard(j); el.setAttribute('aria-label', `${j.name}, ${nvId(j)}, ${nvPct(j)} percent`); }
+        if (grid.children[i] !== el) grid.insertBefore(el, grid.children[i] || null);
+      });
+    }
+    for (const [id, el] of NV.els) if (!live.has(id)) { el.remove(); NV.els.delete(id); NV.open.delete(id); }
+    if (!RM) for (const [id, el] of NV.els) {
+      const was = first.get(id), now = el.getBoundingClientRect();
+      if (el.dataset.fresh) { delete el.dataset.fresh; el.animate([{ opacity: 0, transform: 'translateY(-26px) scale(.94)' }, { opacity: 1, transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)' }); }
+      else if (was && (Math.abs(was.left - now.left) > 2 || Math.abs(was.top - now.top) > 2)) el.animate([{ transform: `translate(${was.left - now.left}px,${was.top - now.top}px)` }, { transform: 'none' }], { duration: 560, easing: 'cubic-bezier(.22,1,.36,1)' });
+    }
+    /* the agent's collated action items */
+    const todo = n ? nvTodo() : ''; $('#nvTodo').hidden = !todo;
+    if (todo !== NV.todo) { NV.todo = todo; $('#nvTodoL').innerHTML = todo; }
+    /* what the agent says */
+    const need = jobs.filter(nvNeed).length, run = jobs.filter(isRunning).length, done = jobs.filter(j => j.phase === 'submitted'), items = $('#nvTodoL').children.length;
+    let say, sub, tone = '';
+    if (!n) { say = 'Upload your migration files here.'; sub = 'I’ll check every file, fix what’s safe, verify consent, and you can track each one on this page.'; }
+    else if (need) { tone = 'w'; say = need === 1 ? 'I need your answer on one file.' : `I need your answer on ${need} files.`; sub = items > 1 || need > 1 ? `I’ve grouped them into ${items} action item${items > 1 ? 's' : ''} so you can answer in one go.${run ? ` Meanwhile I’m still working on ${a5Fs(run)}.` : ''}` : run ? `Meanwhile I’m still working on ${a5Fs(run)}.` : 'Everything else is done.'; }
+    else if (run) { say = `I’m working on ${a5Fs(run)}.`; sub = ''; }
+    else { tone = 'g'; say = done.length ? `All done. ${a5Fs(done.length)} migrated.` : 'Nothing is running.'; sub = done.length ? `${num(done.reduce((t, j) => t + j.verified, 0))} records in total. Upload more whenever you’re ready.` : 'Upload files to start.'; }
+    if ($('#nvSay').textContent !== say) { $('#nvSay').textContent = say; if (!RM) $('#nvSay').animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'ease-out' }); }
+    $('#nvSub').dataset.base = sub; $('#nvOrb').className = 'nv-orb ' + (run && !need ? 'run' : tone);
+    $('#nvDT').textContent = n ? 'Add more files: drop them here or click' : 'Drop CSV files here, or click to choose';
+    $('#nvCount').textContent = n ? `${a5Fs(n)} · ${done.length} completed` : '';
+    $('#nvRej').hidden = !NV.rej.length; $('#nvRej').innerHTML = NV.rej.map(r => `<li><b>${esc(r[0])}</b> was not added: ${r[1]}</li>`).join('');
+    $('#nvAutoT').textContent = NV.auto ? 'Fix safe errors automatically' : 'Ask me before fixing errors'; $('#nvAuto').checked = NV.auto;
+    nvPaint();
+  }
+  function nvPaint() {
+    if (!nvOn()) return;
+    let lead = null;
+    for (const j of jobs) {
+      if (!isRunning(j)) continue; if (!lead || (j.p || 0) > (lead.p || 0)) lead = j;
+      const p = nvPct(j), pc = $(`[data-nv-pct="${j.id}"]`); if (pc && pc.textContent !== String(p)) pc.textContent = p;
+      const bar = $(`[data-nv-bar="${j.id}"]`); if (bar) bar.style.width = `${(j.p || 0).toFixed(1)}%`;
+      const a = aiState(j), st = $(`[data-nv-st="${j.id}"]`); if (st && st.textContent !== a.sub) st.textContent = a.sub;
+      const eta = $(`[data-nv-eta="${j.id}"]`), t = `${fmtDur(Math.max(0, ((!j.autofix && !j.fixDone ? 42 : 100) - (j.p || 0)) / RATE))} left`; if (eta && eta.textContent !== t) eta.textContent = t;
+    }
+    const sub = $('#nvSub'), base = sub.dataset.base || '', t = base || (lead ? `Right now: ${aiState(lead).sub.toLowerCase()} in ${lead.name}.` : '');
+    if (sub.textContent !== t) sub.textContent = t;
+  }
+  /* files in: checked, given a line of business where the name makes it clear, and started straight away */
+  function nvAdd(list) {
+    const bad = []; let ok = 0;
+    for (const f of list) {
+      if (!/\.csv$/i.test(f.name) && f.type !== 'text/csv') { bad.push([f.name, 'only CSV files can be migrated']); continue; }
+      if (f.size > 500 * 1048576) { bad.push([f.name, 'it is over the 500 MB limit']); continue; }
+      const lob = (AG_LOB.find(([re]) => re.test(f.name)) || [])[1] || '';
+      const j = startJob({ lob, name: f.name, size: f.size, autofix: NV.auto }); j.up = Date.now(); if (!lob) j.phase = 'lob'; ok++;
+    }
+    if (bad.length) { NV.rej = bad; clearTimeout(NV.rejT); NV.rejT = setTimeout(() => { NV.rej = []; nvSync(); }, 9000); }
+    render(); startTicker();
+    if (ok) a51Snack(ok === 1 ? '1 file received and encrypted' : `${ok} files received and encrypted`);
+  }
+  const nvSet = (list, fn, msg) => a51Do(list, () => { fn(); render(); startTicker(); }, msg);
+  function nvAct(k, id) {
+    const j = id ? jobs.find(x => x.id === +id) : null;
+    const fixL = jobs.filter(x => x.phase === 'fix_review' && !x.fixing), gatedL = jobs.filter(x => x.phase === 'ready' && !isPending(x) && isGated(x)), readyL = jobs.filter(x => x.phase === 'ready' && !isPending(x) && !isGated(x));
+    const fix = l => { l.forEach(x => { x.fixing = true; }); render(); setTimeout(() => { l.forEach(x => { if (x.phase !== 'fix_review') return; x.fixing = false; x.fixedApplied = x.fixed; x.phase = 'fix'; x.fixDone = true; }); render(); startTicker(); }, 1100); };
+    const skip = l => nvSet(l, () => l.forEach(x => { x.fixedApplied = 0; x.phase = 'verify'; x.fixDone = true; }), `Continuing ${a5Fs(l.length)} without fixes`);
+    const aside = l => nvSet(l, () => l.forEach(x => { x.skipAppeal = true; }), `Failed records set aside in ${a5Fs(l.length)}`);
+    const submit = l => nvSet(l, () => l.forEach(x => { x.authz = true; x.confirming = false; x.phase = 'submitted'; }), `${a5Fs(l.length)} submitted · ${num(l.reduce((t, x) => t + x.verified, 0))} records`);
+    if (k === 'fix-all') fix(fixL); else if (k === 'skip-all') skip(fixL); else if (k === 'aside-all') aside(gatedL); else if (k === 'submit-all') submit(readyL);
+    else if (!j) return;
+    else if (k === 'goto') { const el = NV.els.get(j.id); if (el) { el.scrollIntoView({ block: 'center', behavior: RM ? 'auto' : 'smooth' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); const s = $('select,button', el); if (s && j.phase === 'lob') s.focus({ preventScroll: true }); } }
+    else if (k === 'det') { NV.open.has(j.id) ? NV.open.delete(j.id) : NV.open.add(j.id); nvSync(); }
+    else if (k === 'fix') fix([j]); else if (k === 'skip') skip([j]); else if (k === 'setaside') aside([j]); else if (k === 'submit') submit([j]);
+    else if (k === 'appeal') { j.skipAppeal = false; j.appealed = true; j.appealOpen = false; j.appealAt = Date.now(); j.appealStage = 0; render(); a51Snack(`Appeal raised for ${num(j.failed)} records`); }
+    else if (k === 'appeal-cancel') nvSet([j], () => { j.appealed = false; j.appealDone = false; j.skipAppeal = true; }, 'Appeal cancelled');
+    else if (k === 'stop') nvSet([j], () => { j.phase = 'cancelled'; }, `${j.name} stopped`);
+    else if (k === 'retry') { Object.assign(j, { phase: j.lob ? 'upload' : 'lob', p: 0, fixDone: false, fixedApplied: 0, verified: 0, failed: 0, appealed: false, appealDone: false, skipAppeal: false, authz: false, at: {} }); render(); startTicker(); }
+    else if (k === 'remove') a51Do([j], () => { jobs = jobs.filter(x => x !== j); render(); }, `${j.name} removed`);
+    else if (k === 'receipt') a51Snack(`Receipt for ${nvId(j)} downloaded`);
+  }
+  $('#nv').addEventListener('click', e => {
+    const b = e.target.closest('[data-nv]'); if (b) { e.stopPropagation(); nvAct(b.dataset.nv, b.dataset.id); return; }
+    if (e.target.closest('#nvChoose') || (e.target.closest('#nvDrop') && !e.target.closest('button,label,input,a'))) $('#nvFile').click();
+    else if (e.target.closest('#nvSample')) { const n = ++NV.sampleN; nvAdd([['credit_cards', 14], ['personal_loans', 22], ['savings_accounts', 9], ['customer_export', 17]].map(([s, m]) => ({ name: `${s}_batch${n}.csv`, size: m * 1048576, type: 'text/csv' }))); }
+    else if (e.target.closest('#nvBusy')) $('#seedDemo').click();
+  });
+  $('#nv').addEventListener('change', e => {
+    if (e.target.matches('[data-nv-lob]')) { const j = jobs.find(x => x.id === +e.target.dataset.nvLob); if (j && e.target.value) { j.lob = e.target.value; j.phase = 'upload'; render(); startTicker(); a51Snack(`${j.name} set to ${j.lob}. I’ve started on it.`); } }
+    if (e.target.id === 'nvAuto') { NV.auto = e.target.checked; nvSync(); }
+  });
+  $('#nvFile').onchange = e => { nvAdd([...e.target.files]); e.target.value = ''; };
+  $('#nvDrop').onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === $('#nvDrop')) { e.preventDefault(); $('#nvFile').click(); } };
+  const nvFiles = e => e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files');
+  ['dragenter', 'dragover'].forEach(t => $('#nv').addEventListener(t, e => { if (!nvFiles(e)) return; e.preventDefault(); $('#nv').classList.add('drag'); }));
+  $('#nv').addEventListener('dragleave', e => { if (!e.relatedTarget || !$('#nv').contains(e.relatedTarget)) $('#nv').classList.remove('drag'); });
+  $('#nv').addEventListener('drop', e => { $('#nv').classList.remove('drag'); if (!nvFiles(e)) return; e.preventDefault(); nvAdd([...e.dataTransfer.files]); });
+  $('#nv').addEventListener('animationend', e => { if (e.target.classList && e.target.classList.contains('flash')) e.target.classList.remove('flash'); });
+
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
   function agUpload(list) {
@@ -3963,6 +4241,7 @@ span.r-pick{cursor:default}
     a5Mount(a5v, six);
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
+    document.body.classList.toggle('nvon', v === 'fresh'); $('#nv').hidden = v !== 'fresh';
     document.body.classList.toggle('agent5', a5v);
     document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', six); document.body.classList.toggle('agent7', v === 'agent7');
     if (a51v) { filter = 'all'; sortBy = 'needs'; }
@@ -3996,6 +4275,7 @@ span.r-pick{cursor:default}
   setUpCol(upCol);
   $('#trayDock').onclick = () => { closeTray(); setUpCol(false); setTimeout(() => $('#upInline').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }), 60); };
   function openTray() {
+    if (upView === 'fresh') { $('#nvFile').click(); return; }
     if (upView === 'agent6' || upView === 'agent7') { a6Panel(true, true); return; }
     if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
@@ -4027,7 +4307,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'agent7') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'agent7' || v === 'fresh') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
