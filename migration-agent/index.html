@@ -1049,44 +1049,44 @@ body.nvon .a51-snack.on{transform:translate(-50%,0)}
 .nv-sec h3::after{content:'';flex:1;height:1px;background:var(--n-line)}
 #nvG-need h3{color:var(--n-am)}#nvG-need h3 span{background:#f0b03c;color:#3a2300}
 #nvG-done h3 span{background:var(--n-grs);color:var(--n-gr)}
-.nv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;align-items:start}
-.nv-card{display:flex;flex-direction:column;gap:12px;min-width:0;padding:16px;border-radius:18px;background:#fff;border:1px solid var(--n-line);box-shadow:0 14px 30px -26px rgba(15,26,51,.5);transition:border-color .4s,box-shadow .4s}
-.nv-card.need{border-color:var(--n-amb);box-shadow:0 18px 36px -26px rgba(180,111,4,.6)}
-.nv-card.done{background:#fcfdfd}
+.nv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:18px;align-items:start}
+/* a card is a sheet of paper with a folded corner */
+.nv-card{--edge:#cfdbf7;--tint:#eef3ff;--tone:var(--n-bl);position:relative;display:flex;flex-direction:column;gap:10px;min-width:0;min-height:268px;padding:14px 16px 16px;border-radius:6px 0 14px 14px;background:linear-gradient(225deg,transparent 21px,#fff 0);filter:drop-shadow(0 0 .8px rgba(15,26,51,.5)) drop-shadow(0 14px 16px rgba(15,26,51,.1));transition:filter .3s}
+.nv-card:hover{filter:drop-shadow(0 0 .8px rgba(15,26,51,.6)) drop-shadow(0 18px 20px rgba(15,26,51,.16))}
+.nv-fold{position:absolute;top:0;right:0;width:30px;height:30px;background:linear-gradient(225deg,transparent 50%,var(--edge) 0);border-radius:0 0 0 6px}
+.nv-card.need{--edge:#f1d39a;--tint:#fff3d9;--tone:var(--n-am)}
+.nv-card.done{--edge:#bfe6d2;--tint:var(--n-grs);--tone:var(--n-gr)}
+.nv-card.off{--edge:#dfe4ee;--tint:#eef1f6;--tone:var(--n-mute)}
 .nv-card.flash{animation:nv-flash 1.4s ease-out}
-@keyframes nv-flash{0%,40%{box-shadow:0 0 0 5px rgba(36,87,230,.3)}}
-.nv-ch{display:flex;align-items:center;gap:11px;min-width:0}
-.nv-fi{width:38px;height:46px;border-radius:8px;flex-shrink:0;display:grid;place-items:end center;padding-bottom:6px;font:800 9px var(--mono);letter-spacing:.05em;color:var(--n-bld);background:linear-gradient(135deg,transparent 0 11px,#fff 0) top right/100% 100% no-repeat,#eef3ff;border:1px solid #cfdbf7;clip-path:polygon(0 0,calc(100% - 11px) 0,100% 11px,100% 100%,0 100%)}
-.nv-card.need .nv-fi{color:var(--n-am);background:#fff3d9;border-color:var(--n-amb)}
-.nv-card.done .nv-fi{color:var(--n-gr);background:var(--n-grs);border-color:#bfe6d2}
-.nv-card.off .nv-fi{color:var(--n-mute);background:#eef1f6;border-color:var(--n-line)}
-.nv-cn{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.nv-cn b{font-size:14.5px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nv-id{align-self:flex-start;font:600 11px var(--mono);padding:1px 7px;border-radius:6px;background:#eef1f6;color:var(--n-ink2)}
-.nv-x{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--n-mute);flex-shrink:0}
-.nv-x:hover{background:#eef1f6;color:var(--n-ink)}
+@keyframes nv-flash{0%,40%{filter:drop-shadow(0 0 5px rgba(36,87,230,.9))}}
+.nv-ch{display:flex;align-items:center;gap:4px;padding-right:22px;min-height:26px}
+.nv-ch .sp{flex:1}
+.nv-fi{font:800 10px var(--mono);letter-spacing:.06em;padding:3px 7px;border-radius:5px;background:var(--tint);color:var(--tone)}
+.nv-x{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--n-mute);flex-shrink:0}
+.nv-x:hover,.nv-i[aria-expanded="true"]{background:#eef1f6;color:var(--n-ink)}
 .nv-x svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
-.nv-meta{display:grid;grid-template-columns:1.25fr 1fr auto;gap:10px;padding:10px 12px;border-radius:12px;background:#f7f9fc}
-.nv-meta dt,.nv-det dt{font-size:10.5px;font-weight:600;color:var(--n-mute);margin-bottom:1px}
-.nv-meta dd{font-size:12.5px;font-weight:600;color:var(--n-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nv-prog{display:flex;align-items:center;gap:14px}
-.nv-pct{font-size:30px;line-height:1;font-weight:650;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-width:74px;color:var(--n-bl)}
-.nv-card.need .nv-pct{color:var(--n-am)}.nv-card.done .nv-pct{color:var(--n-gr)}.nv-card.off .nv-pct{color:var(--n-mute)}
-.nv-pt{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.nv-bar{height:6px;border-radius:999px;background:#e9edf5;overflow:hidden}
-.nv-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2457e6,#5c9bff);transition:width .25s linear}
-.nv-card.need .nv-bar i{background:#f0b03c}.nv-card.done .nv-bar i{background:#3fbf8a}.nv-card.off .nv-bar i{background:#b6bfd0}
-.nv-stt{font-size:12.5px;color:var(--n-ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nv-ask{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--n-ams);font-size:13px;line-height:1.45;color:#5a3d07}
-.nv-ask b{color:#3a2300;font-weight:650}
-.nv-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;background:#f0b03c;box-shadow:0 0 0 3px rgba(240,176,60,.25)}
-.nv-cf{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.nv-cf .sp{flex:1}
-.nv-lk{font-size:12.5px;font-weight:600;color:var(--n-bld);padding:4px 2px}
-.nv-lk:hover{text-decoration:underline}
-.nv-sel{height:36px;flex:1 1 230px;min-width:230px;padding:0 10px;border-radius:10px;border:1px solid var(--n-amb);background:#fff;font:inherit;font-size:13px;font-weight:600;color:var(--n-ink)}
-.nv-det{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;padding-top:12px;border-top:1px solid var(--n-line)}
-.nv-det dd{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.nv-i svg{width:16px;height:16px;stroke-width:2}
+.nv-prog{display:flex;flex-direction:column;gap:7px;padding:6px 0 4px}
+.nv-pct{font-size:44px;line-height:1;font-weight:650;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:var(--tone)}
+.nv-pct small{font-size:20px;font-weight:600;margin-left:2px;letter-spacing:0}
+.nv-bar{height:5px;border-radius:999px;background:#e9edf5;overflow:hidden}
+.nv-bar i{display:block;height:100%;border-radius:inherit;background:var(--tone);transition:width .25s linear}
+.nv-card.run .nv-bar i{background:linear-gradient(90deg,#2457e6,#5c9bff)}
+.nv-stt{font-size:12.5px;font-weight:650;color:var(--tone)}
+.nv-cn{display:flex;flex-direction:column;gap:2px;min-width:0;margin-top:auto}
+.nv-cn b{font-size:13.5px;font-weight:650;line-height:1.3;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nv-id{font:500 11px var(--mono);color:var(--n-mute)}
+.nv-meta{display:flex;flex-direction:column;gap:1px;font-size:12px;color:var(--n-ink2)}
+.nv-ask{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;color:#5a3d07}
+.nv-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#f0b03c;box-shadow:0 0 0 3px rgba(240,176,60,.25)}
+.nv-cf{display:flex;gap:6px;flex-wrap:wrap}
+.nv-cf .nv-b{height:32px;padding:0 12px;font-size:12.5px;flex:1}
+.nv-sel{height:34px;width:100%;padding:0 8px;border-radius:9px;border:1px solid var(--n-amb);background:#fff;font:inherit;font-size:12.5px;font-weight:600;color:var(--n-ink)}
+.nv-det{position:absolute;z-index:3;top:44px;left:10px;right:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;padding:12px;border-radius:12px;background:#fff;border:1px solid var(--n-line);box-shadow:0 18px 40px -14px rgba(15,26,51,.4);animation:nv-in .25s ease-out both}
+.nv-det dt{font-size:10.5px;font-weight:600;color:var(--n-mute)}
+.nv-det dd{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.nv-det .full{grid-column:1 / -1}
+.nv-det .nv-b{width:100%;height:32px;font-size:12.5px}
 @media(prefers-reduced-motion:reduce){.nv-orb.run::after,.nv-todo li,.nv-card.flash{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
@@ -3985,23 +3985,24 @@ span.r-pick{cursor:default}
   const nvFixParts = j => { let left = j.fixed; return NV_FIX.map(([t, w], i) => { const v = i === 2 ? left : Math.round(j.fixed * w); left -= v; return `${num(v)} ${t.toLowerCase()}`; }).join(' · '); };
   /* one file card: who it is, when it arrived, how far along it is as a percentage, and what the agent needs for it */
   function nvCard(j) {
-    const id = j.id, g = nvGroup(j), pct = nvPct(j), fa = j.fixedApplied || 0;
+    const id = j.id, pct = nvPct(j), fa = j.fixedApplied || 0;
     let st, ask = '', acts = '';
-    if (j.phase === 'lob') { st = 'Waiting for a line of business'; ask = 'I couldn’t tell which line of business this belongs to. Pick one and I’ll start.'; acts = `<select class="nv-sel" data-nv-lob="${id}" aria-label="Line of business for ${esc(j.name)}"><option value="">Choose line of business…</option>${AG_LOBS.map(l => `<option>${l}</option>`).join('')}</select>`; }
-    else if (j.phase === 'fix_review') { st = j.fixing ? 'Applying fixes' : 'Paused for your answer'; ask = j.fixing ? `Applying ${num(j.fixed)} fixes…` : `I found <b>${num(j.fixed)} errors I can fix safely</b>: ${nvFixParts(j)}. Your original rows are kept.`; acts = j.fixing ? '' : nvB('fix', `Fix ${num(j.fixed)} errors`, id, 'pri') + nvB('skip', 'Skip', id); }
-    else if (j.phase === 'ready' && isPending(j)) { st = 'On hold: appeal with the registrar'; acts = nvB('appeal-cancel', 'Cancel appeal', id); }
-    else if (j.phase === 'ready' && isGated(j)) { st = 'Processed · needs your answer'; ask = `<b>${num(j.failed)} records failed consent checks</b> and I can’t repair them. The other ${num(j.verified)} are verified.`; acts = nvB('setaside', 'Set aside and continue', id, 'pri') + nvB('appeal', 'Appeal', id); }
-    else if (j.phase === 'ready') { st = 'Processed · ready to submit'; ask = `<b>${num(j.verified)} records</b> are verified and ready to go.`; acts = nvB('submit', 'Approve and submit', id, 'pri'); }
-    else if (j.phase === 'submitted') { st = `Migrated · ${num(j.verified)} records`; acts = nvB('receipt', 'Receipt', id); }
-    else if (j.phase === 'cancelled') { st = 'Stopped by you'; acts = nvB('retry', 'Run again', id, 'pri') + nvB('remove', 'Remove', id); }
-    else st = `<span data-nv-st="${id}">${esc(aiState(j).sub)}</span>`;
-    const open = NV.open.has(id), known = j.phase !== 'lob' && (pct >= 30 || !isRunning(j));
-    const det = open ? `<dl class="nv-det"><div><dt>Rows uploaded</dt><dd>${num(j.total)}</dd></div>${known ? `<div><dt>Valid</dt><dd>${num(j.valid)}</dd></div><div><dt>Fixable errors</dt><dd>${num(j.fixed)}${fa ? ' · fixed' : ''}</dd></div><div><dt>Manual or duplicate</dt><dd>${num(j.manual + j.dup)}</dd></div>` : ''}${j.phase === 'ready' || j.phase === 'submitted' ? `<div><dt>Failed consent checks</dt><dd>${num(j.failed)}</dd></div><div><dt>${j.phase === 'submitted' ? 'Migrated' : 'Ready to submit'}</dt><dd>${num(j.verified)}</dd></div>` : ''}<div><dt>Error handling</dt><dd>${j.autofix ? 'Fix safe errors automatically' : 'Ask before fixing'}</dd></div></dl>` : '';
-    return `<header class="nv-ch"><span class="nv-fi" aria-hidden="true">CSV</span><div class="nv-cn"><b title="${esc(j.name)}">${esc(j.name)}</b><span class="nv-id">${nvId(j)}</span></div>${isRunning(j) ? `<button type="button" class="nv-x" data-nv="stop" data-id="${id}" aria-label="Stop ${esc(j.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>` : ''}</header>
-      <dl class="nv-meta"><div><dt>Uploaded</dt><dd>${nvDate(j.up)}</dd></div><div><dt>Line of business</dt><dd>${j.lob ? esc(j.lob) : '–'}</dd></div><div><dt>Size</dt><dd>${fmtSize(sizeOf(j))}</dd></div></dl>
-      <div class="nv-prog"><b class="nv-pct"><span data-nv-pct="${id}">${pct}</span>%</b><div class="nv-pt"><div class="nv-bar"><i data-nv-bar="${id}" style="width:${pct}%"></i></div><span class="nv-stt">${st}${isRunning(j) ? ` · <span data-nv-eta="${id}"></span>` : ''}</span></div></div>
-      ${ask ? `<p class="nv-ask"><i class="nv-dot" aria-hidden="true"></i><span>${ask}</span></p>` : ''}
-      <footer class="nv-cf">${acts}<span class="sp"></span><button type="button" class="nv-lk" data-nv="det" data-id="${id}" aria-expanded="${open}">${open ? 'Hide details' : 'Details'}</button></footer>${det}`;
+    if (j.phase === 'lob') { st = 'Not started'; ask = 'Which line of business?'; acts = `<select class="nv-sel" data-nv-lob="${id}" aria-label="Line of business for ${esc(j.name)}"><option value="">Choose…</option>${AG_LOBS.map(l => `<option>${l}</option>`).join('')}</select>`; }
+    else if (j.phase === 'fix_review') { st = j.fixing ? 'Fixing' : 'Paused at autofix'; ask = j.fixing ? '' : `${num(j.fixed)} fixable errors`; acts = j.fixing ? '' : nvB('fix', 'Fix', id, 'pri') + nvB('skip', 'Skip', id); }
+    else if (j.phase === 'ready' && isPending(j)) { st = 'On hold: appeal'; acts = nvB('appeal-cancel', 'Cancel appeal', id); }
+    else if (j.phase === 'ready' && isGated(j)) { st = 'Processed'; ask = `${num(j.failed)} failed checks`; acts = nvB('setaside', 'Set aside', id, 'pri') + nvB('appeal', 'Appeal', id); }
+    else if (j.phase === 'ready') { st = 'Ready to submit'; acts = nvB('submit', 'Submit', id, 'pri'); }
+    else if (j.phase === 'submitted') st = 'Migrated';
+    else if (j.phase === 'cancelled') { st = 'Stopped'; acts = nvB('retry', 'Run again', id, 'pri') + nvB('remove', 'Remove', id); }
+    else st = `<span data-nv-st="${id}">${esc(aiState(j).now)}</span>`;
+    const open = NV.open.has(id), known = j.phase !== 'lob' && (pct >= 30 || !isRunning(j)), row = (t, v) => `<div><dt>${t}</dt><dd>${v}</dd></div>`;
+    const det = open ? `<dl class="nv-det">${row('File ID', nvId(j))}${row('Size', fmtSize(sizeOf(j)))}${row('Rows', num(j.total))}${known ? row('Valid', num(j.valid)) + row('Fixable errors', num(j.fixed) + (fa ? ' · fixed' : '')) + row('Manual or duplicate', num(j.manual + j.dup)) : ''}${j.phase === 'ready' || j.phase === 'submitted' ? row('Failed checks', num(j.failed)) + row(j.phase === 'submitted' ? 'Migrated' : 'Ready', num(j.verified)) : ''}${row('Errors', j.autofix ? 'Fixed automatically' : 'Ask first')}${isRunning(j) ? row('Time left', `<span data-nv-eta="${id}"></span>`) : ''}${j.phase === 'submitted' ? `<div class="full">${nvB('receipt', 'Download receipt', id)}</div>` : ''}</dl>` : '';
+    return `<span class="nv-fold" aria-hidden="true"></span>
+      <header class="nv-ch"><span class="nv-fi">CSV</span><span class="sp"></span>${isRunning(j) ? `<button type="button" class="nv-x" data-nv="stop" data-id="${id}" aria-label="Stop ${esc(j.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>` : ''}<button type="button" class="nv-x nv-i" data-nv="det" data-id="${id}" aria-expanded="${open}" aria-label="More about ${esc(j.name)}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></header>
+      <div class="nv-prog"><b class="nv-pct"><span data-nv-pct="${id}">${pct}</span><small>%</small></b><div class="nv-bar"><i data-nv-bar="${id}" style="width:${pct}%"></i></div><span class="nv-stt">${st}</span></div>
+      <div class="nv-cn"><b title="${esc(j.name)}">${esc(j.name)}</b><span class="nv-id">${nvId(j)}</span></div>
+      <p class="nv-meta"><span>${nvDate(j.up)}</span><span>${j.lob ? esc(j.lob) : 'No line of business yet'}</span></p>
+      ${ask ? `<p class="nv-ask"><i class="nv-dot" aria-hidden="true"></i>${ask}</p>` : ''}${acts ? `<footer class="nv-cf">${acts}</footer>` : ''}${det}`;
   }
   /* what the agent needs, collated: one item per kind of answer, so several files can be answered at once */
   function nvTodo() {
@@ -4064,7 +4065,7 @@ span.r-pick{cursor:default}
       if (!isRunning(j)) continue; if (!lead || (j.p || 0) > (lead.p || 0)) lead = j;
       const p = nvPct(j), pc = $(`[data-nv-pct="${j.id}"]`); if (pc && pc.textContent !== String(p)) pc.textContent = p;
       const bar = $(`[data-nv-bar="${j.id}"]`); if (bar) bar.style.width = `${(j.p || 0).toFixed(1)}%`;
-      const a = aiState(j), st = $(`[data-nv-st="${j.id}"]`); if (st && st.textContent !== a.sub) st.textContent = a.sub;
+      const a = aiState(j), st = $(`[data-nv-st="${j.id}"]`); if (st && st.textContent !== a.now) st.textContent = a.now;
       const eta = $(`[data-nv-eta="${j.id}"]`), t = `${fmtDur(Math.max(0, ((!j.autofix && !j.fixDone ? 42 : 100) - (j.p || 0)) / RATE))} left`; if (eta && eta.textContent !== t) eta.textContent = t;
     }
     const sub = $('#nvSub'), base = sub.dataset.base || '', t = base || (lead ? `Right now: ${aiState(lead).sub.toLowerCase()} in ${lead.name}.` : '');
