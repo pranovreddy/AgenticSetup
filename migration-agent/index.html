@@ -826,6 +826,67 @@ body.agent51 .a51-kpi{grid-template-columns:repeat(4,minmax(0,1fr))}
 .a51-gh.fold svg{transform:rotate(-90deg)}
 .a51-gh em{font-style:normal;font-weight:500;font-size:12px;color:#7f8aa3}
 @media(prefers-reduced-motion:reduce){.a51-fbar .f-run,.a51-dlg[open],body.agent51 #bulk{animation:none}}
+/* ---------- agent 6.0: agent 4.0's hero (the agent speaks, proposes, upload is a primary action at the top) on agent 5.1's metrics and board ---------- */
+body:not(.agent6) .a6-only{display:none!important}
+body.agent6 .a5{isolation:isolate;gap:16px;padding-top:34px;background:none}
+body.agent6 .a5::before{content:'';position:absolute;z-index:-1;left:0;right:0;top:0;height:420px;pointer-events:none;background:radial-gradient(46% 62% at 30% 0,rgba(76,140,255,.2),transparent 70%),radial-gradient(40% 56% at 82% 4%,rgba(150,110,255,.14),transparent 70%),linear-gradient(rgba(37,96,246,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(37,96,246,.05) 1px,transparent 1px);background-size:auto,auto,46px 46px,46px 46px;-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
+body.agent6 .a5-head,body.agent6.is-empty .a5-head{order:0;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:26px;padding:0 0 6px;border:0;border-radius:0;background:none;box-shadow:none}
+body.agent6 .a5-head .a5-blob{width:124px;height:124px;margin:-6px 0 0 -6px}
+body.agent6 .a5-head .a5-blob .mark{width:34px;height:34px}
+body.agent6 .a5-say{padding-top:10px}
+body.agent6 .a5-say h2{font-size:32px;line-height:1.1;font-weight:650;letter-spacing:-.03em}
+body.agent6 .a5-say h2.swap{animation:a6-say .45s var(--ease-out)}
+@keyframes a6-say{from{opacity:0;transform:translateY(8px);filter:blur(3px)}}
+body.agent6 .a5-say p{margin-top:6px;font-size:14px}
+body.agent6 .a5-say p.a5-live{margin-top:8px;font-size:12.5px}
+.a6-next{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:14px;animation:a5-rise .4s var(--ease-out) both}
+.a6-next p{display:flex;gap:8px;align-items:flex-start;max-width:78ch;font-size:13.5px!important;line-height:1.5;color:var(--a-ink2)!important;margin:0!important}
+.a6-next p svg{width:16px;height:16px;margin-top:2px;flex-shrink:0;fill:var(--a-am)}
+.a6-next div{display:flex;gap:8px;flex-wrap:wrap}
+body.agent6 .a51-hact{flex-direction:column;align-items:flex-end;gap:10px;padding-top:14px}
+.a6-up{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px 0 8px;border-radius:999px;background:var(--a-bl);color:#fff;font-size:14.5px;font-weight:650;box-shadow:0 12px 26px -12px rgba(37,96,246,.8);transition:background .15s,transform .12s,box-shadow .2s}
+.a6-up:hover{background:var(--a-bld);box-shadow:0 0 0 4px rgba(37,96,246,.14),0 14px 30px -12px rgba(37,96,246,.85)}
+.a6-up:active{transform:scale(.98)}
+.a6-up i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.38)}
+.a6-up svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.a6-up[aria-expanded="true"]{background:#0f1a33;box-shadow:none}
+body.agent6 .a51-pause{background:rgba(255,255,255,.8)}
+/* the upload panel opens under the hero when asked for, and steps aside once the files are handed over */
+body.agent6 .a5-dock{order:1;position:relative;bottom:auto;max-width:none;border-radius:24px;animation:a6-open .35s var(--ease-out)}
+@keyframes a6-open{from{opacity:0;transform:translateY(-10px) scale(.99)}}
+body.agent6 .a5-dock.rest{max-width:none;border-radius:24px}
+body.agent6 .a5-fade{display:none}
+body.agent6 .a51-snack{top:auto;bottom:88px;transform:translate(-50%,14px)}
+body.agent6 .a51-snack.on{transform:translate(-50%,0)}
+body.agent6 .a51-try,body.agent6 .a5-dock.idle .a51-try{display:none}
+body.agent6 .a5-dock.idle .a5-fld,body.agent6 .a5-dock.idle .a5-opt{display:flex!important}
+body.agent6 .a5-dock.idle .a5-clip,body.agent6 .a5-dock.idle .a5-dt{display:none}
+body.agent6 .a5-dock.idle .a5-bar,body.agent6 .a5-dock.rest .a5-bar{padding:0 14px 14px;justify-content:center}
+body.agent6 .a5-dock.idle .a5-foot{display:flex!important;justify-content:center;padding-bottom:14px}
+body.agent6 .a5-foot #a5Sample,body.agent6 .a5-foot .sp{display:none}
+.a6-zone{display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px;padding:26px 18px 22px;border-radius:16px;border:1.5px dashed rgba(125,165,255,.55);background:rgba(255,255,255,.04);text-align:center;cursor:pointer;transition:background .2s,border-color .2s}
+.a6-zone:hover{background:rgba(255,255,255,.08);border-color:#7da5ff}
+.a6-zone .ic{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--a-bl);margin-bottom:6px;box-shadow:0 10px 22px -8px rgba(37,96,246,.9)}
+.a6-zone .ic svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.a6-zone b{font-size:16px;font-weight:650;color:#fff}
+.a6-zone small{font-size:12.5px;color:#aab6d3}
+.a6-zone .bt{display:flex;gap:8px;margin-top:10px}
+.a6-zone .bt button{height:38px;padding:0 16px;border-radius:11px;font-size:13px;font-weight:650;background:#3b74ff;color:#fff}
+.a6-zone .bt button:hover{background:#5187ff}
+.a6-zone .bt button.gh{background:rgba(255,255,255,.1)}.a6-zone .bt button.gh:hover{background:rgba(255,255,255,.2)}
+.a6-x{position:absolute;top:10px;right:10px;z-index:3;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:#aab6d3}
+.a6-x:hover{background:rgba(255,255,255,.12);color:#fff}
+.a6-x svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+body.agent6 .a5-th{padding-right:40px}
+body.agent6 .a51-kpi{order:2;margin-top:0;border-radius:20px}
+body.agent6 .a5-empty{order:3;flex:0 1 auto;padding:22px;border:0;background:none}
+body.agent6 .a5-empty .a5-eb{display:none}
+body.agent6 .a5-deck{display:none!important}
+body.agent6 .a5-tools{order:3}
+body.agent6 #canvas{order:4}
+body.agent6 #bulk{order:9}
+body.agent6.a51-sel .a5-dock.idle{display:flex}
+@media(prefers-reduced-motion:reduce){body.agent6 .a5-say h2.swap,body.agent6 .a5-dock,.a6-next{animation:none}}
 body.agent4 .agent{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"blob say cta" "dock dock dock" "metrics metrics metrics" "sh sh sh" "bulk bulk bulk" "list list list"}
 body.agent4 .agent.ag-nostats{grid-template-areas:"blob say cta" "dock dock dock"}
 body.agent4 .ag-hero .ag-blob{width:112px;height:112px}
@@ -1426,7 +1487,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -1528,9 +1589,10 @@ span.r-pick{cursor:default}
               <h2 id="a5Say" aria-live="polite">Add files below. I’ll take it from there.</h2>
               <p id="a5Sub">Each file becomes a run that I validate, fix and verify for you.</p>
               <p class="a5-live" id="a5Live" hidden><i class="a5-caret" aria-hidden="true"></i><span id="a5LiveT"></span></p>
+              <div class="a6-only a6-next" id="a6Next" aria-live="polite" hidden></div>
             </div>
             <div class="a5-done" id="a5Done" hidden></div>
-            <div class="a51-only a51-hact"><button type="button" class="a51-pause" id="a51Pause" hidden></button></div>
+            <div class="a51-only a51-hact"><button type="button" class="a6-only a6-up" id="a6Up" aria-expanded="false" aria-controls="a5Drop"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></i>Upload files</button><button type="button" class="a51-pause" id="a51Pause" hidden></button></div>
           </header>
           <dl class="a51-only a51-kpi" id="a51Kpi" aria-label="Migration status" hidden></dl>
           <div class="a5-empty" id="a5Empty">
@@ -1558,6 +1620,8 @@ span.r-pick{cursor:default}
           <div class="a5-fade" id="a5Fade" aria-hidden="true"></div>
           <div class="a5-dock" id="a5Drop">
             <input type="file" id="a5File" accept=".csv,text/csv" multiple hidden>
+            <button type="button" class="a6-only a6-x" id="a6X" aria-label="Close the upload panel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            <div class="a6-only a6-zone" id="a6Zone" role="button" tabindex="0" aria-label="Drop CSV files here, or press Enter to choose files"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Drop CSV files here</b><small>I’ll encrypt them in your browser and hold them until you hand over.</small><div class="bt"><button type="button" id="a6Choose">Choose files</button><button type="button" class="gh" id="a6Sample">Try sample files</button></div></div>
             <div class="a5-tray" id="a5Tray" hidden>
               <div class="a5-th"><span class="lk" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><b id="a5TrT"></b><small id="a5TrS"></small><button type="button" class="a5-lk a51-only" id="a51RejX" hidden>Dismiss errors</button><button type="button" class="a5-lk" id="a5Clear">Clear all</button></div>
               <ul class="a5-staged" id="a5Staged" aria-label="Files waiting to be handed over"></ul>
@@ -3321,6 +3385,9 @@ span.r-pick{cursor:default}
     const rej = a51On() ? A51.rej : [];
     $('#a5Tray').hidden = !n && !rej.length;
     $('#a5Drop').classList.toggle('rest', !n && !rej.length); $('#a5Drop').classList.toggle('idle', !n);
+    const six = a6On(), shown = !six || A6.open || n > 0 || rej.length > 0 || !jobs.length;
+    $('#a5Drop').hidden = !shown; $('#a6Zone').hidden = n > 0; $('#a6X').hidden = !jobs.length;
+    $('#a6Up').setAttribute('aria-expanded', String(six && shown)); $('#a6Up').hidden = six && !jobs.length && !n;
     $('#a51Rej').hidden = $('#a51RejX').hidden = !rej.length; $('#a5Clear').hidden = !n;
     $('#a51Rej').innerHTML = rej.map(([nm, why]) => `<li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg><b>${esc(nm)}</b><span>not added · ${why}</span></li>`).join('');
     $('#a5Tray').classList.toggle('locked', n > 0 && !open);
@@ -3358,19 +3425,20 @@ span.r-pick{cursor:default}
       $$('[data-a5f]').forEach(b => { const f = b.dataset.a5f, on = f === filter; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.classList.toggle('hot', f === 'needs' && cnt.needs > 0 && !on); b.lastElementChild.textContent = cnt[f]; });
     }
     const staged = A5.stage.length, miss = A5.stage.filter(f => !a5Eff(f)).length;
-    let say = 'Add files below. I’ll take it from there.', sub = 'Each file becomes a run that I validate, fix and verify for you.', blob = 'ready';
-    if (staged) { blob = 'wait'; if (miss) { say = 'Which line of business is this?'; sub = `${a5Fs(miss)} can’t be placed yet. Pick one in the bar below.`; } else { say = `${a5Fs(staged)} ready to hand over`; sub = run ? `Hand them over and they join the ${run} I’m already working on.` : 'Check the line of business, then hand them over.'; } }
+    let say = a6On() ? 'Drop your files. I’ll handle the rest.' : 'Add files below. I’ll take it from there.', sub = 'Each file becomes a run that I validate, fix and verify for you.', blob = 'ready';
+    if (staged) { blob = 'wait'; if (miss) { say = 'Which line of business is this?'; sub = `${a5Fs(miss)} can’t be placed yet. Pick one ${a6On() ? 'in the upload panel' : 'in the bar below'}.`; } else { say = `${a5Fs(staged)} ready to hand over`; sub = run ? `Hand them over and they join the ${run} I’m already working on.` : 'Check the line of business, then hand them over.'; } }
     else if (n) {
-      if (need) { say = need === 1 ? '1 run needs your call' : `${need} runs need your call`; sub = 'Everything else is done.'; blob = 'wait'; }
+      if (need) { say = need === 1 ? '1 run needs your call' : `${need} runs need your call`; sub = 'Everything else is done.'; blob = 'wait'; if (a6On()) { say = need === 1 ? 'One thing needs your call' : `${need} things need your call`; } }
       else if (run && A5.paused) { say = 'Paused'; sub = ''; blob = 'wait'; }
       else if (run) { say = run === 1 ? 'Working on 1 file' : `Working on ${run} files`; sub = 'Add more files any time. They join the queue.'; blob = 'run'; }
-      else { say = 'All caught up'; sub = `${a5Fs(done)} submitted. Add more below to start new runs.`; blob = 'done'; }
+      else { say = 'All caught up'; sub = `${a5Fs(done)} submitted. ${a6On() ? 'Upload more to start new runs.' : 'Add more below to start new runs.'}`; blob = 'done'; }
     }
     if ($('#a5Say').textContent !== say) $('#a5Say').textContent = say;
     const live = jobs.some(isRunning) && !staged;
     $('#a5Sub').textContent = sub; $('#a5Sub').hidden = live; $('#a5Head').dataset.blob = blob;
     $('#a5Live').hidden = !live;
-    a51Console();
+    a51Console(); a6Next();
+    if (a6On() && $('#a5Drop').hidden === (A6.open || A5.stage.length > 0 || !jobs.length)) { $('#a5Drop').hidden = !$('#a5Drop').hidden; $('#a6X').hidden = !jobs.length; $('#a6Up').hidden = !jobs.length && !A5.stage.length; }
     a5Paint(true);
     if (typeof AI_BLOB !== 'undefined') AI_BLOB.wake();
   }
@@ -3402,17 +3470,17 @@ span.r-pick{cursor:default}
     if (bad.length && a51On()) { clearTimeout(A51.rejT); A51.rejT = setTimeout(() => { A51.rej = []; a5Stage(); }, 9000); }
     if (!a51On()) A51.rej = [];
     a5Stage();
-    if (caught) { $('#a5Staged').scrollTop = 1e6; $('#a5Go').focus({ preventScroll: true }); }
+    if (caught) { $('#a5Staged').scrollTop = 1e6; $('#a5Go').focus({ preventScroll: true }); if (a6On()) $('#a5Drop').scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); }
   }
   function a5HandOver() {
     if (!A5.stage.length || A5.stage.some(f => !a5Eff(f) || !f.sealed)) return;
     const auto = $('#a5Auto').checked;
-    const made = A5.stage.map(f => startJob({ lob: a5Eff(f), name: f.name, size: f.size, autofix: auto })); A5.stage = [];
+    const made = A5.stage.map(f => startJob({ lob: a5Eff(f), name: f.name, size: f.size, autofix: auto })); A5.stage = []; A6.open = false;
     filter = 'all'; query = '';
     a5Stage(); flip(render, made.map(m => m.id)); startTicker();
     const dock = $('#a5Drop'); dock.classList.remove('sent'); void dock.offsetWidth; dock.classList.add('sent');
     toast(made.length > 1 ? `Agent picked up ${made.length} files` : `Agent picked up ${made[0].name}`);
-    $('#a5Clip').focus({ preventScroll: true });
+    (a6On() ? $('#a6Up') : $('#a5Clip')).focus({ preventScroll: true });
   }
   const a5Sample = () => {
     const n = ++A5.sampleN, pick = [0, 1, 2].map(k => AG_SAMPLES[(n + k) % AG_SAMPLES.length]);
@@ -3429,7 +3497,7 @@ span.r-pick{cursor:default}
   $('#a5Staged').addEventListener('change', e => { const f = A5.stage.find(x => x.id === +e.target.dataset.fid); if (!f) return; f.lob = e.target.value; a5Stage(); });
   /* a file dragged anywhere over the view lands in the composer */
   const a5View = $('#ag5View'), a5Files = e => e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files') && !(e.target.closest && e.target.closest('.ap-drop'));
-  ['dragenter', 'dragover'].forEach(t => a5View.addEventListener(t, e => { if (!a5Files(e)) return; e.preventDefault(); a5View.classList.add('dragging'); }));
+  ['dragenter', 'dragover'].forEach(t => a5View.addEventListener(t, e => { if (!a5Files(e)) return; e.preventDefault(); if (a6On() && !A6.open) { A6.open = true; a5Stage(); } a5View.classList.add('dragging'); }));
   a5View.addEventListener('dragleave', e => { if (!e.relatedTarget || !a5View.contains(e.relatedTarget)) a5View.classList.remove('dragging'); });
   a5View.addEventListener('drop', e => { a5View.classList.remove('dragging'); if (!a5Files(e)) return; e.preventDefault(); a5Attach([...e.dataTransfer.files]); });
   document.addEventListener('paste', e => { if (!a5On() || !e.clipboardData || !e.clipboardData.files.length) return; e.preventDefault(); a5Attach([...e.clipboardData.files]); });
@@ -3568,6 +3636,43 @@ span.r-pick{cursor:default}
   $('#a51All').addEventListener('change', e => { const fl = a51Shown(); fl.forEach(j => e.target.checked ? selected.add(j.id) : selected.delete(j.id)); render(); });
   $('#a51RejX').onclick = () => { A51.rej = []; a5Stage(); };
 
+  /* ---------- agent 6.0: the agent speaks and proposes at the top, upload opens from a primary button beside it ---------- */
+  const a6On = () => document.body.classList.contains('agent6');
+  const A6 = { open: false, next: '', say: '' };
+  function a6Panel(open, focus) {
+    A6.open = open; a5Stage();
+    if (open && focus) { const z = $('#a6Zone'); (z.hidden ? $('#a5Go') : z).focus({ preventScroll: true }); $('#a5Drop').scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); }
+    if (!open && focus) $('#a6Up').focus({ preventScroll: true });
+  }
+  /* what the agent proposes, said in its own words right under the headline, with the actions attached */
+  function a6Next() {
+    const el = $('#a6Next'); if (!a6On()) { el.hidden = true; return; }
+    const g = a5Groups(), b = (k, label, cls = '') => `<button type="button" class="btn btn-sm ${cls}" data-a5b="${k}">${label}</button>`;
+    const nFix = g.fixable.reduce((t, x) => t + x.fixed, 0), nFail = g.gated.reduce((t, x) => t + x.failed, 0), nRec = g.ready.reduce((t, x) => t + x.verified, 0);
+    const bits = [], lead = g.fixable.length ? 'fix' : g.gated.length ? 'skip' : 'submit';
+    if (g.fixable.length) bits.push(`I found ${num(nFix)} errors I can fix safely in ${a5Fs(g.fixable.length)}`);
+    if (g.gated.length) bits.push(`${num(nFail)} records failed checks in ${a5Fs(g.gated.length)}, which I can set aside`);
+    if (g.ready.length) bits.push(`${a5Fs(g.ready.length)} ${g.ready.length > 1 ? 'are' : 'is'} ready to submit (${num(nRec)} records)`);
+    let html = '';
+    if (bits.length) {
+      const act = (g.fixable.length ? b('fix-all', `Fix ${g.fixable.length > 1 ? 'all ' : ''}${num(nFix)} errors`, lead === 'fix' ? 'btn-pri' : '') : '')
+        + (g.gated.length ? b('skip-all', `Skip failed records in ${a5Fs(g.gated.length)}`, lead === 'skip' ? 'btn-pri' : '') : '')
+        + (g.ready.length ? b('submit-all-arm', `Approve and submit ${a5Fs(g.ready.length)}`, lead === 'submit' ? 'btn-pri' : '') : '')
+        + (g.need.length > 1 ? b('review', 'Review one by one') : '');
+      html = `<p>${AG_SPARK}<span>${bits.join('. ')}. Your original rows are always kept.</span></p><div>${act}</div>`;
+    } else if (g.fixing.length) html = `<p>${AG_SPARK}<span>Applying the fixes you approved in ${a5Fs(g.fixing.length)}. Back in a moment.</span></p>`;
+    el.hidden = !html;
+    if (html !== A6.next) { A6.next = html; el.innerHTML = html; }
+    const h = $('#a5Say'); if (h.textContent !== A6.say) { A6.say = h.textContent; h.classList.remove('swap'); void h.offsetWidth; h.classList.add('swap'); }
+  }
+  $('#a6Up').onclick = () => a6Panel(!A6.open || !jobs.length, true);
+  $('#a6X').onclick = () => a6Panel(false, true);
+  $('#a6Choose').onclick = e => { e.stopPropagation(); a5Browse(); };
+  $('#a6Sample').onclick = e => { e.stopPropagation(); a5Sample(); };
+  $('#a6Zone').onclick = () => a5Browse();
+  $('#a6Zone').onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === $('#a6Zone')) { e.preventDefault(); a5Browse(); } };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && a6On() && A6.open && jobs.length && !$('#a51Dlg').open) a6Panel(false, true); });
+
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
   function agUpload(list) {
@@ -3684,14 +3789,14 @@ span.r-pick{cursor:default}
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
-    const a5v = v === 'agent5' || v === 'agent51';
+    const a51v = v === 'agent51' || v === 'agent6', a5v = v === 'agent5' || a51v;
     a5Mount(a5v);
     agPad(a3 && jobs.length ? 'min' : 'open');
     $('#agentView').hidden = !ag;
     document.body.classList.toggle('agent5', a5v);
-    document.body.classList.toggle('agent51', v === 'agent51');
-    if (v === 'agent51') { filter = 'all'; sortBy = 'needs'; }
-    if (v !== 'agent51') { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
+    document.body.classList.toggle('agent51', a51v); document.body.classList.toggle('agent6', v === 'agent6');
+    if (a51v) { filter = 'all'; sortBy = 'needs'; }
+    if (!a51v) { $('#a51Dlg').open && $('#a51Dlg').close(); $('#a51Snack').classList.remove('on'); }
     selected.clear();
     $('#ag5View').hidden = !a5v;
     if (a5v) { closeTray(); a5Stage(); }
@@ -3720,6 +3825,7 @@ span.r-pick{cursor:default}
   setUpCol(upCol);
   $('#trayDock').onclick = () => { closeTray(); setUpCol(false); setTimeout(() => $('#upInline').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }), 60); };
   function openTray() {
+    if (upView === 'agent6') { a6Panel(true, true); return; }
     if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
     if (upView === 'agent') { $('#agDrop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); $('#agDrop').focus({ preventScroll: true }); return; }
@@ -3750,7 +3856,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'agent5' || v === 'agent51' || v === 'agent6') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
