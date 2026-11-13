@@ -1407,6 +1407,12 @@ body.sb4:not(.is-empty) .sb4-body{gap:10px;overflow-y:auto;scrollbar-width:thin;
 .s4-ag li.wait .s4-av{--c:#c98712;--t:#fdf1d8}
 @keyframes s4-blink{0%,44%,50%,100%{transform:scaleY(1)}47%{transform:scaleY(.12)}}
 @media(prefers-reduced-motion:reduce){.s4-ag li.on .eye,.s4-ag li.on .an-d{animation:none}}
+/* side bar 5.0: side bar 4.0 with the agent column on the right */
+body.sb5 .agent{grid-template-columns:minmax(0,1fr) 320px;grid-template-areas:"metrics ai" "sh ai" "bulk ai" "list ai"}
+body.sb5:not(.is-empty) .agent{padding:0 0 48px 26px}
+body.sb5:not(.is-empty) .sb4-ai{border-right:0;border-left:1px solid var(--line)}
+body.sb5 .agent.s4-enter .sb4-ai{animation-name:s5-col}
+@keyframes s5-col{from{opacity:0;transform:translateX(36px)}}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -1974,7 +1980,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="sidebar4" aria-pressed="false">Side bar 4.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="agent7" aria-pressed="false">Agent 7.0</button><button type="button" class="chip-btn" data-upview="fresh" aria-pressed="false">Fresh</button></div></div>
+    <div class="view-sw" role="group" aria-label="Upload layout"><span>Layout</span><div class="seg2"><button type="button" class="chip-btn is-on" data-upview="panel" aria-pressed="true">Side panel</button><button type="button" class="chip-btn" data-upview="page" aria-pressed="false">On this page</button><button type="button" class="chip-btn" data-upview="agent" aria-pressed="false">Agent</button><button type="button" class="chip-btn" data-upview="agent2" aria-pressed="false">Agent 2.0</button><button type="button" class="chip-btn" data-upview="agent3" aria-pressed="false">Agent 3.0</button><button type="button" class="chip-btn" data-upview="agent4" aria-pressed="false">Agent 4.0</button><button type="button" class="chip-btn" data-upview="sidebar4" aria-pressed="false">Side bar 4.0</button><button type="button" class="chip-btn" data-upview="sidebar5" aria-pressed="false">Side bar 5.0</button><button type="button" class="chip-btn" data-upview="agent5" aria-pressed="false">Agent 5.0</button><button type="button" class="chip-btn" data-upview="agent51" aria-pressed="false">Agent 5.1</button><button type="button" class="chip-btn" data-upview="agent6" aria-pressed="false">Agent 6.0</button><button type="button" class="chip-btn" data-upview="agent7" aria-pressed="false">Agent 7.0</button><button type="button" class="chip-btn" data-upview="fresh" aria-pressed="false">Fresh</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -4771,10 +4777,10 @@ span.r-pick{cursor:default}
     $('#upInline').hidden = v !== 'page';
     placePane();
     document.body.classList.toggle('up-page', v === 'page');
-    const sb4 = v === 'sidebar4', ag = v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4, a3 = v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4;
+    const sb4 = v === 'sidebar4' || v === 'sidebar5', ag = v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4, a3 = v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4;
     document.body.classList.toggle('agent-on', ag);
     document.body.classList.toggle('agent3', a3);
-    document.body.classList.toggle('agent4', v === 'agent4' || sb4); document.body.classList.toggle('sb4', sb4); SB4.has = jobs.length > 0; S4.sig = '';
+    document.body.classList.toggle('agent4', v === 'agent4' || sb4); document.body.classList.toggle('sb4', sb4); document.body.classList.toggle('sb5', v === 'sidebar5'); SB4.has = jobs.length > 0; S4.sig = '';
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
@@ -4819,7 +4825,7 @@ span.r-pick{cursor:default}
     if (upView === 'fresh') { $('#nvFile').click(); return; }
     if (upView === 'agent6' || upView === 'agent7') { a6Panel(true, true); return; }
     if (upView === 'agent5' || upView === 'agent51') { $('#a5Clip').focus({ preventScroll: true }); a5Browse(); return; }
-    if (upView === 'sidebar4') { UP.open = true; renderAgent(); $('#s4Lob').focus(); return; }
+    if (upView === 'sidebar4' || upView === 'sidebar5') { UP.open = true; renderAgent(); $('#s4Lob').focus(); return; }
     if (upView === 'agent2' || upView === 'agent3' || upView === 'agent4') { agPad('pop', true); return; }
     if (upView === 'agent') { $('#agDrop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); $('#agDrop').focus({ preventScroll: true }); return; }
     if (upDocked()) {
@@ -4849,7 +4855,7 @@ span.r-pick{cursor:default}
   document.body.classList.add('v2', 'v3');
   render();
   renderPicked();
-  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'sidebar4' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'agent7' || v === 'fresh') setUpView(v, false); } catch (e) {}
+  try { const v = new URLSearchParams(location.search).get('upload') || localStorage.getItem('upview'); if (v === 'page' || v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || v === 'sidebar4' || v === 'sidebar5' || v === 'agent5' || v === 'agent51' || v === 'agent6' || v === 'agent7' || v === 'fresh') setUpView(v, false); } catch (e) {}
 })();
 </script>
 
