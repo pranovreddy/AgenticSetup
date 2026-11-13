@@ -1359,6 +1359,38 @@ body.sb4:not(.is-empty):not(.s4-upon) .s4-open{display:grid;grid-template-column
 @keyframes s4-col{from{opacity:0;transform:translateX(-36px)}}
 @keyframes s4-rise{from{opacity:0;transform:translateY(18px)}}
 @media(prefers-reduced-motion:reduce){.agent.s4-enter .sb4-ai,.agent.s4-enter #metrics,.agent.s4-enter #canvas,.s4-live i,body.sb4.s4-upon .s4-up{animation:none}}
+/* side bar 4.0: collapsible cards for required actions and agents */
+body.sb4:not(.is-empty) .sb4-body{gap:10px;overflow-y:auto;scrollbar-width:thin;padding:16px 16px 0}
+.xs-dl{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12.5px}
+.xs-dl svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.xs-leg{align-items:center}
+.s4-card{border-radius:16px;background:#fff;border:1px solid var(--line);transition:border-color .3s,box-shadow .3s}
+.s4-card.on.c-acts{border-color:#f0d9a8;box-shadow:0 12px 26px -20px rgba(201,122,0,.6)}
+.s4-card.on.c-agents{border-color:rgba(37,96,246,.3);box-shadow:0 12px 26px -20px rgba(37,96,246,.55)}
+.s4-ct{display:flex;align-items:center;gap:8px;width:100%;padding:12px 12px 12px 14px;text-align:left;border-radius:16px}
+.s4-ct:focus-visible{outline:2px solid var(--ag-bl);outline-offset:-2px}
+.s4-ct b{flex:1;font-size:13.5px;font-weight:650;color:var(--ag-ink)}
+.s4-ct .n{min-width:22px;height:22px;padding:0 8px;border-radius:999px;display:grid;place-items:center;background:#f0b03c;color:#3a2300;font:700 11.5px var(--mono)}
+.s4-ct .n.b{background:var(--blue-soft);color:var(--ag-bld);font:650 11.5px var(--font)}
+.s4-ct .q{font-size:11.5px;font-weight:600;color:var(--ag-faint)}
+.s4-ct svg{width:15px;height:15px;fill:none;stroke:var(--ag-mute);stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
+.s4-card.open .s4-ct svg{transform:rotate(180deg)}
+.s4-cb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.22,1,.36,1)}
+.s4-card.open .s4-cb{grid-template-rows:1fr}
+.s4-cb>div{min-height:0;overflow:hidden}
+.s4-card .s4-sug{padding:0 10px 10px}
+.s4-card .s4-sug li{box-shadow:none;border-color:var(--line);background:#fffaf0;animation:none}
+.s4-card .s4-none{padding:0 14px 14px}
+.s4-ag{list-style:none;display:flex;flex-direction:column;padding:0 14px 8px}
+.s4-ag li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--line)}
+.s4-ag li>i{width:9px;height:9px;border-radius:50%;background:#c9d1e0}
+.s4-ag li.on>i{background:var(--ag-bl);box-shadow:0 0 0 4px rgba(37,96,246,.16);animation:pulse 1.4s ease-in-out infinite}
+.s4-ag li.wait>i{background:#e0a93f;box-shadow:0 0 0 4px rgba(224,169,63,.2)}
+.s4-ag b{display:block;font-size:13px;font-weight:650;color:var(--ag-ink)}
+.s4-ag small{display:block;margin-top:1px;font-size:11.5px;line-height:1.35;color:var(--ag-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s4-ag li.on small{color:var(--ag-bld)}.s4-ag li.wait small{color:#8a5a00}
+.s4-ag li>span{min-width:26px;height:26px;padding:0 7px;border-radius:9px;display:grid;place-items:center;background:var(--bg-2);font:650 12.5px var(--mono);color:var(--ag-faint)}
+.s4-ag li.on>span{background:var(--blue-soft);color:var(--ag-bld)}.s4-ag li.wait>span{background:#fdf1d8;color:#8a5a00}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -1974,7 +2006,7 @@ span.r-pick{cursor:default}
           </div>
           <div class="sb4-only sb4-body" id="sb4Body">
             <div id="s4Acts" aria-live="polite"></div>
-            <section class="s4-sec s4-tel"><h4>Agent telemetry</h4><p class="s4-live" id="s4Live" hidden><i aria-hidden="true"></i><span id="s4LiveT"></span></p><ol class="s4-log" id="s4Log" aria-label="What the agent has done"></ol></section>
+            <div id="s4Agents"></div>
           </div>
           <div class="sb4-only s4-up" id="s4Up">
             <div class="s4-uh"><div><b id="s4UpT"></b><span id="s4UpD"></span></div><button type="button" class="s4-rm" id="s4Close" aria-label="Close upload"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -2759,7 +2791,7 @@ span.r-pick{cursor:default}
           <div class="auth-lbl">Records · ${num(j.total)} uploaded</div>
           <div class="x-store"><div class="xs-head"><div class="xs-big"><b>${num(j.verified)}</b><span>ready for migration</span></div><span class="xs-amt xs-est">Est. <b>${inr2(total)}</b></span></div>
           <div class="xs-bar" role="img" aria-label="${num(j.verified)} ready for migration, ${num(excluded)} with errors"><i class="ok" style="flex:${j.verified}"></i><i class="err" style="flex:${excluded}"></i></div>
-          <div class="xs-leg"><span><i class="ok"></i>Ready <b>${num(j.verified)}</b></span><span><i class="err"></i>Errors <b>${num(excluded)}</b></span></div></div>
+          <div class="xs-leg"><span><i class="ok"></i>Ready <b>${num(j.verified)}</b></span><span><i class="err"></i>Errors <b>${num(excluded)}</b></span>${excluded ? `<button type="button" class="link-btn xs-dl" data-do="download-errors">${DLI}Download errors (CSV)</button>` : ''}</div></div>
         ${isGated(j) ? xGate(j) : isPending(j) ? xHold(j) : j.appealed && j.appealDone ? xAppeal(j) : ''}
         ${j.failed && j.skipAppeal ? `<p class="x-note">You chose not to appeal ${num(j.failed)} failed records. <button type="button" class="link-btn" data-do="appeal">Appeal instead</button></p>` : ''}
         <div class="x-side"${isGated(j) || isPending(j) ? ' hidden' : ''}>
@@ -4493,12 +4525,31 @@ span.r-pick{cursor:default}
     }
     for (const id of [...TL.last.keys()]) if (!live.has(id)) TL.last.delete(id);
   }
+  /* the two cards in the agent zone stay folded until they have something to show, and open by themselves when they do */
+  const CD = { man: {}, act: {}, ag: '' };
+  function s4Card(k, title, badge, active, body) {
+    if (CD.act[k] !== active) { CD.act[k] = active; delete CD.man[k]; }
+    const open = CD.man[k] ?? active;
+    return `<section class="s4-card${open ? ' open' : ''}${active ? ' on' : ''} c-${k}"><button type="button" class="s4-ct" data-s4c="${k}" aria-expanded="${open}"><b>${title}</b>${badge}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="s4-cb"><div>${body}</div></div></section>`;
+  }
+  /* three agents share the work: each shows how many files it holds and what it is doing, or that it is idle */
+  function s4Agents() {
+    const run = jobs.filter(isRunning), lead = l => l.reduce((m, j) => !m || (j.p || 0) > (m.p || 0) ? j : m, null);
+    const val = run.filter(j => aiState(j).i <= 2).concat(jobs.filter(j => j.fixing)), ver = run.filter(j => aiState(j).i === 3), prep = run.filter(j => aiState(j).i === 4);
+    const wait = jobs.filter(j => j.phase === 'ready' && !isPending(j));
+    const doing = l => { const j = lead(l); return j.fixing ? `Fixing ${num(j.fixed)} errors in ${j.name}` : `${aiState(j).sub} · ${j.name}`; };
+    const A = [['Validation Agent', val.length, val.length ? doing(val) : '', val.length ? 'on' : ''], ['Verification Agent', ver.length, ver.length ? doing(ver) : '', ver.length ? 'on' : ''],
+      ['Approval Agent', prep.length + wait.length, prep.length ? doing(prep) : wait.length ? `Waiting for your approval on ${a5Fs(wait.length)}` : '', prep.length ? 'on' : wait.length ? 'wait' : '']];
+    const busy = A.filter(a => a[3] === 'on').length;
+    const body = `<ul class="s4-ag">${A.map(([nm, n, t, c]) => `<li class="${c}"><i aria-hidden="true"></i><div><b>${nm}</b><small>${t ? esc(t) : 'Idle'}</small></div><span>${n || '–'}</span></li>`).join('')}</ul>`;
+    const html = s4Card('agents', 'Agents', busy ? `<span class="n b">${busy} working</span>` : '<span class="q">Idle</span>', busy > 0, body);
+    if (html !== CD.ag) { CD.ag = html; $('#s4Agents').innerHTML = html; }
+  }
   function sb4Render() {
     if (!sb4On()) return;
     const f = UP.file, [t, d] = s4Msg(), has = jobs.length > 0;
     document.body.classList.toggle('s4-upon', has && UP.open);
     if (has) {
-      tlTrack();
       const need = jobs.filter(j => needsYou(j) && !isPending(j)), run = jobs.filter(isRunning);
       const st = need.length ? ['w', 'Waiting for you'] : run.length ? ['r', 'Working'] : ['g', 'All done'];
       $('#sb4State').className = 'sb4-state ' + st[0]; $('#sb4State').lastElementChild.textContent = st[1];
@@ -4508,12 +4559,10 @@ span.r-pick{cursor:default}
       const acts = (fix.length ? item('fx', `Fix ${num(fix.reduce((x, j) => x + j.fixed, 0))} errors`, names(fix), 'fix-all', 'Fix', true) : '')
         + (gated.length ? item('fl', `${num(gated.reduce((x, j) => x + j.failed, 0))} records failed`, names(gated), 'skip-all', 'Continue', !fix.length) : '')
         + (ready.length ? item('ok', `Submit ${num(ready.reduce((x, j) => x + j.verified, 0))} records`, names(ready), 'submit-all', 'Submit', !fix.length && !gated.length) : '');
-      const head = `<section class="s4-sec"><h4>Required actions${need.length ? `<span class="n">${need.length}</span>` : ''}</h4>${acts ? `<ul class="s4-sug">${acts}</ul>` : '<p class="s4-none">Nothing needs you right now.</p>'}</section>`;
+      const body = acts ? `<ul class="s4-sug">${acts}</ul>` : '<p class="s4-none">Nothing needs you right now.</p>';
+      const head = s4Card('acts', 'Required actions', need.length ? `<span class="n">${need.length}</span>` : '<span class="q">None</span>', need.length > 0, body);
       if (head !== S4.sig) { S4.sig = head; $('#s4Acts').innerHTML = head; }
-      if (TL.shown !== TL.n) {
-        const fresh = TL.n - Math.max(0, TL.shown); TL.shown = TL.n;
-        $('#s4Log').innerHTML = TL.log.map((e, i) => `<li class="k-${e.kind}${i < fresh && fresh < 5 ? ' new' : ''}"><time>${new Date(e.t).toLocaleTimeString('en-GB')}</time><div><b>${esc(e.name)}</b><span>${esc(e.text)}</span></div></li>`).join('') || '<li class="k-none"><div><span>Each step I take is written here.</span></div></li>';
-      }
+      s4Agents();
       $('#s4UpT').textContent = t; $('#s4UpD').textContent = d;
     } else { $('#agSay').textContent = t; $('#agSub').textContent = d; $('#agHero').dataset.blob = 'run'; }
     $('#s4Lob').value = UP.lob; $('#s4Lob').classList.toggle('ask', !!f && !UP.lob);
@@ -4566,14 +4615,12 @@ span.r-pick{cursor:default}
   $('#agentView').addEventListener('drop', e => { if (!sb4On()) return; e.preventDefault(); e.stopImmediatePropagation(); $('#s4Drop').classList.remove('drag'); $('#agDrop').classList.remove('ag-drag'); s4Take(e.dataTransfer.files); }, true);
   function sb4Paint() {
     if (!sb4On() || !jobs.length) return;
-    const n0 = TL.n; tlTrack(); if (TL.n !== n0) { sb4Render(); return; }
-    let lead = null; for (const j of jobs) if (isRunning(j) && (!lead || (j.p || 0) > (lead.p || 0))) lead = j;
-    const lv = $('#s4Live'), lt = lead ? `${lead.name} › ${aiState(lead).sub}` : '';
-    lv.hidden = !lead; if (lead && $('#s4LiveT').textContent !== lt) $('#s4LiveT').textContent = lt;
+    s4Agents();
     let sum = 0, n = 0;
     for (const j of jobs) { if (!isRunning(j)) continue; sum += j.p || 0; n++; const e = $(`[data-s4-eta="${j.id}"]`), t = s4Eta(j); if (e && e.textContent !== t) e.textContent = t; }
   }
   $('#sb4Body').addEventListener('click', e => {
+    const c = e.target.closest('[data-s4c]'); if (c) { const k = c.dataset.s4c; CD.man[k] = c.getAttribute('aria-expanded') !== 'true'; S4.sig = ''; CD.ag = ''; sb4Render(); const n = $(`[data-s4c="${k}"]`); if (n) n.focus({ preventScroll: true }); return; }
     const b = e.target.closest('[data-s4a]'); if (!b) return;
     const k = b.dataset.s4a, need = jobs.filter(j => needsYou(j) && !isPending(j)), rowOf = j => $(`#canvas .file-row2[data-id="${j.id}"]`);
     if (S4.fold.has('need')) { S4.fold.delete('need'); render(); }
