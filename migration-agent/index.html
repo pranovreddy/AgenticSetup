@@ -1382,15 +1382,31 @@ body.sb4:not(.is-empty) .sb4-body{gap:10px;overflow-y:auto;scrollbar-width:thin;
 .s4-card .s4-sug li{box-shadow:none;border-color:var(--line);background:#fffaf0;animation:none}
 .s4-card .s4-none{padding:0 14px 14px}
 .s4-ag{list-style:none;display:flex;flex-direction:column;padding:0 14px 8px}
-.s4-ag li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--line)}
+.s4-ag li{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:14px;padding:10px 0;border-top:1px solid var(--line)}
 .s4-ag li>i{width:9px;height:9px;border-radius:50%;background:#c9d1e0}
 .s4-ag li.on>i{background:var(--ag-bl);box-shadow:0 0 0 4px rgba(37,96,246,.16);animation:pulse 1.4s ease-in-out infinite}
 .s4-ag li.wait>i{background:#e0a93f;box-shadow:0 0 0 4px rgba(224,169,63,.2)}
 .s4-ag b{display:block;font-size:13px;font-weight:650;color:var(--ag-ink)}
 .s4-ag small{display:block;margin-top:1px;font-size:11.5px;line-height:1.35;color:var(--ag-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .s4-ag li.on small{color:var(--ag-bld)}.s4-ag li.wait small{color:#8a5a00}
-.s4-ag li>span{min-width:26px;height:26px;padding:0 7px;border-radius:9px;display:grid;place-items:center;background:var(--bg-2);font:650 12.5px var(--mono);color:var(--ag-faint)}
-.s4-ag li.on>span{background:var(--blue-soft);color:var(--ag-bld)}.s4-ag li.wait>span{background:#fdf1d8;color:#8a5a00}
+.s4-ag li>span:last-child{min-width:26px;height:26px;padding:0 7px;border-radius:9px;display:grid;place-items:center;background:var(--bg-2);font:650 12.5px var(--mono);color:var(--ag-faint)}
+.s4-ag li.on>span:last-child{background:var(--blue-soft);color:var(--ag-bld)}.s4-ag li.wait>span:last-child{background:#fdf1d8;color:#8a5a00}
+.s4-av{--c:#2560f6;--t:#e8eeff;position:relative;width:40px;height:40px;display:block;transition:filter .3s,opacity .3s}
+.s4-av.a-f{--c:#6d4fd8;--t:#efeaff}.s4-av.a-p{--c:#0e8f78;--t:#e0f5f0}
+.s4-av>svg:first-child{width:40px;height:40px;display:block}
+.s4-av .hd{fill:var(--t);stroke:var(--c);stroke-width:1.6}
+.s4-av .ear{fill:var(--c);opacity:.55}
+.s4-av .an{stroke:var(--c);stroke-width:1.6;stroke-linecap:round}.s4-av .an-d{fill:var(--c)}
+.s4-av .eye{fill:var(--c);transform-box:fill-box;transform-origin:center}
+.s4-av .zz{stroke:var(--c);stroke-width:1.8;stroke-linecap:round;fill:none}
+.s4-av .bd{position:absolute;right:-7px;bottom:-6px;width:16px;height:16px;padding:2.5px;border-radius:50%;background:var(--c);border:2px solid #fff;fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;box-sizing:border-box}
+.s4-ag li:not(.on):not(.wait) .s4-av{filter:grayscale(1);opacity:.55}
+.s4-ag li.on .eye{animation:s4-blink 3.6s infinite}
+.s4-ag li.on:nth-child(2) .eye{animation-delay:.9s}.s4-ag li.on:nth-child(3) .eye{animation-delay:1.7s}
+.s4-ag li.on .an-d{animation:pulse 1.4s ease-in-out infinite}
+.s4-ag li.wait .s4-av{--c:#c98712;--t:#fdf1d8}
+@keyframes s4-blink{0%,44%,50%,100%{transform:scaleY(1)}47%{transform:scaleY(.12)}}
+@media(prefers-reduced-motion:reduce){.s4-ag li.on .eye,.s4-ag li.on .an-d{animation:none}}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -4541,7 +4557,10 @@ span.r-pick{cursor:default}
     const A = [['Validation Agent', val.length, val.length ? doing(val) : '', val.length ? 'on' : ''], ['Verification Agent', ver.length, ver.length ? doing(ver) : '', ver.length ? 'on' : ''],
       ['Approval Agent', prep.length + wait.length, prep.length ? doing(prep) : wait.length ? `Waiting for your approval on ${a5Fs(wait.length)}` : '', prep.length ? 'on' : wait.length ? 'wait' : '']];
     const busy = A.filter(a => a[3] === 'on').length;
-    const body = `<ul class="s4-ag">${A.map(([nm, n, t, c]) => `<li class="${c}"><i aria-hidden="true"></i><div><b>${nm}</b><small>${t ? esc(t) : 'Idle'}</small></div><span>${n || '–'}</span></li>`).join('')}</ul>`;
+    /* a small character per agent: a head with two eyes and its tool as a badge. Eyes are open and blinking while it works, closed when idle */
+    const G = { v: '<circle cx="5" cy="5" r="3"/><path d="M7.4 7.4L10 10"/>', f: '<path d="M6 1.5l4 1.5v3c0 2.3-1.7 3.8-4 4.5C3.7 9.8 2 8.3 2 6V3z"/>', p: '<path d="M2.5 6.2l2.3 2.3L9.5 3.8"/>' };
+    const face = (k, c) => `<span class="s4-av a-${k}" aria-hidden="true"><svg viewBox="0 0 40 40"><path class="an" d="M20 4v5"/><circle class="an-d" cx="20" cy="4" r="2"/><rect class="hd" x="6" y="9" width="28" height="24" rx="9"/><rect class="ear" x="2.5" y="17" width="3.5" height="8" rx="1.7"/><rect class="ear" x="34" y="17" width="3.5" height="8" rx="1.7"/>${c ? '<rect class="eye" x="13" y="17" width="4" height="7" rx="2"/><rect class="eye" x="23" y="17" width="4" height="7" rx="2"/>' : '<path class="zz" d="M12.5 21h5M22.5 21h5"/>'}</svg><svg class="bd" viewBox="0 0 12 12">${G[k]}</svg></span>`;
+    const body = `<ul class="s4-ag">${A.map(([nm, n, t, c], i) => `<li class="${c}">${face('vfp'[i], c)}<div><b>${nm}</b><small>${t ? esc(t) : 'Idle'}</small></div><span>${n || '–'}</span></li>`).join('')}</ul>`;
     const html = s4Card('agents', 'Agents', busy ? `<span class="n b">${busy} working</span>` : '<span class="q">Idle</span>', busy > 0, body);
     if (html !== CD.ag) { CD.ag = html; $('#s4Agents').innerHTML = html; }
   }
