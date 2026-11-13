@@ -1136,7 +1136,7 @@ body.agent4 .ag-next:not([hidden]){display:flex;flex-direction:column;align-item
 .ag-next .nx-more{font-size:12px;color:var(--ag-mute);order:3;margin-left:4px}
 /* ---------- side bar 4.0: "On this page" and Agent 4.0 together. The agent asks for files at the centre of the page; once there is work it moves to a bar on the left (status, suggestions, upload) and the uploads list sits on the right ---------- */
 .sb4-ai{display:contents}
-body.sb4 .agent{grid-template-columns:344px minmax(0,1fr);grid-template-areas:"ai metrics" "ai sh" "ai bulk" "ai list";grid-template-rows:auto auto auto 1fr;column-gap:22px;row-gap:14px;align-items:start;justify-items:stretch;max-width:1480px;padding:18px 24px 48px}
+body.sb4 .agent{grid-template-columns:320px minmax(0,1fr);grid-template-areas:"ai metrics" "ai sh" "ai bulk" "ai list";grid-template-rows:auto auto auto 1fr;column-gap:22px;row-gap:14px;align-items:start;justify-items:stretch;max-width:1480px;padding:18px 24px 48px}
 body.sb4 .sb4-ai{grid-area:ai;display:flex;flex-direction:column;gap:14px;position:sticky;top:16px;height:calc(100vh - 34px);padding:20px 18px 18px;border-radius:24px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(37,96,246,.18);box-shadow:0 30px 70px -44px rgba(37,96,246,.55),0 1px 2px rgba(16,33,59,.05);overflow-y:auto;scrollbar-width:thin}
 body.sb4 .ag-hero{display:flex;flex-direction:column;align-items:flex-start;text-align:left;max-width:none;width:100%}
 body.sb4 .ag-hero .ag-blob{width:84px;height:84px;margin:-4px 0 4px -6px;align-self:flex-start}
@@ -1157,9 +1157,10 @@ body.sb4 .ag-drop2{margin:12px;min-height:168px;padding:16px 12px}
 body.sb4 .ag-files li{grid-template-columns:auto minmax(0,1fr) auto}
 body.sb4 .ag-files .ag-fsel{grid-column:2 / -1;grid-row:2}
 body.sb4 #metrics{grid-area:metrics}
-@media(min-width:1180px){body.sb4 .file-row2{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) 268px;gap:18px}}
+@media(min-width:1180px){body.sb4 .file-row2{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) 296px;gap:16px}}
+body.sb4 .r-meta{flex-wrap:wrap;row-gap:2px}
+body.sb4 .r-file{min-width:0}
 body.sb4 .r-act .tile-row{flex-wrap:wrap;justify-content:flex-end}
-body.sb4 .r-id{display:none}
 /* nothing uploaded yet: the agent and its upload box take the centre of the page */
 body.sb4.is-empty .agent,body.sb4 .agent.ag-nostats{grid-template-columns:minmax(0,1fr);grid-template-areas:"ai";grid-template-rows:auto;justify-items:center;align-content:center;min-height:100vh;padding:32px 24px 80px}
 body.sb4.is-empty .sb4-ai{position:static;height:auto;width:min(920px,100%);padding:0;gap:22px;border:0;border-radius:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;overflow:visible;align-items:center}
@@ -4393,7 +4394,7 @@ span.r-pick{cursor:default}
     return S4_G.map(([k, label, test]) => {
       const g = list.filter(test); if (!g.length) return '';
       const fold = S4.fold.has(k);
-      return `<div class="s4-gh g-${k}${fold ? ' fold' : ''}" role="button" tabindex="0" aria-expanded="${!fold}" data-s4g="${k}" data-key="s4g-${k}" data-sig="${g.length}${fold ? 'f' : ''}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>${label}<span>${g.length}</span></div>${fold ? '' : g.map(sb4Row).join('')}`;
+      return `<div class="s4-gh g-${k}${fold ? ' fold' : ''}" role="button" tabindex="0" aria-expanded="${!fold}" data-s4g="${k}" data-key="s4g-${k}" data-sig="${g.length}${fold ? 'f' : ''}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>${label}<span>${g.length}</span></div>${fold ? '' : g.map(fileRow).join('')}`;
     }).join('');
   }
   /* the agent zone: who is speaking and in what state, what it is processing right now, and the answers it suggests */
