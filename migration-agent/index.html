@@ -1505,6 +1505,12 @@ body.sb4.is-empty .s4-foot{align-items:center!important}
 .s4-shield{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 7px;border-radius:999px;background:#e6f6ee;color:#0f8457;font-size:11px;font-weight:650}
 .s4-shield svg{stroke-width:2.4}
 @media(prefers-reduced-motion:reduce){.s4-drop.has:not(.sealed),.s4-drop.sealed,.s4-encbar i{animation:none}.s4-encbar i{width:100%}}
+/* side bars: a taller drop zone, stacked and centred */
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has){display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:148px;padding:20px 14px;text-align:center}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has) .s4-di{width:44px;height:44px;border-radius:13px;margin-bottom:6px}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has)>b{font-size:14px;align-self:center}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has) .s4-dl{font-size:12.5px;align-self:center}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop.has{min-height:76px}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
