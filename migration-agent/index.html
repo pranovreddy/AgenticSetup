@@ -1478,6 +1478,33 @@ body.sb4:not(.is-empty) .sb4-ai .s4-open{margin:0!important;padding:15px 20px;bo
 body.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open{border-bottom-color:transparent!important}
 body.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-up{margin:0;padding:0 20px 18px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
 body.sb4:not(.is-empty) .sb4-ai .s4-open span{background:var(--blue-soft)}
+/* upload: make the encryption visible */
+.s4-di{position:relative}
+.s4-di i,.s4-fi i{position:absolute;right:-6px;bottom:-6px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:#0f8457;border:2px solid #fff;box-sizing:border-box}
+.s4-di i svg,.s4-fi i svg{width:9px;height:9px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.s4-fi{position:relative}
+.s4-fi i{background:#9aa5ba;transition:background .4s}
+.s4-drop.sealed .s4-fi i{background:#0f8457}
+.s4-drop.has{position:relative;overflow:hidden}
+.s4-drop.has:not(.sealed){border-color:#b9c8ee!important;background:repeating-linear-gradient(-45deg,#fff 0 10px,#f4f7ff 10px 20px)!important;background-size:28.28px 28.28px!important;animation:s4-stripe .9s linear infinite}
+@keyframes s4-stripe{to{background-position:28.28px 0}}
+.s4-drop.sealed{border-color:#a9dcc4!important;background:linear-gradient(180deg,#f0faf5,#fff)!important;animation:s4-seal .7s ease-out}
+@keyframes s4-seal{0%{box-shadow:0 0 0 0 rgba(15,132,87,.45)}100%{box-shadow:0 0 0 10px rgba(15,132,87,0)}}
+.s4-ing{font:500 11px var(--mono)!important;color:var(--ag-bld)!important;white-space:nowrap;overflow:hidden}
+.s4-ing span{letter-spacing:.04em;opacity:.75}
+.s4-encbar{display:block;height:3px;margin-top:4px;border-radius:2px;background:#e3e9f5;overflow:hidden}
+.s4-encbar i{display:block;height:100%;width:0;border-radius:inherit;background:var(--ag-bl);animation:s4-enc 1.7s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes s4-enc{to{width:100%}}
+.s4-fn small.enc{display:flex;align-items:center;gap:5px;font:650 11.5px var(--font);color:#0f8457}
+.s4-fn small.enc svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.s4-hash{font:500 10.5px var(--mono)!important;color:var(--ag-faint)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s4-go{display:flex;align-items:center;justify-content:center;gap:8px}
+.s4-go svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.s4-foot{flex-direction:column;align-items:flex-start!important;gap:3px!important}
+body.sb4.is-empty .s4-foot{align-items:center!important}
+.s4-shield{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 7px;border-radius:999px;background:#e6f6ee;color:#0f8457;font-size:11px;font-weight:650}
+.s4-shield svg{stroke-width:2.4}
+@media(prefers-reduced-motion:reduce){.s4-drop.has:not(.sealed),.s4-drop.sealed,.s4-encbar i{animation:none}.s4-encbar i{width:100%}}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -2108,9 +2135,9 @@ span.r-pick{cursor:default}
             <div class="s4-drop" id="s4Drop" role="button" tabindex="0" aria-label="Drop one CSV file here, or press Enter to choose a file"></div>
             <input type="file" id="s4File" accept=".csv,text/csv" hidden>
             <p class="s4-err" id="s4Err" role="alert" hidden></p>
-            <button type="button" class="btn btn-pri s4-go" id="s4Go" disabled>Hand over to the agent</button>
+            <button type="button" class="btn btn-pri s4-go" id="s4Go" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Hand over securely</button>
             <p class="s4-auto"><span id="s4AutoT"></span> <button type="button" id="s4AutoB">Change</button></p>
-            <p class="s4-foot"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted in your browser · one CSV at a time, up to 500 MB</p>
+            <p class="s4-foot"><span class="s4-shield"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted in your browser</span><span>AES-256 · the file is sealed before it leaves this device</span></p>
           </div>
           <button type="button" class="sb4-only s4-open" id="s4Open"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Upload a file</b><small>or drop a CSV anywhere</small><svg class="ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
           <button type="button" class="ag-minbar" id="agMin" aria-label="Open the upload panel">
@@ -4680,8 +4707,10 @@ span.r-pick{cursor:default}
     const dsig = f ? `${f.name}|${UP.sealed}` : 'none';
     if (drop.dataset.sig !== dsig) {
       drop.dataset.sig = dsig;
-      drop.innerHTML = f ? `<span class="s4-fi" aria-hidden="true">CSV</span><span class="s4-fn"><b title="${esc(f.name)}">${esc(f.name)}</b><small class="${UP.sealed ? 'enc' : ''}">${UP.sealed ? `Encrypted · SHA-256 ${UP.hash}` : `${fmtSize(f.size)} · encrypting…`}</small></span><button type="button" class="s4-rm" id="s4Rm" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`
-        : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Drop one CSV file here</b><span class="s4-dl">or <u>choose a file</u> · <button type="button" id="s4Sample">try a sample</button></span>`;
+      const LK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
+      drop.classList.toggle('sealed', !!f && UP.sealed);
+      drop.innerHTML = f ? `<span class="s4-fi" aria-hidden="true">CSV<i>${LK}</i></span><span class="s4-fn"><b title="${esc(f.name)}">${esc(f.name)}</b>${UP.sealed ? `<small class="enc">${LK}Encrypted · AES-256</small><small class="s4-hash">SHA-256 ${UP.hash}</small>` : `<small class="s4-ing">Encrypting <span id="s4Scr">${hex(14)}</span></small><span class="s4-encbar"><i></i></span>`}</span><button type="button" class="s4-rm" id="s4Rm" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`
+        : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg><i>${LK}</i></span><b>Drop one CSV file here</b><span class="s4-dl">or <u>choose a file</u> · <button type="button" id="s4Sample">try a sample</button></span>`;
     }
     const hint = UP.err || (f && !UP.lob ? 'Choose a line of business to continue.' : '');
     $('#s4Err').hidden = !hint; $('#s4Err').textContent = hint; $('#s4Err').classList.toggle('soft', !UP.err && !!hint);
@@ -4697,7 +4726,8 @@ span.r-pick{cursor:default}
     else if (f.size > 500 * 1048576) UP.err = `${f.name} is over the 500 MB limit.`;
     else {
       UP.file = { name: f.name, size: f.size }; UP.sealed = false; UP.sent = ''; clearTimeout(UP.sealT);
-      UP.sealT = setTimeout(() => { UP.sealed = true; UP.hash = `${hex(4)}…${hex(4)}`; renderAgent(); }, 1100);
+      clearInterval(UP.scrT); UP.scrT = setInterval(() => { const e = $('#s4Scr'); if (e) e.textContent = hex(14); }, 70);
+      UP.sealT = setTimeout(() => { clearInterval(UP.scrT); UP.sealed = true; UP.hash = `${hex(4)}…${hex(4)}`; renderAgent(); }, 1700);
       if (fs.length > 1) UP.err = `I take one file at a time, so I kept ${f.name}.`;
     }
     renderAgent();
@@ -4717,7 +4747,7 @@ span.r-pick{cursor:default}
   $('#s4Go').onclick = s4Hand;
   $('#s4AutoB').onclick = () => { UP.auto = !UP.auto; renderAgent(); };
   $('#s4Drop').addEventListener('click', e => {
-    if (e.target.closest('#s4Rm')) { UP.file = null; UP.err = ''; clearTimeout(UP.sealT); renderAgent(); return; }
+    if (e.target.closest('#s4Rm')) { UP.file = null; UP.err = ''; clearTimeout(UP.sealT); clearInterval(UP.scrT); renderAgent(); return; }
     if (e.target.closest('#s4Sample')) { if (!UP.lob) UP.lob = 'Credit Cards'; s4Take([{ name: `${UP.lob.toLowerCase().replace(/\s+/g, '_')}_batch${++UP.n}.csv`, size: (9 + UP.n * 4 % 23) * 1048576, type: 'text/csv' }]); return; }
     if (!UP.file) $('#s4File').click();
   });
