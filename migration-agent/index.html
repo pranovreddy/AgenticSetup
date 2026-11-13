@@ -1427,6 +1427,10 @@ body.sb4:not(.is-empty) .sb4-ai .s4-open:hover{background:#f7f9fe!important;box-
 body.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open b{grid-row:1 / 3}
 body.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open:hover{border-bottom-color:transparent!important}
 body.sb4.s4-upon:not(.is-empty) .s4-uh b{font-size:13.5px}
+/* side bars: status tabs, search and sort above the list */
+body.sb4:not(.is-empty) .s4-tabs{grid-area:sh;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;min-width:0}
+.s4-tabs .bar-r{display:flex;gap:8px;align-items:center}
+.s4-tabs #s4Q{width:200px}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -2103,6 +2107,15 @@ span.r-pick{cursor:default}
             </div>
             <input type="file" id="agFile" accept=".csv" multiple hidden>
           </div>
+          </div>
+          <div class="sb4-only s4-tabs" id="s4Bar">
+            <div class="filters" role="group" aria-label="Show files by status">
+              <button type="button" class="chip-btn is-on" data-filter="all">All <span class="n" data-s4n="all">0</span></button>
+              <button type="button" class="chip-btn" data-filter="needs">Needs you <span class="n" data-s4n="needs">0</span></button>
+              <button type="button" class="chip-btn" data-filter="run">In progress <span class="n" data-s4n="run">0</span></button>
+              <button type="button" class="chip-btn" data-filter="done">Completed <span class="n" data-s4n="done">0</span></button>
+            </div>
+            <div class="bar-r"><label class="sr-only" for="s4Q">Search files</label><input type="search" id="s4Q" class="ctl" placeholder="Search files" autocomplete="off"><label class="sr-only" for="s4Sort">Sort files</label><select id="s4Sort" class="ctl"><option value="needs">Needs you first</option><option value="new">Newest first</option><option value="size">Largest first</option></select></div>
           </div>
           <div class="ag-sh3" id="agSh3" hidden><div class="ag-tabs" role="tablist" aria-label="Files"><button type="button" class="ag-tab on" role="tab" aria-selected="true" id="agTabFocus">In focus <span id="agFocusN">0</span></button><button type="button" class="ag-tab" role="tab" aria-selected="false" id="agTabFin">Finished <span id="agFinN">0</span></button></div></div>
           <div class="ag-empty ag-tabempty" id="agTabEmpty" hidden></div>
@@ -4522,14 +4535,11 @@ span.r-pick{cursor:default}
     </article>`;
   }
   const S4_G = [['need', 'Needs you', j => needsYou(j)], ['run', 'In progress', j => isRunning(j)], ['off', 'Stopped', j => j.phase === 'cancelled'], ['done', 'Completed', j => j.phase === 'submitted']];
-  function sb4List(list) {
-    return S4_G.map(([k, label, test]) => {
-      const g = list.filter(test); if (!g.length) return '';
-      const fold = S4.fold.has(k);
-      return `<div class="s4-gh g-${k}${fold ? ' fold' : ''}" role="button" tabindex="0" aria-expanded="${!fold}" data-s4g="${k}" data-key="s4g-${k}" data-sig="${g.length}${fold ? 'f' : ''}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>${label}<span>${g.length}</span></div>${fold ? '' : g.map(fileRow).join('')}`;
-    }).join('');
-  }
-  /* the agent zone: who is speaking and in what state, what it is processing right now, and the answers it suggests */
+  /* the list is one tab at a time: the tabs, search and sort sit above it */
+  const sb4List = list => list.map(fileRow).join('');
+  $('#s4Bar').addEventListener('click', e => { const b = e.target.closest('[data-filter]'); if (b) { filter = b.dataset.filter; render(); } });
+  $('#s4Q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); render(); });
+  $('#s4Sort').addEventListener('change', e => { sortBy = e.target.value; render(); });
   /* the agent zone takes one file at a time for a chosen line of business. It speaks only about the upload in hand; the list on the right is the one place that shows each file's status */
   const UP = { open: false, file: null, lob: '', auto: true, sealed: false, hash: '', err: '', sent: '', sentT: 0, sealT: 0, n: 0 };
   function s4Msg() {
@@ -4589,6 +4599,10 @@ span.r-pick{cursor:default}
     const f = UP.file, [t, d] = s4Msg(), has = jobs.length > 0;
     document.body.classList.toggle('s4-upon', has && UP.open); $('#s4Open').setAttribute('aria-expanded', String(has && UP.open));
     if (has) {
+      const cn = { all: jobs.length, needs: jobs.filter(needsYou).length, run: jobs.filter(isRunning).length, done: jobs.filter(isDone).length };
+      $$('[data-s4n]').forEach(e => { e.textContent = cn[e.dataset.s4n]; e.classList.toggle('attn', e.dataset.s4n === 'needs' && cn.needs > 0); });
+      $$('#s4Bar [data-filter]').forEach(b => b.classList.toggle('is-on', b.dataset.filter === filter));
+      if ($('#s4Q').value.trim().toLowerCase() !== query) $('#s4Q').value = query; $('#s4Sort').value = sortBy;
       const need = jobs.filter(j => needsYou(j) && !isPending(j)), run = jobs.filter(isRunning);
       const st = need.length ? ['w', 'Waiting for you'] : run.length ? ['r', 'Working'] : ['g', 'All done'];
       $('#sb4State').className = 'sb4-state ' + st[0]; $('#sb4State').lastElementChild.textContent = st[1];
@@ -4634,7 +4648,7 @@ span.r-pick{cursor:default}
     const f = UP.file; if (!f || !UP.lob || !UP.sealed) return;
     const j = startJob({ lob: UP.lob, name: f.name, size: f.size, autofix: UP.auto }); j.up = Date.now();
     UP.file = null; UP.sealed = false; UP.err = ''; UP.sent = f.name; clearTimeout(UP.sentT); UP.sentT = setTimeout(() => { UP.sent = ''; renderAgent(); }, 5000);
-    UP.open = false; S4.fold.delete('run'); filter = 'all'; flip(render, j.id); startTicker();
+    UP.open = false; filter = 'all'; query = ''; flip(render, j.id); startTicker();
   }
   $('#s4Open').onclick = () => { UP.open = !UP.open; renderAgent(); if (UP.open) $('#s4Lob').focus({ preventScroll: true }); };
   $('#s4Close').onclick = () => { UP.open = false; renderAgent(); $('#s4Open').focus({ preventScroll: true }); };
@@ -4662,7 +4676,7 @@ span.r-pick{cursor:default}
     const c = e.target.closest('[data-s4c]'); if (c) { const k = c.dataset.s4c; CD.man[k] = c.getAttribute('aria-expanded') !== 'true'; S4.sig = ''; CD.ag = ''; sb4Render(); const n = $(`[data-s4c="${k}"]`); if (n) n.focus({ preventScroll: true }); return; }
     const b = e.target.closest('[data-s4a]'); if (!b) return;
     const k = b.dataset.s4a, need = jobs.filter(j => needsYou(j) && !isPending(j)), rowOf = j => $(`#canvas .file-row2[data-id="${j.id}"]`);
-    if (S4.fold.has('need')) { S4.fold.delete('need'); render(); }
+    if (filter !== 'all' || query) { filter = 'all'; query = ''; render(); }
     if (k === 'fix-all') { need.filter(j => j.phase === 'fix_review' && !j.fixing).forEach(j => doAction('apply', rowOf(j))); render(); }
     else if (k === 'skip-all') { const l = need.filter(j => j.phase === 'ready' && isGated(j)); a51Do(l, () => { l.forEach(j => { j.skipAppeal = true; }); render(); }, `Failed records left out in ${a5Fs(l.length)}`); }
     else if (k === 'submit-all') { const l = need.filter(j => j.phase === 'ready' && !isGated(j)); a51Do(l, () => { l.forEach(j => { j.authz = true; j.confirming = false; j.phase = 'submitted'; }); render(); }, `${a5Fs(l.length)} submitted · ${num(l.reduce((t, j) => t + j.verified, 0))} records`); }
@@ -4794,7 +4808,7 @@ span.r-pick{cursor:default}
     const sb4 = v === 'sidebar4' || v === 'sidebar5', ag = v === 'agent' || v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4, a3 = v === 'agent2' || v === 'agent3' || v === 'agent4' || sb4;
     document.body.classList.toggle('agent-on', ag);
     document.body.classList.toggle('agent3', a3);
-    document.body.classList.toggle('agent4', v === 'agent4' || sb4); document.body.classList.toggle('sb4', sb4); document.body.classList.toggle('sb5', v === 'sidebar5'); SB4.has = jobs.length > 0; S4.sig = '';
+    document.body.classList.toggle('agent4', v === 'agent4' || sb4); document.body.classList.toggle('sb4', sb4); document.body.classList.toggle('sb5', v === 'sidebar5'); if (sb4) { filter = 'all'; query = ''; } SB4.has = jobs.length > 0; S4.sig = '';
     document.body.classList.toggle('agent2', v === 'agent2');
     a5Mount(false);
     agMount(a3);
