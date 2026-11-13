@@ -1452,6 +1452,32 @@ body.sb4.s4-railed:not(.is-empty) .s4-rail{order:1;display:flex;flex-direction:c
 .s4-rail svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .s4-rail span{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;display:grid;place-items:center;background:#f0b03c;color:#3a2300;font:700 11px var(--mono);border:2px solid #fff;box-sizing:content-box}
 .s4-rail span.b{background:var(--ag-bl);color:#fff}
+/* side bars: a tighter upload card with no intro text */
+.s4-err.soft{color:#8a5a00}
+body.sb4:not(.is-empty) .sb4-ai .s4-uh{display:none!important}
+body.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-up{gap:10px;padding:4px 14px 14px}
+body.sb4:not(.is-empty) .sb4-ai .s4-f{font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ag-faint);margin-bottom:-4px}
+body.sb4:not(.is-empty) .sb4-ai .s4-lob{height:42px;font-size:13.5px;border-radius:11px}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop{margin-top:0;border-radius:13px}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has){display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;row-gap:1px;align-items:center;justify-items:start;min-height:0;padding:13px 14px;text-align:left}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has) .s4-di{grid-row:1 / 3;width:38px;height:38px;border-radius:11px;margin:0}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has)>b{font-size:13.5px;align-self:end}
+body.sb4:not(.is-empty) .sb4-ai .s4-drop:not(.has) .s4-dl{font-size:12px;align-self:start}
+body.sb4:not(.is-empty) .sb4-ai .s4-go{height:42px;border-radius:11px;font-size:13.5px}
+body.sb4:not(.is-empty) .sb4-ai .s4-auto{display:flex;justify-content:space-between;gap:8px;text-align:left;padding-top:10px;border-top:1px solid var(--line)}
+body.sb4:not(.is-empty) .sb4-ai .s4-foot{justify-content:flex-start;margin-top:-4px;font-size:11px}
+/* side bars: sections separated by a line, not boxed cards */
+body.sb4:not(.is-empty) .sb4-ai .sb4-body{gap:0;padding:0}
+body.sb4:not(.is-empty) .sb4-ai .s4-card{border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0;background:none;box-shadow:none!important}
+body.sb4:not(.is-empty) .sb4-ai .s4-ct{padding:15px 20px;border-radius:0}
+body.sb4:not(.is-empty) .sb4-ai .s4-card .s4-sug{padding:0 20px 16px}
+body.sb4:not(.is-empty) .sb4-ai .s4-card .s4-none{padding:0 20px 16px}
+body.sb4:not(.is-empty) .sb4-ai .s4-ag{padding:0 20px 8px}
+body.sb4:not(.is-empty) .sb4-ai .s4-ag li:first-child{border-top:0;padding-top:2px}
+body.sb4:not(.is-empty) .sb4-ai .s4-open{margin:0!important;padding:15px 20px;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;background:none!important;box-shadow:none!important}
+body.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open{border-bottom-color:transparent!important}
+body.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-up{margin:0;padding:0 20px 18px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
+body.sb4:not(.is-empty) .sb4-ai .s4-open span{background:var(--blue-soft)}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -4657,7 +4683,8 @@ span.r-pick{cursor:default}
       drop.innerHTML = f ? `<span class="s4-fi" aria-hidden="true">CSV</span><span class="s4-fn"><b title="${esc(f.name)}">${esc(f.name)}</b><small class="${UP.sealed ? 'enc' : ''}">${UP.sealed ? `Encrypted · SHA-256 ${UP.hash}` : `${fmtSize(f.size)} · encrypting…`}</small></span><button type="button" class="s4-rm" id="s4Rm" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`
         : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Drop one CSV file here</b><span class="s4-dl">or <u>choose a file</u> · <button type="button" id="s4Sample">try a sample</button></span>`;
     }
-    $('#s4Err').hidden = !UP.err; $('#s4Err').textContent = UP.err;
+    const hint = UP.err || (f && !UP.lob ? 'Choose a line of business to continue.' : '');
+    $('#s4Err').hidden = !hint; $('#s4Err').textContent = hint; $('#s4Err').classList.toggle('soft', !UP.err && !!hint);
     $('#s4Go').disabled = !(f && UP.lob && UP.sealed);
     $('#s4AutoT').textContent = UP.auto ? 'Safe errors are fixed automatically.' : 'I’ll ask you before fixing any errors.';
     sb4Paint();
