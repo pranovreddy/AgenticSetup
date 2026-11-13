@@ -1431,6 +1431,27 @@ body.sb4.s4-upon:not(.is-empty) .s4-uh b{font-size:13.5px}
 body.sb4:not(.is-empty) .s4-tabs{grid-area:sh;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;min-width:0}
 .s4-tabs .bar-r{display:flex;gap:8px;align-items:center}
 .s4-tabs #s4Q{width:200px}
+/* side bars: the agent bar collapses to a narrow rail */
+.s4-col,.s4-rail{display:none}
+body.sb4:not(.is-empty) .s4-col{display:grid;place-items:center;margin-left:auto;width:32px;height:32px;border-radius:9px;color:var(--ag-mute);flex-shrink:0;transition:background .15s,color .15s}
+.s4-col:hover{background:var(--bg-2);color:var(--ag-ink)}
+.s4-col:focus-visible,.s4-rail button:focus-visible{outline:2px solid var(--ag-bl);outline-offset:2px}
+.s4-col svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+body.sb5 .s4-col svg,body.sb4.s4-railed:not(.sb5) .s4-col svg{transform:scaleX(-1)}
+body.sb5.s4-railed .s4-col svg{transform:none}
+body.sb4:not(.is-empty) .agent{transition:grid-template-columns .35s cubic-bezier(.22,1,.36,1)}
+body.sb4.s4-railed:not(.is-empty) .agent{grid-template-columns:68px minmax(0,1fr)}
+body.sb5.s4-railed:not(.is-empty) .agent{grid-template-columns:minmax(0,1fr) 68px}
+body.sb4.s4-railed:not(.is-empty) .sb4-ai .sb4-hd,body.sb4.s4-railed:not(.is-empty) .sb4-ai .sb4-body,body.sb4.s4-railed:not(.is-empty) .sb4-ai .s4-up,body.sb4.s4-railed:not(.is-empty) .sb4-ai .s4-open{display:none!important}
+body.sb4.s4-railed:not(.is-empty) .sb4-ai .ag-hero{flex-direction:column;gap:10px;padding:14px 0 12px}
+body.sb4.s4-railed:not(.is-empty) .sb4-ai .ag-hero .ag-blob{margin:0}
+body.sb4.s4-railed:not(.is-empty) .s4-col{margin:0}
+body.sb4.s4-railed:not(.is-empty) .s4-rail{order:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 0}
+.s4-rail button{position:relative;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);color:var(--ag-ink2);transition:border-color .15s,background .15s}
+.s4-rail button:hover{border-color:var(--ag-bl);background:var(--blue-soft);color:var(--ag-bld)}
+.s4-rail svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.s4-rail span{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;display:grid;place-items:center;background:#f0b03c;color:#3a2300;font:700 11px var(--mono);border:2px solid #fff;box-sizing:content-box}
+.s4-rail span.b{background:var(--ag-bl);color:#fff}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -2036,6 +2057,7 @@ span.r-pick{cursor:default}
           <div class="ag-hero" id="agHero" data-blob="run">
             <span class="ai-blob ag-blob" aria-hidden="true"><canvas></canvas><span class="mark"></span></span>
             <div class="sb4-only sb4-hd"><b>Migration agent</b><span class="sb4-state" id="sb4State"><i></i><span></span></span></div>
+            <button type="button" class="sb4-only s4-col" id="s4Col" aria-expanded="true" aria-label="Collapse the agent bar" title="Collapse"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6M19 6v12"/></svg></button>
             <div class="ag-say" aria-live="polite">
               <h2 id="agSay">Drop your files. I’ll handle the rest.</h2>
               <p id="agSub"></p>
@@ -2043,6 +2065,11 @@ span.r-pick{cursor:default}
               <div class="ag-next" id="agNext" hidden></div>
             </div>
             <dl class="ag-stats" id="agStats"></dl>
+          </div>
+          <div class="sb4-only s4-rail" id="s4Rail">
+            <button type="button" data-rail="up" aria-label="Upload a file" title="Upload a file"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></button>
+            <button type="button" data-rail="acts" id="s4RailA" title="Required actions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg><span id="s4RailN" hidden></span></button>
+            <button type="button" data-rail="agents" id="s4RailG" title="Agents"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="4"/><path d="M12 8V4.5M9.5 13v1.5M14.5 13v1.5"/></svg><span id="s4RailW" class="b" hidden></span></button>
           </div>
           <div class="sb4-only sb4-body" id="sb4Body">
             <div id="s4Acts" aria-live="polite"></div>
@@ -4591,12 +4618,15 @@ span.r-pick{cursor:default}
     const G = { v: '<circle cx="5" cy="5" r="3"/><path d="M7.4 7.4L10 10"/>', f: '<path d="M6 1.5l4 1.5v3c0 2.3-1.7 3.8-4 4.5C3.7 9.8 2 8.3 2 6V3z"/>', p: '<path d="M2.5 6.2l2.3 2.3L9.5 3.8"/>' };
     const face = (k, c) => `<span class="s4-av a-${k}" aria-hidden="true"><svg viewBox="0 0 40 40"><path class="an" d="M20 4v5"/><circle class="an-d" cx="20" cy="4" r="2"/><rect class="hd" x="6" y="9" width="28" height="24" rx="9"/><rect class="ear" x="2.5" y="17" width="3.5" height="8" rx="1.7"/><rect class="ear" x="34" y="17" width="3.5" height="8" rx="1.7"/>${c ? '<rect class="eye" x="13" y="17" width="4" height="7" rx="2"/><rect class="eye" x="23" y="17" width="4" height="7" rx="2"/>' : '<path class="zz" d="M12.5 21h5M22.5 21h5"/>'}</svg><svg class="bd" viewBox="0 0 12 12">${G[k]}</svg></span>`;
     const body = `<ul class="s4-ag">${A.map(([nm, n, t, c], i) => `<li class="${c}">${face('vfp'[i], c)}<div><b>${nm}</b><small>${t ? esc(t) : 'Idle'}</small></div><span>${n || '–'}</span></li>`).join('')}</ul>`;
+    $('#s4RailW').hidden = !busy; $('#s4RailW').textContent = busy; $('#s4RailG').setAttribute('aria-label', busy ? `Agents: ${busy} working` : 'Agents: idle');
     const html = s4Card('agents', 'Agents', busy ? `<span class="n b">${busy} working</span>` : '<span class="q">Idle</span>', busy > 0, body);
     if (html !== CD.ag) { CD.ag = html; $('#s4Agents').innerHTML = html; }
   }
   function sb4Render() {
     if (!sb4On()) return;
     const f = UP.file, [t, d] = s4Msg(), has = jobs.length > 0;
+    if (UP.open) S4.rail = false;
+    document.body.classList.toggle('s4-railed', has && !!S4.rail); $('#s4Col').setAttribute('aria-expanded', String(!S4.rail)); $('#s4Col').setAttribute('aria-label', S4.rail ? 'Expand the agent bar' : 'Collapse the agent bar'); $('#s4Col').title = S4.rail ? 'Expand' : 'Collapse';
     document.body.classList.toggle('s4-upon', has && UP.open); $('#s4Open').setAttribute('aria-expanded', String(has && UP.open));
     if (has) {
       const cn = { all: jobs.length, needs: jobs.filter(needsYou).length, run: jobs.filter(isRunning).length, done: jobs.filter(isDone).length };
@@ -4613,6 +4643,7 @@ span.r-pick{cursor:default}
         + (gated.length ? item('fl', `${num(gated.reduce((x, j) => x + j.failed, 0))} records failed`, names(gated), 'skip-all', 'Continue', !fix.length) : '')
         + (ready.length ? item('ok', `Submit ${num(ready.reduce((x, j) => x + j.verified, 0))} records`, names(ready), 'submit-all', 'Submit', !fix.length && !gated.length) : '');
       const body = acts ? `<ul class="s4-sug">${acts}</ul>` : '<p class="s4-none">Nothing needs you right now.</p>';
+      $('#s4RailN').hidden = !need.length; $('#s4RailN').textContent = need.length; $('#s4RailA').setAttribute('aria-label', `Required actions: ${need.length}`);
       const head = s4Card('acts', 'Required actions', need.length ? `<span class="n">${need.length}</span>` : '<span class="q">None</span>', need.length > 0, body);
       if (head !== S4.sig) { S4.sig = head; $('#s4Acts').innerHTML = head; }
       s4Agents();
@@ -4650,6 +4681,8 @@ span.r-pick{cursor:default}
     UP.file = null; UP.sealed = false; UP.err = ''; UP.sent = f.name; clearTimeout(UP.sentT); UP.sentT = setTimeout(() => { UP.sent = ''; renderAgent(); }, 5000);
     UP.open = false; filter = 'all'; query = ''; flip(render, j.id); startTicker();
   }
+  $('#s4Col').onclick = () => { S4.rail = !S4.rail; renderAgent(); $('#s4Col').focus({ preventScroll: true }); };
+  $('#s4Rail').addEventListener('click', e => { const b = e.target.closest('[data-rail]'); if (!b) return; S4.rail = false; const k = b.dataset.rail; if (k === 'up') UP.open = true; else CD.man[k] = true; S4.sig = ''; CD.ag = ''; renderAgent(); if (k === 'up') $('#s4Lob').focus({ preventScroll: true }); });
   $('#s4Open').onclick = () => { UP.open = !UP.open; renderAgent(); if (UP.open) $('#s4Lob').focus({ preventScroll: true }); };
   $('#s4Close').onclick = () => { UP.open = false; renderAgent(); $('#s4Open').focus({ preventScroll: true }); };
   $('#s4Lob').onchange = e => { UP.lob = e.target.value; renderAgent(); };
