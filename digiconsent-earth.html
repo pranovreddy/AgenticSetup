@@ -4,264 +4,98 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="claude:viewport-fit-sides" content="cover">
-<title>DigiConsent Earth Layers</title>
+<title>DigiConsent Access Layers</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
-/* Layout: a half earth cut open in the centre, its five layers as rings around the user. Frosted glass HUD on the edges. */
+/* Layout: one 3D stage. Logo top left, layer switch top centre, state switch along the bottom, one caption card. Single light look by design. */
 :root{
-  --acc:#2563eb; --acc-soft:rgba(37,99,235,.12);
-  --ink:#0f1b3d; --ink2:#44537a; --mute:#7483a3;
-  --glass:rgba(255,255,255,.66); --glass-b:rgba(255,255,255,.8); --line:rgba(15,27,61,.09);
-  --chip:rgba(15,27,61,.055); --sky:#e9eef5;
-  --ok:#0f8a5f; --warn:#b06a07; --bad:#c0392b;
-  --shadow:0 10px 34px rgba(20,35,80,.13);
+  --bg:#eef2f8; --ink:#0b1b3f; --ink2:#4a5a7e; --mute:#8391ae; --acc:#2563eb; --acc-soft:rgba(37,99,235,.1);
+  --glass:rgba(255,255,255,.72); --glass-b:rgba(255,255,255,.9); --line:rgba(11,27,63,.09); --chip:rgba(11,27,63,.05);
+  --ok:#0f8a5f; --bad:#d23c3c; --shadow:0 12px 36px rgba(20,40,90,.12);
   --f-d:'Space Grotesk','Inter',system-ui,sans-serif; --f-b:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
   --gl:max(16px, env(safe-area-inset-left, 0px)); --gr:max(16px, env(safe-area-inset-right, 0px));
   color-scheme:light;
 }
-:root.night{
-  --ink:#eef2ff; --ink2:#b9c4e2; --mute:#8794b8;
-  --glass:rgba(16,23,42,.62); --glass-b:rgba(255,255,255,.1); --line:rgba(255,255,255,.1);
-  --chip:rgba(255,255,255,.08); --sky:#0d1424; --acc:#6c9bff; --acc-soft:rgba(108,155,255,.16);
-  --ok:#4fd1a1; --warn:#f0b35a; --bad:#ff8577;
-  --shadow:0 10px 34px rgba(0,0,0,.4);
-  color-scheme:dark;
-}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;overflow:hidden;background:var(--sky);color:var(--ink);font:13px/1.4 var(--f-b);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
-button,input{font:inherit;color:inherit}
-button{cursor:pointer;border:0;background:none;padding:0}
-button:focus-visible,input:focus-visible,tr:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-#app{position:relative;height:100%;overflow:hidden;user-select:none;-webkit-user-select:none}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink);font:13px/1.45 var(--f-b);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+#app{position:relative;height:100%;overflow:hidden;user-select:none;-webkit-user-select:none;background:radial-gradient(1100px 720px at 50% 42%,#ffffff 0%,#eef2f8 58%,#dfe6f1 100%)}
 #c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #c.drag{cursor:grabbing}
-.glass{background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);box-shadow:var(--shadow);border-radius:16px;transition:background .6s,border-color .6s,color .6s}
+.glass{background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);box-shadow:var(--shadow)}
 .num{font-variant-numeric:tabular-nums}
-.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);font-weight:600}
-
-/* top bar */
-#top{position:absolute;top:12px;left:var(--gl);right:var(--gr);height:52px;display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;z-index:30}
-.logo{display:flex;align-items:center;gap:9px;flex:none}
-.logo svg{width:26px;height:26px}
-.logo b{font:700 16px/1 var(--f-d);letter-spacing:-.01em;display:block}
-.logo span{font-size:10.5px;color:var(--mute);display:block;margin-top:3px;white-space:nowrap}
-.search{position:relative;flex:1 1 150px;max-width:230px;min-width:0}
-.search input{width:100%;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--chip);padding:0 10px 0 30px;outline-offset:0}
-.search input::placeholder{color:var(--mute)}
-.search svg{position:absolute;left:9px;top:9px;width:16px;height:16px;stroke:var(--mute)}
-.drop{position:absolute;top:calc(100% + 8px);left:0;min-width:240px;padding:6px;z-index:40;max-height:60vh;overflow:auto}
-.drop.right{left:auto;right:0}
-.drop button{display:flex;width:100%;gap:8px;align-items:baseline;text-align:left;padding:7px 9px;border-radius:9px}
-.drop button:hover,.drop button.on{background:var(--acc-soft)}
-.drop button small{color:var(--mute);margin-left:auto;white-space:nowrap}
-.drop .empty{padding:9px;color:var(--mute)}
-.areas{display:flex;gap:2px;padding:3px;border-radius:11px;background:var(--chip);flex:none}
-.areas button{height:28px;padding:0 10px;border-radius:8px;color:var(--ink2);font-weight:500;white-space:nowrap}
-.areas button:hover{color:var(--ink)}
-.areas button.on{background:var(--acc);color:#fff}
-.sp{flex:1 1 0}
-.tb{position:relative;flex:none}
-.ib{height:34px;min-width:34px;padding:0 9px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;justify-content:center;background:var(--chip);font-weight:500;white-space:nowrap}
-.ib:hover{background:var(--acc-soft)}
-.ib svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:8px;background:var(--acc);color:#fff;font-size:10px;font-weight:600;display:grid;place-items:center;padding:0 4px}
-.clock{font:600 14px/1 var(--f-d);padding:0 4px;flex:none;text-align:right}
-.clock small{display:block;font:500 10px/1 var(--f-b);color:var(--mute);margin-top:3px}
-.user{width:34px;height:34px;border-radius:50%;background:var(--acc);color:#fff;font:600 12px/34px var(--f-d);text-align:center;flex:none}
-.alert{display:block;padding:8px 9px;border-radius:9px;border-bottom:1px solid var(--line);width:300px;max-width:76vw}
-.alert:last-child{border:0}
-.alert time{color:var(--mute);font-size:11px;display:block}
-.alert i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--acc);margin-right:6px}
-.alert i.warn{background:var(--warn)} .alert i.ok{background:var(--ok)}
-
-/* KPI cards */
-#kpis{position:absolute;top:76px;left:var(--gl);display:flex;gap:10px;z-index:20}
-.kpi{padding:12px 14px;width:196px}
-.kpi .v{font:700 25px/1.1 var(--f-d);letter-spacing:-.02em;margin:5px 0 3px}
-.kpi .d{font-size:11.5px;color:var(--ink2);white-space:nowrap}
-.kpi .d b{color:var(--acc);font-weight:600}
-#kpis{cursor:pointer}
-#kpis.col .kpi{width:auto;padding:8px 13px;display:flex;align-items:baseline;gap:9px;border-radius:12px;flex:none}
-#kpis.col .kpi .v{font-size:15px;margin:0}
-#kpis.col .kpi .d,#kpis.col .kpi .bar{display:none}
-.bar{height:5px;border-radius:3px;background:var(--chip);overflow:hidden;margin-top:8px}
-.bar i{display:block;height:100%;background:var(--acc);border-radius:3px;transition:width .6s}
-
-/* detail panel */
-#detail{position:absolute;top:76px;right:var(--gr);width:296px;padding:14px;z-index:25;max-height:calc(100% - 76px - 282px);overflow:auto}
-#detail h2{font:700 18px/1.2 var(--f-d);margin:4px 0 2px;letter-spacing:-.01em;padding-right:26px;text-wrap:balance}
-#detail .sub{color:var(--ink2);margin-bottom:10px}
-#detail .x{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:8px;background:var(--chip);font-size:15px;line-height:26px}
-.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;background:var(--acc-soft);color:var(--acc);font-weight:600;font-size:11.5px}
-.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.pill.idle{background:var(--chip);color:var(--ink2)} .pill.ok{background:rgba(15,138,95,.13);color:var(--ok)} .pill.warn{background:rgba(176,106,7,.13);color:var(--warn)}
-.rows{margin:10px 0 0;display:grid;grid-template-columns:auto 1fr;gap:7px 12px}
-.rows dt{color:var(--mute)} .rows dd{margin:0;text-align:right;font-weight:500;min-width:0;overflow-wrap:anywhere}
-.intro p{margin:6px 0 0;color:var(--ink2)}
-.legend{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px}
-.legend li{display:flex;gap:8px;align-items:center;color:var(--ink2)}
-.legend kbd{font:600 10.5px var(--f-b);background:var(--chip);border-radius:6px;padding:2px 6px;color:var(--ink);white-space:nowrap}
-
-/* tracker */
-#tracker{position:absolute;left:var(--gl);bottom:14px;width:296px;padding:14px;z-index:20}
-#tracker h3{font:600 14px/1.2 var(--f-d);margin:3px 0 1px}
-#tracker .f{color:var(--ink2);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.steps{list-style:none;margin:10px 0 0;padding:0}
-.steps li{display:flex;align-items:center;gap:9px;padding:4px 0;position:relative;color:var(--mute)}
-.steps li::before{content:"";width:11px;height:11px;border-radius:50%;border:2px solid var(--line);flex:none;background:transparent;z-index:1}
-.steps li:not(:last-child)::after{content:"";position:absolute;left:5px;top:18px;width:1.5px;height:14px;background:var(--line)}
-.steps li.done{color:var(--ink2)} .steps li.done::before{background:var(--acc);border-color:var(--acc)}
-.steps li.now{color:var(--ink);font-weight:600} .steps li.now::before{border-color:var(--acc);box-shadow:0 0 0 4px var(--acc-soft);animation:pulse 1.4s infinite}
-.steps time{margin-left:auto;font-weight:500}
-@keyframes pulse{50%{box-shadow:0 0 0 7px transparent}}
-
-/* table */
-#table{position:absolute;left:calc(var(--gl) + 308px);right:var(--gr);bottom:14px;height:252px;padding:10px 6px 6px;z-index:20;display:flex;flex-direction:column;max-width:780px}
-.tabs{display:flex;gap:4px;padding:0 8px 8px;align-items:center}
-.tabs button{padding:5px 11px;border-radius:8px;color:var(--ink2);font-weight:500}
-.tabs button.on{background:var(--acc-soft);color:var(--acc);font-weight:600}
-.tabs .live{margin-left:auto;font-size:11px;color:var(--mute);display:flex;align-items:center;gap:6px}
-.tabs .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok);animation:blink 1.6s infinite}
-@keyframes blink{50%{opacity:.25}}
-.tw{overflow:auto;flex:1;min-height:0}
-#table.col{height:auto;padding-bottom:2px} #table.col .tw{display:none}
-.tabs .tg{margin-left:8px;background:var(--chip);color:var(--ink)}
-table{border-collapse:collapse;width:100%;font-size:12.5px}
-th{position:sticky;top:0;text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);font-weight:600;padding:5px 10px;background:transparent;white-space:nowrap}
-td{padding:5px 10px;border-top:1px solid var(--line);white-space:nowrap}
-tbody tr{cursor:pointer} tbody tr:hover td,tbody tr.sel td{background:var(--acc-soft)}
-td .pill{font-size:11px;padding:2px 8px}
-td:first-child{font-weight:600}
-
-#label{position:absolute;left:0;top:0;z-index:15;pointer-events:none;padding:5px 10px;border-radius:10px;font-weight:600;white-space:nowrap;transform:translate(-50%,-100%);will-change:transform}
-#label small{font-weight:500;color:var(--ink2);margin-left:6px}
-#hint{position:absolute;right:var(--gr);bottom:250px;z-index:10;padding:6px 11px;border-radius:99px;font-size:11.5px;color:var(--ink2);pointer-events:none}
-#mbar{display:none}
-#load{position:absolute;inset:0;display:grid;place-items:center;background:var(--sky);z-index:99;font:600 15px var(--f-d);color:var(--ink2);transition:opacity .5s}
-
-@media (max-width:1180px){ .logo span{display:none} .clock small{display:none} .areas button{padding:0 8px} .user{display:none} }
-@media (max-width:1020px){
-  #top{height:auto;flex-wrap:wrap;padding:9px 10px;row-gap:8px}
-  .areas{order:9;flex:1 1 100%;overflow-x:auto;scrollbar-width:none} .areas::-webkit-scrollbar{display:none}
-  #kpis{top:118px} #detail{top:118px;max-height:calc(100% - 118px - 282px)}
-}
-@media (max-width:760px){
-  #top{top:8px}
-  .logo b{font-size:15px} .search{flex:1 1 60px} .search:focus-within{position:absolute;left:10px;right:10px;top:9px;max-width:none;z-index:5} .search:focus-within input{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)} .clock{display:none} .ib span{display:none}
-  #kpis{top:112px;right:0;left:0;padding:0 var(--gr) 4px var(--gl);overflow-x:auto;scrollbar-width:none} #kpis::-webkit-scrollbar{display:none}
-  .kpi{flex:none;width:158px;padding:10px 12px} .kpi .v{font-size:20px}
-  #hint{display:none}
-  #mbar{display:flex;position:absolute;left:var(--gl);right:var(--gr);bottom:max(10px, env(safe-area-inset-bottom, 0px));z-index:35;padding:4px;gap:4px}
-  #mbar button{flex:1;height:36px;border-radius:11px;font-weight:600;color:var(--ink2)}
-  #mbar button.on{background:var(--acc);color:#fff}
-  #tracker,#table,#detail{left:var(--gl);right:var(--gr);width:auto;max-width:none;top:auto;bottom:calc(max(10px, env(safe-area-inset-bottom, 0px)) + 54px);max-height:46%;transform:translateY(calc(100% + 80px));transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:32}
-  #table,#table.col{height:46%;padding-bottom:6px} #table.col .tw{display:block} .tabs .tg{display:none}
-  #detail::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--line);margin:-4px auto 8px}
-  .show{transform:none !important}
-}
-@media (prefers-reduced-motion:reduce){ .steps li.now::before,.tabs .live::before{animation:none} }
-
-/* earth-layer additions */
-.sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0}
-#ltags{position:absolute;inset:0;z-index:12;pointer-events:none;transition:opacity .3s}
-.ltag{position:absolute;left:0;top:0;pointer-events:auto;padding:5px 11px 5px 9px;border-radius:99px;font:600 12.5px var(--f-d);white-space:nowrap;display:flex;align-items:center;gap:7px;will-change:transform}
-.ltag i{width:10px;height:10px;border-radius:50%}
-.ltag small{font:500 10.5px var(--f-b);color:var(--mute)}
-.ltag:hover{background:var(--glass-b)}
-.legend .lrow{display:flex;align-items:center;gap:9px;width:100%;padding:5px 8px;border-radius:9px;text-align:left}
-.legend .lrow:hover,.arow:hover{background:var(--acc-soft)}
-.legend .lrow i{width:11px;height:11px;border-radius:50%;flex:none}
-.legend .lrow span{margin-left:auto;color:var(--mute);font-size:11.5px}
-.eyebrow.sec{margin:14px 0 5px}
-.arow{display:block;width:100%;text-align:left;padding:6px 8px;border-radius:9px;margin:0 -8px;width:calc(100% + 16px)}
-.arow b{display:block;font-weight:600}
-.arow span{display:block;color:var(--ink2);font-size:12px}
-.arow.back{margin-top:10px;border-top:1px solid var(--line);border-radius:0 0 9px 9px}
-.jobs{margin:0;padding:0 0 0 16px;color:var(--ink2);display:grid;gap:4px}
-.jobs li.now{color:var(--acc);font-weight:600}
-#detail{max-height:calc(100% - 76px - 290px)}
-@media (max-width:1020px){#detail{max-height:calc(100% - 118px - 290px)}}
-@media (max-width:760px){#detail{max-height:52%} .ltag small{display:none}}
-
-/* stack + worlds */
-#fade{position:absolute;inset:0;z-index:14;opacity:0;pointer-events:none;transition:opacity .42s}
+#fade{position:absolute;inset:0;z-index:14;opacity:0;pointer-events:none;transition:opacity .4s;background:#f4f7fb}
 #fade.on{opacity:1}
-.ltag{border-radius:14px;padding:7px 10px 7px 10px;gap:9px;text-align:left}
-.ltag span{display:block} .ltag b{display:block;font:600 13px var(--f-d)} .ltag small{display:block;margin-top:1px}
-.ltag em{font:600 11px var(--f-b);font-style:normal;color:var(--acc);background:var(--acc-soft);padding:3px 8px;border-radius:99px;margin-left:4px}
-.seq{list-style:none;margin:0;padding:0;counter-reset:s}
-.seq li{counter-increment:s;position:relative}
-.seq li button{display:block;width:100%;text-align:left;padding:5px 8px 5px 34px;border-radius:9px}
-.seq li button:hover{background:var(--acc-soft)}
-.seq li::before{content:counter(s);position:absolute;left:4px;top:6px;width:21px;height:21px;border-radius:50%;background:var(--chip);font:600 11px/21px var(--f-d);text-align:center;color:var(--ink2);pointer-events:none}
-.seq li:not(:last-child)::after{content:"";position:absolute;left:14px;top:28px;bottom:-5px;width:1.5px;background:var(--line)}
-.seq li.now::before{background:var(--acc);color:#fff}
-.seq b{display:block;font-weight:600} .seq span{display:block;color:var(--ink2);font-size:12px}
-.arow.gate{margin:12px -8px 0;border:1px solid var(--line);border-radius:11px;padding:8px}
-.arow em{font-style:normal;font-weight:600} em.ok{color:var(--ok)} em.bad{color:var(--bad)}
-.nav{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
-.nav button{padding:6px 10px;border-radius:9px;background:var(--chip);font-weight:500}
-.nav button:hover{background:var(--acc-soft);color:var(--acc)}
-.steps li[style]::before{background:var(--dot);border-color:var(--dot)}
-#tracker{max-height:calc(100% - 150px);overflow:auto}
-@media (max-width:760px){.ltag em,.ltag small{display:none} .ltag{padding:4px 9px;border-radius:99px} .ltag b{font-size:12px}}
+.logo{position:absolute;top:16px;left:var(--gl);z-index:30;display:flex;align-items:center;gap:9px;padding:8px 14px 8px 10px;border-radius:14px}
+.logo svg{width:26px;height:26px}
+.logo b{font:700 16px/1 var(--f-d);letter-spacing:-.01em}
+/* switch 1: access layers */
+#layers{position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:2px;padding:4px;border-radius:14px;max-width:calc(100% - 2*var(--gl))}
+#layers button{height:34px;padding:0 13px;border-radius:10px;font-weight:500;color:var(--ink2);white-space:nowrap;display:flex;align-items:center;gap:7px;transition:background .25s,color .25s}
+#layers button i{width:9px;height:9px;border-radius:50%;flex:none}
+#layers button:hover{color:var(--ink)}
+#layers button.on{background:var(--ink);color:#fff}
+/* switch 2: states */
+#states{position:absolute;left:50%;transform:translateX(-50%);bottom:max(16px, env(safe-area-inset-bottom, 0px));z-index:30;display:flex;align-items:center;gap:6px;padding:6px;border-radius:18px;max-width:calc(100% - 2*var(--gl))}
+#states .nb{width:34px;height:34px;border-radius:11px;background:var(--chip);flex:none;display:grid;place-items:center}
+#states .nb:hover{background:var(--acc-soft);color:var(--acc)}
+#states .nb svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#chips{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;min-width:0}
+#chips::-webkit-scrollbar{display:none}
+#chips button{flex:none;display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:12px;text-align:left;transition:background .25s,color .25s}
+#chips button:hover{background:var(--chip)}
+#chips em{font:600 11px/22px var(--f-d);font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--chip);text-align:center;flex:none;color:var(--ink2)}
+#chips small{display:block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600;line-height:1.2}
+#chips b{display:block;font-weight:600;white-space:nowrap;line-height:1.25}
+#chips button.done em{background:var(--acc-soft);color:var(--acc)}
+#chips button.on{background:var(--acc);color:#fff}
+#chips button.on small{color:rgba(255,255,255,.75)} #chips button.on em{background:rgba(255,255,255,.22);color:#fff}
+/* caption */
+#cap{position:absolute;left:var(--gl);bottom:calc(max(16px, env(safe-area-inset-bottom, 0px)) + 66px);z-index:25;width:340px;max-width:calc(100% - 2*var(--gl));padding:16px 18px;border-radius:18px;transition:opacity .3s,transform .3s}
+#cap.swap{opacity:0;transform:translateY(8px)}
+#cap .day{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--acc)}
+#cap h2{font:700 21px/1.2 var(--f-d);letter-spacing:-.01em;margin:5px 0 6px;text-wrap:balance}
+#cap p{margin:0;color:var(--ink2);font-size:13.5px}
+#cap .meta{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--ink2);font-size:12px}
+#cap .meta b{color:var(--ink);font-weight:600} #cap .meta .ok{color:var(--ok)} #cap .meta .bad{color:var(--bad)}
+#cap .go{margin-top:12px;height:34px;padding:0 14px;border-radius:10px;background:var(--ink);color:#fff;font-weight:600}
+#cap .go:hover{background:var(--acc)}
+/* callouts beside the layers */
+#ltags{position:absolute;inset:0;z-index:12;pointer-events:none;transition:opacity .4s}
+.ltag{position:absolute;left:0;top:0;pointer-events:auto;padding:6px 12px 6px 10px;border-radius:12px;display:flex;align-items:center;gap:8px;white-space:nowrap;will-change:transform;transition:opacity .4s}
+.ltag i{width:10px;height:10px;border-radius:50%}
+.ltag b{font:600 13px var(--f-d)} .ltag small{color:var(--mute);font-size:11.5px}
+.ltag.dim{opacity:.5}
+#load{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);z-index:99;font:600 15px var(--f-d);color:var(--ink2);transition:opacity .5s}
+@media (max-width:900px){
+  #layers{top:66px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start} #layers::-webkit-scrollbar{display:none}
+  #layers button{padding:0 11px}
+  #cap{width:auto;right:var(--gr);padding:13px 15px} #cap h2{font-size:18px}
+  .ltag small{display:none} .ltag{padding:4px 10px 4px 8px}
+}
+@media (prefers-reduced-motion:reduce){ #fade,#cap{transition:none} }
 </style>
 </head>
 <body>
 <div id="app">
-  <canvas id="c" aria-label="Live 3D view of the consent access layers"></canvas>
+  <canvas id="c" aria-label="3D view of the consent access layers"></canvas>
   <div id="fade"></div>
   <div id="ltags"></div>
-  <div id="label" class="glass" hidden></div>
-
-  <header id="top" class="glass">
-    <div class="logo">
-      <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 2.5 4.5 6v7.6c0 5.6 3.9 9.9 9.5 11.9 5.6-2 9.5-6.3 9.5-11.9V6L14 2.5Z" fill="#2563eb"/><path d="m9.6 14.2 3.1 3.1 5.9-6.2" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div><b>DigiConsent</b><span>Access layers · who protects the user</span></div>
-    </div>
-    <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg>
-      <input id="q" type="search" placeholder="Search layers, agents, stations" autocomplete="off" aria-label="Search any object">
-      <div id="qres" class="drop glass" hidden></div>
-    </div>
-    <nav class="areas" id="areas" aria-label="Layers"></nav>
-    <div class="sp"></div>
-    <div class="tb">
-      <button class="ib" id="seasonBtn" aria-haspopup="true"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.2 7.8 7.5 9 4.3-1.2 7.5-4.4 7.5-9V6L12 3Z"/></svg><span id="seasonLbl">Normal day</span></button>
-      <div id="seasonMenu" class="drop right glass" hidden></div>
-    </div>
-    <div class="clock num"><span id="clk">--:--:--</span><small id="dte"></small></div>
-    <div class="tb">
-      <button class="ib" id="alertBtn" aria-label="Alerts"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7 2.5 7h-17S6 15 6 9ZM10 20a2.2 2.2 0 0 0 4 0"/></svg><b class="badge" id="alertN" hidden>0</b></button>
-      <div id="alertMenu" class="drop right glass" hidden></div>
-    </div>
-    <button class="ib" id="dn" aria-label="Switch day and night"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>
-    <div class="user" title="Ananya Rao, Onboarding RM">AR</div>
-  </header>
-
-  <div id="kpis" class="col" role="button" tabindex="0" aria-expanded="false" title="Show or hide KPI details">
-    <div class="kpi glass"><div class="eyebrow">Spam blocked today</div><div class="v num" id="k1">0</div><div class="d num"><b id="k1d">0</b> stopped before the user</div></div>
-    <div class="kpi glass"><div class="eyebrow">Consented delivered</div><div class="v num" id="k2">0</div><div class="d num"><b id="k2d">0%</b> of traffic had consent</div></div>
-    <div class="kpi glass"><div class="eyebrow">Active consents</div><div class="v num" id="k3">0</div><div class="d num"><b id="k3d">0</b> revoked today</div></div>
+  <div class="logo glass">
+    <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 2.5 4.5 6v7.6c0 5.6 3.9 9.9 9.5 11.9 5.6-2 9.5-6.3 9.5-11.9V6L14 2.5Z" fill="#2563eb"/><path d="m9.6 14.2 3.1 3.1 5.9-6.2" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <b>DigiConsent</b>
   </div>
-
-  <aside id="detail" class="glass" aria-live="off"></aside>
-
-  <section id="tracker" class="glass">
-    <div class="eyebrow">Access chain</div>
-    <h3 id="trT">Chain</h3><div class="f num" id="trF"></div>
-    <ol class="steps" id="trS"></ol>
-  </section>
-
-  <section id="table" class="glass col">
-    <div class="tabs" id="tabs"></div>
-    <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
-  </section>
-
-  <nav id="mbar" class="glass"><button data-m="tracker">Sequence</button><button data-m="table">Live table</button><button data-m="detail">Details</button></nav>
+  <nav id="layers" class="glass" aria-label="Access layers"></nav>
+  <aside id="cap" class="glass" aria-live="polite"></aside>
+  <nav id="states" class="glass" aria-label="States">
+    <button class="nb" id="prev" aria-label="Previous state"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button>
+    <div id="chips"></div>
+    <button class="nb" id="next" aria-label="Next state"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
+    <button class="nb" id="play" aria-label="Play or pause"></button>
+  </nav>
   <div id="load">Building the layers…</div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (() => {
@@ -272,9 +106,6 @@ const rnd = () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed 
 const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1)), pick = a => a[Math.floor(rnd() * a.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), lerp = (a, b, t) => a + (b - a) * t;
 const IN = n => Math.round(n).toLocaleString('en-IN');
-const CR = n => (n / 1e7).toFixed(2) + ' Cr';
-const LK = n => n >= 1e7 ? CR(n) : n >= 1e5 ? (n / 1e5).toFixed(2) + ' L' : IN(n);
-const hms = ms => new Date(ms).toLocaleTimeString('en-GB');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const TAU = Math.PI * 2;
 
@@ -282,380 +113,281 @@ function start() {
 if (!window.THREE) { $('#load').textContent = 'Could not load the 3D engine. Check your connection and reload.'; return; }
 const T3 = THREE;
 const canvas = $('#c'), app = $('#app');
-const isMobile = () => innerWidth <= 760;
-const renderer = new T3.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile() ? 1.5 : 2));
-renderer.outputEncoding = T3.sRGBEncoding;
-renderer.shadowMap.enabled = true; renderer.shadowMap.type = T3.PCFSoftShadowMap;
-const scene = new T3.Scene(); scene.background = new T3.Color(0xE9EEF5);
-const camera = new T3.PerspectiveCamera(42, 1, 2, 3000);
-const hemi = new T3.HemisphereLight(0xffffff, 0xB9C2D4, .5); scene.add(hemi);
-const sun = new T3.DirectionalLight(0xFFF3E0, .6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0008; sun.shadow.normalBias = .6;
-const sc = sun.shadow.camera; sc.left = -95; sc.right = 95; sc.top = 110; sc.bottom = -110; sc.near = 20; sc.far = 600; sc.updateProjectionMatrix();
-sun.position.set(110, 210, 130); scene.add(sun, sun.target);
+const renderer = new T3.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, innerWidth <= 760 ? 1.5 : 2)); renderer.setClearColor(0, 0);
+renderer.outputEncoding = T3.sRGBEncoding; renderer.shadowMap.enabled = true; renderer.shadowMap.type = T3.PCFSoftShadowMap;
+const scene = new T3.Scene();
+const camera = new T3.PerspectiveCamera(40, 1, 2, 3000);
+scene.add(new T3.HemisphereLight(0xffffff, 0xC5CEDF, .62));
+const sun = new T3.DirectionalLight(0xffffff, .62); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0008; sun.shadow.normalBias = .6;
+const sc = sun.shadow.camera; sc.left = -95; sc.right = 95; sc.top = 170; sc.bottom = -60; sc.near = 20; sc.far = 700; sc.updateProjectionMatrix();
+sun.position.set(120, 260, 150); scene.add(sun, sun.target);
 
 /* ───────── materials + helpers ───────── */
 const mats = {};
-const M = (c, o) => { const k = c + JSON.stringify(o || 0); return mats[k] || (mats[k] = new T3.MeshStandardMaterial(Object.assign({ color: c, roughness: .88, metalness: 0, flatShading: true }, o))); };
-const mWhite = M(0xF8F6F1), mClay = M(0xEAE6DE), mGrey = M(0xC6CBD6), mDark = M(0x3D4456), mBlue = M(0x2563EB, { roughness: .55 }), mRed = M(0xD93A3A, { roughness: .6 }), mBad = M(0x4A4550);
-const mMetal = new T3.MeshStandardMaterial({ color: 0xD3D8E0, metalness: .25, roughness: .35 });
-const mWin = new T3.MeshStandardMaterial({ color: 0x9FC0F5, roughness: .25, emissive: 0xFFE0A8, emissiveIntensity: 0, flatShading: true });
-const mScreen = new T3.MeshStandardMaterial({ color: 0x4C9BEA, emissive: 0x4C9BEA, emissiveIntensity: .45 });
-const mGlass = new T3.MeshStandardMaterial({ color: 0xA9C8FF, roughness: .12, metalness: .3, transparent: true, opacity: .75 });
-const mPath = new T3.MeshStandardMaterial({ color: 0xFFF6E6, roughness: .9, transparent: true, opacity: .82 });
+const M = (c, o) => { const k = c + JSON.stringify(o || 0); return mats[k] || (mats[k] = new T3.MeshStandardMaterial(Object.assign({ color: c, roughness: .8, metalness: 0, flatShading: true }, o))); };
+const mWhite = M(0xFBFCFE), mSoft = M(0xE3E9F3), mDark = M(0x1B2A4A), mBlue = M(0x2563EB, { roughness: .5 }), mRed = M(0xE5484D, { roughness: .55 }), mBad = M(0x3B4254);
+const mWin = M(0xBCD3FA, { roughness: .3 });
+const mScreen = new T3.MeshStandardMaterial({ color: 0x5EA2FF, emissive: 0x3B82F6, emissiveIntensity: .6 });
+const mGlass = new T3.MeshStandardMaterial({ color: 0xC4D8FF, roughness: .1, metalness: .2, transparent: true, opacity: .7 });
+const mPath = new T3.MeshStandardMaterial({ color: 0xffffff, roughness: .9, transparent: true, opacity: .93 });
 const mHit = new T3.MeshBasicMaterial({ visible: false });
-const gBox = new T3.BoxGeometry(1, 1, 1), gSph = new T3.SphereGeometry(1, 16, 12);
+const gBox = new T3.BoxGeometry(1, 1, 1), gSph = new T3.SphereGeometry(1, 20, 14);
 function box(w, h, d, m, x, y, z, p, cast = true) { const o = new T3.Mesh(gBox, m); o.scale.set(w, h, d); o.position.set(x, y + h / 2, z); o.castShadow = cast; o.receiveShadow = true; p.add(o); return o; }
 function cyl(r1, r2, h, seg, m, x, y, z, p, cast = true) { const o = new T3.Mesh(new T3.CylinderGeometry(r1, r2, h, seg), m); o.position.set(x, y + h / 2, z); o.castShadow = cast; o.receiveShadow = true; p.add(o); return o; }
 function sph(r, m, x, y, z, p) { const o = new T3.Mesh(gSph, m); o.scale.setScalar(r); o.position.set(x, y, z); o.castShadow = true; p.add(o); return o; }
 const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'), r = g.createRadialGradient(32, 32, 0, 32, 32, 32); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(.35, 'rgba(255,255,255,.45)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 64, 64); return new T3.CanvasTexture(c); })();
 const spriteTex = {};
-function textSprite(txt, h = 1.7, bg = 'rgba(255,255,255,.95)', fg = '#0f1b3d') {
-  const key = txt + bg; let e = spriteTex[key];
-  if (!e) { const c = document.createElement('canvas'), g = c.getContext('2d'), f = '600 34px "Space Grotesk",Inter,system-ui,sans-serif'; g.font = f; const w = Math.ceil(g.measureText(txt).width) + 36; c.width = w; c.height = 64;
-    g.fillStyle = bg; const r = 18; g.beginPath(); g.moveTo(r, 2); g.arcTo(w - 2, 2, w - 2, 62, r); g.arcTo(w - 2, 62, 2, 62, r); g.arcTo(2, 62, 2, 2, r); g.arcTo(2, 2, w - 2, 2, r); g.fill();
+function textSprite(txt, h, bg = 'rgba(255,255,255,.97)', fg = '#0b1b3f', round) {
+  const key = txt + bg + round; let e = spriteTex[key];
+  if (!e) { const c = document.createElement('canvas'), g = c.getContext('2d'), f = '600 34px "Space Grotesk",Inter,system-ui,sans-serif'; g.font = f; const w = round ? 64 : Math.ceil(g.measureText(txt).width) + 40; c.width = w; c.height = 64;
+    g.fillStyle = bg; const r = round ? 30 : 20; g.beginPath(); g.moveTo(r + 2, 2); g.arcTo(w - 2, 2, w - 2, 62, r); g.arcTo(w - 2, 62, 2, 62, r); g.arcTo(2, 62, 2, 2, r); g.arcTo(2, 2, w - 2, 2, r); g.fill();
     g.font = f; g.fillStyle = fg; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, w / 2, 34);
     const t = new T3.CanvasTexture(c); t.encoding = T3.sRGBEncoding; e = spriteTex[key] = { t, w }; }
-  const s = new T3.Sprite(new T3.SpriteMaterial({ map: e.t, transparent: true, depthWrite: false })); s.scale.set(e.w / 64 * h, h, 1); s.renderOrder = 5; s.userData.nopick = true; return s;
+  const s = new T3.Sprite(new T3.SpriteMaterial({ map: e.t, transparent: true, depthWrite: false })); s.scale.set(e.w / 64 * h, h, 1); s.renderOrder = 8; s.userData.b = s.scale.clone(); s.userData.label = true; return s;
 }
-function lavaTex(base, hot, dark, n = 150) { const c = document.createElement('canvas'); c.width = 512; c.height = 256; const g = c.getContext('2d'); g.fillStyle = base; g.fillRect(0, 0, 512, 256);
-  for (let i = 0; i < n; i++) { const x = rnd() * 512, y = rnd() * 256, r = 8 + rnd() * 34; for (const ox of [-512, 0, 512]) { const gr = g.createRadialGradient(x + ox, y, 0, x + ox, y, r); gr.addColorStop(0, hot); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha = .28 + rnd() * .3; g.fillStyle = gr; g.fillRect(x + ox - r, y - r, r * 2, r * 2); } }
-  g.globalAlpha = .5; g.strokeStyle = dark; g.lineWidth = 2; for (let i = 0; i < 46; i++) { let x = rnd() * 512, y = rnd() * 256; g.beginPath(); g.moveTo(x, y); for (let k = 0; k < 5; k++) { x += rnd() * 40 - 20; y += rnd() * 30 - 15; g.lineTo(x, y); } g.stroke(); }
-  const t = new T3.CanvasTexture(c); t.encoding = T3.sRGBEncoding; t.wrapS = t.wrapT = T3.RepeatWrapping; return t; }
-const earthTex = (() => { const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
-  const gr = g.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, '#4a9bea'); gr.addColorStop(1, '#2f6fc4'); g.fillStyle = gr; g.fillRect(0, 0, 1024, 512);
-  for (let k = 0; k < 18; k++) { let x = rnd() * 1024, y = 30 + rnd() * 440; g.fillStyle = k % 3 ? '#5fb86a' : '#b9d65a'; for (let i = 0; i < 46; i++) { const r = 10 + rnd() * 26; for (const ox of [-1024, 0, 1024]) { g.beginPath(); g.arc(x + ox, y, r, 0, TAU); g.fill(); } x += rnd() * 44 - 22; y += rnd() * 30 - 15; } }
-  const t = new T3.CanvasTexture(c); t.encoding = T3.sRGBEncoding; t.wrapS = T3.RepeatWrapping; return t; })();
 
-/* ───────── data: five layers, each with a gate and a sequence ───────── */
+/* ───────── data ───────── */
 const LAYERS = [
-  { key: 'reg', name: 'Regulator', geo: 'Crust', hex: '#8c6c54', col: 0x8C6C54, tex: ['#8c6c54', '#b59074', '#5a4232'], who: 'TRAI', y: 52,
-    role: 'Sets the rules, invites the channel owners and regulates the whole ecosystem.', stops: 'Unregistered senders with no DLT header',
-    gate: ['Licence check', 'Only licensed operators are invited in as channel owners.'], actor: 'Operator',
-    good: ['Airtel', 'Jio', 'VIL', 'BSNL'], bad: [['Unlicensed VNO', 'No telecom licence on record'], ['Grey-route carrier', 'Grey-route traffic found']],
-    steps: [['Publish regulation', 'Policy agent', 'Sets the consent rules every layer below must follow.', 'court'], ['Invite channel owner', 'Invite agent', 'Sends the platform invite to the operator.', 'office'], ['Set the migration window', 'Window agent', 'Opens the dates for moving legacy consents.', 'desk'], ['Telco 360 oversight', 'Audit agent', 'Watches each operator: scrubbing, partners and subscribers.', 'desk'], ['Enterprise 360 oversight', 'Trust agent', 'Scores every enterprise and its consent uploads.', 'office'], ['Complaints 360', 'Oversight agent', 'Reviews escalated complaints and issues penalties.', 'court']] },
-  { key: 'co', name: 'Channel owners', geo: 'Upper mantle', hex: '#d54e36', col: 0xD54E36, tex: ['#d2452e', '#ff8a4a', '#8e2416'], who: 'Airtel, Jio, VIL, BSNL', y: 27,
-    role: 'The operators. They invite GTM partners, assign rate cards, scrub traffic and handle complaints.', stops: 'Messages with no consent on file, caught at the scrub',
-    gate: ['Regulator invite check', 'An operator gets in only with the regulator\'s invite.'], actor: 'Operator',
+  { name: 'Regulator', who: 'TRAI', hex: '#14275c', col: 0x14275C, R: 34, ey: 118,
+    gate: ['Licence check', 'Day 1', 'Only licensed operators can be invited in.'], actor: 'operator',
+    good: ['Airtel', 'Jio', 'VIL', 'BSNL'], bad: [['Unlicensed VNO', 'No telecom licence'], ['Grey-route carrier', 'Grey-route traffic found']],
+    steps: [['Publish rules', 'Day 1', 'The regulator sets the consent rules every layer below must follow.', 'Policy agent', 'court'], ['Invite operators', 'Day 1', 'Each channel owner gets a platform invite.', 'Invite agent', 'office'], ['Open the window', 'Day 2', 'The migration window for legacy consents is set.', 'Window agent', 'desk'], ['Watch operators', 'Ongoing', 'Scrubbing, partners and subscribers are tracked for each operator.', 'Audit agent', 'desk'], ['Watch enterprises', 'Ongoing', 'Every enterprise and its consent uploads get a trust score.', 'Trust agent', 'office'], ['Act on complaints', 'Ongoing', 'Escalated complaints are reviewed and penalties issued.', 'Oversight agent', 'court']] },
+  { name: 'Channel owners', who: 'Airtel, Jio, VIL, BSNL', hex: '#1d3fa8', col: 0x1D3FA8, R: 28, ey: 80,
+    gate: ['Invite check', 'Day 1', 'An operator gets in only with the regulator\'s invite.'], actor: 'operator',
     good: ['Airtel', 'Jio', 'VIL', 'BSNL'], bad: [['Uninvited carrier', 'No invite from the regulator'], ['Grey-route operator', 'Not a licensed access provider']],
-    steps: [['Accept the invite', 'Onboarding agent', 'Joins the platform from the regulator\'s invite.', 'office'], ['Declare channel coverage', 'Coverage agent', 'Says which channels it runs: SMS, Voice, RCS.', 'tower'], ['Invite GTM partners', 'Partner agent', 'Nominates the aggregators allowed to sell on its network.', 'office'], ['Create rate cards', 'Rate card agent', 'Prices migration, acquisition and scrubbing.', 'desk'], ['Assign rate cards', 'Rate card agent', 'Sends each GTM partner its rates.', 'depot'], ['Scrub traffic', 'Scrub agent', 'Checks every message against consent before delivery.', 'tower'], ['Handle complaints', 'Complaint agent', 'Resolves subscriber complaints, escalates repeat offenders.', 'desk']] },
-  { key: 'gtm', name: 'GTM partners', geo: 'Lower mantle', hex: '#e9722f', col: 0xE9722F, tex: ['#e86a25', '#ffb04a', '#a2440f'], who: 'Karix, Value First, Tata, Route Mobile', y: 3,
-    role: 'The aggregators. They accept operator rates, create rate cards for enterprises and assist them.', stops: 'Unverified resellers and wrong sender IDs',
-    gate: ['Invite and KYC check', 'A partner gets in only when an operator invited it and its entity KYC holds.'], actor: 'GTM partner',
-    good: ['Karix', 'Value First', 'Tata', 'Route Mobile'], bad: [['FastSMS Hub', 'No operator invited this partner'], ['BulkBlast Media', 'Entity KYC failed'], ['Unverified reseller', 'Sender list has unregistered headers']],
-    steps: [['Accept the invite', 'Onboarding agent', 'Joins from the channel owner\'s invite.', 'office'], ['Confirm entity KYC', 'KYC agent', 'Confirms the company details on record.', 'desk'], ['Accept operator rates', 'Rate agent', 'Reviews and accepts each operator\'s rate card.', 'depot'], ['Build enterprise rate cards', 'Rate card builder', 'Creates the rates enterprises will see.', 'office'], ['Upload the sender list', 'Sender agent', 'Registers the headers it sends for.', 'desk'], ['Assist enterprises', 'Assist agent', 'Helps enterprises with templates and failed deliveries.', 'depot']] },
-  { key: 'ent', name: 'Enterprises', geo: 'Outer core', hex: '#f4a12a', col: 0xF4A12A, tex: ['#f29a1f', '#ffd65a', '#b86a08'], who: 'HDFC Bank, HDFC Life, HDFC ERGO', y: -21,
-    role: 'The brands. Agentic onboarding lets real businesses in and keeps bad actors out. Then they set up, migrate and acquire consent.', stops: 'Bad enterprises, stopped at onboarding before they can message anyone',
-    gate: ['Agentic onboarding checkpoint', 'Checks the registrar invite, DLT entity, GSTIN and MCA record before anyone gets in.'], actor: 'Enterprise',
+    steps: [['Accept invite', 'Day 1', 'The operator joins from the regulator\'s invite.', 'Onboarding agent', 'office'], ['Declare coverage', 'Day 2', 'It states which channels it runs: SMS, Voice, RCS.', 'Coverage agent', 'tower'], ['Invite GTM partners', 'Day 3', 'It nominates the aggregators allowed to sell on its network.', 'Partner agent', 'office'], ['Create rate cards', 'Day 3', 'Migration, acquisition and scrubbing are priced.', 'Rate card agent', 'desk'], ['Assign rate cards', 'Day 4', 'Each GTM partner receives its rates.', 'Rate card agent', 'depot'], ['Scrub traffic', 'Every day', 'Every message is checked against consent before delivery.', 'Scrub agent', 'tower'], ['Handle complaints', 'Every day', 'Subscriber complaints are resolved, repeat offenders escalated.', 'Complaint agent', 'desk']] },
+  { name: 'GTM partners', who: 'Karix, Value First, Tata, Route Mobile', hex: '#2563eb', col: 0x2563EB, R: 22, ey: 48,
+    gate: ['Invite and KYC check', 'Day 4', 'A partner gets in only if an operator invited it and its KYC holds.'], actor: 'partner',
+    good: ['Karix', 'Value First', 'Tata', 'Route Mobile'], bad: [['FastSMS Hub', 'No operator invited this partner'], ['BulkBlast Media', 'Entity KYC failed'], ['Unverified reseller', 'Unregistered headers in sender list']],
+    steps: [['Accept invite', 'Day 4', 'The partner joins from the channel owner\'s invite.', 'Onboarding agent', 'office'], ['Confirm KYC', 'Day 4', 'Company details on record are confirmed.', 'KYC agent', 'desk'], ['Accept operator rates', 'Day 5', 'Each operator\'s rate card is reviewed and accepted.', 'Rate agent', 'depot'], ['Build enterprise rates', 'Day 6', 'The rate cards enterprises will see are created.', 'Rate card builder', 'office'], ['Upload sender list', 'Day 6', 'The headers it sends for are registered.', 'Sender agent', 'desk'], ['Assist enterprises', 'Every day', 'Enterprises get help with templates and failed deliveries.', 'Assist agent', 'depot']] },
+  { name: 'Enterprises', who: 'HDFC Bank, HDFC Life, HDFC ERGO', hex: '#4f8df7', col: 0x4F8DF7, R: 16, ey: 22,
+    gate: ['Onboarding checkpoint', 'Day 7', 'Agentic onboarding checks the invite, DLT entity, GSTIN and MCA record. Bad actors never get in.'], actor: 'enterprise',
     good: ['HDFC Bank', 'HDFC Life', 'HDFC ERGO', 'City Hospital', 'Metro Retail'], bad: [['QuickLoan 247', 'No DLT registration found'], ['Lucky Prize Co', 'GSTIN does not match the entity'], ['Shell Traders LLP', 'Struck off on the MCA register'], ['CryptoDouble', 'Blacklisted sender history'], ['EasyCash Now', 'No invite from the registrar']],
-    steps: [['Agreements', 'Migration Manager', 'Reads both agreements and gets them accepted.', 'office'], ['Business profile', 'KYC agent', 'Fills the profile from DLT, GSTIN, MCA and the website.', 'desk'], ['Team', 'Team agent', 'Finds people on the DLT record and suggests a role for each.', 'office'], ['Brands and LOBs', 'Estate agent', 'Drafts brands and lines of business from DLT headers.', 'office'], ['Add GTM partners', 'Partner agent', 'Compares partners and picks the best split.', 'depot'], ['Accept rate cards', 'Rate card agent', 'Reviews each partner\'s rates and accepts the terms.', 'desk'], ['Map templates', 'Template agent', 'Maps every template to a line of business.', 'desk'], ['Migrate consents', 'Migration agent', 'Uploads and validates legacy consents.', 'depot'], ['Acquire consents', 'Acquisition agent', 'Asks subscribers for new consent.', 'vault']] },
-  { key: 'user', name: 'Users', geo: 'Inner core', hex: '#e0b000', col: 0xFFD54A, tex: ['#ffd23f', '#fff3a0', '#c99a10'], who: 'Every subscriber', y: -50,
-    role: 'The person everything protects. They see who claims their consent, then give it, revoke it, complain or report.', stops: 'Brands the user revoked, blocked or never agreed to',
-    gate: ['Claim check', 'A brand reaches the user only with a real consent record behind its claim.'], actor: 'Consent claim',
+    steps: [['Agreements', 'Day 7', 'Both agreements are summarised and accepted.', 'Migration Manager', 'office'], ['Business profile', 'Day 7', 'The profile is filled from DLT, GSTIN, MCA and the website.', 'KYC agent', 'desk'], ['Team', 'Day 7', 'People on the DLT record are found and given a role.', 'Team agent', 'office'], ['Brands and LOBs', 'Day 8', 'Brands and lines of business are drafted from DLT headers.', 'Estate agent', 'office'], ['GTM partners', 'Day 8', 'Partners are compared and the best split is picked.', 'Partner agent', 'depot'], ['Rate cards', 'Day 8', 'Each partner\'s rates are reviewed and accepted.', 'Rate card agent', 'desk'], ['Templates', 'Day 9', 'Every template is mapped to a line of business.', 'Template agent', 'desk'], ['Migrate consents', 'Day 9 to 10', 'Legacy consents are uploaded and validated.', 'Migration agent', 'depot'], ['Acquire consents', 'Day 11 on', 'Subscribers are asked for new consent.', 'Acquisition agent', 'vault']] },
+  { name: 'Users', who: 'Every subscriber', hex: '#f5b544', col: 0x1B2B4B, R: 9, ey: 0,
+    gate: ['Claim check', 'Day 11', 'A brand reaches the user only with a real consent record behind it.'], actor: 'claim',
     good: ['HDFC Bank · Cards', 'HDFC Life · Term', 'HDFC ERGO · Health', 'City Hospital'], bad: [['Unknown lender', 'No consent record behind the claim'], ['Prize draw', 'User reported this brand']],
-    steps: [['Get notified', 'Notification agent', 'Tells the user which brands claim their consent, by SMS.', 'kiosk'], ['Review brand and LOB', 'Consent agent', 'Shows each claim in the PWA, brand by brand.', 'kiosk'], ['Give or revoke', 'Voice agent', 'Takes the decision by voice, SMS, PWA or WhatsApp. Opt-out applies at once.', 'voice'], ['Complain or report', 'Complaint agent', 'Files a complaint or reports a brand or LOB on WhatsApp.', 'kiosk']] }
+    steps: [['Get notified', 'Day 11', 'The user is told which brands claim their consent.', 'Notification agent', 'kiosk'], ['Review claims', 'Day 11', 'Each brand and line of business is shown in the PWA.', 'Consent agent', 'kiosk'], ['Give or revoke', 'Any time', 'By voice agent, SMS, PWA or WhatsApp. Opt-out applies at once.', 'Voice agent', 'voice'], ['Complain or report', 'Any time', 'A complaint or report against a brand or LOB is filed.', 'Complaint agent', 'kiosk']] }
 ];
-const K = { blocked: 18412600, delivered: 61204300, total: 0, active: 42186340, revoked: 3214 };
-const alerts = []; let unread = 0; const feed = [];
-function alertPush(text, tone) { alerts.unshift({ text, tone: tone || '', t: Date.now() }); if (alerts.length > 9) alerts.pop(); unread++; uiAlerts(); }
-function log(li, text) { feed.unshift({ t: Date.now(), li, text }); if (feed.length > 40) feed.pop(); }
-const ents = []; let pickables = [];
-function ent(e) { e.id = ents.length; ents.push(e); return e; }
-function tag(o, e) { o.traverse(x => x.userData.ent = e); }
-const _v = new T3.Vector3();
+const OV = [
+  ['Every day', 'Five layers protect the user', 'Spam is stopped at the shell. Only consented messages reach the person at the core.', -1],
+  ['Day 1', 'Regulator invites the channel owners', 'TRAI publishes the rules and invites Airtel, Jio, VIL and BSNL.', 0],
+  ['Day 2 to 3', 'Channel owners come on board', 'Each operator accepts, declares its channels and sets rate cards.', 1],
+  ['Day 4 to 6', 'GTM partners join', 'Invited aggregators pass KYC, accept operator rates and build enterprise rate cards.', 2],
+  ['Day 7 to 10', 'Enterprises onboard', 'Agentic onboarding lets real businesses in and stops bad actors. Then they set up and migrate.', 3],
+  ['Day 11 on', 'Users decide', 'People see who claims their consent, then give it, revoke it or complain.', 4]
+];
 
-/* ───────── the exploded earth (stack view) ───────── */
-const stackG = new T3.Group(); scene.add(stackG);
-const R = 30, shells = [];
-cyl(1.6, 1.6, 108, 16, mMetal, 0, -55, 0, stackG);
-const floor = new T3.Mesh(new T3.CircleGeometry(78, 64), new T3.MeshStandardMaterial({ map: earthTex, roughness: .9 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -70; floor.receiveShadow = true; stackG.add(floor);
-const stackPick = [];
+/* ───────── overview: a globe that lifts apart into its layers ───────── */
+const ovG = new T3.Group(); scene.add(ovG);
+const ovPick = [], burstS = [];
+for (let i = 0; i < 26; i++) { const s = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xff5d5d, transparent: true, opacity: 0, blending: T3.NormalBlending, depthWrite: false })); s.visible = false; scene.add(s); burstS.push({ s, age: 9 }); }
+function burst(x, y, z, col, size) { const b = burstS.find(b => b.age > .6); if (!b) return; b.age = 0; b.size = size; b.s.material.color.setHex(col); b.s.position.set(x, y, z); b.s.visible = true; }
+(() => {
+  const mBase = new T3.MeshStandardMaterial({ color: 0xDCE3EF, roughness: .55, metalness: .05 });
+  const base = new T3.Mesh(new T3.SphereGeometry(34, 56, 24, 0, TAU, Math.PI / 2, Math.PI / 2), mBase); base.castShadow = true; ovG.add(base);
+  
+  const top = new T3.Mesh(new T3.CircleGeometry(34, 64), new T3.MeshStandardMaterial({ color: 0xF4F7FB, roughness: .8 })); top.rotation.x = -Math.PI / 2; top.receiveShadow = true; ovG.add(top);
+  for (const r of [10.5, 16, 22, 28]) { const g = new T3.Mesh(new T3.RingGeometry(r - .12, r + .12, 72), new T3.MeshBasicMaterial({ color: 0x9FB0CF, transparent: true, opacity: .5 })); g.rotation.x = -Math.PI / 2; g.position.y = .05; ovG.add(g); }
+  cyl(.25, .25, 160, 8, new T3.MeshBasicMaterial({ color: 0xB4C1D8 }), 0, 0, 0, ovG, false);
+})();
 LAYERS.forEach((L, i) => {
-  L.i = i; L.blocked = ri(2, 6) * 1e6 * (1 + (4 - i) * .35); L.flash = 0; L.red = 0;
-  const t = L.lava = lavaTex(...L.tex); const side = new T3.MeshStandardMaterial({ map: t, roughness: .8, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 0 }); const tt = t.clone(); tt.needsUpdate = true; tt.repeat.set(3, 1); side.map = tt; side.emissiveMap = tt;
-  const top = new T3.MeshStandardMaterial({ map: t, roughness: .85, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 0 }); L.mSide = side; L.mTop = top;
-  const g = L.sg = new T3.Group(); g.position.y = L.y; stackG.add(g); let hit;
-  if (i === 0) { hit = new T3.Mesh(new T3.CylinderGeometry(R, R, 5, 72), [side, top, top]); hit.position.y = .5; g.add(hit);
-    const d = new T3.Mesh(new T3.SphereGeometry(R, 56, 22, 0, TAU, 0, Math.PI / 2), new T3.MeshStandardMaterial({ map: earthTex, roughness: .8 })); d.position.y = 3; d.castShadow = true; g.add(d); stackPick.push(d); d.userData.layer = i; }
-  else if (i < 4) { hit = new T3.Mesh(new T3.CylinderGeometry(R, R, 9, 72), [side, top, top]); g.add(hit);
-    for (let k = 0; k < 6; k++) { const a = k * 1.05 + i, r = 13 + (k % 3) * 5; box(2.4, 1.6 + (k % 2), 2.4, mWhite, Math.sin(a) * r, 4.5, Math.cos(a) * r, g); } }
-  else { const mc = new T3.MeshStandardMaterial({ map: t, emissive: 0xFFB52E, emissiveIntensity: .55, roughness: .5 }); L.mCore = mc; hit = new T3.Mesh(new T3.SphereGeometry(10.5, 36, 24), mc); g.add(hit);
-    const cr = LAYERS[0].mSide; cyl(17, 15, 4, 40, cr, 0, -15.5, 0, g); for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + .78, p = box(5.5, 16, 4, cr, Math.sin(a) * 14.5, -12, Math.cos(a) * 14.5, g); p.rotation.y = a; }
-    const h = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xFFC65A, transparent: true, opacity: .5, blending: T3.AdditiveBlending, depthWrite: false })); h.scale.set(44, 44, 1); g.add(h); L.halo = h; h.userData.nopick = true; }
-  hit.castShadow = true; hit.receiveShadow = true; hit.userData.layer = i; stackPick.push(hit);
-  const sh = new T3.Mesh(i === 4 ? new T3.SphereGeometry(12.2, 28, 18) : i === 0 ? new T3.SphereGeometry(R + 1.4, 40, 16, 0, TAU, 0, Math.PI / 2) : new T3.CylinderGeometry(R + 1.2, R + 1.2, 10.6, 56, 1, true), new T3.MeshBasicMaterial({ color: 0x4C9BEA, transparent: true, opacity: 0, depthWrite: false, side: T3.DoubleSide })); sh.position.y = L.y + (i === 0 ? 2.6 : 0); sh.renderOrder = 4; stackG.add(sh); shells.push(sh);
+  L.i = i; L.y = 0; L.op = 1; L.flash = 0;
+  const g = L.og = new T3.Group(); ovG.add(g);
+  if (i < 4) {
+    const Rin = i < 3 ? LAYERS[i + 1].R : 10.5, CUT = Math.PI * 1.5;
+    L.c0 = new T3.Color(L.col); L.c1 = new T3.Color(L.col).offsetHSL(0, -.04, .2);
+    L.m = new T3.MeshStandardMaterial({ color: L.col, roughness: .34, metalness: .1, emissive: L.col, emissiveIntensity: 0 });
+    L.um = new T3.MeshStandardMaterial({ color: L.col, roughness: .7, side: T3.DoubleSide });
+    const d = new T3.Mesh(new T3.SphereGeometry(L.R, 56, 24, 0, CUT, 0, Math.PI / 2), L.m); d.castShadow = true; d.userData.layer = i; g.add(d); ovPick.push(d);
+    const inn = new T3.Mesh(new T3.SphereGeometry(Rin, 40, 18, 0, CUT, 0, Math.PI / 2), L.um); g.add(inn);
+    const f1 = new T3.Mesh(new T3.RingGeometry(Rin, L.R, 28, 1, Math.PI / 2, Math.PI / 2), L.um); g.add(f1); f1.userData.layer = i; ovPick.push(f1);
+    const f2 = new T3.Mesh(new T3.RingGeometry(Rin, L.R, 28, 1, 0, Math.PI / 2), L.um); f2.rotation.y = Math.PI / 2; g.add(f2); f2.userData.layer = i; ovPick.push(f2);
+    const u = new T3.Mesh(new T3.RingGeometry(Rin, L.R, 64, 1, Math.PI / 2, CUT), L.um); u.rotation.x = Math.PI / 2; u.position.y = .02; g.add(u);
+  } else {
+    L.m = new T3.MeshStandardMaterial({ color: 0xFFE3A6, emissive: 0xF5B544, emissiveIntensity: .55, roughness: .4 });
+    const d = new T3.Mesh(new T3.SphereGeometry(8, 36, 24), L.m); d.position.y = 9; d.castShadow = true; d.userData.layer = 4; g.add(d); ovPick.push(d);
+    cyl(5, 6.5, 1.6, 28, mWhite, 0, 0, 0, g);
+    L.halo = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xF5B544, transparent: true, opacity: .5, depthWrite: false })); L.halo.scale.set(34, 34, 1); L.halo.position.y = 9; g.add(L.halo);
+  }
 });
-const gDart = new T3.ConeGeometry(.7, 2.8, 5); gDart.rotateX(Math.PI / 2);
-const mSpam = new T3.MeshStandardMaterial({ color: 0xE5484D, emissive: 0xE5484D, emissiveIntensity: .55, flatShading: true }), mGood = new T3.MeshStandardMaterial({ color: 0x4C9BEA, emissive: 0x4C9BEA, emissiveIntensity: .7 });
-const darts = []; for (let i = 0; i < 70; i++) { const m = new T3.Mesh(gDart, mSpam); m.visible = false; stackG.add(m); darts.push({ m, on: false }); }
-const goods = []; for (let i = 0; i < 14; i++) { const m = new T3.Mesh(gSph, mGood); m.scale.setScalar(.8); m.visible = false; stackG.add(m); goods.push({ m, on: false }); }
-const bursts = []; for (let i = 0; i < 30; i++) { const s = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xff5d5d, transparent: true, opacity: 0, blending: T3.AdditiveBlending, depthWrite: false })); s.visible = false; s.userData.nopick = true; scene.add(s); bursts.push({ s, age: 9 }); }
-function burst(x, y, z, col, size) { const b = bursts.find(b => b.age > .6); if (!b) return; b.age = 0; b.size = size; b.s.material.color.setHex(col); b.s.position.set(x, y, z); b.s.visible = true; }
-const BLOCKP = [.3, .28, .12, .18, .12];
-function spawnDart() { const d = darts.find(d => !d.on); if (!d) return; let x = rnd(), k = 0; for (; k < 4; k++) { x -= BLOCKP[k]; if (x < 0) break; } d.on = true; d.k = k; d.a = rnd() * TAU; d.m.visible = true;
-  if (k === 0) { d.r = rnd() * 25; d.y = 150; d.stop = LAYERS[0].y + 3 + Math.sqrt(R * R - d.r * d.r) + 1; } else { d.r = 120 + rnd() * 20; d.y = LAYERS[k].y + rnd() * 7 - 3.5; d.stop = k === 4 ? 12.5 : R + 1.5; } }
-function simStack(dt) {
-  const m = MODES[env.mode]; spamT -= dt * m.spam; goodT -= dt * m.good;
-  while (spamT < 0) { spamT += .5 + rnd() * .7; spawnDart(); } while (goodT < 0) { goodT += .8 + rnd(); const g = goods.find(g => !g.on); if (g) { g.on = true; g.u = 0; g.a = rnd() * TAU; g.m.visible = true; g.pass = 0; } }
-  for (const d of darts) { if (!d.on) continue; let hit = false; if (d.k === 0) { d.y -= 75 * dt; hit = d.y <= d.stop; } else { d.r -= 70 * dt; hit = d.r <= d.stop; }
-    const x = Math.sin(d.a) * d.r, z = Math.cos(d.a) * d.r; d.m.position.set(x, d.y, z); if (d.k === 0) d.m.lookAt(x, -100, z); else d.m.lookAt(0, d.y, 0);
-    if (hit) { d.on = false; d.m.visible = false; const L = LAYERS[d.k], n = ri(600, 2400); L.blocked += n; K.blocked += n; K.total++; L.flash = 1; L.red = 1; if (view < 0) burst(x, d.y, z, 0xFF5D5D, 11); } }
-  for (const g of goods) { if (!g.on) continue; g.u += dt * .34; const y = lerp(112, -38, g.u), a = g.a + g.u * 16; g.m.position.set(Math.sin(a) * 3.4, y, Math.cos(a) * 3.4);
-    while (g.pass < 4 && y < LAYERS[g.pass].y + 6) { const L = LAYERS[g.pass]; if (L.flash < .3) { L.flash = .6; L.red = 0; } g.pass++; }
-    if (g.u >= 1) { g.on = false; g.m.visible = false; K.delivered += ri(900, 2600); corePulse = 1; LAYERS[4].flash = .7; LAYERS[4].red = 0; } }
-  for (const b of bursts) { if (b.age > .6) { b.s.visible = false; continue; } b.age += dt; const u = b.age / .6; b.s.scale.setScalar(b.size * (.4 + u)); b.s.material.opacity = (1 - u) * .9; }
-  LAYERS.forEach((L, i) => { L.flash = Math.max(0, L.flash - dt * 1.7); const s = shells[i].material; s.opacity = L.flash * (i === 0 ? .22 : .42); s.color.setHex(L.red ? 0xFF5D5D : 0x4C9BEA); });
-  corePulse = Math.max(0, corePulse - dt * 1.5); const U = LAYERS[4]; U.halo.scale.setScalar(40 + corePulse * 16 + Math.sin(time * 2) * 2); U.halo.material.opacity = .35 + corePulse * .4 + env.night * .2; U.mCore.emissiveIntensity = .5 + corePulse * .6 + env.night * .4;
+const token = sph(1.8, new T3.MeshStandardMaterial({ color: 0xffffff, emissive: 0x2563EB, emissiveIntensity: .9 }), 0, 0, 0, ovG); token.visible = false; let tok = null;
+const gDart = new T3.ConeGeometry(.8, 3.2, 5); gDart.rotateX(Math.PI / 2);
+const mSpam = new T3.MeshStandardMaterial({ color: 0xE5484D, emissive: 0xE5484D, emissiveIntensity: .4, flatShading: true }), mGood = new T3.MeshStandardMaterial({ color: 0x2563EB, emissive: 0x2563EB, emissiveIntensity: .6 });
+const darts = []; for (let i = 0; i < 40; i++) { const m = new T3.Mesh(gDart, mSpam); m.visible = false; ovG.add(m); darts.push({ m, on: false }); }
+let dartT = 0, explode = 0, os = 0; const cDim = new T3.Color(0xD3DBE9);
+function simOverview(dt) {
+  const ex = os > 0 ? 1 : 0; explode = lerp(explode, ex, 1 - Math.exp(-dt * 2.2)); const hi = OV[os][3];
+  LAYERS.forEach((L, i) => { if (i < 4) { const k = clamp(explode * (1.25 + i * .12) - (ex ? (3 - i) * .06 : i * .06), 0, 1), e = k * k * (3 - 2 * k); L.y = L.ey * e; L.og.position.y = L.y;
+      const want = os === 0 || hi === i ? 1 : .5; L.op = lerp(L.op, want, 1 - Math.exp(-dt * 4)); L.m.color.copy(cDim).lerp(L.c0, L.op); L.um.color.copy(cDim).lerp(L.c1, L.op);
+      L.flash = Math.max(0, L.flash - dt * 1.6); L.m.emissiveIntensity = L.flash * .5 + (hi === i ? .12 + .06 * Math.sin(time * 3) : 0); }
+    else { L.flash = Math.max(0, L.flash - dt * 1.4); const on = os === 0 || hi === 4; L.m.emissiveIntensity = (on ? .6 : .25) + L.flash * .6; L.halo.material.opacity = (on ? .5 : .2) + L.flash * .4; L.halo.scale.setScalar(32 + L.flash * 14 + Math.sin(time * 2) * 1.5); } });
+  if (tok) { tok.u += dt / 1.3; const u = Math.min(1, tok.u), e = u * u * (3 - 2 * u); token.position.set(Math.sin(u * 5) * (1 - e) * 10, lerp(tok.y0, tok.y1, e), Math.cos(u * 5) * (1 - e) * 10); token.visible = true; if (u >= 1) { LAYERS[tok.to].flash = 1; burst(0, tok.y1, 0, 0x2563EB, 26); tok = null; token.visible = false; } }
+  dartT -= dt; if (os === 0 && explode < .15 && dartT <= 0) { dartT = .22 + rnd() * .3; const d = darts.find(d => !d.on); if (d) { d.on = true; d.good = rnd() < .28; const a = rnd() * TAU, el = .05 + rnd() * 1.3; d.dx = Math.cos(el) * Math.sin(a); d.dy = Math.sin(el); d.dz = Math.cos(el) * Math.cos(a); d.r = 170; d.m.material = d.good ? mGood : mSpam; d.m.geometry = d.good ? gSph : gDart; d.m.scale.setScalar(d.good ? .9 : 1); d.m.visible = true; } }
+  for (const d of darts) { if (!d.on) continue; d.r -= (d.good ? 70 : 95) * dt; const inCut = d.dx < 0 && d.dz < 0, stop = d.good ? 9 : inCut ? 12 : 35.5; d.m.position.set(d.dx * d.r, d.dy * d.r + (d.good ? 9 * (1 - d.r / 170) : 0), d.dz * d.r); if (!d.good) d.m.lookAt(0, 0, 0);
+    if (d.r <= stop || os !== 0) { d.on = false; d.m.visible = false; if (os === 0) { if (d.good) LAYERS[4].flash = 1; else { const hitL = inCut ? 3 : 0; LAYERS[hitL].flash = Math.max(LAYERS[hitL].flash, .7); burst(d.m.position.x, d.m.position.y, d.m.position.z, 0xE5484D, 12); } } } }
 }
-let corePulse = 0, spamT = 0, goodT = 0;
 
-/* ───────── layer worlds ───────── */
+/* ───────── worlds: one per layer ───────── */
 const stationB = {
-  office(g) { box(5.4, 4.6, 4.2, mWhite, 0, 0, 0, g); box(5.5, 1.1, 4.3, mWin, 0, 2.3, 0, g, false); box(6, .5, 4.8, mClay, 0, 4.6, 0, g); box(1.4, 2, .14, mBlue, 0, 0, -2.16, g, false); return 6; },
+  office(g) { box(5.4, 4.6, 4.2, mWhite, 0, 0, 0, g); box(5.5, 1.1, 4.3, mWin, 0, 2.3, 0, g, false); box(6, .5, 4.8, mSoft, 0, 4.6, 0, g); box(1.4, 2, .14, mBlue, 0, 0, -2.16, g, false); return 6; },
   desk(g) { box(4.4, 1.7, 2.6, mWhite, 0, 0, 0, g); box(2.6, 2, .24, mDark, 0, 1.7, .5, g); box(2.3, 1.6, .08, mScreen, 0, 1.9, .35, g, false); return 4.6; },
-  court(g) { box(6.2, .8, 4.8, mClay, 0, 0, 0, g); for (const x of [-2.3, -.77, .77, 2.3]) cyl(.32, .32, 3.8, 8, mWhite, x, .8, -1.7, g); box(5.6, 3.8, 3, mWhite, 0, .8, .6, g); box(6.4, .8, 5, mWhite, 0, 4.6, 0, g); box(4.2, .8, 5, mClay, 0, 5.4, 0, g); return 7.2; },
-  tower(g) { const m = cyl(.3, 1.1, 12, 4, mGrey, 0, 0, .5, g); m.rotation.y = Math.PI / 4; for (let k = 0; k < 3; k++) { const a = k * 2.094; box(.32, 2, 1, mWhite, Math.sin(a) * .8, 9.6, .5 + Math.cos(a) * .8, g).rotation.y = a + Math.PI / 2; } box(.5, .5, .5, mScreen, 0, 12, .5, g, false); box(3.6, 2.6, 2.6, mWhite, 0, 0, -1.6, g); box(3.9, .4, 2.9, mClay, 0, 2.6, -1.6, g); return 13.5; },
-  depot(g) { box(6.4, 3.6, 4.4, mWhite, 0, 0, 0, g); box(6.7, .5, 4.7, mClay, 0, 3.6, 0, g); box(2.8, 2.7, .14, mBlue, -1.1, 0, -2.26, g, false); box(1.6, 1.1, .14, mWin, 1.9, 1.6, -2.26, g, false); return 5; },
+  court(g) { box(6.2, .8, 4.8, mSoft, 0, 0, 0, g); for (const x of [-2.3, -.77, .77, 2.3]) cyl(.32, .32, 3.8, 8, mWhite, x, .8, -1.7, g); box(5.6, 3.8, 3, mWhite, 0, .8, .6, g); box(6.4, .8, 5, mWhite, 0, 4.6, 0, g); box(4.2, .8, 5, mSoft, 0, 5.4, 0, g); return 7.2; },
+  tower(g) { const m = cyl(.3, 1.1, 12, 4, mSoft, 0, 0, .5, g); m.rotation.y = Math.PI / 4; for (let k = 0; k < 3; k++) { const a = k * 2.094; box(.32, 2, 1, mWhite, Math.sin(a) * .8, 9.6, .5 + Math.cos(a) * .8, g).rotation.y = a + Math.PI / 2; } box(.5, .5, .5, mScreen, 0, 12, .5, g, false); box(3.6, 2.6, 2.6, mWhite, 0, 0, -1.6, g); box(3.9, .4, 2.9, mSoft, 0, 2.6, -1.6, g); return 13.5; },
+  depot(g) { box(6.4, 3.6, 4.4, mWhite, 0, 0, 0, g); box(6.7, .5, 4.7, mSoft, 0, 3.6, 0, g); box(2.8, 2.7, .14, mBlue, -1.1, 0, -2.26, g, false); box(1.6, 1.1, .14, mWin, 1.9, 1.6, -2.26, g, false); return 5; },
   vault(g) { cyl(2.7, 3, 3.8, 16, mWhite, 0, 0, 0, g); cyl(2.95, 2.95, .55, 16, mBlue, 0, 3.5, 0, g); const d = new T3.Mesh(new T3.SphereGeometry(2.4, 16, 8, 0, TAU, 0, Math.PI / 2), mGlass); d.position.y = 4.05; d.scale.y = .6; g.add(d); return 6.4; },
-  kiosk(g) { box(2.1, 3.7, .45, mDark, 0, .5, 0, g).rotation.x = .12; box(1.8, 3.1, .08, mScreen, 0, .8, -.27, g, false).rotation.x = .12; box(2.4, .5, 1.3, mClay, 0, 0, 0, g); return 5.2; },
+  kiosk(g) { box(2.1, 3.7, .45, mDark, 0, .5, 0, g).rotation.x = .12; box(1.8, 3.1, .08, mScreen, 0, .8, -.27, g, false).rotation.x = .12; box(2.4, .5, 1.3, mSoft, 0, 0, 0, g); return 5.2; },
   voice(g) { cyl(.8, 1.1, 2.9, 12, mWhite, 0, 0, 0, g); cyl(1.45, .55, 1.45, 12, mDark, 0, 2.9, 0, g); sph(.45, mScreen, 0, 4.7, 0, g); return 5.8; }
 };
-function mkBot(col) { const g = new T3.Group(); cyl(.5, .58, 1.05, 10, mWhite, 0, .35, 0, g); cyl(.62, .62, .14, 10, mDark, 0, .2, 0, g); sph(.47, mWhite, 0, 1.85, 0, g); box(.2, .26, .62, mDark, .36, 1.74, 0, g, false); box(.05, .5, .05, mDark, 0, 2.25, 0, g, false);
-  sph(.15, new T3.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: .7 }), 0, 2.85, 0, g); g.scale.setScalar(1.7); return g; }
-function mkActor(bad) { const g = new T3.Group(), b = bad ? mBad : mWhite; cyl(1.5, 1.7, .4, 14, mDark, 0, 0, 0, g); const body = box(2, 1.9, 2, b, 0, .4, 0, g); box(2.3, .3, 2.3, bad ? mRed : mBlue, 0, 2.3, 0, g, false); box(.1, 1.6, .1, mDark, .7, 2.6, .7, g, false); box(.9, .55, .06, bad ? mRed : mBlue, 1.15, 3.6, .7, g, false);
-  const hb = new T3.Mesh(gBox, mHit); hb.scale.set(4, 5, 4); hb.position.y = 2.5; g.add(hb); g.userData.body = body; return g; }
+function mkBot() { const g = new T3.Group(); cyl(.5, .58, 1.05, 10, mWhite, 0, .35, 0, g); cyl(.62, .62, .14, 10, mDark, 0, .2, 0, g); sph(.47, mWhite, 0, 1.85, 0, g); box(.2, .26, .62, mDark, .36, 1.74, 0, g, false); box(.05, .5, .05, mDark, 0, 2.25, 0, g, false); sph(.15, mScreen, 0, 2.85, 0, g); g.scale.setScalar(1.7); return g; }
+function mkActor(bad) { const g = new T3.Group(); cyl(1.5, 1.7, .4, 14, mDark, 0, 0, 0, g); g.userData.body = box(2, 1.9, 2, bad ? mBad : mWhite, 0, .4, 0, g); box(2.3, .3, 2.3, bad ? mRed : mBlue, 0, 2.3, 0, g, false); return g; }
 const PR = 58, PATH = 40;
 const worlds = LAYERS.map((L, i) => {
   const g = new T3.Group(); g.visible = false; scene.add(g);
-  const W = { L, g, pick: [], actors: [], occ: [], admitted: ri(40, 400), rejected: ri(20, 180), spawnT: 1, armOpen: 0, note: null, noteT: 0 }; L.W = W;
-  const side = new T3.MeshStandardMaterial({ map: L.lava.clone(), roughness: .8, emissive: 0xffffff, emissiveIntensity: 0 }); side.map.needsUpdate = true; side.map.repeat.set(5, 1); side.emissiveMap = side.map; W.mSide = side;
-  const topT = L.lava.clone(); topT.needsUpdate = true; topT.repeat.set(2, 2); const top = new T3.MeshStandardMaterial({ color: L.col, roughness: .92, emissive: L.col, emissiveIntensity: 0 }); top.color.offsetHSL(0, -.12, i === 0 ? .2 : .13); W.mTop = top;
-  const plat = new T3.Mesh(new T3.CylinderGeometry(PR, PR, 12, 96), [side, top, side]); plat.position.y = -6; plat.receiveShadow = true; g.add(plat); plat.userData.ground = true; W.pick.push(plat);
-  // the next layer waits below, the pole runs through all of them
-  if (i < 4) { const nx = LAYERS[i + 1], nm = new T3.Mesh(new T3.CylinderGeometry(PR, PR, 12, 64), new T3.MeshStandardMaterial({ map: nx.lava, roughness: .85 })); nm.position.y = -66; g.add(nm); }
-  cyl(2.4, 2.4, 110, 20, mMetal, 0, -95, 0, g); cyl(3.4, 3.4, 1.2, 20, mClay, 0, 15, 0, g); cyl(6.5, 6.5, .4, 32, mClay, 0, 0, 0, g, false);
+  const W = { L, g, pick: [], actors: [], occ: [], admitted: ri(120, 400), rejected: ri(40, 160), spawnT: 1, armOpen: 0, note: null, noteT: 0, lastBad: null };
+  const navy = new T3.Color(0x0F1E45), side = new T3.MeshStandardMaterial({ color: L.col, roughness: .5 }); side.color.lerp(navy, .8); const top = new T3.MeshStandardMaterial({ color: L.col, roughness: .85 }); top.color.lerp(navy, .64);
+  const plat = new T3.Mesh(new T3.CylinderGeometry(PR, PR - 3, 7, 96), [side, top, side]); plat.position.y = -3.5; plat.receiveShadow = true; plat.castShadow = true; g.add(plat);
+  const rim = new T3.Mesh(new T3.TorusGeometry(PR, .5, 8, 96), mWhite); rim.rotation.x = Math.PI / 2; g.add(rim);
+  for (const r of [12, 24, 31, 53]) { const q = new T3.Mesh(new T3.RingGeometry(r - .1, r + .1, 96), new T3.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .13 })); q.rotation.x = -Math.PI / 2; q.position.y = .04; g.add(q); }
   const n = L.steps.length, N = n + 3, sp = Math.min(.5, 4.75 / (N - 1)), a0 = 2.35; W.N = N; W.ang = k => a0 - k * sp;
-  const arc = new T3.Mesh(new T3.RingGeometry(PATH - 2.6, PATH + 2.6, 96, 1, Math.PI / 2 - a0 - .12, sp * (N - 1) + .24), mPath); arc.rotation.x = -Math.PI / 2; arc.position.y = .06; arc.receiveShadow = true; g.add(arc);
-  const aL = W.ang(N - 1), ex = box(4, .12, PATH - 6, mPath, Math.sin(aL) * (PATH + 6) / 2, 0, Math.cos(aL) * (PATH + 6) / 2, g, false); ex.rotation.y = aL;
-  // entry ramp from outside the layer
-  const aE = W.ang(0); const ramp = box(5.2, .5, 26, mPath, Math.sin(aE) * (PATH + 13), -.4, Math.cos(aE) * (PATH + 13), g, false); ramp.rotation.y = aE;
-  // gate at slot 2
-  const aG = W.ang(2) + sp * .42, gg = new T3.Group(); gg.position.set(Math.sin(aG) * PATH, 0, Math.cos(aG) * PATH); gg.rotation.y = aG; g.add(gg);
+  const arc = new T3.Mesh(new T3.RingGeometry(PATH - 2.4, PATH + 2.4, 96, 1, Math.PI / 2 - a0 - .1, sp * (N - 1) + .2), mPath); arc.rotation.x = -Math.PI / 2; arc.position.y = .08; arc.receiveShadow = true; g.add(arc);
+  const aE = W.ang(0), ramp = box(4.8, .5, 24, mPath, Math.sin(aE) * (PATH + 13), -.42, Math.cos(aE) * (PATH + 13), g, false); ramp.rotation.y = aE;
+  const aL = W.ang(N - 1), ex = box(3.2, .1, PATH - 9, mPath, Math.sin(aL) * (PATH + 9) / 2, .03, Math.cos(aL) * (PATH + 9) / 2, g, false); ex.rotation.y = aL;
+  cyl(7, 7, .5, 36, mWhite, 0, 0, 0, g, false);
+  if (i === 4) { const c = sph(4.4, LAYERS[4].m, 0, 5.4, 0, g); const h = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xF5B544, transparent: true, opacity: .45, depthWrite: false })); h.scale.set(26, 26, 1); h.position.y = 5.4; g.add(h); }
+  else { cyl(2.2, 2.2, 1.6, 20, mBlue, 0, .5, 0, g); const s = textSprite('To ' + LAYERS[i + 1].name, 1.6, 'rgba(11,27,63,.9)', '#ffffff'); s.position.y = 5; g.add(s); }
+  // gate
+  const aG = W.aG = W.ang(2) + sp * .42, gg = new T3.Group(); gg.position.set(Math.sin(aG) * PATH, 0, Math.cos(aG) * PATH); gg.rotation.y = aG; g.add(gg);
   box(1.2, 8, 1.2, mWhite, 0, 0, -4.2, gg); box(1.2, 8, 1.2, mWhite, 0, 0, 4.2, gg); box(1.6, 1.8, 10.4, mWhite, 0, 8, 0, gg); box(1.7, .5, 10.5, mBlue, 0, 9.8, 0, gg, false);
   const piv = new T3.Group(); piv.position.set(0, 2.2, 4); gg.add(piv); box(.4, .4, 7.4, mRed, 0, -.2, -3.7, piv); W.arm = piv;
   W.lamp = box(1, 1, 1, mRed, 0, 10.3, 0, gg, false); W.scan = box(.2, .2, 7, mScreen, 0, 7.4, 0, gg, false); W.scan.visible = false;
-  const gs = textSprite(L.gate[0], 2.1, 'rgba(37,99,235,.96)', '#ffffff'); gs.position.set(0, 13, 0); gg.add(gs);
-  const ghb = new T3.Mesh(gBox, mHit); ghb.scale.set(4, 11, 11); ghb.position.y = 5.5; gg.add(ghb);
-  W.gate = ent({ kind: 'gate', type: 'Gate · ' + L.name, name: L.gate[0], L, rad: 7, hgt: 16, wp: () => gg.getWorldPosition(_v),
-    info: () => ({ sub: L.gate[1], status: W.scanning ? ['Checking ' + W.scanning.name, ''] : ['Guarding', 'ok'], rows: [['Let in today', IN(W.admitted)], ['Turned away today', IN(W.rejected)], ['Last stopped', W.lastBad || '—'], ['Why', W.lastWhy || '—']], list: ['Turned away here', L.bad.map(b => [b[0] + ': ' + b[1], false])] }) }); tag(gg, W.gate); W.pick.push(gg); W.gatePos = gg.position;
-  // numbered stations with an agent each
-  W.steps = L.steps.map(([title, agent, what, type], k) => { const a = W.ang(k + 3), sg = new T3.Group(); sg.position.set(Math.sin(a) * 50.5, 0, Math.cos(a) * 50.5); sg.rotation.y = a; g.add(sg);
-    const h = stationB[type](sg); const hb = new T3.Mesh(gBox, mHit); hb.scale.set(7.5, h, 6); hb.position.y = h / 2; sg.add(hb);
-    const s1 = textSprite((k + 1) + '  ' + title, 2.1); s1.position.set(0, h + 2, 0); sg.add(s1);
-    const pm = new T3.MeshStandardMaterial({ color: 0xffffff, emissive: 0x2563EB, emissiveIntensity: 0, roughness: .7 }), pad = cyl(3.1, 3.1, .3, 28, pm, Math.sin(a) * PATH, .02, Math.cos(a) * PATH, g, false);
-    const bot = mkBot(L.col); bot.position.set(Math.sin(a + .075) * 45.4, .1, Math.cos(a + .075) * 45.4); bot.rotation.y = a + Math.PI / 2; g.add(bot);
-    const e = ent({ kind: 'step', type: 'Step ' + (k + 1) + ' · ' + L.name, name: title, agent, what, L, k, pm, bot, done: ri(40, 600), cur: null, rad: 6.5, hgt: h + 5, wp: () => sg.getWorldPosition(_v),
-      info() { return { sub: what, status: this.cur ? ['Working on ' + this.cur.name, ''] : ['Waiting for the next one', 'idle'], rows: [['Agent', agent], ['Step', (k + 1) + ' of ' + n], ['Handled today', IN(this.done)], ['Comes after', k ? L.steps[k - 1][0] : L.gate[0]], ['Leads to', k < n - 1 ? L.steps[k + 1][0] : (i < 4 ? 'The ' + LAYERS[i + 1].name.toLowerCase() + ' layer' : 'A decision that is the user\'s alone')]] }; } });
-    tag(sg, e); tag(bot, e); W.pick.push(sg, bot); return e; });
-  if (i === 4) { const c = new T3.Group(); g.add(c); const d = new T3.Mesh(new T3.SphereGeometry(9, 28, 12, 0, TAU, 0, Math.PI / 2), LAYERS[4].mCore); d.scale.y = .5; c.add(d);
-    const mu = new T3.MeshStandardMaterial({ color: 0xffffff, emissive: 0xFFF1D0, emissiveIntensity: .35 }); cyl(1.3, 1.6, 4, 12, mu, 0, 4.4, 0, c); sph(1.35, mu, 0, 9.8, 0, c); box(1.1, 1.8, .2, mDark, 1.5, 6, 1.2, c).rotation.y = -.5;
-    const h = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xFFC65A, transparent: true, opacity: .45, blending: T3.AdditiveBlending, depthWrite: false })); h.scale.set(40, 40, 1); h.position.y = 6; h.userData.nopick = true; c.add(h);
-    const ue = ent({ kind: 'user', type: 'The user', name: 'Subscriber 98••• ••214', L, rad: 10, hgt: 14, wp: () => _v.set(0, 0, 0), info: () => ({ sub: 'Protected by five layers', status: ['Protected', 'ok'], rows: [['Consents given', '7 brands, 11 lines of business'], ['Spam stopped for this user today', IN(38 + Math.floor(K.total / 40))], ['Manages consent by', 'Voice agent, SMS, PWA, WhatsApp'], ['Operator', 'Jio'], ['DND', 'On']] }) }); tag(c, ue); W.pick.push(c); }
-  L.ent = ent({ kind: 'layer', type: L.geo, name: L.name, L });
+  W.gateLbl = textSprite(L.gate[0], 2, 'rgba(37,99,235,.97)', '#ffffff'); W.gateLbl.position.set(0, 13.5, 0); gg.add(W.gateLbl);
+  const ghb = new T3.Mesh(gBox, mHit); ghb.scale.set(5, 11, 12); ghb.position.y = 5.5; ghb.userData.state = 0; gg.add(ghb); W.pick.push(ghb); W.gatePos = gg.position;
+  W.steps = L.steps.map(([title, day, what, agent, type], k) => { const a = W.ang(k + 3), sg = new T3.Group(); sg.position.set(Math.sin(a) * 50.5, 0, Math.cos(a) * 50.5); sg.rotation.y = a; g.add(sg);
+    const h = stationB[type](sg); const hb = new T3.Mesh(gBox, mHit); hb.scale.set(9, h + 2, 14); hb.position.set(0, h / 2, -4); hb.userData.state = k + 1; sg.add(hb); W.pick.push(hb);
+    const badge = textSprite(String(k + 1), 2.3, 'rgba(255,255,255,.97)', '#0b1b3f', true); badge.position.set(0, h + 2.4, 0); sg.add(badge);
+    const full = textSprite((k + 1) + '  ' + title, 2.3, 'rgba(37,99,235,.97)', '#ffffff'); full.position.set(0, h + 2.6, 0); full.visible = false; sg.add(full);
+    const pm = new T3.MeshStandardMaterial({ color: 0xffffff, emissive: 0x2563EB, emissiveIntensity: 0, roughness: .7 }); cyl(3.1, 3.1, .3, 28, pm, Math.sin(a) * PATH, .04, Math.cos(a) * PATH, g, false);
+    const bot = mkBot(); bot.position.set(Math.sin(a + .075) * 45.4, .1, Math.cos(a + .075) * 45.4); bot.rotation.y = a + Math.PI / 2; g.add(bot);
+    return { k, a, pm, bot, badge, full, cur: null, done: ri(40, 600) }; });
   return W;
 });
-function slotPos(W, k, out) { const a = W.ang(k); out.x = Math.sin(a) * PATH; out.z = Math.cos(a) * PATH; return out; }
-function simWorld(W, dt) {
-  const L = W.L, N = W.N, storm = env.mode === 'storm';
-  W.spawnT -= dt; if (W.spawnT <= 0 && !W.occ[0] && W.actors.length < 11) { W.spawnT = 2.6 + rnd() * 2.4; const bad = rnd() < (storm ? .62 : L.i === 3 ? .42 : .3), nm = bad ? pick(L.bad) : [pick(L.good)];
-    const obj = mkActor(bad), sp = textSprite(nm[0], 1.7, bad ? 'rgba(217,58,58,.95)' : 'rgba(255,255,255,.95)', bad ? '#ffffff' : '#0f1b3d'); sp.position.y = 6.2; obj.add(sp); W.g.add(obj);
-    const a = ent({ kind: 'actor', type: L.actor + (bad ? ' · bad actor' : ''), name: nm[0], why: nm[1], bad, L, W, obj, s: 0, m: -1, t: .2, rad: 3.4, hgt: 8.5, born: Date.now(), wp: () => obj.getWorldPosition(_v),
-      info() { const st = this.state === 'rej' ? ['Turned away', 'warn'] : this.s < 2 ? ['Waiting at the gate', 'idle'] : this.s === 2 ? ['Being checked', ''] : ['Step ' + (this.s - 2) + ' · ' + L.steps[Math.min(this.s - 3, L.steps.length - 1)][0], '']; return { sub: bad ? 'Trying to get into the ' + L.name.toLowerCase() + ' layer' : 'Working through the ' + L.name.toLowerCase() + ' layer', status: st, rows: [['Kind', L.actor], ['Check result', this.state === 'rej' ? 'Stopped: ' + this.why : this.s > 2 ? 'Passed ' + L.gate[0].toLowerCase() : 'Pending'], ['Arrived', hms(this.born)]], list: ['Sequence', L.steps.map((s, x) => [(x + 1) + '. ' + s[0], x === this.s - 3])] }; } });
-    tag(obj, a); W.pick.push(obj); W.occ[0] = a; W.actors.push(a); const p = slotPos(W, 0, {}); a.x = p.x; a.z = p.z; a.from = -1; }
+function simWorld(W, dt, active) {
+  const L = W.L, N = W.N;
+  W.spawnT -= dt; if (W.spawnT <= 0 && !W.occ[0] && W.actors.length < 11) { W.spawnT = 2.6 + rnd() * 2.4; const bad = rnd() < (L.i === 3 ? .42 : .3), nm = bad ? pick(L.bad) : [pick(L.good)];
+    const obj = mkActor(bad), lb = textSprite(nm[0], 1.5, bad ? 'rgba(229,72,77,.96)' : 'rgba(255,255,255,.96)', bad ? '#ffffff' : '#0b1b3f'); lb.position.y = 5.6; obj.add(lb); W.g.add(obj);
+    const a = { name: nm[0], why: nm[1], bad, obj, lb, s: 0, m: -1, t: .2 }; W.occ[0] = a; W.actors.push(a); a.x = Math.sin(W.ang(0)) * PATH; a.z = Math.cos(W.ang(0)) * PATH; }
   W.scanning = null; let open = 0;
   for (let q = W.actors.length - 1; q >= 0; q--) { const a = W.actors[q], o = a.obj;
-    if (a.state === 'rej') { a.t += dt; a.vy -= 60 * dt; a.x += a.vx * dt; a.z += a.vz * dt; a.y += a.vy * dt; o.position.set(a.x, a.y, a.z); o.rotation.x += dt * 6; o.rotation.z += dt * 4; if (a.t > 2.2) kill(W, a, q); continue; }
-    if (a.state === 'exit') { a.t += dt * .8; const u = Math.min(1, a.t), p = slotPos(W, N - 1, {}); o.position.set(p.x * (1 - u * .86), .1, p.z * (1 - u * .86)); o.scale.setScalar(1 - u * .7); if (u >= 1) { if (view === L.i) burst(0, 4, 0, 0x4C9BEA, 14); kill(W, a, q); } continue; }
-    if (a.m >= 0) { a.m += dt * (a.s === -1 ? 1 : .55); const u = Math.min(1, a.m), e = u * u * (3 - 2 * u), ang = lerp(W.ang(a.s - 1), W.ang(a.s), e); a.x = Math.sin(ang) * PATH; a.z = Math.cos(ang) * PATH; if (a.s === 3 && u < .7) open = 1;
-      if (u > .55 && W.occ[a.s - 1] === a) W.occ[a.s - 1] = null; if (u >= 1) { a.m = -1; a.t = a.s === 2 ? 2.4 : a.s > 2 ? 3 + rnd() * 2 : .3; if (a.s > 2) { const st = W.steps[a.s - 3]; st.cur = a; } } }
+    if (a.state === 'rej') { a.t += dt; a.vy -= 60 * dt; a.x += a.vx * dt; a.z += a.vz * dt; a.y += a.vy * dt; o.position.set(a.x, a.y, a.z); o.rotation.x += dt * 6; o.rotation.z += dt * 4; if (a.t > 2.2) { W.actors.splice(q, 1); W.g.remove(o); } continue; }
+    if (a.state === 'exit') { a.t += dt * .8; const u = Math.min(1, a.t), an = W.ang(N - 1); o.position.set(Math.sin(an) * PATH * (1 - u * .9), .1, Math.cos(an) * PATH * (1 - u * .9)); o.scale.setScalar(1 - u * .7); if (u >= 1) { if (active) burst(0, 4, 0, 0x2563EB, 14); W.actors.splice(q, 1); W.g.remove(o); } continue; }
+    if (a.m >= 0) { a.m += dt * .55; const u = Math.min(1, a.m), e = u * u * (3 - 2 * u), ang = lerp(W.ang(a.s - 1), W.ang(a.s), e); a.x = Math.sin(ang) * PATH; a.z = Math.cos(ang) * PATH; if (a.s === 3 && u < .7) open = 1;
+      if (u > .55 && W.occ[a.s - 1] === a) W.occ[a.s - 1] = null; if (u >= 1) { a.m = -1; a.t = a.s === 2 ? 2.4 : a.s > 2 ? 3 + rnd() * 2 : .3; if (a.s > 2) W.steps[a.s - 3].cur = a; } }
     else { a.t -= dt; if (a.s === 2) { W.scanning = a; if (a.t < .5 && !a.bad) open = 1; }
       if (a.t <= 0) {
-        if (a.s === 2 && a.bad) { W.occ[2] = null; a.state = 'rej'; a.t = 0; a.y = .1; const ang = W.ang(2); a.vx = Math.sin(ang) * 26; a.vz = Math.cos(ang) * 26; a.vy = 30; o.userData.body.material = mRed; W.rejected++; L.blocked += ri(2000, 9000); W.lastBad = a.name; W.lastWhy = a.why; L.flash = 1; L.red = 1;
-          if (W.note) W.g.remove(W.note); W.note = textSprite('Stopped: ' + a.why, 2.2, 'rgba(217,58,58,.96)', '#ffffff'); W.note.position.set(W.gatePos.x, 18, W.gatePos.z); W.g.add(W.note); W.noteT = 3; if (view === L.i) burst(a.x, 4, a.z, 0xFF5D5D, 16);
-          log(L.i, L.gate[0] + ' stopped ' + a.name + ': ' + a.why); if (L.i === 3 && rnd() < .3) alertPush('Onboarding stopped ' + a.name + ': ' + a.why, 'warn'); continue; }
-        if (a.s === N - 1) { const st = W.steps[a.s - 3]; st.cur = null; st.done++; W.occ[a.s] = null; a.state = 'exit'; a.t = 0; W.admitted++; log(L.i, a.name + ' finished every step in ' + L.name); if (L.i === 4) { K.active += ri(1, 3); corePulse = 1; } continue; }
-        if (!W.occ[a.s + 1]) { if (a.s > 2) { const st = W.steps[a.s - 3]; st.cur = null; st.done++; } W.occ[a.s + 1] = a; a.s++; a.m = 0; if (a.s === 3) log(L.i, a.name + ' passed ' + L.gate[0].toLowerCase()); } } }
+        if (a.s === 2 && a.bad) { W.occ[2] = null; a.state = 'rej'; a.t = 0; a.y = .1; const ang = W.ang(2); a.vx = Math.sin(ang) * 26; a.vz = Math.cos(ang) * 26; a.vy = 30; o.userData.body.material = mRed; W.rejected++; W.lastBad = [a.name, a.why];
+          if (W.note) W.g.remove(W.note); W.note = textSprite('Stopped · ' + a.why, 1.9, 'rgba(229,72,77,.97)', '#ffffff'); W.note.position.set(W.gatePos.x, 17.5, W.gatePos.z); W.g.add(W.note); W.noteT = 3.2; if (active) burst(a.x, 4, a.z, 0xE5484D, 16); continue; }
+        if (a.s === N - 1) { const st = W.steps[a.s - 3]; st.cur = null; st.done++; W.occ[a.s] = null; a.state = 'exit'; a.t = 0; W.admitted++; continue; }
+        if (!W.occ[a.s + 1]) { if (a.s > 2) { const st = W.steps[a.s - 3]; st.cur = null; st.done++; } W.occ[a.s + 1] = a; a.s++; a.m = 0; } } }
     o.position.set(a.x, .1 + (a.m >= 0 ? Math.abs(Math.sin(a.m * 9)) * .5 : 0), a.z); o.rotation.y = W.ang(Math.max(0, a.s)) - Math.PI / 2;
+    a.lb.visible = a.bad || a.s - 2 === ws || (ws === 0 && a.s <= 3);
   }
   W.armOpen += clamp(open - W.armOpen, -dt * 3, dt * 3); W.arm.rotation.x = W.armOpen * 1.35; W.lamp.material = W.scanning && W.scanning.bad && W.scanning.t < 1 ? mRed : open ? mScreen : W.scanning ? mWhite : mRed;
   W.scan.visible = !!W.scanning; if (W.scanning) W.scan.position.y = 1 + ((time * 5) % 6.4);
-  if (W.note) { W.noteT -= dt; W.note.position.y += dt * 1.2; W.note.material.opacity = clamp(W.noteT, 0, 1); if (W.noteT <= 0) { W.g.remove(W.note); W.note = null; } }
-  for (const s of W.steps) { const on = s.cur && s.cur.m < 0; s.pm.emissiveIntensity = on ? .55 + .3 * Math.sin(time * 6) : 0; s.bot.position.y = .1 + (on ? Math.abs(Math.sin(time * 7 + s.k)) * .7 : Math.abs(Math.sin(time * 1.5 + s.k)) * .12); }
-}
-function kill(W, a, q) { W.actors.splice(q, 1); W.g.remove(a.obj); const ix = W.pick.indexOf(a.obj); if (ix >= 0) W.pick.splice(ix, 1); a.dead = true; if (sel === a) select(null); }
-
-/* ───────── threat level, day and night ───────── */
-const MODES = { quiet: { label: 'Quiet day', note: 'Little spam, few bad actors', spam: .9, good: 1 }, normal: { label: 'Normal day', note: 'Steady spam, every layer busy', spam: 3.4, good: 1.3 }, storm: { label: 'Spam storm', note: 'Bulk senders and fake enterprises attack', spam: 20, good: 1.3 } };
-const env = { mode: 'normal', night: 0, nightGoal: 0 };
-const cDay = new T3.Color(0xE9EEF5), cNight = new T3.Color(0x070B18), cT = new T3.Color();
-const stars = (() => { const n = 900, p = new Float32Array(n * 3); for (let i = 0; i < n; i++) { const a = rnd() * TAU, e = rnd() * 2.6 - 1.3, RR = 1400; p[i * 3] = Math.cos(e) * Math.sin(a) * RR; p[i * 3 + 1] = Math.sin(e) * RR; p[i * 3 + 2] = Math.cos(e) * Math.cos(a) * RR; } const g = new T3.BufferGeometry(); g.setAttribute('position', new T3.BufferAttribute(p, 3)); const s = new T3.Points(g, new T3.PointsMaterial({ color: 0xffffff, size: 2.2, sizeAttenuation: false, transparent: true, opacity: 0, depthWrite: false })); scene.add(s); return s; })();
-function simEnv(dt) {
-  env.night += clamp(env.nightGoal - env.night, -dt * .6, dt * .6); const n = env.night, sn = n * n * (3 - 2 * n);
-  scene.background.copy(cT.copy(cDay).lerp(cNight, sn)); stars.material.opacity = sn * .9;
-  hemi.intensity = lerp(.5, .2, sn); sun.intensity = lerp(.6, .16, sn); sun.color.setHex(0xFFF3E0).lerp(cT.setHex(0x93A9FF), sn);
-  mWin.emissiveIntensity = sn * 1.2; mScreen.emissiveIntensity = .45 + sn * .8;
-  LAYERS.forEach((L, i) => { const e = sn * (i === 0 ? .1 : .5 + .08 * Math.sin(time * 1.3 + i)); L.mSide.emissiveIntensity = e; L.mTop.emissiveIntensity = e; L.W.mSide.emissiveIntensity = e; L.W.mTop.emissiveIntensity = e * .55; });
+  if (W.note) { W.noteT -= dt; W.note.position.y += dt * 1.1; W.note.material.opacity = clamp(W.noteT, 0, 1); if (W.noteT <= 0) { W.g.remove(W.note); W.note = null; } }
+  for (const s of W.steps) { const sel = active && ws === s.k + 1, on = s.cur && s.cur.m < 0; s.pm.emissiveIntensity = lerp(s.pm.emissiveIntensity, sel ? .75 + .2 * Math.sin(time * 4) : on ? .25 : 0, .15); s.badge.visible = !sel; s.full.visible = sel; s.bot.position.y = .1 + (on ? Math.abs(Math.sin(time * 7 + s.k)) * .7 : Math.abs(Math.sin(time * 1.5 + s.k)) * .12); }
 }
 
-/* ───────── camera and views ───────── */
-const cam = { tx: 0, ty: 6, tz: 0, dist: 270, az: .7, pol: 1.4 }, goal = Object.assign({}, cam);
-let sel = null, follow = false, sheet = null, view = -1, idle = 0;
-function fit() { const w = app.clientWidth, h = app.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (isMobile() && sheet) camera.setViewOffset(w, h, 0, h * .2, w, h); else camera.clearViewOffset(); camera.updateProjectionMatrix(); }
-const asp = () => Math.max(1, 1.15 / camera.aspect);
+/* ───────── views, states, camera ───────── */
+const AZ0 = -2.2; const cam = { tx: 0, ty: 6, tz: 0, dist: 200, az: AZ0, pol: 1.25 }, goal = Object.assign({}, cam);
+let view = -1, ws = 0, playing = true, playT = 0, idle = 9, time = 0;
+const asp = () => Math.max(1, 1.2 / camera.aspect);
+function fit() { const w = app.clientWidth, h = app.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (w <= 900) camera.setViewOffset(w, h, 0, h * .15, w, h); else camera.clearViewOffset(); camera.updateProjectionMatrix(); }
+const nearAz = a => { let d = a - cam.az; d = Math.atan2(Math.sin(d), Math.cos(d)); return cam.az + d; };
+function aim() {
+  if (view < 0) { if (os === 0) Object.assign(goal, { tx: 0, tz: 0, ty: 4, dist: 185 * asp(), pol: 1.12 }); else Object.assign(goal, { tx: 0, tz: 0, ty: 70, dist: 330 * Math.max(1, .6 / camera.aspect), pol: 1.36 }); return; }
+  const W = worlds[view], a = ws === 0 ? W.aG : W.ang(ws + 2), r = ws === 0 ? PATH : 45;
+  Object.assign(goal, { tx: Math.sin(a) * r, tz: Math.cos(a) * r, ty: 3, dist: (ws === 0 ? 84 : 78) * asp(), pol: 1.02, az: nearAz(a + Math.PI + (ws === 0 ? .55 : .4)) });
+}
+const cap = $('#cap'); let capT = 0;
+function caption() { cap.classList.add('swap'); clearTimeout(capT); capT = setTimeout(() => { capFill(true); cap.classList.remove('swap'); }, 220); }
+function capFill(full) {
+  let h;
+  if (view < 0) { const o = OV[os]; h = `<div class="day">${o[0]}</div><h2>${o[1]}</h2><p>${o[2]}</p>${o[3] >= 0 ? `<button class="go" data-go="${o[3]}">Open ${LAYERS[o[3]].name}</button>` : ''}`; }
+  else { const L = LAYERS[view], W = worlds[view];
+    if (ws === 0) h = `<div class="day">${L.gate[1]} · Gate</div><h2>${L.gate[0]}</h2><p>${L.gate[2]}</p><div class="meta num"><span class="ok"><b class="ok">${IN(W.admitted)}</b> let in</span><span class="bad"><b class="bad">${IN(W.rejected)}</b> stopped</span>${W.lastBad ? `<span>Last: <b>${esc(W.lastBad[0])}</b>, ${esc(W.lastBad[1].toLowerCase())}</span>` : ''}</div>`;
+    else { const s = L.steps[ws - 1], st = W.steps[ws - 1]; h = `<div class="day">${s[1]} · Step ${ws} of ${L.steps.length}</div><h2>${s[0]}</h2><p>${s[2]}</p><div class="meta"><span><b>${s[3]}</b></span><span>${st.cur ? 'Working on <b>' + esc(st.cur.name) + '</b>' : 'Waiting for the next ' + L.actor}</span></div>`; } }
+  if (full || cap.dataset.h !== h) { cap.innerHTML = h; cap.dataset.h = h; }
+}
+cap.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) setView(+b.dataset.go); });
+const chips = $('#chips');
+function buildChips() { const list = view < 0 ? OV.map(o => [o[0], o[3] < 0 ? 'Protected' : LAYERS[o[3]].name]) : [[LAYERS[view].gate[1], 'Gate']].concat(LAYERS[view].steps.map(s => [s[1], s[0]]));
+  chips.innerHTML = list.map((c, k) => `<button data-s="${k}"><em>${view < 0 ? (k || '•') : (k || '⛨')}</em><span><small>${c[0]}</small><b>${c[1]}</b></span></button>`).join(''); markChips(); }
+function markChips() { const cur = view < 0 ? os : ws; chips.querySelectorAll('button').forEach((b, k) => { b.classList.toggle('on', k === cur); b.classList.toggle('done', k < cur); if (k === cur) b.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); }); }
+const nStates = () => view < 0 ? OV.length : LAYERS[view].steps.length + 1;
+function setState(k, auto) { const n = nStates(); k = ((k % n) + n) % n; if (!auto) setPlay(false); playT = 0;
+  if (view < 0) { const prev = os; os = k; const hi = OV[k][3]; if (hi >= 0) { const y1 = hi === 4 ? 9 : LAYERS[hi].ey + LAYERS[hi].R * .5, y0 = prev > 0 && OV[prev][3] < hi ? (OV[prev][3] === 4 ? 9 : LAYERS[OV[prev][3]].ey + 6) : y1 + 60; tok = { u: prev === 0 ? -.9 : 0, y0, y1, to: hi }; } else tok = null; }
+  else ws = k;
+  aim(); caption(); markChips(); }
+chips.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setState(+b.dataset.s); });
+$('#prev').onclick = () => setState((view < 0 ? os : ws) - 1); $('#next').onclick = () => setState((view < 0 ? os : ws) + 1);
+const playB = $('#play');
+function setPlay(p) { playing = p; playT = 0; playB.innerHTML = p ? '<svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>'; playB.setAttribute('aria-pressed', p); }
+playB.onclick = () => setPlay(!playing);
+const layersEl = $('#layers'); [['Overview', -1, '#8391ae'], ...LAYERS.map((L, i) => [L.name, i, L.hex])].forEach(([n, i, c]) => { const b = document.createElement('button'); b.innerHTML = `<i style="background:${c}"></i>${n}`; b.dataset.a = i; b.onclick = () => setView(i); layersEl.append(b); });
 const fade = $('#fade');
 function setView(i, instant) {
-  if (i === view) { if (i >= 0) { select(null); Object.assign(goal, { tx: 0, ty: 0, tz: 0, dist: 150 * asp() }); } return; }
-  const go = () => { select(null, false); view = i; stackG.visible = i < 0; worlds.forEach((W, k) => W.g.visible = k === i); pickables = i < 0 ? stackPick : worlds[i].pick;
-    if (i < 0) { Object.assign(goal, { tx: 0, ty: 6, tz: 0, dist: 270 * Math.max(1, .62 / camera.aspect), pol: 1.4 }); Object.assign(cam, goal, { dist: goal.dist * .7 }); }
-    else { Object.assign(goal, { tx: 0, ty: 0, tz: 0, dist: 150 * asp(), pol: .95, az: .75 }); Object.assign(cam, goal, { dist: goal.dist * 1.7, pol: .5 }); }
-    document.querySelectorAll('#areas button').forEach(b => b.classList.toggle('on', +b.dataset.a === i)); tab = i < 0 ? (tab === 'steps' ? 'layers' : tab) : 'steps'; uiDetail(true); uiTable(); uiTracker(Date.now()); if (isMobile()) showSheet(i < 0 ? null : 'detail'); };
+  if (i === view) { if (i >= 0) setState(0); return; }
+  const go = () => { view = i; ovG.visible = i < 0; worlds.forEach((W, k) => W.g.visible = k === i); ws = 0;
+    layersEl.querySelectorAll('button').forEach(b => { const on = +b.dataset.a === i; b.classList.toggle('on', on); if (on) b.scrollIntoView({ block: 'nearest', inline: 'center' }); });
+    if (i < 0) { explode = os > 0 ? 1 : 0; aim(); goal.az = AZ0; Object.assign(cam, goal, { dist: goal.dist * .75 }); } else { setPlay(false); aim(); Object.assign(cam, goal, { tx: 0, tz: 0, dist: 230 * asp(), pol: .7 }); }
+    buildChips(); caption(); };
   if (instant) return go();
-  if (view < 0 && i >= 0) { goal.ty = LAYERS[i].y; goal.dist = 70; }
-  fade.style.background = i >= 0 ? LAYERS[i].hex : 'var(--sky)'; fade.classList.add('on'); setTimeout(() => { go(); fade.classList.remove('on'); }, 430);
+  if (view < 0 && i >= 0) { goal.ty = i === 4 ? 9 : LAYERS[i].y + 8; goal.dist = 90; }
+  fade.classList.add('on'); setTimeout(() => { go(); fade.classList.remove('on'); }, 400);
 }
 function camUpdate(dt) {
-  if (sel && follow && !sel.dead) { const p = sel.wp(); goal.tx = p.x; goal.tz = p.z; }
-  idle += dt; if (view < 0 && idle > 3 && !ptrs.size) goal.az += dt * .09;
-  const k = 1 - Math.exp(-dt * 4);
-  for (const f of ['tx', 'ty', 'tz', 'dist', 'pol', 'az']) cam[f] = lerp(cam[f], goal[f], k);
-  if (view >= 0) { const ss = clamp(cam.dist / 110, .8, 1.8); worlds[view].g.traverse(o => { if (o.isSprite && o.userData.nopick && o.material.map !== glowTex) { const b = o.userData.b || (o.userData.b = o.scale.clone()); o.scale.copy(b).multiplyScalar(ss / (o.parent.scale.x || 1)); } }); }
+  idle += dt; if (view < 0 && idle > 2.5 && !ptrs.size) goal.az = lerp(goal.az, nearAz(AZ0 + Math.sin(time * .22) * .5), dt * 1.5);
+  const k = 1 - Math.exp(-dt * 3.2); for (const f of ['tx', 'ty', 'tz', 'dist', 'pol', 'az']) cam[f] = lerp(cam[f], goal[f], k);
   const sp = Math.sin(cam.pol); camera.position.set(cam.tx + cam.dist * sp * Math.sin(cam.az), cam.ty + cam.dist * Math.cos(cam.pol), cam.tz + cam.dist * sp * Math.cos(cam.az)); camera.lookAt(cam.tx, cam.ty, cam.tz);
+  if (view >= 0) { const ss = clamp(cam.dist / 95, .75, 1.9); worlds[view].g.traverse(o => { if (o.userData.label) o.scale.copy(o.userData.b).multiplyScalar(ss / (o.parent.scale.x || 1)); }); }
+  for (const b of burstS) { if (b.age > .6) { b.s.visible = false; continue; } b.age += dt; const u = b.age / .6; b.s.scale.setScalar(b.size * (.4 + u)); b.s.material.opacity = (1 - u) * .8; }
 }
-const ptrs = new Map(); let dragMode = null, moved = 0, pinch = null;
+const ptrs = new Map(); let moved = 0, pinch = null;
 canvas.addEventListener('contextmenu', e => e.preventDefault());
-canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; idle = 0; closeMenus();
-  if (ptrs.size === 1) dragMode = (view < 0 || e.button === 2 || e.ctrlKey || e.shiftKey) ? 'rot' : 'pan'; else if (ptrs.size === 2) { dragMode = 'pinch'; pinch = pinchState(); } });
-function pinchState() { const [a, b] = [...ptrs.values()]; return { d: Math.hypot(a.x - b.x, a.y - b.y), a: Math.atan2(b.y - a.y, b.x - a.x), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 }; }
-function panBy(dx, dy) { if (view < 0) return; const s = 2 * cam.dist * Math.tan(camera.fov * Math.PI / 360) / app.clientHeight, rx = Math.cos(cam.az), rz = -Math.sin(cam.az), fx = -Math.sin(cam.az), fz = -Math.cos(cam.az), v = dy * s / Math.max(.3, Math.cos(cam.pol));
-  goal.tx = clamp(goal.tx - dx * s * rx + v * fx, -60, 60); goal.tz = clamp(goal.tz - dx * s * rz + v * fz, -60, 60); cam.tx = goal.tx; cam.tz = goal.tz; follow = false; }
-canvas.addEventListener('pointermove', e => { const p = ptrs.get(e.pointerId); if (!p) return; const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; moved += Math.abs(dx) + Math.abs(dy); idle = 0;
-  if (moved < 5) return; canvas.classList.add('drag');
-  if (dragMode === 'pan') panBy(dx, dy);
-  else if (dragMode === 'rot') { goal.az -= dx * .006; goal.pol = clamp(goal.pol - dy * .005, .25, view < 0 ? 1.75 : 1.42); }
-  else if (dragMode === 'pinch' && ptrs.size === 2) { const n = pinchState(); goal.dist = clamp(goal.dist * pinch.d / Math.max(20, n.d), 40, 600); let da = n.a - pinch.a; da = Math.atan2(Math.sin(da), Math.cos(da)); goal.az -= da; panBy(n.mx - pinch.mx, n.my - pinch.my); pinch = n; } });
+canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; idle = 0; if (ptrs.size === 2) pinch = pd(); });
+const pd = () => { const [a, b] = [...ptrs.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+canvas.addEventListener('pointermove', e => { const p = ptrs.get(e.pointerId); if (!p) return; const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; moved += Math.abs(dx) + Math.abs(dy); idle = 0; if (moved < 5) return; canvas.classList.add('drag');
+  if (ptrs.size === 2) { const n = pd(); goal.dist = clamp(goal.dist * pinch / Math.max(20, n), 40, 700); pinch = n; } else { goal.az -= dx * .006; goal.pol = clamp(goal.pol - dy * .005, .3, view < 0 ? 1.7 : 1.45); } });
 const ray = new T3.Raycaster(), ndc = new T3.Vector2();
 function endPtr(e) { const had = ptrs.delete(e.pointerId); canvas.classList.remove('drag'); if (!had) return;
-  if (moved < 6 && dragMode !== 'pinch' && e.type === 'pointerup') { const r = canvas.getBoundingClientRect(); ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, camera);
-    const hits = ray.intersectObjects(pickables, true).filter(h => !h.object.userData.nopick);
-    if (view < 0) { const h = hits.find(h => h.object.userData.layer != null); if (h) setView(h.object.userData.layer); }
-    else { const h = hits.find(h => h.object.userData.ent); if (h && !(hits[0].object.userData.ground && hits[0].distance < h.distance - 14)) select(h.object.userData.ent); else select(null); } }
-  if (ptrs.size === 1) { dragMode = view < 0 ? 'rot' : 'pan'; moved = 99; } if (!ptrs.size) dragMode = null; }
+  if (moved < 6 && e.type === 'pointerup') { const r = canvas.getBoundingClientRect(); ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, camera);
+    if (view < 0) { const h = ray.intersectObjects(ovPick, false).sort((a, b) => (LAYERS[b.object.userData.layer].op > .5) - (LAYERS[a.object.userData.layer].op > .5) || a.distance - b.distance)[0]; if (h) { if (os === 0) setState(h.object.userData.layer + 1); else setView(h.object.userData.layer); } }
+    else { const h = ray.intersectObjects(worlds[view].pick, false)[0]; if (h) setState(h.object.userData.state); } } }
 canvas.addEventListener('pointerup', endPtr); canvas.addEventListener('pointercancel', endPtr);
-canvas.addEventListener('wheel', e => { e.preventDefault(); idle = 0; goal.dist = clamp(goal.dist * Math.exp(e.deltaY * .0011), 40, 600); }, { passive: false });
-addEventListener('keydown', e => { if (e.key === 'Escape') { if (sel) select(null); else setView(-1); closeMenus(); } });
+canvas.addEventListener('wheel', e => { e.preventDefault(); idle = 0; goal.dist = clamp(goal.dist * Math.exp(e.deltaY * .0011), 40, 700); }, { passive: false });
+addEventListener('keydown', e => { if (e.key === 'ArrowRight') setState((view < 0 ? os : ws) + 1); else if (e.key === 'ArrowLeft') setState((view < 0 ? os : ws) - 1); else if (e.key === 'Escape') setView(-1); });
 
-const ring = new T3.Mesh(new T3.RingGeometry(.86, 1, 48), new T3.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: .95, depthWrite: false, side: T3.DoubleSide })); ring.rotation.x = -Math.PI / 2; ring.visible = false; ring.renderOrder = 6; scene.add(ring);
-const ring2 = ring.clone(); ring2.material = ring.material.clone(); scene.add(ring2);
-const labelEl = $('#label');
-function select(e, refresh) {
-  sel = e; follow = !!e; ring.visible = ring2.visible = !!e; labelEl.hidden = !e;
-  if (e) { goal.dist = clamp(Math.min(goal.dist, 70 + e.rad * 5), 50, 600); labelEl.innerHTML = `${esc(e.name)}<small>${esc(e.type)}</small>`; if (isMobile()) showSheet('detail'); }
-  if (refresh !== false) { uiDetail(true); uiTable(); }
-}
-function selUpdate(t) {
-  if (!sel) return; const p = sel.wp(), x0 = p.x, z0 = p.z;
-  ring.position.set(x0, .5, z0); ring.scale.setScalar(sel.rad * (1 + .06 * Math.sin(t * 4))); const w = (t * .8) % 1; ring2.position.set(x0, .5, z0); ring2.scale.setScalar(sel.rad * (1 + w * .7)); ring2.material.opacity = .7 * (1 - w);
-  _v.set(x0, sel.hgt, z0).project(camera); labelEl.style.transform = `translate(${((_v.x * .5 + .5) * app.clientWidth).toFixed(1)}px,${((-_v.y * .5 + .5) * app.clientHeight).toFixed(1)}px) translate(-50%,-100%)`;
-}
-/* callouts beside each layer of the stack, like the labels on the model */
-const ltags = $('#ltags'); const tagEls = LAYERS.map((L, i) => { const b = document.createElement('button'); b.className = 'ltag glass'; b.innerHTML = `<i style="background:${L.hex}"></i><span><b>${L.name}</b><small>${L.geo} · ${L.who}</small></span><em>Enter</em>`; b.onclick = () => setView(i); ltags.append(b); return b; });
-function tagsUpdate() { const show = view < 0; ltags.style.opacity = show ? 1 : 0; ltags.style.pointerEvents = show ? '' : 'none'; if (!show) return; const mob = isMobile(), rx = Math.cos(cam.az), rz = -Math.sin(cam.az);
-  LAYERS.forEach((L, i) => { const r = -(i === 4 ? 19 : R + 3) * (mob ? .2 : 1); _v.set(rx * r, L.y + (i === 0 ? 12 : 0), rz * r).project(camera); tagEls[i].style.transform = `translate(${((_v.x * .5 + .5) * app.clientWidth).toFixed(1)}px,${((-_v.y * .5 + .5) * app.clientHeight).toFixed(1)}px) translate(${mob ? '-50%' : 'calc(-100% - 14px)'},-50%)`; }); }
-
-/* ───────── dashboard ───────── */
-const areasEl = $('#areas'); [['Earth', -1], ...LAYERS.map((L, i) => [L.name, i])].forEach(([n, i]) => { const b = document.createElement('button'); b.textContent = n; b.dataset.a = i; b.onclick = () => setView(i); areasEl.append(b); });
-function closeMenus(except) { ['#seasonMenu', '#alertMenu', '#qres'].forEach(s => { if (s !== except) $(s).hidden = true; }); }
-const seasonMenu = $('#seasonMenu');
-Object.entries(MODES).forEach(([k, s]) => { const b = document.createElement('button'); b.innerHTML = `${s.label}<small>${s.note}</small>`; b.dataset.s = k; b.onclick = () => setMode(k); seasonMenu.append(b); });
-function setMode(k, quiet) { env.mode = k; $('#seasonLbl').textContent = MODES[k].label; seasonMenu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === k)); seasonMenu.hidden = true; if (k === 'storm' && !quiet) alertPush('Spam storm: bulk senders and fake enterprises are hitting every layer. All five are holding', 'warn'); }
-$('#seasonBtn').onclick = e => { e.stopPropagation(); closeMenus('#seasonMenu'); seasonMenu.hidden = !seasonMenu.hidden; };
-function setNight(n) { env.nightGoal = n ? 1 : 0; document.documentElement.classList.toggle('night', !!n); $('#dn').setAttribute('aria-pressed', !!n); }
-$('#dn').onclick = () => setNight(!env.nightGoal);
-const alertMenu = $('#alertMenu');
-function uiAlerts() { const b = $('#alertN'); b.hidden = !unread; b.textContent = unread; alertMenu.innerHTML = alerts.length ? alerts.map(a => `<div class="alert"><i class="${a.tone}"></i>${esc(a.text)}<time>${hms(a.t)}</time></div>`).join('') : '<div class="empty">No alerts yet.</div>'; }
-$('#alertBtn').onclick = e => { e.stopPropagation(); closeMenus('#alertMenu'); alertMenu.hidden = !alertMenu.hidden; unread = 0; uiAlerts(); };
-const q = $('#q'), qres = $('#qres');
-function doSearch() { const s = q.value.trim().toLowerCase(); if (!s) { qres.hidden = true; return; } closeMenus('#qres');
-  const r = ents.filter(e => !e.dead && e.kind !== 'actor' && (e.name + ' ' + e.type + ' ' + (e.agent || '')).toLowerCase().includes(s)).sort((a, b) => b.name.toLowerCase().includes(s) - a.name.toLowerCase().includes(s)).slice(0, 8);
-  qres.innerHTML = r.length ? r.map(e => `<button data-id="${e.id}">${esc(e.name)}<small>${esc(e.type)}</small></button>`).join('') : '<div class="empty">Nothing matches. Try "onboarding", "scrub" or "rate card".</div>'; qres.hidden = false; }
-q.addEventListener('input', doSearch); q.addEventListener('focus', doSearch);
-q.addEventListener('keydown', e => { if (e.key === 'Enter') { const b = qres.querySelector('button'); b && b.click(); } });
-function pickId(id) { const e = ents[+id]; if (!e || e.dead) return; if (e.kind === 'layer') return setView(e.L.i); if (view !== e.L.i) { setView(e.L.i, true); } select(e); }
-qres.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; pickId(b.dataset.id); qres.hidden = true; q.blur(); });
-document.addEventListener('click', e => { if (!e.target.closest('.tb,.search')) closeMenus(); });
-
-const detail = $('#detail');
-const navRow = i => `<div class="nav">${i > 0 ? `<button data-v="${i - 1}">↑ ${LAYERS[i - 1].name}</button>` : ''}${i < 4 ? `<button data-v="${i + 1}">↓ ${LAYERS[i + 1].name}</button>` : ''}<button data-v="-1">Whole earth</button></div>`;
-function uiDetail(force) {
-  if (!sel && view < 0) { if (force || !detail.dataset.intro) { detail.dataset.intro = 1; detail.innerHTML = `<div class="intro"><div class="eyebrow">Access layers</div><h2>Five layers stand between spam and the user</h2><p>The ecosystem is built like the earth. The user is the core. Every layer above lets the right ones in, keeps the wrong ones out, and has its own world of work.</p><ul class="legend">${LAYERS.map((L, i) => `<li><button class="lrow" data-v="${i}"><i style="background:${L.hex}"></i><b>${L.name}</b><span>${L.geo}</span></button></li>`).join('')}</ul><ul class="legend"><li><kbd>Click a layer</kbd> to go inside its world</li><li><kbd>Drag</kbd> to spin the earth, scroll to zoom</li><li><kbd>Red</kbd> spam, stopped at a layer</li><li><kbd>Blue</kbd> consented, reaches the user</li></ul></div>`; } return; }
-  delete detail.dataset.intro;
-  if (!sel) { const L = LAYERS[view], W = L.W;
-    detail.innerHTML = `<div class="eyebrow"><i class="sw" style="background:${L.hex}"></i>${L.geo} · layer ${view + 1} of 5</div><h2>${L.name}</h2><div class="sub">${L.role}</div><dl class="rows num"><dt>Who</dt><dd>${L.who}</dd><dt>Keeps out</dt><dd>${L.stops}</dd></dl>
-    <button class="arow gate" data-id="${W.gate.id}"><b>Gate · ${L.gate[0]}</b><span>${L.gate[1]}</span><span class="num"><em class="ok">${IN(W.admitted)} let in</em> · <em class="bad">${IN(W.rejected)} turned away</em></span></button>
-    <div class="eyebrow sec">What happens here, in order</div><ol class="seq">${W.steps.map(s => `<li class="${s.cur ? 'now' : ''}"><button data-id="${s.id}"><b>${esc(s.name)}</b><span>${esc(s.agent)}${s.cur ? ' · working on ' + esc(s.cur.name) : ''}</span></button></li>`).join('')}</ol>${navRow(view)}`; return; }
-  const i = sel.info(), st = i.status;
-  detail.innerHTML = `<button class="x" aria-label="Close details">×</button><div class="eyebrow"><i class="sw" style="background:${sel.L.hex}"></i>${esc(sel.type)}</div><h2>${esc(sel.name)}</h2><div class="sub">${esc(i.sub)}</div><span class="pill ${st[1]}">${esc(st[0])}</span><dl class="rows num">${i.rows.map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>${i.list ? `<div class="eyebrow sec">${i.list[0]}</div><ul class="jobs">${i.list[1].map(j => `<li class="${j[1] ? 'now' : ''}">${esc(j[0])}</li>`).join('')}</ul>` : ''}`;
-}
-detail.addEventListener('pointerdown', e => { const x = e.target.closest('.x'), a = e.target.closest('[data-id]'), v = e.target.closest('[data-v]'); if (x) select(null); else if (a) pickId(a.dataset.id); else if (v) setView(+v.dataset.v); });
-
-function uiTracker(now) {
-  if (view < 0) { $('#tracker .eyebrow').textContent = 'Protection today'; $('#trT').textContent = 'Stopped at each layer'; $('#trF').textContent = 'From the outside in';
-    $('#trS').innerHTML = LAYERS.map(L => `<li class="done" style="--dot:${L.hex}">${L.name}<time class="num">${LK(L.blocked)}</time></li>`).join(''); return; }
-  const L = LAYERS[view], W = L.W, lead = sel && sel.kind === 'actor' && !sel.dead ? sel : W.actors.filter(a => !a.state && !a.bad).sort((a, b) => b.s - a.s)[0];
-  $('#tracker .eyebrow').textContent = 'Sequence'; $('#trT').textContent = lead ? lead.name : 'Waiting for the next ' + L.actor.toLowerCase(); $('#trF').textContent = lead ? (lead.s > 2 ? 'Step ' + (lead.s - 2) + ' of ' + L.steps.length : 'At the gate') + ' · ' + L.name : L.gate[0];
-  const cur = lead ? lead.s - 3 : -2;
-  $('#trS').innerHTML = [`<li class="${cur >= 0 ? 'done' : cur === -1 ? 'now' : ''}">${L.gate[0]}<time>Gate</time></li>`].concat(L.steps.map((s, k) => `<li class="${k < cur ? 'done' : k === cur ? 'now' : ''}">${s[0]}<time class="num">${k + 1}</time></li>`)).join('');
-}
-const TABS = { layers: ['Layers', ['Layer', 'Earth layer', 'Who', 'Keeps out', 'Stopped today']], steps: ['Steps', ['#', 'Step', 'Layer', 'Agent', 'Working on', 'Handled']], feed: ['Activity', ['Time', 'Layer', 'Event']] };
-let tab = 'layers';
-const tabsEl = $('#tabs'); tabsEl.innerHTML = Object.entries(TABS).map(([k, t]) => `<button data-t="${k}">${t[0]}</button>`).join('') + '<span class="live">Live</span><button class="tg" data-tg="1" aria-expanded="false">Expand</button>';
-tabsEl.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const tbl = $('#table'); if (b.dataset.tg) tbl.classList.toggle('col'); else { tab = b.dataset.t; tbl.classList.remove('col'); uiTable(); } const c = tbl.classList.contains('col'), tg = tabsEl.querySelector('.tg'); tg.textContent = c ? 'Expand' : 'Collapse'; tg.setAttribute('aria-expanded', !c); });
-function uiTable() {
-  tabsEl.querySelectorAll('button[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
-  $('#th').innerHTML = '<tr>' + TABS[tab][1].map(h => `<th>${h}</th>`).join('') + '</tr>'; let rows; const dot = L => `<i class="sw" style="background:${L.hex}"></i>`;
-  if (tab === 'layers') rows = LAYERS.map(L => [L.ent, dot(L) + L.name, L.geo, L.who, L.stops, LK(L.blocked)]);
-  else if (tab === 'steps') rows = (view < 0 ? worlds : [worlds[view]]).flatMap(W => W.steps.map(s => [s, s.k + 1, esc(s.name), dot(s.L) + s.L.name, s.agent, s.cur ? `<span class="pill">${esc(s.cur.name)}</span>` : '<span class="pill idle">Idle</span>', IN(s.done)]));
-  else rows = feed.slice(0, 16).map(f => [LAYERS[f.li].ent, hms(f.t), dot(LAYERS[f.li]) + LAYERS[f.li].name, esc(f.text)]);
-  $('#tb').innerHTML = rows.map(r => `<tr data-id="${r[0].id}" class="${sel === r[0] ? 'sel' : ''}" tabindex="0">${r.slice(1).map(c => `<td class="num">${c}</td>`).join('')}</tr>`).join('');
-}
-$('#tb').addEventListener('pointerdown', e => { const r = e.target.closest('tr'); if (r) pickId(r.dataset.id); });
-$('#tb').addEventListener('keydown', e => { if (e.key === 'Enter') { const r = e.target.closest('tr'); if (r) pickId(r.dataset.id); } });
-function uiKpi() { $('#k1').textContent = CR(K.blocked); $('#k1d').textContent = IN(worlds.reduce((a, W) => a + W.rejected, 0)) + ' bad actors'; $('#k2').textContent = CR(K.delivered); $('#k2d').textContent = (K.delivered / (K.delivered + K.blocked) * 100).toFixed(1) + '%'; $('#k3').textContent = CR(K.active); $('#k3d').textContent = IN(K.revoked); }
-function uiClock(now) { const d = new Date(now); $('#clk').textContent = d.toLocaleTimeString('en-GB'); $('#dte').textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · Mumbai'; }
-const kpisEl = $('#kpis'), kpiToggle = () => kpisEl.setAttribute('aria-expanded', !kpisEl.classList.toggle('col'));
-kpisEl.addEventListener('click', kpiToggle); kpisEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); kpiToggle(); } });
-function showSheet(k) { sheet = k; ['tracker', 'table', 'detail'].forEach(id => $('#' + id).classList.toggle('show', id === k)); document.querySelectorAll('#mbar button').forEach(b => b.classList.toggle('on', b.dataset.m === k)); fit(); }
-$('#mbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) showSheet(sheet === b.dataset.m ? null : b.dataset.m); });
+const ltags = $('#ltags'); const tagEls = LAYERS.map((L, i) => { const b = document.createElement('button'); b.className = 'ltag glass'; b.innerHTML = `<i style="background:${L.hex}"></i><b>${L.name}</b><small>${L.who}</small>`; b.onclick = () => setView(i); ltags.append(b); return b; });
+const _v = new T3.Vector3();
+function tagsUpdate() { const show = view < 0 && explode > .6; ltags.style.opacity = show ? 1 : 0; ltags.style.pointerEvents = show ? '' : 'none'; if (!show) return; const mob = innerWidth <= 900, rx = Math.cos(cam.az), rz = -Math.sin(cam.az), hi = OV[os][3];
+  LAYERS.forEach((L, i) => { const r = -(L.R + 4) * (mob ? 0 : 1); _v.set(rx * r, i === 4 ? 9 : L.y + L.R * .45, rz * r).project(camera); tagEls[i].classList.toggle('dim', hi !== i); tagEls[i].style.transform = `translate(${((_v.x * .5 + .5) * app.clientWidth).toFixed(1)}px,${((-_v.y * .5 + .5) * app.clientHeight).toFixed(1)}px) translate(${mob ? '-50%' : 'calc(-100% - 12px)'},-50%)`; }); }
 
 /* ───────── loop ───────── */
-let last = performance.now(), uiA = 0, uiB = 0, time = 0;
-function step(dt) { time += dt; simStack(dt); for (const W of worlds) simWorld(W, dt); }
+let last = performance.now(), uiA = 0;
+function step(dt) { time += dt; simOverview(dt); worlds.forEach((W, i) => simWorld(W, dt, i === view)); }
 function frame(nowP) {
-  const dt = Math.min(.05, (nowP - last) / 1000); last = nowP; const now = Date.now();
-  step(dt); simEnv(dt); camUpdate(dt); selUpdate(time); tagsUpdate();
-  renderer.render(scene, camera);
-  uiA += dt; uiB += dt;
-  if (uiA > .3) { uiA = 0; uiDetail(); uiKpi(); }
-  if (uiB > 1) { uiB = 0; uiClock(now); uiTracker(now); uiTable(); }
+  const dt = Math.min(.05, (nowP - last) / 1000); last = nowP;
+  step(dt); if (playing) { playT += dt; if (playT > (view < 0 && os === 0 ? 5 : 6.5)) setState((view < 0 ? os : ws) + 1, true); }
+  camUpdate(dt); tagsUpdate(); renderer.render(scene, camera);
+  uiA += dt; if (uiA > .4) { uiA = 0; if (!cap.classList.contains('swap')) capFill(); }
   requestAnimationFrame(frame);
 }
-addEventListener('resize', fit); fit();
+addEventListener('resize', () => { fit(); aim(); }); fit();
 for (let i = 0; i < 500; i++) step(.05);
-alerts.length = 0; unread = 0; feed.length = Math.min(feed.length, 12);
-alertPush('Jio: rate card for migration, acquisition and scrubbing assigned to Karix', 'ok');
-alertPush('Onboarding stopped QuickLoan 247: No DLT registration found', 'warn');
-setMode('normal', true); setView(-1, true); view = -2; setView(-1, true); uiAlerts(); uiKpi(); uiClock(Date.now());
-window.__dc = { env, step, ents, LAYERS, worlds, select, setView, setMode, setNight, cam, goal, get view() { return view; } };
+setPlay(true); setView(0, true); view = -2; setView(-1, true); capFill(true);
+window.__dc = { step, LAYERS, worlds, setView, setState, setPlay, cam, goal, get view() { return view; }, get os() { return os; }, get ws() { return ws; } };
 requestAnimationFrame(t => { last = t; frame(t); $('#load').style.opacity = 0; setTimeout(() => $('#load').remove(), 600); });
 }
 const go = () => { try { start(); } catch (e) { console.error(e); $('#load').textContent = 'Something went wrong while building the world: ' + e.message; } };
