@@ -1,0 +1,23 @@
+{
+  "name": "agenticsetup",
+  "version": "1.0.0",
+  "description": "Clickable HTML prototypes of agentic onboarding for DigiConsent.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pranovreddy/AgenticSetup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pranovreddy/AgenticSetup/issues"
+  },
+  "homepage": "https://github.com/pranovreddy/AgenticSetup#readme",
+  "dependencies": {
+    "gsap": "^3.15.1"
+  }
+}
