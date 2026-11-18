@@ -120,6 +120,8 @@ button:focus-visible,input:focus-visible,tr:focus-visible{outline:2px solid var(
 .tabs .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok);animation:blink 1.6s infinite}
 @keyframes blink{50%{opacity:.25}}
 .tw{overflow:auto;flex:1;min-height:0}
+#table.col{height:auto;padding-bottom:2px} #table.col .tw{display:none}
+.tabs .tg{margin-left:8px;background:var(--chip);color:var(--ink)}
 table{border-collapse:collapse;width:100%;font-size:12.5px}
 th{position:sticky;top:0;text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);font-weight:600;padding:5px 10px;background:transparent;white-space:nowrap}
 td{padding:5px 10px;border-top:1px solid var(--line);white-space:nowrap}
@@ -149,7 +151,7 @@ td:first-child{font-weight:600}
   #mbar button{flex:1;height:36px;border-radius:11px;font-weight:600;color:var(--ink2)}
   #mbar button.on{background:var(--acc);color:#fff}
   #tracker,#table,#detail{left:var(--gl);right:var(--gr);width:auto;max-width:none;top:auto;bottom:calc(max(10px, env(safe-area-inset-bottom, 0px)) + 54px);max-height:46%;transform:translateY(calc(100% + 80px));transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:32}
-  #table{height:46%}
+  #table,#table.col{height:46%;padding-bottom:6px} #table.col .tw{display:block} .tabs .tg{display:none}
   #detail::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--line);margin:-4px auto 8px}
   .show{transform:none !important}
 }
@@ -200,7 +202,7 @@ td:first-child{font-weight:600}
     <ol class="steps" id="trS"></ol>
   </section>
 
-  <section id="table" class="glass">
+  <section id="table" class="glass col">
     <div class="tabs" id="tabs"></div>
     <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
   </section>
@@ -882,8 +884,8 @@ function uiTracker(now) {
 /* table */
 const TABS = { docks: ['Docks', ['Dock', 'Line of business', 'Status', 'Tokens today', 'Last vehicle']], fleet: ['Fleet', ['Vehicle', 'Type', 'Task', 'Speed']], batches: ['Batches', ['Batch', 'File', 'Records', 'Phase', 'Valid']] };
 let tab = 'docks';
-const tabsEl = $('#tabs'); tabsEl.innerHTML = Object.entries(TABS).map(([k, t]) => `<button data-t="${k}">${t[0]}</button>`).join('') + '<span class="live">Live</span>';
-tabsEl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { tab = b.dataset.t; uiTable(); } });
+const tabsEl = $('#tabs'); tabsEl.innerHTML = Object.entries(TABS).map(([k, t]) => `<button data-t="${k}">${t[0]}</button>`).join('') + '<span class="live">Live</span><button class="tg" data-tg="1" aria-expanded="false">Expand</button>';
+tabsEl.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const tbl = $('#table'); if (b.dataset.tg) tbl.classList.toggle('col'); else { tab = b.dataset.t; tbl.classList.remove('col'); uiTable(); } const c = tbl.classList.contains('col'), tg = tabsEl.querySelector('.tg'); tg.textContent = c ? 'Expand' : 'Collapse'; tg.setAttribute('aria-expanded', !c); });
 function uiTable() {
   tabsEl.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
   $('#th').innerHTML = '<tr>' + TABS[tab][1].map(h => `<th>${h}</th>`).join('') + '</tr>';
