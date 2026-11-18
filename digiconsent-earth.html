@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>DigiConsent Earth Layers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: a half earth cut open in the centre, its five layers as rings around the user. Frosted glass HUD on the edges. */
+:root{
+  --acc:#2563eb; --acc-soft:rgba(37,99,235,.12);
+  --ink:#0f1b3d; --ink2:#44537a; --mute:#7483a3;
+  --glass:rgba(255,255,255,.66); --glass-b:rgba(255,255,255,.8); --line:rgba(15,27,61,.09);
+  --chip:rgba(15,27,61,.055); --sky:#e9eef5;
+  --ok:#0f8a5f; --warn:#b06a07; --bad:#c0392b;
+  --shadow:0 10px 34px rgba(20,35,80,.13);
+  --f-d:'Space Grotesk','Inter',system-ui,sans-serif; --f-b:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --gl:max(16px, env(safe-area-inset-left, 0px)); --gr:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:light;
+}
+:root.night{
+  --ink:#eef2ff; --ink2:#b9c4e2; --mute:#8794b8;
+  --glass:rgba(16,23,42,.62); --glass-b:rgba(255,255,255,.1); --line:rgba(255,255,255,.1);
+  --chip:rgba(255,255,255,.08); --sky:#0d1424; --acc:#6c9bff; --acc-soft:rgba(108,155,255,.16);
+  --ok:#4fd1a1; --warn:#f0b35a; --bad:#ff8577;
+  --shadow:0 10px 34px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--sky);color:var(--ink);font:13px/1.4 var(--f-b);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+button:focus-visible,input:focus-visible,tr:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+#app{position:relative;height:100%;overflow:hidden;user-select:none;-webkit-user-select:none}
+#c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#c.drag{cursor:grabbing}
+.glass{background:var(--glass);border:1px solid var(--glass-b);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);box-shadow:var(--shadow);border-radius:16px;transition:background .6s,border-color .6s,color .6s}
+.num{font-variant-numeric:tabular-nums}
+.eyebrow{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);font-weight:600}
+
+/* top bar */
+#top{position:absolute;top:12px;left:var(--gl);right:var(--gr);height:52px;display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;z-index:30}
+.logo{display:flex;align-items:center;gap:9px;flex:none}
+.logo svg{width:26px;height:26px}
+.logo b{font:700 16px/1 var(--f-d);letter-spacing:-.01em;display:block}
+.logo span{font-size:10.5px;color:var(--mute);display:block;margin-top:3px;white-space:nowrap}
+.search{position:relative;flex:1 1 150px;max-width:230px;min-width:0}
+.search input{width:100%;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--chip);padding:0 10px 0 30px;outline-offset:0}
+.search input::placeholder{color:var(--mute)}
+.search svg{position:absolute;left:9px;top:9px;width:16px;height:16px;stroke:var(--mute)}
+.drop{position:absolute;top:calc(100% + 8px);left:0;min-width:240px;padding:6px;z-index:40;max-height:60vh;overflow:auto}
+.drop.right{left:auto;right:0}
+.drop button{display:flex;width:100%;gap:8px;align-items:baseline;text-align:left;padding:7px 9px;border-radius:9px}
+.drop button:hover,.drop button.on{background:var(--acc-soft)}
+.drop button small{color:var(--mute);margin-left:auto;white-space:nowrap}
+.drop .empty{padding:9px;color:var(--mute)}
+.areas{display:flex;gap:2px;padding:3px;border-radius:11px;background:var(--chip);flex:none}
+.areas button{height:28px;padding:0 10px;border-radius:8px;color:var(--ink2);font-weight:500;white-space:nowrap}
+.areas button:hover{color:var(--ink)}
+.areas button.on{background:var(--acc);color:#fff}
+.sp{flex:1 1 0}
+.tb{position:relative;flex:none}
+.ib{height:34px;min-width:34px;padding:0 9px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;justify-content:center;background:var(--chip);font-weight:500;white-space:nowrap}
+.ib:hover{background:var(--acc-soft)}
+.ib svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:8px;background:var(--acc);color:#fff;font-size:10px;font-weight:600;display:grid;place-items:center;padding:0 4px}
+.clock{font:600 14px/1 var(--f-d);padding:0 4px;flex:none;text-align:right}
+.clock small{display:block;font:500 10px/1 var(--f-b);color:var(--mute);margin-top:3px}
+.user{width:34px;height:34px;border-radius:50%;background:var(--acc);color:#fff;font:600 12px/34px var(--f-d);text-align:center;flex:none}
+.alert{display:block;padding:8px 9px;border-radius:9px;border-bottom:1px solid var(--line);width:300px;max-width:76vw}
+.alert:last-child{border:0}
+.alert time{color:var(--mute);font-size:11px;display:block}
+.alert i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--acc);margin-right:6px}
+.alert i.warn{background:var(--warn)} .alert i.ok{background:var(--ok)}
+
+/* KPI cards */
+#kpis{position:absolute;top:76px;left:var(--gl);display:flex;gap:10px;z-index:20}
+.kpi{padding:12px 14px;width:196px}
+.kpi .v{font:700 25px/1.1 var(--f-d);letter-spacing:-.02em;margin:5px 0 3px}
+.kpi .d{font-size:11.5px;color:var(--ink2);white-space:nowrap}
+.kpi .d b{color:var(--acc);font-weight:600}
+#kpis{cursor:pointer}
+#kpis.col .kpi{width:auto;padding:8px 13px;display:flex;align-items:baseline;gap:9px;border-radius:12px;flex:none}
+#kpis.col .kpi .v{font-size:15px;margin:0}
+#kpis.col .kpi .d,#kpis.col .kpi .bar{display:none}
+.bar{height:5px;border-radius:3px;background:var(--chip);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:3px;transition:width .6s}
+
+/* detail panel */
+#detail{position:absolute;top:76px;right:var(--gr);width:296px;padding:14px;z-index:25;max-height:calc(100% - 76px - 282px);overflow:auto}
+#detail h2{font:700 18px/1.2 var(--f-d);margin:4px 0 2px;letter-spacing:-.01em;padding-right:26px;text-wrap:balance}
+#detail .sub{color:var(--ink2);margin-bottom:10px}
+#detail .x{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:8px;background:var(--chip);font-size:15px;line-height:26px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;background:var(--acc-soft);color:var(--acc);font-weight:600;font-size:11.5px}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.idle{background:var(--chip);color:var(--ink2)} .pill.ok{background:rgba(15,138,95,.13);color:var(--ok)} .pill.warn{background:rgba(176,106,7,.13);color:var(--warn)}
+.rows{margin:10px 0 0;display:grid;grid-template-columns:auto 1fr;gap:7px 12px}
+.rows dt{color:var(--mute)} .rows dd{margin:0;text-align:right;font-weight:500;min-width:0;overflow-wrap:anywhere}
+.intro p{margin:6px 0 0;color:var(--ink2)}
+.legend{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.legend li{display:flex;gap:8px;align-items:center;color:var(--ink2)}
+.legend kbd{font:600 10.5px var(--f-b);background:var(--chip);border-radius:6px;padding:2px 6px;color:var(--ink);white-space:nowrap}
+
+/* tracker */
+#tracker{position:absolute;left:var(--gl);bottom:14px;width:296px;padding:14px;z-index:20}
+#tracker h3{font:600 14px/1.2 var(--f-d);margin:3px 0 1px}
+#tracker .f{color:var(--ink2);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.steps{list-style:none;margin:10px 0 0;padding:0}
+.steps li{display:flex;align-items:center;gap:9px;padding:4px 0;position:relative;color:var(--mute)}
+.steps li::before{content:"";width:11px;height:11px;border-radius:50%;border:2px solid var(--line);flex:none;background:transparent;z-index:1}
+.steps li:not(:last-child)::after{content:"";position:absolute;left:5px;top:18px;width:1.5px;height:14px;background:var(--line)}
+.steps li.done{color:var(--ink2)} .steps li.done::before{background:var(--acc);border-color:var(--acc)}
+.steps li.now{color:var(--ink);font-weight:600} .steps li.now::before{border-color:var(--acc);box-shadow:0 0 0 4px var(--acc-soft);animation:pulse 1.4s infinite}
+.steps time{margin-left:auto;font-weight:500}
+@keyframes pulse{50%{box-shadow:0 0 0 7px transparent}}
+
+/* table */
+#table{position:absolute;left:calc(var(--gl) + 308px);right:var(--gr);bottom:14px;height:252px;padding:10px 6px 6px;z-index:20;display:flex;flex-direction:column;max-width:780px}
+.tabs{display:flex;gap:4px;padding:0 8px 8px;align-items:center}
+.tabs button{padding:5px 11px;border-radius:8px;color:var(--ink2);font-weight:500}
+.tabs button.on{background:var(--acc-soft);color:var(--acc);font-weight:600}
+.tabs .live{margin-left:auto;font-size:11px;color:var(--mute);display:flex;align-items:center;gap:6px}
+.tabs .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+.tw{overflow:auto;flex:1;min-height:0}
+#table.col{height:auto;padding-bottom:2px} #table.col .tw{display:none}
+.tabs .tg{margin-left:8px;background:var(--chip);color:var(--ink)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{position:sticky;top:0;text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);font-weight:600;padding:5px 10px;background:transparent;white-space:nowrap}
+td{padding:5px 10px;border-top:1px solid var(--line);white-space:nowrap}
+tbody tr{cursor:pointer} tbody tr:hover td,tbody tr.sel td{background:var(--acc-soft)}
+td .pill{font-size:11px;padding:2px 8px}
+td:first-child{font-weight:600}
+
+#label{position:absolute;left:0;top:0;z-index:15;pointer-events:none;padding:5px 10px;border-radius:10px;font-weight:600;white-space:nowrap;transform:translate(-50%,-100%);will-change:transform}
+#label small{font-weight:500;color:var(--ink2);margin-left:6px}
+#hint{position:absolute;right:var(--gr);bottom:250px;z-index:10;padding:6px 11px;border-radius:99px;font-size:11.5px;color:var(--ink2);pointer-events:none}
+#mbar{display:none}
+#load{position:absolute;inset:0;display:grid;place-items:center;background:var(--sky);z-index:99;font:600 15px var(--f-d);color:var(--ink2);transition:opacity .5s}
+
+@media (max-width:1180px){ .logo span{display:none} .clock small{display:none} .areas button{padding:0 8px} .user{display:none} }
+@media (max-width:1020px){
+  #top{height:auto;flex-wrap:wrap;padding:9px 10px;row-gap:8px}
+  .areas{order:9;flex:1 1 100%;overflow-x:auto;scrollbar-width:none} .areas::-webkit-scrollbar{display:none}
+  #kpis{top:118px} #detail{top:118px;max-height:calc(100% - 118px - 282px)}
+}
+@media (max-width:760px){
+  #top{top:8px}
+  .logo b{font-size:15px} .search{flex:1 1 60px} .search:focus-within{position:absolute;left:10px;right:10px;top:9px;max-width:none;z-index:5} .search:focus-within input{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)} .clock{display:none} .ib span{display:none}
+  #kpis{top:112px;right:0;left:0;padding:0 var(--gr) 4px var(--gl);overflow-x:auto;scrollbar-width:none} #kpis::-webkit-scrollbar{display:none}
+  .kpi{flex:none;width:158px;padding:10px 12px} .kpi .v{font-size:20px}
+  #hint{display:none}
+  #mbar{display:flex;position:absolute;left:var(--gl);right:var(--gr);bottom:max(10px, env(safe-area-inset-bottom, 0px));z-index:35;padding:4px;gap:4px}
+  #mbar button{flex:1;height:36px;border-radius:11px;font-weight:600;color:var(--ink2)}
+  #mbar button.on{background:var(--acc);color:#fff}
+  #tracker,#table,#detail{left:var(--gl);right:var(--gr);width:auto;max-width:none;top:auto;bottom:calc(max(10px, env(safe-area-inset-bottom, 0px)) + 54px);max-height:46%;transform:translateY(calc(100% + 80px));transition:transform .35s cubic-bezier(.2,.8,.2,1);z-index:32}
+  #table,#table.col{height:46%;padding-bottom:6px} #table.col .tw{display:block} .tabs .tg{display:none}
+  #detail::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:var(--line);margin:-4px auto 8px}
+  .show{transform:none !important}
+}
+@media (prefers-reduced-motion:reduce){ .steps li.now::before,.tabs .live::before{animation:none} }
+
+/* earth-layer additions */
+.sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0}
+#ltags{position:absolute;inset:0;z-index:12;pointer-events:none;transition:opacity .3s}
+.ltag{position:absolute;left:0;top:0;pointer-events:auto;padding:5px 11px 5px 9px;border-radius:99px;font:600 12.5px var(--f-d);white-space:nowrap;display:flex;align-items:center;gap:7px;will-change:transform}
+.ltag i{width:10px;height:10px;border-radius:50%}
+.ltag small{font:500 10.5px var(--f-b);color:var(--mute)}
+.ltag:hover{background:var(--glass-b)}
+.legend .lrow{display:flex;align-items:center;gap:9px;width:100%;padding:5px 8px;border-radius:9px;text-align:left}
+.legend .lrow:hover,.arow:hover{background:var(--acc-soft)}
+.legend .lrow i{width:11px;height:11px;border-radius:50%;flex:none}
+.legend .lrow span{margin-left:auto;color:var(--mute);font-size:11.5px}
+.eyebrow.sec{margin:14px 0 5px}
+.arow{display:block;width:100%;text-align:left;padding:6px 8px;border-radius:9px;margin:0 -8px;width:calc(100% + 16px)}
+.arow b{display:block;font-weight:600}
+.arow span{display:block;color:var(--ink2);font-size:12px}
+.arow.back{margin-top:10px;border-top:1px solid var(--line);border-radius:0 0 9px 9px}
+.jobs{margin:0;padding:0 0 0 16px;color:var(--ink2);display:grid;gap:4px}
+.jobs li.now{color:var(--acc);font-weight:600}
+#detail{max-height:calc(100% - 76px - 290px)}
+@media (max-width:1020px){#detail{max-height:calc(100% - 118px - 290px)}}
+@media (max-width:760px){#detail{max-height:52%} .ltag small{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="c" aria-label="Live 3D view of the consent access layers"></canvas>
+  <div id="ltags"></div>
+  <div id="label" class="glass" hidden></div>
+
+  <header id="top" class="glass">
+    <div class="logo">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 2.5 4.5 6v7.6c0 5.6 3.9 9.9 9.5 11.9 5.6-2 9.5-6.3 9.5-11.9V6L14 2.5Z" fill="#2563eb"/><path d="m9.6 14.2 3.1 3.1 5.9-6.2" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><b>DigiConsent</b><span>Access layers · who protects the user</span></div>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search layers, agents, stations" autocomplete="off" aria-label="Search any object">
+      <div id="qres" class="drop glass" hidden></div>
+    </div>
+    <nav class="areas" id="areas" aria-label="Layers"></nav>
+    <div class="sp"></div>
+    <div class="tb">
+      <button class="ib" id="seasonBtn" aria-haspopup="true"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.2 7.8 7.5 9 4.3-1.2 7.5-4.4 7.5-9V6L12 3Z"/></svg><span id="seasonLbl">Normal day</span></button>
+      <div id="seasonMenu" class="drop right glass" hidden></div>
+    </div>
+    <div class="clock num"><span id="clk">--:--:--</span><small id="dte"></small></div>
+    <div class="tb">
+      <button class="ib" id="alertBtn" aria-label="Alerts"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7 2.5 7h-17S6 15 6 9ZM10 20a2.2 2.2 0 0 0 4 0"/></svg><b class="badge" id="alertN" hidden>0</b></button>
+      <div id="alertMenu" class="drop right glass" hidden></div>
+    </div>
+    <button class="ib" id="dn" aria-label="Switch day and night"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>
+    <div class="user" title="Ananya Rao, Onboarding RM">AR</div>
+  </header>
+
+  <div id="kpis" class="col" role="button" tabindex="0" aria-expanded="false" title="Show or hide KPI details">
+    <div class="kpi glass"><div class="eyebrow">Spam blocked today</div><div class="v num" id="k1">0</div><div class="d num"><b id="k1d">0</b> stopped before the user</div></div>
+    <div class="kpi glass"><div class="eyebrow">Consented delivered</div><div class="v num" id="k2">0</div><div class="d num"><b id="k2d">0%</b> of traffic had consent</div></div>
+    <div class="kpi glass"><div class="eyebrow">Active consents</div><div class="v num" id="k3">0</div><div class="d num"><b id="k3d">0</b> revoked today</div></div>
+  </div>
+
+  <aside id="detail" class="glass" aria-live="off"></aside>
+
+  <section id="tracker" class="glass">
+    <div class="eyebrow">Access chain</div>
+    <h3 id="trT">Chain</h3><div class="f num" id="trF"></div>
+    <ol class="steps" id="trS"></ol>
+  </section>
+
+  <section id="table" class="glass col">
+    <div class="tabs" id="tabs"></div>
+    <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
+  </section>
+
+  <nav id="mbar" class="glass"><button data-m="tracker">Chain</button><button data-m="table">Live table</button><button data-m="detail">Details</button></nav>
+  <div id="load">Building the layers…</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+let seed = 7741;
+const rnd = () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1)), pick = a => a[Math.floor(rnd() * a.length)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), lerp = (a, b, t) => a + (b - a) * t;
+const IN = n => Math.round(n).toLocaleString('en-IN');
+const CR = n => (n / 1e7).toFixed(2) + ' Cr';
+const LK = n => n >= 1e7 ? CR(n) : n >= 1e5 ? (n / 1e5).toFixed(2) + ' L' : IN(n);
+const hms = ms => new Date(ms).toLocaleTimeString('en-GB');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const TAU = Math.PI * 2, mod = a => ((a % TAU) + TAU) % TAU;
+
+function start() {
+if (!window.THREE) { $('#load').textContent = 'Could not load the 3D engine. Check your connection and reload.'; return; }
+const T3 = THREE;
+const canvas = $('#c'), app = $('#app');
+const isMobile = () => innerWidth <= 760;
+const renderer = new T3.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile() ? 1.5 : 2));
+renderer.outputEncoding = T3.sRGBEncoding;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = T3.PCFSoftShadowMap;
+const scene = new T3.Scene(); scene.background = new T3.Color(0xE9EEF5);
+const camera = new T3.PerspectiveCamera(28, 1, 5, 2400);
+const hemi = new T3.HemisphereLight(0xffffff, 0xC2CBDC, .44); scene.add(hemi);
+const sun = new T3.DirectionalLight(0xFFF3E0, .56); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0006; sun.shadow.normalBias = .5;
+const sc = sun.shadow.camera; sc.left = -75; sc.right = 75; sc.top = 75; sc.bottom = -75; sc.near = 20; sc.far = 500; sc.updateProjectionMatrix();
+sun.position.set(120, 190, 110); scene.add(sun, sun.target);
+const coreLight = new T3.PointLight(0xFFC65A, 0, 90, 1.6); coreLight.position.set(0, 9, 0); scene.add(coreLight);
+
+/* ───────── materials + helpers ───────── */
+const mats = {};
+const M = (c, o) => { const k = c + JSON.stringify(o || 0); return mats[k] || (mats[k] = new T3.MeshStandardMaterial(Object.assign({ color: c, roughness: .88, metalness: 0, flatShading: true }, o))); };
+const mWhite = M(0xF8F6F1), mClay = M(0xEAE6DE), mGrey = M(0xC6CBD6), mDark = M(0x3D4456), mBlue = M(0x2563EB, { roughness: .55 });
+const mWin = new T3.MeshStandardMaterial({ color: 0x9FC0F5, roughness: .25, emissive: 0xFFE0A8, emissiveIntensity: 0, flatShading: true });
+const mScreen = new T3.MeshStandardMaterial({ color: 0x4C9BEA, emissive: 0x4C9BEA, emissiveIntensity: .45 });
+const mGlass = new T3.MeshStandardMaterial({ color: 0xA9C8FF, roughness: .12, metalness: .3, transparent: true, opacity: .75 });
+const mHit = new T3.MeshBasicMaterial({ visible: false });
+const gBox = new T3.BoxGeometry(1, 1, 1), gSph = new T3.SphereGeometry(1, 14, 10);
+function box(w, h, d, m, x, y, z, p, cast = true) { const o = new T3.Mesh(gBox, m); o.scale.set(w, h, d); o.position.set(x, y + h / 2, z); o.castShadow = cast; o.receiveShadow = true; p.add(o); return o; }
+function cyl(r1, r2, h, seg, m, x, y, z, p) { const o = new T3.Mesh(new T3.CylinderGeometry(r1, r2, h, seg), m); o.position.set(x, y + h / 2, z); o.castShadow = true; o.receiveShadow = true; p.add(o); return o; }
+function sph(r, m, x, y, z, p) { const o = new T3.Mesh(gSph, m); o.scale.setScalar(r); o.position.set(x, y, z); o.castShadow = true; p.add(o); return o; }
+const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'), r = g.createRadialGradient(32, 32, 0, 32, 32, 32); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(.35, 'rgba(255,255,255,.45)'); r.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = r; g.fillRect(0, 0, 64, 64); return new T3.CanvasTexture(c); })();
+function textSprite(txt, h = 1.7) {
+  const c = document.createElement('canvas'), g = c.getContext('2d'), f = '600 34px "Space Grotesk",Inter,system-ui,sans-serif'; g.font = f; const w = Math.ceil(g.measureText(txt).width) + 36; c.width = w; c.height = 64;
+  g.fillStyle = 'rgba(255,255,255,.94)'; const r = 18; g.beginPath(); g.moveTo(r, 2); g.arcTo(w - 2, 2, w - 2, 62, r); g.arcTo(w - 2, 62, 2, 62, r); g.arcTo(2, 62, 2, 2, r); g.arcTo(2, 2, w - 2, 2, r); g.fill();
+  g.font = f; g.fillStyle = '#0f1b3d'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, w / 2, 34);
+  const t = new T3.CanvasTexture(c); t.encoding = T3.sRGBEncoding; const s = new T3.Sprite(new T3.SpriteMaterial({ map: t, transparent: true, depthWrite: false })); s.scale.set(w / 64 * h, h, 1); s.renderOrder = 5; return s;
+}
+
+/* ───────── data: the five access layers ───────── */
+const TELCOS = ['Airtel', 'Jio', 'VIL', 'BSNL'], PARTNERS = ['Karix', 'Value First', 'Tata', 'Route Mobile'], BRANDS = ['HDFC Bank', 'HDFC Life', 'HDFC ERGO'];
+const LAYERS = [
+  { key: 'reg', name: 'Regulator', geo: 'Crust', ri: 50, ro: 60, col: 0x8C6C54, side: 0x6C513F, hex: '#8c6c54', who: 'TRAI',
+    role: 'Sets the rules, invites the channel owners and watches the whole ecosystem.', invites: 'Channel owners: Airtel, Jio, VIL, BSNL',
+    blocks: 'Unregistered sender, no DLT header', does: ['Invite channel owners', 'Publish consent regulation', 'Telco 360, Enterprise 360 and Subscribers 360 oversight', 'Complaints 360 and revocation watch'],
+    stations: [['Regulation desk', 'court'], ['Operator invites', 'office'], ['Telco 360', 'desk'], ['Enterprise 360', 'desk'], ['Complaints 360', 'court'], ['Revocation watch', 'office']],
+    agents: [['Policy agent', [[0, 'Publishing a consent regulation', 5], [2, 'Checking {t} compliance', 4], [3, 'Scoring the trust of {b}', 4]]],
+      ['Invite agent', [[1, 'Inviting {t} as a channel owner', 4, [1, 'invite']], [5, 'Confirming {t} is operational', 4]]],
+      ['Audit agent', [[3, 'Auditing consent uploads from {b}', 4], [2, 'Auditing scrub logs at {t}', 4], [5, 'Checking revocations reached every operator', 4]]],
+      ['Oversight agent', [[4, 'Reviewing escalated complaints', 5], [0, 'Sending a penalty notice to {t}', 4, [1, 'notice']]]]] },
+  { key: 'co', name: 'Channel owners', geo: 'Upper mantle', ri: 38, ro: 50, col: 0xD54E36, side: 0xA83A27, hex: '#d54e36', who: 'Airtel, Jio, VIL, BSNL',
+    role: 'The operators. They invite GTM partners, assign rate cards, scrub traffic and handle complaints.', invites: 'GTM partners',
+    blocks: 'Scrub failed: no consent on file', does: ['Declare channel coverage: SMS, Voice, RCS', 'Invite GTM partners', 'Create and assign rate cards for migration, acquisition and scrubbing', 'Scrub every message against consent', 'Handle subscriber complaints'],
+    stations: [['Airtel', 'tower'], ['Jio', 'tower'], ['VIL', 'tower'], ['BSNL', 'tower'], ['Rate card office', 'office'], ['Complaint desk', 'desk']],
+    agents: [['Partner invite agent', [[4, 'Inviting {p} as a GTM partner', 4, [2, 'invite']], [0, 'Declaring coverage: SMS, Voice, RCS', 4]]],
+      ['Rate card agent', [[4, 'Creating a rate card for migration, acquisition and scrubbing', 5], [2, 'Agreeing rates with VIL', 3], [4, 'Assigning the rate card to {p}', 4, [2, 'rate card']], [3, 'Agreeing rates with BSNL', 3]]],
+      ['Scrub agent', [[0, 'Scrubbing a campaign on Airtel', 3], [1, 'Scrubbing a campaign on Jio', 3], [2, 'Scrubbing a campaign on VIL', 3], [3, 'Scrubbing a campaign on BSNL', 3]]],
+      ['Complaint agent', [[5, 'Resolving a traffic complaint', 5], [1, 'Tracing the sender on Jio', 3], [5, 'Escalating a repeat offender', 4, [0, 'complaint']], [1, 'Closing the complaint with Jio', 3]]]] },
+  { key: 'gtm', name: 'GTM partners', geo: 'Lower mantle', ri: 26, ro: 38, col: 0xE9722F, side: 0xB95620, hex: '#e9722f', who: 'Karix, Value First, Tata, Route Mobile',
+    role: 'The aggregators. They accept operator rates, build rate cards for enterprises and help them when needed.', invites: 'Enterprises they serve',
+    blocks: 'Template or sender ID mismatch', does: ['Accept the invite and confirm entity KYC', 'Accept channel owner rates', 'Create rate cards for enterprises', 'Upload the sender list', 'Assist enterprises'],
+    stations: [['Karix', 'depot'], ['Value First', 'depot'], ['Tata', 'depot'], ['Route Mobile', 'depot'], ['Rate studio', 'office'], ['Enterprise help desk', 'desk']],
+    agents: [['Rate acceptance agent', [[4, 'Accepting {t} rates', 4, [1, 'accepted']], [0, 'Confirming entity KYC', 4]]],
+      ['Rate card builder', [[4, 'Building an enterprise rate card', 5], [1, 'Checking Value First margins', 3], [4, 'Sending the rate card to {b}', 4, [3, 'rate card']], [3, 'Checking Route Mobile margins', 3]]],
+      ['Assist agent', [[5, 'Helping {b} map templates', 5], [2, 'Fixing a failed delivery', 4], [5, 'Uploading the sender list', 4], [2, 'Rechecking Tata delivery receipts', 3]]],
+      ['Delivery agent', [[0, 'Routing consent requests', 3], [1, 'Routing consent requests', 3], [3, 'Routing consent requests', 3]]]] },
+  { key: 'ent', name: 'Enterprises', geo: 'Outer core', ri: 12, ro: 26, col: 0xF4A12A, side: 0xC57C17, hex: '#f4a12a', who: 'HDFC Bank, HDFC Life, HDFC ERGO',
+    role: 'The brands. They onboard from the registrar invite with agentic onboarding, then migrate and acquire consents.', invites: 'Their own team',
+    blocks: 'Brand or LOB not approved, consent expired', does: ['Agentic onboarding: agreements, business profile, team', 'Add GTM partners and accept rate cards', 'Manage brands, LOBs and templates', 'Migrate legacy consents', 'Acquire new consents'],
+    stations: [['Agentic onboarding', 'office'], ['Brands and LOBs', 'office'], ['Templates', 'desk'], ['GTM partners', 'depot'], ['Migration', 'depot'], ['Consent vault', 'vault']],
+    agents: [['Migration Manager', [[0, 'Accepting agreements from the registrar invite', 4], [4, 'Uploading legacy consents', 5], [0, 'Filling the business profile from DLT, GSTIN and MCA', 5], [5, 'Sealing migrated consents', 4]]],
+      ['Estate agent', [[1, 'Drafting brands and LOBs from DLT headers', 5], [2, 'Mapping templates to lines of business', 5]]],
+      ['Partner agent', [[3, 'Adding {p} as a GTM partner', 4], [2, 'Checking template rates', 3], [3, 'Accepting the {p} rate card', 4, [2, 'accepted']], [1, 'Linking partners to lines of business', 3]]],
+      ['Acquisition agent', [[5, 'Preparing a consent request', 3], [4, 'Checking who is already migrated', 3], [5, 'Asking subscribers for consent', 4, [4, 'consent request']], [4, 'Skipping subscribers already migrated', 3]]]] },
+  { key: 'user', name: 'Users', geo: 'Inner core', ri: 0, ro: 12, col: 0xFFD54A, side: 0xD9AC1E, hex: '#e0b000', who: 'Every subscriber',
+    role: 'The person everything protects. They see who claims their consent, then give it, revoke it, complain or report.', invites: 'Nobody. They only decide',
+    blocks: 'User revoked or blocked the brand', does: ['See consents claimed by enterprises', 'Give or revoke consent', 'Complain or report a brand or LOB', 'Manage it all by voice agent, SMS, PWA or WhatsApp'],
+    stations: [['Voice agent', 'voice'], ['SMS', 'kiosk'], ['PWA', 'kiosk'], ['WhatsApp', 'kiosk']],
+    agents: [['Notification agent', [[1, 'Telling the user which brands claim consent', 4], [3, 'Sending a WhatsApp reminder', 4]]],
+      ['Consent agent', [[2, 'User gives consent to {b}', 4, [3, 'consent']], [0, 'User revokes consent by voice', 4, [3, 'revoke']], [1, 'Opt-out by SMS applied at once', 3, [1, 'revoke']], [3, 'User reviews consents on WhatsApp', 3]]],
+      ['Complaint agent', [[2, 'Filing a complaint against a brand', 5, [1, 'complaint']], [0, 'Reporting a line of business by voice', 4, [0, 'complaint']]]]] }
+];
+const TOK = { invite: 0xFFFFFF, 'rate card': 0xFFE08A, accepted: 0x7EE0B0, 'consent request': 0x4C9BEA, consent: 0x4C9BEA, revoke: 0xFF8A5B, complaint: 0xFF5D5D, notice: 0xC9B6FF };
+const K = { blocked: 18412600, delivered: 61204300, total: 0, active: 42186340, revoked: 3214 };
+const alerts = []; let unread = 0; const feed = [];
+function alertPush(text, tone) { alerts.unshift({ text, tone: tone || '', t: Date.now() }); if (alerts.length > 9) alerts.pop(); unread++; uiAlerts(); }
+function log(li, text) { feed.unshift({ t: Date.now(), li, text }); if (feed.length > 40) feed.pop(); }
+
+/* ───────── the half earth ───────── */
+const ents = [], pickables = [];
+function ent(e) { e.id = ents.length; ents.push(e); if (e.obj) { e.obj.traverse(o => o.userData.ent = e); pickables.push(e.obj); } return e; }
+const _v = new T3.Vector3();
+(function earth() {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
+  const gr = g.createLinearGradient(0, 0, 0, 512); gr.addColorStop(0, '#3f8fe0'); gr.addColorStop(1, '#2f6fc4'); g.fillStyle = gr; g.fillRect(0, 0, 1024, 512);
+  for (let k = 0; k < 16; k++) { let x = rnd() * 1024, y = 40 + rnd() * 430; g.fillStyle = k % 3 ? '#63b56c' : '#86c97c'; for (let i = 0; i < 46; i++) { const r = 10 + rnd() * 26; for (const ox of [-1024, 0, 1024]) { g.beginPath(); g.arc(x + ox, y, r, 0, TAU); g.fill(); } x += rnd() * 44 - 22; y += rnd() * 30 - 15; } }
+  const tex = new T3.CanvasTexture(c); tex.encoding = T3.sRGBEncoding; tex.wrapS = T3.RepeatWrapping;
+  const bowl = new T3.Mesh(new T3.SphereGeometry(61, 56, 24, 0, TAU, Math.PI / 2, Math.PI / 2), new T3.MeshStandardMaterial({ map: tex, roughness: .85 })); bowl.position.y = -.05; scene.add(bowl);
+  const rim = new T3.Mesh(new T3.TorusGeometry(61, .9, 8, 96), new T3.MeshStandardMaterial({ color: 0x4C9BEA, roughness: .5 })); rim.rotation.x = Math.PI / 2; scene.add(rim);
+  const magma = new T3.Mesh(new T3.CircleGeometry(60, 64), new T3.MeshBasicMaterial({ color: 0xFF7A2E })); magma.rotation.x = -Math.PI / 2; magma.position.y = -7.6; scene.add(magma);
+})();
+const dome = new T3.Mesh(new T3.SphereGeometry(66, 40, 16, 0, TAU, 0, Math.PI / 2), new T3.MeshBasicMaterial({ color: 0x4C9BEA, transparent: true, opacity: .05, depthWrite: false, side: T3.DoubleSide })); dome.renderOrder = 4; scene.add(dome);
+let domeF = 0;
+
+const stationB = {
+  office(g) { box(3.4, 3, 2.6, mWhite, 0, 0, 0, g); box(3.5, .7, 2.7, mWin, 0, 1.5, 0, g, false); box(3.8, .35, 3, mClay, 0, 3, 0, g); box(.9, 1.3, .1, mBlue, 0, 0, -1.34, g, false); return 4.6; },
+  desk(g) { box(2.6, 1.1, 1.5, mWhite, 0, 0, 0, g); box(1.5, 1.2, .16, mDark, 0, 1.1, .3, g); box(1.3, .95, .05, mScreen, 0, 1.22, .2, g, false); return 3.4; },
+  court(g) { box(3.8, .5, 3, mClay, 0, 0, 0, g); for (const x of [-1.4, -.47, .47, 1.4]) cyl(.2, .2, 2.4, 8, mWhite, x, .5, -1, g); box(3.4, 2.4, 1.8, mWhite, 0, .5, .4, g); box(3.9, .5, 3.1, mWhite, 0, 2.9, 0, g); box(2.6, .5, 3.1, mClay, 0, 3.4, 0, g); return 5.2; },
+  tower(g) { const m = cyl(.18, .7, 7.5, 4, mGrey, 0, 0, .3, g); m.rotation.y = Math.PI / 4; for (let k = 0; k < 3; k++) { const a = k * 2.094; box(.2, 1.3, .6, mWhite, Math.sin(a) * .5, 6, .3 + Math.cos(a) * .5, g).rotation.y = a + Math.PI / 2; } box(.3, .3, .3, mScreen, 0, 7.5, .3, g, false); box(2.2, 1.6, 1.6, mWhite, 0, 0, -1, g); box(2.4, .25, 1.8, mClay, 0, 1.6, -1, g); return 9; },
+  depot(g) { box(4, 2.3, 2.7, mWhite, 0, 0, 0, g); box(4.2, .3, 2.9, mClay, 0, 2.3, 0, g); box(1.8, 1.7, .1, mBlue, -.7, 0, -1.4, g, false); box(1, .7, .1, mWin, 1.2, 1, -1.4, g, false); box(1, .8, .8, mClay, 1.3, 0, -2, g); return 4; },
+  vault(g) { cyl(1.7, 1.9, 2.4, 14, mWhite, 0, 0, 0, g); cyl(1.85, 1.85, .35, 14, mBlue, 0, 2.2, 0, g); const d = new T3.Mesh(new T3.SphereGeometry(1.5, 14, 6, 0, TAU, 0, Math.PI / 2), mGlass); d.position.y = 2.55; d.scale.y = .6; g.add(d); return 4.6; },
+  kiosk(g) { box(1.3, 2.3, .28, mDark, 0, .3, 0, g).rotation.x = .12; box(1.1, 1.9, .05, mScreen, 0, .5, -.17, g, false).rotation.x = .12; box(1.5, .3, .8, mClay, 0, 0, 0, g); return 3.6; },
+  voice(g) { cyl(.5, .7, 1.8, 10, mWhite, 0, 0, 0, g); cyl(.9, .35, .9, 10, mDark, 0, 1.8, 0, g); sph(.28, mScreen, 0, 2.9, 0, g); return 4; }
+};
+const walls = [];
+LAYERS.forEach((L, i) => {
+  const g = L.g = new T3.Group(); scene.add(g); L.lift = 0; L.liftGoal = 0; L.blocked = ri(2, 6) * 1e6 * (1 + (4 - i) * .35); L.jobs = ri(400, 2200); L.i = i;
+  L.rm = (L.ri + L.ro) / 2; L.lane = i === 4 ? 6.3 : L.ri + 3.1; L.sr = i === 4 ? 10 : L.ro - 3.3;
+  L.mat = new T3.MeshStandardMaterial({ color: L.col, roughness: .86, emissive: L.col, emissiveIntensity: 0 });
+  const top = new T3.Mesh(L.ri ? new T3.RingGeometry(L.ri, L.ro, 96, 1) : new T3.CircleGeometry(L.ro, 64), L.mat); top.rotation.x = -Math.PI / 2; top.receiveShadow = true; g.add(top);
+  const sm = new T3.MeshStandardMaterial({ color: L.side, roughness: .9, side: T3.DoubleSide });
+  const o = new T3.Mesh(new T3.CylinderGeometry(L.ro - .03, L.ro - .03, 8, 96, 1, true), sm); o.position.y = -4; g.add(o);
+  if (L.ri) { const n = new T3.Mesh(new T3.CylinderGeometry(L.ri + .03, L.ri + .03, 8, 96, 1, true), sm); n.position.y = -4; g.add(n); }
+  // lane and texture marks, like the dashes on a classroom cross-section
+  const lane = new T3.Mesh(new T3.RingGeometry(L.lane - .9, L.lane + .9, 96, 1), new T3.MeshStandardMaterial({ color: L.col, roughness: .9 })); lane.material.color.offsetHSL(0, -.05, .08); lane.rotation.x = -Math.PI / 2; lane.position.y = .03; lane.receiveShadow = true; g.add(lane);
+  const dm = new T3.MeshStandardMaterial({ color: L.side, roughness: .9 }), dN = Math.round(L.rm * 1.1), dots = new T3.InstancedMesh(gBox, dm, dN), d = new T3.Object3D();
+  for (let k = 0; k < dN; k++) { const a = rnd() * TAU, r = L.ri + 1 + rnd() * (L.ro - L.ri - 2); if (Math.abs(r - L.lane) < 1.3) { d.scale.setScalar(0); } else d.scale.set(.5 + rnd() * 1.2, .06, .3); d.position.set(Math.sin(a) * r, .04, Math.cos(a) * r); d.rotation.y = a + 1.57; d.updateMatrix(); dots.setMatrixAt(k, d.matrix); } g.add(dots);
+  L.ent = ent({ kind: 'layer', type: L.geo, name: L.name, L, obj: top, rad: 4, hgt: 4, wp: () => _v.set(0, L.lift, 0) });
+  // shield wall on the outer edge
+  const w = new T3.Mesh(new T3.CylinderGeometry(L.ro, L.ro, 3.2, 96, 1, true), new T3.MeshBasicMaterial({ color: 0x4C9BEA, transparent: true, opacity: .06, depthWrite: false, side: T3.DoubleSide })); w.position.y = 1.6; w.renderOrder = 3; scene.add(w); walls.push({ m: w, f: 0, red: 0 });
+  // stations
+  const n = L.stations.length;
+  L.st = L.stations.map(([name, type], k) => { const a = k * TAU / n + i * .55 + .3, sg = new T3.Group(); sg.position.set(Math.sin(a) * L.sr, 0, Math.cos(a) * L.sr); sg.rotation.y = a; g.add(sg);
+    const h = stationB[type](sg); const hb = new T3.Mesh(gBox, mHit); hb.scale.set(4.6, h, 4); hb.position.y = h / 2; sg.add(hb);
+    const sp = textSprite(name, i === 4 ? 1.15 : 1.5); sp.position.set(0, h + 1, 0); sg.add(sp); sp.userData.nopick = true;
+    const s = { kind: 'station', type: 'Station · ' + L.name, name, L, a, obj: sg, sp, occ: null, res: null, visits: ri(40, 400), rad: 3.4, hgt: h + 2.6, wp: () => sg.getWorldPosition(_v),
+      info() { return { sub: 'In the ' + L.name.toLowerCase() + ' world', status: this.occ ? ['In use · ' + this.occ.name, ''] : ['Open', 'idle'], rows: [['Layer', L.name + ' · ' + L.geo], ['Jobs handled today', IN(this.visits)], ['Agents that work here', L.ag.filter(a => a.jobs.some(j => j[0] === k)).map(a => a.name).join(', ') || '—']] }; } };
+    return ent(s); });
+});
+/* the user at the centre */
+const core = new T3.Group(); LAYERS[4].g.add(core);
+const mCore = new T3.MeshStandardMaterial({ color: 0xFFE27A, emissive: 0xFFB52E, emissiveIntensity: .55, roughness: .5 });
+(() => { const d = new T3.Mesh(new T3.SphereGeometry(3.4, 24, 12, 0, TAU, 0, Math.PI / 2), mCore); d.scale.y = .55; core.add(d);
+  const mUser = new T3.MeshStandardMaterial({ color: 0xFFFFFF, emissive: 0xFFF1D0, emissiveIntensity: .35, roughness: .7 }); cyl(.5, .62, 1.5, 10, mUser, 0, 1.75, 0, core); sph(.52, mUser, 0, 3.8, 0, core); box(.42, .7, .08, mDark, .55, 2.5, .45, core).rotation.y = -.5; box(.34, .56, .04, mScreen, .58, 2.57, .5, core, false).rotation.y = -.5;
+  const hb = new T3.Mesh(gBox, mHit); hb.scale.set(5, 5, 5); hb.position.y = 2.5; core.add(hb); })();
+const halo = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xFFC65A, transparent: true, opacity: .5, blending: T3.AdditiveBlending, depthWrite: false })); halo.scale.set(16, 16, 1); halo.position.y = 2.4; core.add(halo); halo.userData.nopick = true;
+const userE = ent({ kind: 'user', type: 'The user', name: 'Subscriber 98••• ••214', L: LAYERS[4], obj: core, rad: 4.2, hgt: 6.5, got: 0, wp: () => core.getWorldPosition(_v),
+  info() { return { sub: 'Protected by five layers', status: ['Protected', 'ok'], rows: [['Consents given', '7 brands, 11 lines of business'], ['Messages received today', IN(4 + this.got % 9) + ', all consented'], ['Spam stopped for this user today', IN(38 + Math.floor(K.total / 40))], ['Manages consent by', 'Voice agent, SMS, PWA, WhatsApp'], ['Operator', 'Jio'], ['DND', 'On']] }; } });
+let corePulse = 0;
+
+/* ───────── agents ───────── */
+const agents = [];
+function mkBot(col) { const g = new T3.Group(); cyl(.5, .58, 1.05, 10, mWhite, 0, .35, 0, g); cyl(.62, .62, .14, 10, mDark, 0, .2, 0, g); sph(.47, mWhite, 0, 1.85, 0, g); box(.2, .26, .62, mDark, .36, 1.74, 0, g, false); box(.05, .5, .05, mDark, 0, 2.25, 0, g, false);
+  sph(.15, new T3.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: .7 }), 0, 2.85, 0, g); const it = box(.55, .55, .55, mWhite, 0, 3.15, 0, g); it.visible = false; g.userData.item = it;
+  const hb = new T3.Mesh(gBox, mHit); hb.scale.set(2.6, 4, 2.6); hb.position.y = 2; g.add(hb); g.scale.setScalar(1.2); return g; }
+const itemMats = {}; const itemMat = k => itemMats[k] || (itemMats[k] = new T3.MeshStandardMaterial({ color: TOK[k], emissive: TOK[k], emissiveIntensity: .35 }));
+let nameIx = 0; const fill = s => s.replace('{t}', TELCOS[nameIx % 4]).replace('{p}', PARTNERS[(nameIx >> 1) % 4]).replace('{b}', BRANDS[nameIx % 3]);
+LAYERS.forEach((L, i) => { L.ag = L.agents.map(([name, jobs], k) => { const obj = mkBot(L.col); L.g.add(obj);
+  const a = { kind: 'agent', type: 'Agent · ' + L.name, name, L, jobs, ji: k % jobs.length, th: k * TAU / L.agents.length + .9, d: 0, state: 'move', t: 0, done: ri(30, 300), task: '', obj, rad: 1.9, hgt: 5, wp: () => obj.getWorldPosition(_v),
+    info() { return { sub: 'Works in the ' + L.name.toLowerCase() + ' world', status: [this.state === 'work' ? 'Working' : this.state === 'move' ? 'On the way' : 'At the station', this.state === 'work' ? '' : 'idle'], rows: [['Doing now', this.task], ['At', L.st[this.jobs[this.ji][0]].name], ['Jobs done today', IN(this.done)], ['Hands off to', [...new Set(this.jobs.filter(j => j[3]).map(j => LAYERS[j[3][0]].name))].join(', ') || 'Stays in this layer']], list: ['Job loop', this.jobs.map((j, x) => [fill(j[1]).replace(/Airtel|Jio|VIL|BSNL|Karix|Value First|Tata(?! M)|Route Mobile|HDFC \w+/, m => m), x === this.ji])] }; } };
+  a.task = fill(jobs[a.ji][1]); agents.push(a); return ent(a); }); L.st.forEach((s, k) => s.users = L.ag.filter(a => a.jobs.some(j => j[0] === k))); });
+function simAgents(dt) {
+  for (const L of LAYERS) { const r = L.lane, A = L.ag, onLane = a => a.state === 'move' || a.state === 'out' || (a.state === 'in' && a.d < .6);
+    for (const a of A) { const job = a.jobs[a.ji], st = L.st[job[0]];
+      if (a.state === 'move') { const da = st.a + (st.users.indexOf(a) ? 1.3 : -1.3) / r, busy = false; let fw = mod(da - a.th); if (fw > TAU - .02) fw = 0;
+        let step = 4.6 / r * dt; if (busy) step = Math.min(step, Math.max(0, fw - 3.6 / r)); else step = Math.min(step, fw);
+        for (const o of A) if (o !== a && onLane(o)) { const gap = mod(o.th - a.th) * r; if (gap < 6) step = Math.min(step, Math.max(0, (gap - 2.4) / r)); }
+        a.th = mod(a.th + step); const f2 = mod(da - a.th); if (f2 * r < .05 || f2 > TAU - .02) { a.th = mod(da); a.state = 'in'; st.occ = a; }
+      } else if (a.state === 'in') { a.d = Math.min(1, a.d + dt * 2.2); if (a.d >= 1) { a.state = 'work'; a.t = job[2]; a.obj.userData.item.visible = false; } }
+      else if (a.state === 'work') { a.t -= dt; if (a.t <= 0) { a.done++; L.jobs++; st.visits++; if (job[3]) { a.obj.userData.item.visible = false; spawnToken(L.i, st.a, job[3][0], job[3][1]); log(L.i, a.name + ': ' + a.task + ' → ' + LAYERS[job[3][0]].name); if (job[3][1] === 'revoke') { K.active--; K.revoked++; } if (job[3][1] === 'consent') K.active += ri(1, 3); }
+          a.state = 'wait'; } }
+      else if (a.state === 'wait') { let free = true; for (const o of A) if (o !== a && onLane(o)) { const g1 = mod(o.th - a.th) * r, g2 = mod(a.th - o.th) * r; if (Math.min(g1, g2) < 2.9) free = false; } if (free) { a.state = 'out'; } }
+      else if (a.state === 'out') { a.d = Math.max(0, a.d - dt * 2.2); if (a.d <= 0) { if (st.occ === a) st.occ = null; a.ji = (a.ji + 1) % a.jobs.length; nameIx++; const nj = a.jobs[a.ji]; a.task = fill(nj[1]); a.state = 'move'; const it = a.obj.userData.item; if (nj[3]) { it.material = itemMat(nj[3][1]); it.visible = true; } } }
+      const rr = r + a.d * 1.75, o = a.obj; o.position.set(Math.sin(a.th) * rr, .1 + Math.abs(Math.sin(time * 5 + a.id)) * (a.state === 'move' ? .16 : .04), Math.cos(a.th) * rr);
+      const yaw = a.d > .3 ? a.th - Math.PI / 2 : a.th; let dy = yaw - o.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); o.rotation.y += dy * Math.min(1, dt * 8);
+    } }
+}
+
+/* ───────── tokens between layers, spam and consented traffic ───────── */
+const gOct = new T3.OctahedronGeometry(.7, 0), tokens = [];
+for (let i = 0; i < 36; i++) { const m = new T3.Mesh(gOct, new T3.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: .5 })); m.visible = false; m.castShadow = true; scene.add(m); tokens.push({ m, on: false }); }
+function spawnToken(from, a, to, kind) { const t = tokens.find(t => !t.on); if (!t) return; const F = LAYERS[from], T = LAYERS[to]; t.on = true; t.u = 0; t.a = a; t.r0 = from === 4 ? 4 : F.sr - 1.5; t.r1 = to === 4 ? 2.5 : T.lane + 2.2; t.F = F; t.T = T; t.dur = .6 + Math.abs(t.r0 - t.r1) / 16; t.m.material.color.setHex(TOK[kind]); t.m.material.emissive.setHex(TOK[kind]); t.m.visible = true; t.toUser = to === 4; }
+const gDart = new T3.ConeGeometry(.5, 1.9, 5); gDart.rotateX(Math.PI / 2);
+const mSpam = new T3.MeshStandardMaterial({ color: 0xE5484D, emissive: 0xE5484D, emissiveIntensity: .5, flatShading: true }), mGood = new T3.MeshStandardMaterial({ color: 0x4C9BEA, emissive: 0x4C9BEA, emissiveIntensity: .6 });
+const darts = []; for (let i = 0; i < 70; i++) { const m = new T3.Mesh(gDart, mSpam); m.visible = false; scene.add(m); darts.push({ m, on: false }); }
+const bursts = []; for (let i = 0; i < 26; i++) { const s = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xff5d5d, transparent: true, opacity: 0, blending: T3.AdditiveBlending, depthWrite: false })); s.visible = false; scene.add(s); bursts.push({ s, age: 9 }); }
+function burst(x, y, z, col, size) { const b = bursts.find(b => b.age > .6); if (!b) return; b.age = 0; b.size = size; b.s.material.color.setHex(col); b.s.position.set(x, y, z); b.s.visible = true; }
+const BLOCKP = [.34, .3, .12, .14, .1];
+function spawnDart(good) { const d = darts.find(d => !d.on); if (!d) return; d.on = true; d.good = good; d.a = rnd() * TAU; d.r = 104 + rnd() * 10; d.y0 = 20 + rnd() * 22; d.m.material = good ? mGood : mSpam; d.m.geometry = good ? gSph : gDart; d.m.scale.setScalar(good ? .55 : 1); d.m.visible = true;
+  let k = 4; if (!good) { let x = rnd(); for (k = 0; k < 4; k++) { x -= BLOCKP[k]; if (x < 0) break; } } d.k = k; d.pass = 0; }
+function simTraffic(dt) {
+  for (const t of tokens) { if (!t.on) continue; t.u += dt / t.dur; const u = Math.min(1, t.u), r = lerp(t.r0, t.r1, u), y = lerp(t.F.lift, t.T.lift, u) + 2.6 + Math.sin(u * Math.PI) * 5; t.m.position.set(Math.sin(t.a) * r, y, Math.cos(t.a) * r); t.m.rotation.y += dt * 5;
+    if (t.u >= 1) { t.on = false; t.m.visible = false; burst(t.m.position.x, y - 1.6, t.m.position.z, t.m.material.color.getHex(), 5); if (t.toUser) corePulse = 1; } }
+  for (const d of darts) { if (!d.on) continue; d.r -= (d.good ? 44 : 52) * dt; const stopR = d.good ? 3 : LAYERS[d.k].ro + .4, y = 2.4 + d.y0 * clamp((d.r - 12) / 100, 0, 1) ** 1.3 + (d.good ? LAYERS[4].lift * clamp(1 - d.r / 14, 0, 1) : 0); const x = Math.sin(d.a) * d.r, z = Math.cos(d.a) * d.r;
+    d.m.position.set(x, y, z); if (!d.good) d.m.lookAt(0, 2.4, 0);
+    if (d.good) while (d.pass < 5 && d.r < LAYERS[d.pass].ro) { walls[d.pass].f = Math.max(walls[d.pass].f, .55); walls[d.pass].red = 0; d.pass++; }
+    if (d.r <= stopR) { d.on = false; d.m.visible = false;
+      if (d.good) { K.delivered += ri(900, 2600); corePulse = 1; userE.got++; burst(0, 4 + LAYERS[4].lift, 0, 0x4C9BEA, 9); }
+      else { const L = LAYERS[d.k], n = ri(600, 2400); L.blocked += n; K.blocked += n; K.total++; walls[d.k].f = 1; walls[d.k].red = 1; if (d.k === 0) domeF = 1; burst(x, y, z, 0xFF5D5D, 7); } } }
+  for (const b of bursts) { if (b.age > .6) { b.s.visible = false; continue; } b.age += dt; const u = b.age / .6; b.s.scale.setScalar(b.size * (.4 + u)); b.s.material.opacity = (1 - u) * .9; }
+  walls.forEach((w, i) => { w.f = Math.max(0, w.f - dt * 1.8); w.m.material.opacity = .05 + w.f * .5; w.m.material.color.setHex(w.red ? 0xFF5D5D : 0x4C9BEA); w.m.position.y = 1.6 + Math.max(LAYERS[i].lift, i ? LAYERS[i - 1].lift : 0); w.m.scale.y = 1 + w.f * .5; });
+  domeF = Math.max(0, domeF - dt * 2); dome.material.opacity = .04 + domeF * .1; dome.material.color.setHex(domeF > .05 ? 0xFF7A7A : 0x4C9BEA);
+  corePulse = Math.max(0, corePulse - dt * 1.6); halo.scale.setScalar(14 + corePulse * 10 + Math.sin(time * 2) * 1); halo.material.opacity = .35 + corePulse * .5 + env.night * .25; mCore.emissiveIntensity = .5 + corePulse * .8 + env.night * .5;
+}
+
+/* ───────── threat level, day and night ───────── */
+const MODES = { quiet: { label: 'Quiet day', note: 'Little spam, mostly consented traffic', spam: .9, good: 1.1 }, normal: { label: 'Normal day', note: 'About one in four messages is spam', spam: 3.2, good: 1.6 }, storm: { label: 'Spam storm', note: 'A bulk sender attacks. Watch the shields', spam: 22, good: 1.6 } };
+const env = { mode: 'normal', night: 0, nightGoal: 0 };
+const cDay = new T3.Color(0xE9EEF5), cNight = new T3.Color(0x070B18), cT = new T3.Color();
+const stars = (() => { const n = 900, p = new Float32Array(n * 3); for (let i = 0; i < n; i++) { const a = rnd() * TAU, e = rnd() * 1.5 - .25, R = 900; p[i * 3] = Math.cos(e) * Math.sin(a) * R; p[i * 3 + 1] = Math.sin(e) * R; p[i * 3 + 2] = Math.cos(e) * Math.cos(a) * R; } const g = new T3.BufferGeometry(); g.setAttribute('position', new T3.BufferAttribute(p, 3)); const s = new T3.Points(g, new T3.PointsMaterial({ color: 0xffffff, size: 2.2, sizeAttenuation: false, transparent: true, opacity: 0, depthWrite: false })); scene.add(s); return s; })();
+let spamT = 0, goodT = 0;
+function simEnv(dt) {
+  env.night += clamp(env.nightGoal - env.night, -dt * .6, dt * .6); const n = env.night, sn = n * n * (3 - 2 * n);
+  scene.background.copy(cT.copy(cDay).lerp(cNight, sn)); stars.material.opacity = sn * .9;
+  hemi.intensity = lerp(.44, .2, sn); sun.intensity = lerp(.56, .14, sn); sun.color.setHex(0xFFF3E0).lerp(cT.setHex(0x93A9FF), sn);
+  coreLight.intensity = sn * 1.6 + corePulse * .6; mWin.emissiveIntensity = sn * 1.2; mScreen.emissiveIntensity = .45 + sn * .8;
+  LAYERS.forEach((L, i) => { L.mat.emissiveIntensity = sn * (i === 0 ? .08 : .3 + .07 * Math.sin(time * 1.3 + i)); });
+  const m = MODES[env.mode]; spamT -= dt * m.spam; goodT -= dt * m.good;
+  while (spamT < 0) { spamT += .6 + rnd() * .8; spawnDart(false); } while (goodT < 0) { goodT += .6 + rnd() * .8; spawnDart(true); }
+}
+
+/* ───────── camera and interaction ───────── */
+const cam = { tx: 0, tz: 0, ty: 0, dist: 260, az: .62, pol: .86 }, goal = { tx: 0, tz: 0, ty: 0, dist: 260, az: .62, pol: .86 };
+let sel = null, follow = false, sheet = null, focus = -1;
+function fit() { const w = app.clientWidth, h = app.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (isMobile() && sheet) camera.setViewOffset(w, h, 0, h * .2, w, h); else camera.clearViewOffset(); camera.updateProjectionMatrix(); }
+const worldDist = () => clamp(300 * Math.max(1, 1.35 / camera.aspect), 300, 700);
+function setFocus(i) { focus = i; LAYERS.forEach((L, k) => L.liftGoal = k === i ? 6 : 0); document.querySelectorAll('#areas button').forEach(b => b.classList.toggle('on', +b.dataset.a === i)); }
+function focusLayer(i, pt) { select(null, false); setFocus(i);
+  if (i < 0) { goal.tx = goal.tz = 0; goal.dist = worldDist(); }
+  else { const L = LAYERS[i]; if (pt) { goal.tx = pt.x; goal.tz = pt.z; } else { goal.tx = Math.sin(cam.az) * L.rm * (i === 4 ? 0 : 1); goal.tz = Math.cos(cam.az) * L.rm * (i === 4 ? 0 : 1); } goal.dist = (i === 4 ? 62 : 86) * Math.max(1, .9 / camera.aspect); if (isMobile()) showSheet('detail'); }
+  uiDetail(true); uiTable(); }
+function camUpdate(dt) {
+  if (sel && follow) { const p = sel.wp(); goal.tx = p.x; goal.tz = p.z; }
+  goal.ty = focus >= 0 ? 5 : 0; const k = 1 - Math.exp(-dt * 4.2);
+  for (const f of ['tx', 'tz', 'ty', 'dist', 'pol', 'az']) cam[f] = lerp(cam[f], goal[f], k);
+  const sp = Math.sin(cam.pol); camera.position.set(cam.tx + cam.dist * sp * Math.sin(cam.az), cam.ty + cam.dist * Math.cos(cam.pol), cam.tz + cam.dist * sp * Math.cos(cam.az)); camera.lookAt(cam.tx, cam.ty, cam.tz);
+  LAYERS.forEach(L => { L.lift = lerp(L.lift, L.liftGoal, 1 - Math.exp(-dt * 5)); L.g.position.y = L.lift; });
+  const near = cam.dist < 135; const ss = clamp(cam.dist / 100, .42, 1.15); for (const L of LAYERS) for (const s of L.st) { const p = s.sp; p.visible = near && (focus < 0 || focus === L.i); if (p.visible) { p.userData.b = p.userData.b || p.scale.clone(); p.scale.copy(p.userData.b).multiplyScalar(ss); } }
+}
+const ptrs = new Map(); let dragMode = null, moved = 0, pinch = null;
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+canvas.addEventListener('pointerdown', e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; closeMenus();
+  if (ptrs.size === 1) dragMode = (e.button === 2 || e.ctrlKey || e.shiftKey) ? 'rot' : 'pan'; else if (ptrs.size === 2) { dragMode = 'pinch'; pinch = pinchState(); } });
+function pinchState() { const [a, b] = [...ptrs.values()]; return { d: Math.hypot(a.x - b.x, a.y - b.y), a: Math.atan2(b.y - a.y, b.x - a.x), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 }; }
+function panBy(dx, dy) { const s = 2 * cam.dist * Math.tan(camera.fov * Math.PI / 360) / app.clientHeight, rx = Math.cos(cam.az), rz = -Math.sin(cam.az), fx = -Math.sin(cam.az), fz = -Math.cos(cam.az), v = dy * s / Math.max(.3, Math.cos(cam.pol));
+  goal.tx = clamp(goal.tx - dx * s * rx + v * fx, -75, 75); goal.tz = clamp(goal.tz - dx * s * rz + v * fz, -75, 75); cam.tx = goal.tx; cam.tz = goal.tz; follow = false; }
+canvas.addEventListener('pointermove', e => { const p = ptrs.get(e.pointerId); if (!p) return; const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
+  if (moved < 5) return; canvas.classList.add('drag');
+  if (dragMode === 'pan') panBy(dx, dy);
+  else if (dragMode === 'rot') { goal.az -= dx * .006; goal.pol = clamp(goal.pol - dy * .005, .2, 1.36); }
+  else if (dragMode === 'pinch' && ptrs.size === 2) { const n = pinchState(); goal.dist = clamp(goal.dist * pinch.d / Math.max(20, n.d), 26, 700); let da = n.a - pinch.a; da = Math.atan2(Math.sin(da), Math.cos(da)); goal.az -= da; panBy(n.mx - pinch.mx, n.my - pinch.my); pinch = n; } });
+const ray = new T3.Raycaster(), ndc = new T3.Vector2();
+function endPtr(e) { const had = ptrs.delete(e.pointerId); canvas.classList.remove('drag'); if (!had) return;
+  if (moved < 6 && dragMode !== 'pinch' && e.type === 'pointerup') { const r = canvas.getBoundingClientRect(); ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(ndc, camera);
+    const hits = ray.intersectObjects(pickables, true).filter(h => !h.object.userData.nopick && h.object.userData.ent); let best = null, pt = null;
+    for (const h of hits) { const en = h.object.userData.ent; if (!best) { best = en; pt = h.point; if (en.kind !== 'layer') break; } else if (en.kind !== 'layer' && h.distance < hits[0].distance + 5) { best = en; break; } }
+    if (!best) focusLayer(-1); else if (best.kind === 'layer') focusLayer(best.L.i, pt); else select(best, true); }
+  if (ptrs.size === 1) { dragMode = 'pan'; moved = 99; } if (!ptrs.size) dragMode = null; }
+canvas.addEventListener('pointerup', endPtr); canvas.addEventListener('pointercancel', endPtr);
+canvas.addEventListener('wheel', e => { e.preventDefault(); goal.dist = clamp(goal.dist * Math.exp(e.deltaY * .0011), 26, 700); }, { passive: false });
+addEventListener('keydown', e => { if (e.key === 'Escape') { focusLayer(-1); closeMenus(); } });
+
+const ring = new T3.Mesh(new T3.RingGeometry(.84, 1, 48), new T3.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: .95, depthWrite: false, side: T3.DoubleSide })); ring.rotation.x = -Math.PI / 2; ring.visible = false; ring.renderOrder = 6; scene.add(ring);
+const ring2 = ring.clone(); ring2.material = ring.material.clone(); scene.add(ring2);
+const labelEl = $('#label');
+function select(e, fly) {
+  sel = e; follow = !!e; ring.visible = ring2.visible = !!e; labelEl.hidden = !e;
+  if (e) { setFocus(e.L.i); goal.dist = clamp(Math.min(goal.dist, 44 + e.rad * 5), 30, 700); labelEl.innerHTML = `${esc(e.name)}<small>${esc(e.type)}</small>`; if (isMobile()) showSheet('detail'); uiDetail(true); uiTable(); }
+  else if (fly !== false) { uiDetail(true); uiTable(); }
+}
+function selUpdate(t) {
+  if (!sel) return; const p = sel.wp(), x0 = p.x, y0 = p.y, z0 = p.z, y = sel.L.lift + .25;
+  ring.position.set(x0, y, z0); ring.scale.setScalar(sel.rad * (1 + .06 * Math.sin(t * 4))); const w = (t * .8) % 1; ring2.position.set(x0, y, z0); ring2.scale.setScalar(sel.rad * (1 + w * .7)); ring2.material.opacity = .7 * (1 - w);
+  _v.set(x0, sel.L.lift + sel.hgt, z0).project(camera); labelEl.style.transform = `translate(${((_v.x * .5 + .5) * app.clientWidth).toFixed(1)}px,${((-_v.y * .5 + .5) * app.clientHeight).toFixed(1)}px) translate(-50%,-100%)`;
+}
+/* layer tags, stacked along the radius like the labels on a classroom model */
+const ltags = $('#ltags'); const tagEls = LAYERS.map((L, i) => { const b = document.createElement('button'); b.className = 'ltag glass'; b.innerHTML = `<i style="background:${L.hex}"></i>${L.name}<small>${L.geo}</small>`; b.onclick = () => focusLayer(i); ltags.append(b); return b; });
+function tagsUpdate() { const show = focus < 0 && !sel && cam.dist > 150; ltags.style.opacity = show ? 1 : 0; ltags.style.pointerEvents = show ? '' : 'none'; if (!show) return; const a = cam.az + Math.PI;
+  LAYERS.forEach((L, i) => { const r = i === 4 ? 0 : L.rm; _v.set(Math.sin(a) * r, i === 4 ? 9 : 1.5, Math.cos(a) * r).project(camera); tagEls[i].style.transform = `translate(${((_v.x * .5 + .5) * app.clientWidth).toFixed(1)}px,${((-_v.y * .5 + .5) * app.clientHeight).toFixed(1)}px) translate(-50%,-50%)`; }); }
+
+/* ───────── dashboard ───────── */
+const areasEl = $('#areas'); [['Earth', -1], ...LAYERS.map((L, i) => [L.name, i])].forEach(([n, i]) => { const b = document.createElement('button'); b.textContent = n; b.dataset.a = i; b.onclick = () => focusLayer(i); areasEl.append(b); });
+function closeMenus(except) { ['#seasonMenu', '#alertMenu', '#qres'].forEach(s => { if (s !== except) $(s).hidden = true; }); }
+const seasonMenu = $('#seasonMenu');
+Object.entries(MODES).forEach(([k, s]) => { const b = document.createElement('button'); b.innerHTML = `${s.label}<small>${s.note}</small>`; b.dataset.s = k; b.onclick = () => setMode(k); seasonMenu.append(b); });
+function setMode(k, quiet) { env.mode = k; $('#seasonLbl').textContent = MODES[k].label; seasonMenu.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === k)); seasonMenu.hidden = true; if (k === 'storm' && !quiet) alertPush('Spam storm: an unregistered bulk sender is hitting all four operators. Every layer is holding', 'warn'); }
+$('#seasonBtn').onclick = e => { e.stopPropagation(); closeMenus('#seasonMenu'); seasonMenu.hidden = !seasonMenu.hidden; };
+function setNight(n) { env.nightGoal = n ? 1 : 0; document.documentElement.classList.toggle('night', !!n); $('#dn').setAttribute('aria-pressed', !!n); }
+$('#dn').onclick = () => setNight(!env.nightGoal);
+const alertMenu = $('#alertMenu');
+function uiAlerts() { const b = $('#alertN'); b.hidden = !unread; b.textContent = unread; alertMenu.innerHTML = alerts.length ? alerts.map(a => `<div class="alert"><i class="${a.tone}"></i>${esc(a.text)}<time>${hms(a.t)}</time></div>`).join('') : '<div class="empty">No alerts yet.</div>'; }
+$('#alertBtn').onclick = e => { e.stopPropagation(); closeMenus('#alertMenu'); alertMenu.hidden = !alertMenu.hidden; unread = 0; uiAlerts(); };
+const q = $('#q'), qres = $('#qres');
+function doSearch() { const s = q.value.trim().toLowerCase(); if (!s) { qres.hidden = true; return; } closeMenus('#qres');
+  const r = ents.filter(e => (e.name + ' ' + e.type).toLowerCase().includes(s)).slice(0, 8);
+  qres.innerHTML = r.length ? r.map(e => `<button data-id="${e.id}">${esc(e.name)}<small>${esc(e.type)}</small></button>`).join('') : '<div class="empty">Nothing matches. Try "scrub", "Jio" or "WhatsApp".</div>'; qres.hidden = false; }
+q.addEventListener('input', doSearch); q.addEventListener('focus', doSearch);
+q.addEventListener('keydown', e => { if (e.key === 'Enter') { const b = qres.querySelector('button'); b && b.click(); } });
+const pickId = id => { const e = ents[+id]; if (e.kind === 'layer') focusLayer(e.L.i); else select(e, true); };
+qres.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; pickId(b.dataset.id); qres.hidden = true; q.blur(); });
+document.addEventListener('click', e => { if (!e.target.closest('.tb,.search')) closeMenus(); });
+
+const detail = $('#detail');
+function uiDetail(force) {
+  if (!sel && focus < 0) { if (force || !detail.dataset.intro) { detail.dataset.intro = 1; detail.innerHTML = `<div class="intro"><div class="eyebrow">Access layers</div><h2>Five layers stand between spam and the user</h2><p>Like the earth, the ecosystem is built in layers around a core. The user sits at the centre. Each layer invites the next one in and stops a different kind of unwanted call or message.</p><ul class="legend">${LAYERS.map((L, i) => `<li><button class="lrow" data-l="${i}"><i style="background:${L.hex}"></i><b>${L.name}</b><span>${L.geo}</span></button></li>`).join('')}</ul><ul class="legend"><li><kbd>Click a layer</kbd> to lift it and enter its world</li><li><kbd>Red</kbd> spam, stopped at a layer</li><li><kbd>Blue</kbd> consented, reaches the user</li></ul></div>`; } return; }
+  delete detail.dataset.intro;
+  if (!sel) { const L = LAYERS[focus];
+    detail.innerHTML = `<button class="x" aria-label="Close details">×</button><div class="eyebrow"><i class="sw" style="background:${L.hex}"></i>${L.geo} · layer ${focus + 1} of 5</div><h2>${L.name}</h2><div class="sub">${L.role}</div><span class="pill ok">Shield holding</span><dl class="rows num"><dt>Who</dt><dd>${L.who}</dd><dt>Invites</dt><dd>${L.invites}</dd><dt>Stops</dt><dd>${L.blocks}</dd><dt>Blocked today</dt><dd>${LK(L.blocked)}</dd><dt>Jobs done today</dt><dd>${IN(L.jobs)}</dd></dl><div class="eyebrow sec">Agents in this world</div>${L.ag.map(a => `<button class="arow" data-id="${a.id}"><b>${a.name}</b><span>${esc(a.task)}</span></button>`).join('')}<div class="eyebrow sec">Jobs done here</div><ul class="jobs">${L.does.map(d => `<li>${d}</li>`).join('')}</ul>`; return; }
+  const i = sel.info(), st = i.status;
+  detail.innerHTML = `<button class="x" aria-label="Close details">×</button><div class="eyebrow"><i class="sw" style="background:${sel.L.hex}"></i>${esc(sel.type)}</div><h2>${esc(sel.name)}</h2><div class="sub">${esc(i.sub)}</div><span class="pill ${st[1]}">${esc(st[0])}</span><dl class="rows num">${i.rows.map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>${i.list ? `<div class="eyebrow sec">${i.list[0]}</div><ul class="jobs">${i.list[1].map(j => `<li class="${j[1] ? 'now' : ''}">${esc(j[0])}</li>`).join('')}</ul>` : ''}<button class="arow back" data-l="${sel.L.i}"><b>Back to ${sel.L.name}</b><span>See the whole layer</span></button>`;
+}
+detail.addEventListener('pointerdown', e => { const x = e.target.closest('.x'), a = e.target.closest('[data-id]'), l = e.target.closest('[data-l]'); if (x) { if (sel) focusLayer(sel.L.i); else focusLayer(-1); } else if (a) pickId(a.dataset.id); else if (l) focusLayer(+l.dataset.l); });
+
+/* access chain tracker */
+const CH = ['Regulator invites operator', 'Operator invites GTM partner', 'Rate card assigned', 'Enterprise onboards', 'Consents migrated', 'User notified, decides'];
+const chain = { t: 26, n: 0, stamps: [], step: -1 };
+function simChain(dt, now) { chain.t += dt; if (chain.t >= 54) { chain.t = 0; chain.n++; chain.stamps = []; chain.step = -1; }
+  const s = Math.min(5, Math.floor(chain.t / 8)); if (s !== chain.step) { for (let k = chain.step + 1; k <= s; k++) chain.stamps[k] = now - (chain.t - k * 8) * 1000; chain.step = s; const a = chain.n * 1.9 + .4;
+    [[0, 1, 'invite'], [1, 2, 'invite'], [1, 2, 'rate card'], [2, 3, 'invite'], [3, 4, 'consent request'], [4, 3, 'consent']].slice(s, s + 1).forEach(x => spawnToken(x[0], a, x[1], x[2]));
+    const c = chainNames(); log([0, 1, 1, 3, 3, 4][s], CH[s] + ' · ' + c.join(' → ')); if (s === 5 && chain.t < 41) alertPush(`${c[2]} is live on ${c[0]} through ${c[1]}. Users can now give or revoke consent`, 'ok'); } }
+const chainNames = () => [TELCOS[chain.n % 4], PARTNERS[chain.n % 4], BRANDS[chain.n % 3]];
+function uiTracker(now) { const c = chainNames(); $('#trT').textContent = c[2] + ' joins the ecosystem'; $('#trF').textContent = 'TRAI → ' + c.join(' → ') + ' → users';
+  $('#trS').innerHTML = CH.map((p, k) => { const done = k < chain.step || chain.t >= 48, nowS = k === chain.step && !done; return `<li class="${done ? 'done' : nowS ? 'now' : ''}">${p}<time class="num">${done || nowS ? hms(chain.stamps[k]) : 'ETA ' + hms(now + (k * 8 - chain.t) * 1000)}</time></li>`; }).join(''); }
+
+const TABS = { layers: ['Layers', ['Layer', 'Earth layer', 'Who', 'Stops', 'Blocked today', 'Jobs']], agents: ['Agents', ['Agent', 'Layer', 'Doing now', 'Jobs']], feed: ['Activity', ['Time', 'Layer', 'Event']] };
+let tab = 'layers';
+const tabsEl = $('#tabs'); tabsEl.innerHTML = Object.entries(TABS).map(([k, t]) => `<button data-t="${k}">${t[0]}</button>`).join('') + '<span class="live">Live</span><button class="tg" data-tg="1" aria-expanded="false">Expand</button>';
+tabsEl.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const tbl = $('#table'); if (b.dataset.tg) tbl.classList.toggle('col'); else { tab = b.dataset.t; tbl.classList.remove('col'); uiTable(); } const c = tbl.classList.contains('col'), tg = tabsEl.querySelector('.tg'); tg.textContent = c ? 'Expand' : 'Collapse'; tg.setAttribute('aria-expanded', !c); });
+function uiTable() {
+  tabsEl.querySelectorAll('button[data-t]').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
+  $('#th').innerHTML = '<tr>' + TABS[tab][1].map(h => `<th>${h}</th>`).join('') + '</tr>'; let rows;
+  const dot = L => `<i class="sw" style="background:${L.hex}"></i>`;
+  if (tab === 'layers') rows = LAYERS.map(L => [L.ent, dot(L) + L.name, L.geo, L.who, L.blocks, LK(L.blocked), IN(L.jobs)]);
+  else if (tab === 'agents') rows = agents.map(a => [a, esc(a.name), dot(a.L) + a.L.name, `<span class="pill ${a.state === 'work' ? '' : 'idle'}">${esc(a.task)}</span>`, IN(a.done)]);
+  else rows = feed.slice(0, 14).map(f => [LAYERS[f.li].ent, hms(f.t), dot(LAYERS[f.li]) + LAYERS[f.li].name, esc(f.text)]);
+  $('#tb').innerHTML = rows.map(r => `<tr data-id="${r[0].id}" class="${sel === r[0] || (!sel && focus >= 0 && r[0] === LAYERS[focus].ent && tab === 'layers') ? 'sel' : ''}" tabindex="0">${r.slice(1).map(c => `<td class="num">${c}</td>`).join('')}</tr>`).join('');
+}
+$('#tb').addEventListener('pointerdown', e => { const r = e.target.closest('tr'); if (r) pickId(r.dataset.id); });
+$('#tb').addEventListener('keydown', e => { if (e.key === 'Enter') { const r = e.target.closest('tr'); if (r) pickId(r.dataset.id); } });
+function uiKpi() { $('#k1').textContent = CR(K.blocked); $('#k1d').textContent = IN(K.total) + ' bursts'; $('#k2').textContent = CR(K.delivered); $('#k2d').textContent = (K.delivered / (K.delivered + K.blocked) * 100).toFixed(1) + '%'; $('#k3').textContent = CR(K.active); $('#k3d').textContent = IN(K.revoked); }
+function uiClock(now) { const d = new Date(now); $('#clk').textContent = d.toLocaleTimeString('en-GB'); $('#dte').textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · Mumbai'; }
+const kpisEl = $('#kpis'), kpiToggle = () => kpisEl.setAttribute('aria-expanded', !kpisEl.classList.toggle('col'));
+kpisEl.addEventListener('click', kpiToggle); kpisEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); kpiToggle(); } });
+function showSheet(k) { sheet = k; ['tracker', 'table', 'detail'].forEach(id => $('#' + id).classList.toggle('show', id === k)); document.querySelectorAll('#mbar button').forEach(b => b.classList.toggle('on', b.dataset.m === k)); fit(); }
+$('#mbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) showSheet(sheet === b.dataset.m ? null : b.dataset.m); });
+
+/* ───────── loop ───────── */
+let last = performance.now(), uiA = 0, uiB = 0, time = 0;
+function step(dt, now) { time += dt; simAgents(dt); simTraffic(dt); simChain(dt, now); }
+function frame(nowP) {
+  const dt = Math.min(.05, (nowP - last) / 1000); last = nowP; const now = Date.now();
+  step(dt, now); simEnv(dt); camUpdate(dt); selUpdate(time); tagsUpdate();
+  renderer.render(scene, camera);
+  uiA += dt; uiB += dt;
+  if (uiA > .3) { uiA = 0; uiDetail(); uiKpi(); }
+  if (uiB > 1) { uiB = 0; uiClock(now); uiTracker(now); uiTable(); }
+  requestAnimationFrame(frame);
+}
+addEventListener('resize', fit); fit(); goal.dist = cam.dist = worldDist();
+for (let i = 0; i < 300; i++) step(.05, Date.now() - (300 - i) * 50);
+alerts.length = 0; unread = 0;
+alertPush('Jio: rate card for migration, acquisition and scrubbing assigned to Karix', 'ok');
+alertPush('2 complaints against a Personal Loan sender escalated to the regulator', 'warn');
+setMode('normal', true); uiAlerts(); uiDetail(true); uiKpi(); uiClock(Date.now()); uiTracker(Date.now()); uiTable(); setFocus(-1);
+window.__dc = { env, step, agents, ents, LAYERS, select, focusLayer, setMode, setNight, cam, goal, tokens, darts };
+requestAnimationFrame(t => { last = t; frame(t); $('#load').style.opacity = 0; setTimeout(() => $('#load').remove(), 600); });
+}
+const go = () => { try { start(); } catch (e) { console.error(e); $('#load').textContent = 'Something went wrong while building the world: ' + e.message; } };
+(document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]) : Promise.resolve()).then(go, go);
+})();
+</script>
+</body>
+</html>
