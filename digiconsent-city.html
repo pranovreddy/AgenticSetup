@@ -80,6 +80,10 @@ button:focus-visible,input:focus-visible,tr:focus-visible{outline:2px solid var(
 .kpi .v{font:700 25px/1.1 var(--f-d);letter-spacing:-.02em;margin:5px 0 3px}
 .kpi .d{font-size:11.5px;color:var(--ink2);white-space:nowrap}
 .kpi .d b{color:var(--acc);font-weight:600}
+#kpis{cursor:pointer}
+#kpis.col .kpi{width:auto;padding:8px 13px;display:flex;align-items:baseline;gap:9px;border-radius:12px;flex:none}
+#kpis.col .kpi .v{font-size:15px;margin:0}
+#kpis.col .kpi .d,#kpis.col .kpi .bar{display:none}
 .bar{height:5px;border-radius:3px;background:var(--chip);overflow:hidden;margin-top:8px}
 .bar i{display:block;height:100%;background:var(--acc);border-radius:3px;transition:width .6s}
 
@@ -188,7 +192,7 @@ td:first-child{font-weight:600}
     <div class="user" title="Ananya Rao, Onboarding RM">AR</div>
   </header>
 
-  <div id="kpis">
+  <div id="kpis" class="col" role="button" tabindex="0" aria-expanded="false" title="Show or hide KPI details">
     <div class="kpi glass"><div class="eyebrow">Active consents</div><div class="v num" id="k1">0</div><div class="d num"><b id="k1d">+0</b> captured today</div></div>
     <div class="kpi glass"><div class="eyebrow">Scrub pass rate</div><div class="v num" id="k2">0%</div><div class="d num"><b id="k2d">0</b> messages checked</div></div>
     <div class="kpi glass"><div class="eyebrow">Migration progress</div><div class="v num" id="k3">0%</div><div class="d num" id="k3d"></div><div class="bar"><i id="k3b"></i></div></div>
@@ -906,6 +910,8 @@ function uiKpi() {
 }
 function uiClock(now) { const d = new Date(now); $('#clk').textContent = d.toLocaleTimeString('en-GB'); $('#dte').textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · Mumbai'; }
 
+const kpisEl = $('#kpis'), kpiToggle = () => kpisEl.setAttribute('aria-expanded', !kpisEl.classList.toggle('col'));
+kpisEl.addEventListener('click', kpiToggle); kpisEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); kpiToggle(); } });
 /* mobile sheets */
 function showSheet(k) { sheet = k; ['tracker', 'table', 'detail'].forEach(id => $('#' + id).classList.toggle('show', id === k)); document.querySelectorAll('#mbar button').forEach(b => b.classList.toggle('on', b.dataset.m === k)); fit(); }
 $('#mbar').addEventListener('click', e => { const b = e.target.closest('button'); if (b) showSheet(sheet === b.dataset.m ? null : b.dataset.m); });
