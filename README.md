@@ -7,7 +7,7 @@ Clickable HTML prototypes of agentic onboarding for DigiConsent.
 ## DigiConsent City (3D product demo)
 `digiconsent-city.html` is a separate single-file Three.js world that demos the product as a live consent estate for HDFC Bank: Consent Vault with five intake docks, brand campus, GTM partner hub, operator towers with a scrub gate, a migration rail yard and a subscriber neighbourhood, under a frosted-glass dashboard. Open it directly in a browser (needs network for Three.js and fonts).
 
-`digiconsent-earth.html` is a second, separate 3D version: the ecosystem as the layers of the earth (Regulator, Channel owners, GTM partners, Enterprises) around the user at the core. Each layer lifts into its own world of stations and agents, and spam is stopped layer by layer.
+`digiconsent-earth.html` is a second, separate 3D version: the ecosystem as an exploded earth, stacked layer by layer (Regulator, Channel owners, GTM partners, Enterprises) above the user at the core. Clicking a layer goes inside its own world: a gate that turns bad actors away, then that layer's actions as a numbered sequence with an agent at each step.
 
 ## Open a preview
 Each prototype is one self-contained HTML file. To preview, publish it with the `Artifact` tool (same file path to update an existing one; the artifact URLs are listed in `references/CONTEXT.md`):
