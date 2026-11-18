@@ -117,6 +117,10 @@ const renderer = new T3.WebGLRenderer({ canvas, antialias: true, alpha: true, po
 renderer.setPixelRatio(Math.min(devicePixelRatio || 1, innerWidth <= 760 ? 1.5 : 2)); renderer.setClearColor(0, 0);
 renderer.outputEncoding = T3.sRGBEncoding; renderer.shadowMap.enabled = true; renderer.shadowMap.type = T3.PCFSoftShadowMap;
 const scene = new T3.Scene();
+const envTex = (() => { const es = new T3.Scene(), sg = new T3.SphereGeometry(60, 24, 14), col = [], pa = sg.attributes.position, c = new T3.Color(); for (let i = 0; i < pa.count; i++) { const y = pa.getY(i) / 60; c.setRGB(.25 + .5 * Math.max(0, y), .28 + .5 * Math.max(0, y), .36 + .5 * Math.max(0, y)); col.push(c.r, c.g, c.b); } sg.setAttribute('color', new T3.Float32BufferAttribute(col, 3));
+  es.add(new T3.Mesh(sg, new T3.MeshBasicMaterial({ side: T3.BackSide, vertexColors: true })));
+  for (const [x, y, z, s] of [[30, 40, 20, 9], [-40, 25, -10, 7], [0, 55, -30, 11]]) { const m = new T3.Mesh(new T3.SphereGeometry(s, 12, 8), new T3.MeshBasicMaterial({ color: 0xffffff })); m.position.set(x, y, z); es.add(m); }
+  const pm = new T3.PMREMGenerator(renderer), tx = pm.fromScene(es, .04).texture; pm.dispose(); return tx; })();
 const camera = new T3.PerspectiveCamera(40, 1, 2, 3000);
 scene.add(new T3.HemisphereLight(0xffffff, 0xC5CEDF, .62));
 const sun = new T3.DirectionalLight(0xffffff, .62); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0008; sun.shadow.normalBias = .6;
@@ -144,9 +148,10 @@ function textSprite(txt, h, bg = 'rgba(255,255,255,.97)', fg = '#0b1b3f', round)
     g.fillStyle = bg; const r = round ? 30 : 20; g.beginPath(); g.moveTo(r + 2, 2); g.arcTo(w - 2, 2, w - 2, 62, r); g.arcTo(w - 2, 62, 2, 62, r); g.arcTo(2, 62, 2, 2, r); g.arcTo(2, 2, w - 2, 2, r); g.fill();
     g.font = f; g.fillStyle = fg; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, w / 2, 34);
     const t = new T3.CanvasTexture(c); t.encoding = T3.sRGBEncoding; e = spriteTex[key] = { t, w }; }
-  const s = new T3.Sprite(new T3.SpriteMaterial({ map: e.t, transparent: true, depthWrite: false })); s.scale.set(e.w / 64 * h, h, 1); s.renderOrder = 8; s.userData.b = s.scale.clone(); s.userData.label = true; return s;
+  const s = new T3.Sprite(new T3.SpriteMaterial({ map: e.t, transparent: true, depthWrite: false, toneMapped: false })); s.scale.set(e.w / 64 * h, h, 1); s.renderOrder = 8; s.userData.b = s.scale.clone(); s.userData.label = true; return s;
 }
 
+function blob(r, y, p, o = .4) { const m = new T3.Mesh(new T3.CircleGeometry(r, 40), new T3.MeshBasicMaterial({ map: glowTex, color: 0x1B2A4A, transparent: true, opacity: o, depthWrite: false, toneMapped: false })); m.rotation.x = -Math.PI / 2; m.position.y = y; p.add(m); return m; }
 /* ───────── data ───────── */
 const LAYERS = [
   { name: 'Regulator', who: 'TRAI', hex: '#14275c', col: 0x14275C, R: 34, ey: 118,
@@ -182,10 +187,10 @@ const OV = [
 /* ───────── overview: a globe that lifts apart into its layers ───────── */
 const ovG = new T3.Group(); scene.add(ovG);
 const ovPick = [], burstS = [];
-for (let i = 0; i < 26; i++) { const s = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xff5d5d, transparent: true, opacity: 0, blending: T3.NormalBlending, depthWrite: false })); s.visible = false; scene.add(s); burstS.push({ s, age: 9 }); }
+for (let i = 0; i < 26; i++) { const s = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xff5d5d, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })); s.visible = false; scene.add(s); burstS.push({ s, age: 9 }); }
 function burst(x, y, z, col, size) { const b = burstS.find(b => b.age > .6); if (!b) return; b.age = 0; b.size = size; b.s.material.color.setHex(col); b.s.position.set(x, y, z); b.s.visible = true; }
 (() => {
-  const mBase = new T3.MeshStandardMaterial({ color: 0xDCE3EF, roughness: .55, metalness: .05 });
+  blob(78, -37, ovG, .5); const mBase = new T3.MeshPhysicalMaterial({ color: 0xE6EBF4, roughness: .35, metalness: .05, clearcoat: .6, clearcoatRoughness: .3, envMap: envTex, envMapIntensity: .35 });
   const base = new T3.Mesh(new T3.SphereGeometry(34, 56, 24, 0, TAU, Math.PI / 2, Math.PI / 2), mBase); base.castShadow = true; ovG.add(base);
   
   const top = new T3.Mesh(new T3.CircleGeometry(34, 64), new T3.MeshStandardMaterial({ color: 0xF4F7FB, roughness: .8 })); top.rotation.x = -Math.PI / 2; top.receiveShadow = true; ovG.add(top);
@@ -198,7 +203,7 @@ LAYERS.forEach((L, i) => {
   if (i < 4) {
     const Rin = i < 3 ? LAYERS[i + 1].R : 10.5, CUT = Math.PI * 1.5;
     L.c0 = new T3.Color(L.col); L.c1 = new T3.Color(L.col).offsetHSL(0, -.04, .2);
-    L.m = new T3.MeshStandardMaterial({ color: L.col, roughness: .34, metalness: .1, emissive: L.col, emissiveIntensity: 0 });
+    L.m = new T3.MeshPhysicalMaterial({ color: L.col, roughness: .3, metalness: .15, clearcoat: .8, clearcoatRoughness: .18, emissive: L.col, emissiveIntensity: 0, envMap: envTex, envMapIntensity: .45 });
     L.um = new T3.MeshStandardMaterial({ color: L.col, roughness: .7, side: T3.DoubleSide });
     const d = new T3.Mesh(new T3.SphereGeometry(L.R, 56, 24, 0, CUT, 0, Math.PI / 2), L.m); d.castShadow = true; d.userData.layer = i; g.add(d); ovPick.push(d);
     const inn = new T3.Mesh(new T3.SphereGeometry(Rin, 40, 18, 0, CUT, 0, Math.PI / 2), L.um); g.add(inn);
@@ -212,6 +217,8 @@ LAYERS.forEach((L, i) => {
     L.halo = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xF5B544, transparent: true, opacity: .5, depthWrite: false })); L.halo.scale.set(34, 34, 1); L.halo.position.y = 9; g.add(L.halo);
   }
 });
+const orbits = [[46, .5, .2, .5], [53, -.35, .9, -.36]].map(([r, rx, rz, sp]) => { const g = new T3.Group(); g.rotation.set(rx, 0, rz); ovG.add(g); const m = new T3.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: .3, toneMapped: false }); const t = new T3.Mesh(new T3.TorusGeometry(r, .12, 6, 120), m); t.rotation.x = Math.PI / 2; g.add(t);
+  const dm = new T3.MeshBasicMaterial({ color: 0x2563EB, transparent: true, toneMapped: false }), dots = [0, 2.1, 4.2].map(o => { const d = new T3.Mesh(gSph, dm); d.scale.setScalar(.9); g.add(d); return [d, o]; }); return { r, sp, m, dm, dots }; });
 const token = sph(1.8, new T3.MeshStandardMaterial({ color: 0xffffff, emissive: 0x2563EB, emissiveIntensity: .9 }), 0, 0, 0, ovG); token.visible = false; let tok = null;
 const gDart = new T3.ConeGeometry(.8, 3.2, 5); gDart.rotateX(Math.PI / 2);
 const mSpam = new T3.MeshStandardMaterial({ color: 0xE5484D, emissive: 0xE5484D, emissiveIntensity: .4, flatShading: true }), mGood = new T3.MeshStandardMaterial({ color: 0x2563EB, emissive: 0x2563EB, emissiveIntensity: .6 });
@@ -223,6 +230,7 @@ function simOverview(dt) {
       const want = os === 0 || hi === i ? 1 : .5; L.op = lerp(L.op, want, 1 - Math.exp(-dt * 4)); L.m.color.copy(cDim).lerp(L.c0, L.op); L.um.color.copy(cDim).lerp(L.c1, L.op);
       L.flash = Math.max(0, L.flash - dt * 1.6); L.m.emissiveIntensity = L.flash * .5 + (hi === i ? .12 + .06 * Math.sin(time * 3) : 0); }
     else { L.flash = Math.max(0, L.flash - dt * 1.4); const on = os === 0 || hi === 4; L.m.emissiveIntensity = (on ? .6 : .25) + L.flash * .6; L.halo.material.opacity = (on ? .5 : .2) + L.flash * .4; L.halo.scale.setScalar(32 + L.flash * 14 + Math.sin(time * 2) * 1.5); } });
+  for (const o of orbits) { const v = 1 - clamp(explode * 2.5, 0, 1); o.m.opacity = .3 * v; o.dm.opacity = v; for (const [d, off] of o.dots) { const a = time * o.sp + off; d.position.set(Math.cos(a) * o.r, 0, Math.sin(a) * o.r); } }
   if (tok) { tok.u += dt / 1.3; const u = Math.min(1, tok.u), e = u * u * (3 - 2 * u); token.position.set(Math.sin(u * 5) * (1 - e) * 10, lerp(tok.y0, tok.y1, e), Math.cos(u * 5) * (1 - e) * 10); token.visible = true; if (u >= 1) { LAYERS[tok.to].flash = 1; burst(0, tok.y1, 0, 0x2563EB, 26); tok = null; token.visible = false; } }
   dartT -= dt; if (os === 0 && explode < .15 && dartT <= 0) { dartT = .22 + rnd() * .3; const d = darts.find(d => !d.on); if (d) { d.on = true; d.good = rnd() < .28; const a = rnd() * TAU, el = .05 + rnd() * 1.3; d.dx = Math.cos(el) * Math.sin(a); d.dy = Math.sin(el); d.dz = Math.cos(el) * Math.cos(a); d.r = 170; d.m.material = d.good ? mGood : mSpam; d.m.geometry = d.good ? gSph : gDart; d.m.scale.setScalar(d.good ? .9 : 1); d.m.visible = true; } }
   for (const d of darts) { if (!d.on) continue; d.r -= (d.good ? 70 : 95) * dt; const inCut = d.dx < 0 && d.dz < 0, stop = d.good ? 9 : inCut ? 12 : 35.5; d.m.position.set(d.dx * d.r, d.dy * d.r + (d.good ? 9 * (1 - d.r / 170) : 0), d.dz * d.r); if (!d.good) d.m.lookAt(0, 0, 0);
@@ -248,12 +256,17 @@ const worlds = LAYERS.map((L, i) => {
   const W = { L, g, pick: [], actors: [], occ: [], admitted: ri(120, 400), rejected: ri(40, 160), spawnT: 1, armOpen: 0, note: null, noteT: 0, lastBad: null };
   const navy = new T3.Color(0x0F1E45), side = new T3.MeshStandardMaterial({ color: L.col, roughness: .5 }); side.color.lerp(navy, .8); const top = new T3.MeshStandardMaterial({ color: L.col, roughness: .85 }); top.color.lerp(navy, .64);
   const plat = new T3.Mesh(new T3.CylinderGeometry(PR, PR - 3, 7, 96), [side, top, side]); plat.position.y = -3.5; plat.receiveShadow = true; plat.castShadow = true; g.add(plat);
-  const rim = new T3.Mesh(new T3.TorusGeometry(PR, .5, 8, 96), mWhite); rim.rotation.x = Math.PI / 2; g.add(rim);
+  const rim = new T3.Mesh(new T3.TorusGeometry(PR, .5, 8, 96), mWhite); rim.rotation.x = Math.PI / 2; g.add(rim); blob(118, -8, g, .5);
+  const ribM = new T3.MeshBasicMaterial({ color: L.i === 4 ? 0xF5B544 : L.col, transparent: true, opacity: .32, toneMapped: false }); for (let k = 0; k < 4; k++) { const rb = new T3.Mesh(new T3.TorusGeometry(PR + 1, .3, 6, 72, Math.PI), ribM); rb.rotation.y = k * Math.PI / 4; g.add(rb); }
+  W.beam = new T3.Mesh(new T3.CylinderGeometry(1.4, 4.4, 30, 28, 1, true), new T3.MeshBasicMaterial({ color: 0x7FB4FF, transparent: true, opacity: .16, depthWrite: false, side: T3.DoubleSide, toneMapped: false })); W.beam.position.y = 15; g.add(W.beam);
+  W.pulse = new T3.Mesh(new T3.RingGeometry(.9, 1, 56), new T3.MeshBasicMaterial({ color: 0x2563EB, transparent: true, opacity: .8, depthWrite: false, side: T3.DoubleSide, toneMapped: false })); W.pulse.rotation.x = -Math.PI / 2; W.pulse.position.y = .5; g.add(W.pulse);
   for (const r of [12, 24, 31, 53]) { const q = new T3.Mesh(new T3.RingGeometry(r - .1, r + .1, 96), new T3.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .13 })); q.rotation.x = -Math.PI / 2; q.position.y = .04; g.add(q); }
   const n = L.steps.length, N = n + 3, sp = Math.min(.5, 4.75 / (N - 1)), a0 = 2.35; W.N = N; W.ang = k => a0 - k * sp;
   const arc = new T3.Mesh(new T3.RingGeometry(PATH - 2.4, PATH + 2.4, 96, 1, Math.PI / 2 - a0 - .1, sp * (N - 1) + .2), mPath); arc.rotation.x = -Math.PI / 2; arc.position.y = .08; arc.receiveShadow = true; g.add(arc);
   const aE = W.ang(0), ramp = box(4.8, .5, 24, mPath, Math.sin(aE) * (PATH + 13), -.42, Math.cos(aE) * (PATH + 13), g, false); ramp.rotation.y = aE;
   const aL = W.ang(N - 1), ex = box(3.2, .1, PATH - 9, mPath, Math.sin(aL) * (PATH + 9) / 2, .03, Math.cos(aL) * (PATH + 9) / 2, g, false); ex.rotation.y = aL;
+  const gCh = new T3.ConeGeometry(.75, 1.5, 3); gCh.rotateZ(-Math.PI / 2); const mCh = new T3.MeshBasicMaterial({ color: 0x2563EB, toneMapped: false }); W.chev = [];
+  for (let k = 0; k < (N - 1) * 2; k++) { const a = a0 - (k + .5) * sp / 2 - sp * .0; if (Math.abs(((a0 - a) / sp) % 1 - .5) > .3) { } const c = new T3.Mesh(gCh, mCh); c.position.set(Math.sin(a) * PATH, .2, Math.cos(a) * PATH); c.rotation.y = Math.atan2(-Math.sin(a), -Math.cos(a)); c.scale.y = .12; g.add(c); W.chev.push(c); }
   cyl(7, 7, .5, 36, mWhite, 0, 0, 0, g, false);
   if (i === 4) { const c = sph(4.4, LAYERS[4].m, 0, 5.4, 0, g); const h = new T3.Sprite(new T3.SpriteMaterial({ map: glowTex, color: 0xF5B544, transparent: true, opacity: .45, depthWrite: false })); h.scale.set(26, 26, 1); h.position.y = 5.4; g.add(h); }
   else { cyl(2.2, 2.2, 1.6, 20, mBlue, 0, .5, 0, g); const s = textSprite('To ' + LAYERS[i + 1].name, 1.6, 'rgba(11,27,63,.9)', '#ffffff'); s.position.y = 5; g.add(s); }
@@ -296,6 +309,9 @@ function simWorld(W, dt, active) {
   W.armOpen += clamp(open - W.armOpen, -dt * 3, dt * 3); W.arm.rotation.x = W.armOpen * 1.35; W.lamp.material = W.scanning && W.scanning.bad && W.scanning.t < 1 ? mRed : open ? mScreen : W.scanning ? mWhite : mRed;
   W.scan.visible = !!W.scanning; if (W.scanning) W.scan.position.y = 1 + ((time * 5) % 6.4);
   if (W.note) { W.noteT -= dt; W.note.position.y += dt * 1.1; W.note.material.opacity = clamp(W.noteT, 0, 1); if (W.noteT <= 0) { W.g.remove(W.note); W.note = null; } }
+  if (active) { const a = ws === 0 ? W.aG : W.ang(ws + 2), bx = Math.sin(a) * PATH, bz = Math.cos(a) * PATH, k = 1 - Math.exp(-dt * 5); W.beam.position.x = lerp(W.beam.position.x, bx, k); W.beam.position.z = lerp(W.beam.position.z, bz, k); W.beam.material.opacity = .13 + .05 * Math.sin(time * 3);
+    W.pulse.position.x = W.beam.position.x; W.pulse.position.z = W.beam.position.z; const w = (time * .7) % 1; W.pulse.scale.setScalar(3.4 + w * 4.5); W.pulse.material.opacity = .75 * (1 - w);
+    W.chev.forEach((c, k) => { const v = Math.max(0, Math.sin(time * 3.2 - k * .7)); c.scale.x = c.scale.z = .55 + v * .65; }); }
   for (const s of W.steps) { const sel = active && ws === s.k + 1, on = s.cur && s.cur.m < 0; s.pm.emissiveIntensity = lerp(s.pm.emissiveIntensity, sel ? .75 + .2 * Math.sin(time * 4) : on ? .25 : 0, .15); s.badge.visible = !sel; s.full.visible = sel; s.bot.position.y = .1 + (on ? Math.abs(Math.sin(time * 7 + s.k)) * .7 : Math.abs(Math.sin(time * 1.5 + s.k)) * .12); }
 }
 
@@ -350,7 +366,7 @@ function setView(i, instant) {
 function camUpdate(dt) {
   idle += dt; if (view < 0 && idle > 2.5 && !ptrs.size) goal.az = lerp(goal.az, nearAz(AZ0 + Math.sin(time * .22) * .5), dt * 1.5);
   const k = 1 - Math.exp(-dt * 3.2); for (const f of ['tx', 'ty', 'tz', 'dist', 'pol', 'az']) cam[f] = lerp(cam[f], goal[f], k);
-  const sp = Math.sin(cam.pol); camera.position.set(cam.tx + cam.dist * sp * Math.sin(cam.az), cam.ty + cam.dist * Math.cos(cam.pol), cam.tz + cam.dist * sp * Math.cos(cam.az)); camera.lookAt(cam.tx, cam.ty, cam.tz);
+  const sp = Math.sin(cam.pol), dz = view >= 0 && !ptrs.size ? Math.sin(time * .28) * .1 : 0; camera.position.set(cam.tx + cam.dist * sp * Math.sin(cam.az + dz), cam.ty + cam.dist * Math.cos(cam.pol), cam.tz + cam.dist * sp * Math.cos(cam.az + dz)); camera.lookAt(cam.tx, cam.ty, cam.tz);
   if (view >= 0) { const ss = clamp(cam.dist / 95, .75, 1.9); worlds[view].g.traverse(o => { if (o.userData.label) o.scale.copy(o.userData.b).multiplyScalar(ss / (o.parent.scale.x || 1)); }); }
   for (const b of burstS) { if (b.age > .6) { b.s.visible = false; continue; } b.age += dt; const u = b.age / .6; b.s.scale.setScalar(b.size * (.4 + u)); b.s.material.opacity = (1 - u) * .8; }
 }
