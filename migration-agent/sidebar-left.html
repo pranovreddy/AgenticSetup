@@ -1572,6 +1572,7 @@ body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open b{color:var(--ag-ink);fon
 body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open span{display:none}
 body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open .ch{width:30px;height:30px;padding:7px;border-radius:9px;stroke:var(--ag-mute);box-sizing:border-box}
 body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open:hover .ch{background:var(--bg-2);stroke:var(--ag-ink)}
+.s4-fly{position:fixed;z-index:60;display:grid;place-items:center;border-radius:12px;background:#2560f6;color:#fff;font:650 13.5px var(--font);pointer-events:none;box-shadow:0 14px 28px -12px rgba(37,96,246,.8);white-space:nowrap;overflow:hidden}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -4809,7 +4810,20 @@ span.r-pick{cursor:default}
   }
   $('#s4Col').onclick = () => { S4.rail = !S4.rail; renderAgent(); $('#s4Col').focus({ preventScroll: true }); };
   $('#s4Rail').addEventListener('click', e => { const b = e.target.closest('[data-rail]'); if (!b) return; S4.rail = false; const k = b.dataset.rail; if (k === 'up') UP.open = true; else CD.man[k] = true; S4.sig = ''; CD.ag = ''; renderAgent(); if (k === 'up') $('#s4Lob').focus({ preventScroll: true }); });
-  $('#s4Open').onclick = () => { UP.open = !UP.open; renderAgent(); if (UP.open) $('#s4Lob').focus({ preventScroll: true }); };
+  /* option B: the blue button travels between its place at the top and the Upload securely button, so it reads as one control */
+  $('#s4Open').onclick = () => {
+    const fly = SBV.v === 'b' && !RM, src = UP.open ? $('#s4Go') : $('#s4Open'), r0 = src.getBoundingClientRect();
+    UP.open = !UP.open; renderAgent();
+    if (UP.open) $('#s4Lob').focus({ preventScroll: true });
+    const dst = UP.open ? $('#s4Go') : $('#s4Open'), r1 = dst.getBoundingClientRect();
+    if (!fly || !r0.width || !r1.width) return;
+    const g = document.createElement('div'); g.className = 's4-fly'; g.textContent = UP.open ? 'Upload securely' : 'Upload a file'; document.body.appendChild(g);
+    const box = r => ({ left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    const an = g.animate([{ ...box(r0), opacity: 1 }, { ...box(r1), opacity: 1, offset: .78 }, { ...box(r1), opacity: 0 }], { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' });
+    dst.animate([{ opacity: 0 }, { opacity: 0, offset: .7 }, { opacity: 1 }], { duration: 520 });
+    const up = $('#s4Up'); if (UP.open && up.offsetParent) up.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'ease-out' });
+    an.onfinish = () => g.remove(); setTimeout(() => g.remove(), 800);
+  };
   $('#s4Close').onclick = () => { UP.open = false; renderAgent(); $('#s4Open').focus({ preventScroll: true }); };
   $('#s4Lob').onchange = e => { UP.lob = e.target.value; renderAgent(); };
   $('#s4File').onchange = e => { s4Take(e.target.files); e.target.value = ''; };
