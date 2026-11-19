@@ -4,7 +4,7 @@
    ============================================================ */
 let CASES = buildCases('14:35');
 const S = {
-  mode: 'story', screen: 1, caseId: 'C101', role: 'sub',
+  mode: 'desks', screen: 1, caseId: 'C101', role: 'tap',
   intake: 'inbox', selected: null, shotSel: null, wrong: false,
   reason: null, box: false, boxTouched: false, submitted: false,
   pos: 0, clockT: null, opts: { w: false, alt: false },
@@ -50,7 +50,7 @@ function derive(c, pos, o) {
     });
     if (p.stopped) st.stoppedAt = e.t;
     if (p.finding && !st.findingAt) st.findingAt = e.t;
-    if (p.task === 'verified' || p.remedy === 'effective') st.effectiveAt = st.effectiveAt || e.t;
+    if (p.remedy === 'effective') st.effectiveAt = st.effectiveAt || e.t;
     st.last = e;
   });
   st.nextEv = list[pos] || null;
@@ -103,7 +103,7 @@ const target = (c) => c.inbox.find((m) => m.id === c.target);
 /* ---------- case lifecycle ---------- */
 function loadCase(id, keep) {
   S.caseId = id; S.selected = null; S.shotSel = null; S.wrong = false; S.reason = null; S.box = false; S.boxTouched = false;
-  S.submitted = false; S.pos = 0; S.clockT = null; S.opts = { w: false, alt: false }; S.overturned = false; S.appeal = false;
+  S.submitted = false; S.pos = 0; S.clockT = null; S.opts = { w: false, alt: false }; S.overturned = false; S.appeal = false; S.appealResult = false; S.againNote = false;
   S.intake = 'inbox'; S.today = false;
   const c = cur();
   S.s6 = { send: id === 'C105' ? S.c105Send : (c.repeat ? c.repeat.def : null), again: false, linked: null, note: null };
@@ -132,7 +132,7 @@ function go(n) {
   say(fill(STR.live.screen, { n, name: STR.screens[n].name }));
   window.scrollTo(0, 0);
 }
-function restart() { CASES = buildCases('14:35'); S.c105Send = '14:35'; S.mode = 'story'; S.role = 'sub'; S.panel = null; loadCase('C101'); }
+function restart() { CASES = buildCases('14:35'); S.c105Send = '14:35'; S.role = 'tap'; S.panel = null; loadCase('C101'); }
 let liveMsg = '';
 function say(t) { liveMsg = t; }
 
@@ -165,7 +165,7 @@ function bar(c, st) {
     '<div class="brand"><div class="brand-mark">' + ico('shield') + '</div><h1>' + STR.product + ' <span>' + STR.module + '</span></h1></div>' +
     '<span class="fict">' + STR.fictional + '</span>' +
     '<button class="btn" data-act="panel" data-arg="cases" aria-haspopup="dialog">' + ico('list') + STR.caseSelect + ': ' + caseName(c) + ' ' + tag(c.stage) + '</button>' +
-    '<div class="seg" role="group" aria-label="' + STR.modeLabel + '"><button data-act="mode" data-arg="story" aria-pressed="' + (S.mode === 'story') + '">' + STR.modeStory + '</button><button data-act="mode" data-arg="desks" aria-pressed="' + (S.mode === 'desks') + '">' + STR.modeDesks + '</button></div>' +
+    '<div class="seg" role="group" aria-label="' + STR.modeLabel + '"><button data-act="mode" data-arg="desks" aria-pressed="' + (S.mode === 'desks') + '">' + STR.modeDesks + '</button><button data-act="mode" data-arg="story" aria-pressed="' + (S.mode === 'story') + '">' + STR.modeStory + '</button></div>' +
     '<button class="btn" data-act="panel" data-arg="about" aria-haspopup="dialog">' + ico('book') + STR.about + '</button>' +
     '<button class="btn quiet" data-act="restart" title="' + STR.restart + ' (R)">' + ico('restart') + STR.restart + '</button>' +
     '</div></header>';
@@ -232,7 +232,7 @@ function consentLine(c, st) {
   if (c.kind !== 'promo') return '';
   if (st.wd === 'inforce') return fill(STR.x.prefInForce, { t: st.wdAt, f: st.inForceAt });
   if (st.wd === 'recorded') return fill(STR.x.prefWithdrawn, { t: st.wdAt });
-  return STR.x.prefUnchanged;
+  return st.effectiveAt ? '' : STR.x.prefUnchanged;
 }
 function stepsList(st) {
   const subTxt = S.overturned ? STR.x.underReview : st.sub;
@@ -246,6 +246,9 @@ function stepsList(st) {
 function phoneStatus(c, st, withControls) {
   const out = st.informed && c.outcome && !S.overturned ? c.outcome(S.opts) : null, R = STR.s5.resolvedCard;
   let body = '<div class="row" style="justify-content:space-between">' + '<b>' + esc(c.sr) + '</b>' + chipHtml(st) + '</div>';
+  if (S.appeal) body += '<div class="ph-card"><b>' + STR.app.appealTitle + '</b><span>' + STR.app.appealText + '</span></div>';
+  if (S.appealResult) body += '<div class="ph-card"><b>' + STR.app.appealTitle + '</b><span>' + STR.app.upheld + '</span></div>';
+  if (S.againNote) body += '<div class="ph-card"><span>' + STR.x.reportAnother + '</span></div>';
   if (S.overturned) body += '<div class="ph-card"><b>' + STR.x.correctedNotice + '</b><span>' + STR.x.correctedText + '</span></div>';
   else if (st.msg) body += '<div class="ph-card"><span class="ph-h">' + fill(STR.x.latest, { t: st.msgAt }) + '</span>' + st.msg.map((l) => '<span>' + esc(l) + '</span>').join('') + '</div>';
   if (st.needs && c.candidates) body += '<div class="ph-card"><b>' + STR.x.question + '</b>' + c.candidates.map((k) => '<span class="msg"><span class="h"><span>' + k[1] + '</span><span>11:20</span></span><span class="t">' + esc(target(c).text) + '</span></span>').join('') + '<button class="btn primary" data-act="step">' + esc(st.nextEv ? st.nextEv.act : '') + '</button></div>';
@@ -259,7 +262,7 @@ function phoneStatus(c, st, withControls) {
   if (!st.informed || S.overturned) body += '<div class="ph-card"><dl class="kv"><dt>' + STR.owner + '</dt><dd>' + esc(S.overturned ? STR.desk.roles.rev.sub.split(':')[0] : st.owner || STR.none) + '</dd><dt>' + STR.nextUpdate + '</dt><dd>' + esc(S.overturned ? TM.add(S.clockT, CONFIG.nextUpdateMinutes) : st.next || STR.none) + '</dd></dl></div>';
   if (out) body += '<p class="small muted">' + STR.x.reportAnother + '</p>';
   const foot = withControls ? '<div class="row"><button class="btn grow" data-act="again">' + STR.s6.again + '</button><button class="btn grow" data-act="disagree">' + STR.s6.disagree + '</button></div>' : '';
-  return phone(fill(STR.x.caseTitle, { id: caseName(c) }), body, foot, { time: S.clockT, icon: 'shield' });
+  return phone(c.id === 'VOICE' ? STR.x.voiceCase : fill(STR.x.caseTitle, { id: c.id }), body, foot, { time: S.clockT, icon: 'shield' });
 }
 function phoneFor(c, st, controls) {
   if (S.submitted) return phoneStatus(c, st, controls);
@@ -326,7 +329,7 @@ function timebar(c, st) {
 }
 function waitBox(c, st) {
   const s = STR.s3, open = !st.stopped || S.overturned;
-  return '<div class="card"><h4>' + s.waiting + '</h4>' + (open ? '<dl class="waitbox"><div><dt class="muted small">' + STR.x.statusNow + '</dt><dd><b>' + esc(S.overturned ? STR.x.underReview : st.sub || STR.steps[Math.max(0, st.step)]) + '</b></dd></div><div><dt class="muted small">' + STR.owner + '</dt><dd><b>' + esc(S.overturned ? STR.desk.roles.rev.name : st.owner || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.nextUpdate + '</dt><dd><b>' + esc(S.overturned ? TM.add(S.clockT, CONFIG.nextUpdateMinutes) : st.next || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.desk.crmF.feed + '</dt><dd class="small' + (c.feedWarn ? '"><span class="chip amber">' + ico('alert') + esc(c.feed) + '</span>' : '">' + esc(c.feed)) + '</dd></div></dl>' : '<p>' + s.waitingNone + ' ' + (c.follow && st.follow ? '<span class="muted">' + STR.s5.follow + ': ' + esc(c.follow.task) + '. ' + STR.s5.followNote + '</span>' : '') + '</p>') + '</div>';
+  return '<div class="card"><h4>' + s.waiting + '</h4>' + (open ? '<dl class="waitbox"><div><dt class="muted small">' + STR.x.statusNow + '</dt><dd><b>' + esc(S.overturned ? STR.x.underReview : st.sub || STR.steps[Math.max(0, st.step)]) + '</b></dd></div><div><dt class="muted small">' + STR.owner + '</dt><dd><b>' + esc(S.overturned ? STR.desk.roles.rev.name : st.owner || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.nextUpdate + '</dt><dd><b>' + esc(S.overturned ? TM.add(S.clockT, CONFIG.nextUpdateMinutes) : st.next || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.desk.crmF.feed + '</dt><dd class="small' + (c.feedWarn ? '"><span class="chip amber wrap">' + ico('alert') + esc(c.feed) + '</span>' : '">' + esc(c.feed)) + '</dd></div></dl>' : '<p>' + s.waitingNone + ' ' + (c.follow && st.follow ? '<span class="muted">' + STR.s5.follow + ': ' + esc(c.follow.task) + '. ' + STR.s5.followNote + '</span>' : '') + '</p>') + '</div>';
 }
 let LOGSPAN = 2;
 function logBand(c, st) {
@@ -437,10 +440,11 @@ function advanceCard(c, st) {
   const eff = [s.stages.effective, st.effectiveAt || st.inForceAt || '', rank >= 2 || w === 'inforce'];
   const inf = [s.stages.informed, st.stoppedAt || '', !!st.informed];
   const idx = st.list.findIndex((e, i) => i >= S.pos && (e.p.remedy || e.p.informed || e.p.wd === 'inforce'));
+  if (st.informed && !st.remedy && !w) return '<div class="card stack"><h3>' + s.advance + '</h3><p class="note green">' + ico('check') + '<span>' + fill(STR.stepSkipped, { why: st.skip || '' }) + ' ' + s.done + '</span></p></div>';
   let btn;
   if (idx >= 0) { const e = st.list[idx]; btn = '<button class="btn primary" data-act="setpos" data-arg="' + (idx + 1) + '">' + esc(fill(s.advanceTo, { what: e.ttl, t: e.t })) + ico('right') + '</button>'; }
   else if (st.nextEv) btn = '<button class="btn primary" data-act="step">' + STR.s3.step + ': ' + esc(st.nextEv.ttl) + ico('step') + '</button>';
-  else btn = '<p class="note ' + (st.informed ? 'green' : 'amber') + '">' + ico(st.informed ? 'check' : 'clock') + '<span>' + (st.informed ? s.done : s.stillOpen + ' ' + STR.owner + ': ' + esc(st.owner || STR.none) + '. ' + STR.nextUpdate + ': ' + esc(st.next || STR.none) + '.') + '</span></p>';
+  else btn = '<p class="note ' + (st.informed ? 'green' : 'amber') + '">' + ico(st.informed ? 'check' : 'clock') + '<span>' + (st.informed && !S.overturned ? s.done : s.stillOpen + ' ' + STR.owner + ': ' + esc(st.owner || STR.none) + '. ' + STR.nextUpdate + ': ' + esc(st.next || STR.none) + '.') + '</span></p>';
   return '<div class="card stack"><h3>' + s.advance + '</h3><div class="adv">' + [first, eff, inf].map((x) => '<div class="' + (x[2] ? 'done' : '') + '"><b>' + (x[2] ? ico('check') : ico('clock')) + x[0] + '</b><span class="small num">' + (x[2] && x[1] ? x[1] : x[2] ? '' : STR.pending) + '</span></div>').join('') + '</div>' + btn + '</div>';
 }
 function followCard(c, st) {

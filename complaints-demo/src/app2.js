@@ -15,7 +15,7 @@ function turn(c, st, role) {
 }
 function activity(c, st, role) {
   const mine = st.applied.filter((e) => roleOf(c, e.a) === role || (c.pair === 'internal' && e.lane === 'oap' ? 'tap' : e.lane) === role);
-  return '<div class="card"><h3>' + STR.desk.activity + '</h3>' + (mine.length ? '<ol class="queue">' + mine.map((e) => '<li><span class="num">' + e.t + '</span><span><b>' + esc(e.ttl) + '</b><small>' + esc(e.txt) + '</small></span></li>').join('') + '</ol>' : '<p class="muted">' + STR.x.activityNone + '</p>') + '</div>';
+  return '<details class="x"><summary>' + STR.desk.activity + ' (' + mine.length + ')</summary><div>' + (mine.length ? '<ol class="queue">' + mine.map((e) => '<li><span class="num">' + e.t + '</span><span><b>' + esc(e.ttl) + '</b><small>' + esc(e.txt) + '</small></span></li>').join('') + '</ol>' : '<p class="muted">' + STR.x.activityNone + '</p>') + '</div></details>';
 }
 function rail(c, st, role) {
   const d = STR.desk, R = d.roles[role];
@@ -72,7 +72,8 @@ function deskPe(c, st) {
 }
 function deskRev(c, st) {
   const d = STR.desk; let items = '';
-  if (S.appeal) items += '<p class="note amber">' + ico('user') + '<span>' + fill(d.revAppeal, { id: caseName(c) }) + '</span></p>';
+  if (S.appeal) items += '<p class="note amber">' + ico('user') + '<span>' + fill(d.revAppeal, { id: caseName(c) }) + '</span></p><div class="row"><button class="btn primary" data-act="uphold">' + STR.app.uphold + '</button>' + (c.id === 'C101' && st.score ? '<button class="btn" data-act="overturn">' + STR.s5.overturn + '</button>' : '') + '</div>';
+  if (S.appealResult) items += '<p class="note green">' + ico('check') + '<span>' + STR.app.upheld + '</span></p>';
   if (S.submitted && st.finding && c.finding(S.opts).interim) items += '<p class="note amber">' + ico('clock') + '<span>' + fill(d.revPending, { what: esc(c.finding(S.opts).name) }) + '</span></p>';
   let h = '<div class="card stack"><h3>' + d.revQueue + '</h3>' + (items || '<p class="muted">' + d.revEmpty + '</p>');
   if (st.finding) h += findingMini(c, st);
@@ -80,15 +81,25 @@ function deskRev(c, st) {
   return h + '</div>' + (S.submitted ? scoreCard(c, st) : '');
 }
 function desks(c, st) {
-  const d = STR.desk, roles = rolesFor(c);
+  const d = STR.desk, A = STR.app, roles = rolesFor(c).filter((r) => r !== 'sub');
   if (roles.indexOf(S.role) < 0) S.role = 'tap';
-  const ne = S.submitted ? st.nextEv : null, nextRole = ne ? roleOf(c, ne.a) : (S.submitted ? null : 'sub');
-  let h = '<main id="main"><p class="eyebrow" style="margin-bottom:6px">' + d.viewing + '</p><div class="roles" role="tablist" aria-label="' + d.viewing + '">' + roles.map((r) => '<button role="tab" data-act="role" data-arg="' + r + '" aria-selected="' + (S.role === r) + '"><b>' + (nextRole === r ? '<span class="dot" title="' + d.yourTurn + '"></span>' : '') + esc(roleLabel(c, r)) + '</b><small>' + (c.pair === 'internal' && r === 'tap' ? STR.x.laneBoth : d.roles[r].sub) + (nextRole === r ? ' · ' + d.yourTurn : '') + '</small></button>').join('') + '</div>';
-  if (S.submitted) h += '<div style="margin-bottom:16px">' + timebar(c, st) + '</div>';
-  const r = S.role, tb = turn(c, st, r);
-  if (r === 'sub') h += '<div class="desk sub"><div class="phonecol">' + (S.submitted ? phoneStatus(c, st, st.informed) : (S.selected === c.target && S.screen >= 2 ? phoneForm(c) : phoneIntake(c))) + '</div><div class="stack">' + tb + (S.submitted ? waitBox(c, st) + activity(c, st, 'sub') : '<div class="card"><h3>' + STR.s1.prefill + '</h3>' + (S.selected === c.target ? prefillKv(c) : '<p class="muted">' + STR.s1.reportHint + '</p>') + '</div>') + '</div>' + rail(c, st, r) + '</div>';
-  else h += '<div class="desk"><div class="stack">' + tb + (S.submitted || r === 'rev' ? ({ tap: deskTap, oap: deskOap, dc: deskDc, pe: deskPe, rev: deskRev }[r])(c, st) : '') + '</div>' + rail(c, st, r) + '</div>';
-  return h + '</main>';
+  const ne = S.submitted ? st.nextEv : null, nextRole = ne ? roleOf(c, ne.a) : null, r = S.role;
+  const ph = S.submitted ? phoneStatus(c, st, !!st.informed) : (S.selected === c.target && S.screen >= 2 ? phoneForm(c) : phoneIntake(c));
+  const modes = [['inbox', STR.s1.modeInbox], ['shot', STR.s1.modeShot], ['assist', STR.s1.modeAssist]];
+  let left = '<div class="phonecol"><div class="row"><b>' + ico('user') + ' ' + SUBSCRIBER.name + '</b><span class="muted small">' + SUBSCRIBER.number + '</span></div>' + ph +
+    (S.submitted ? '' : '<div class="seg" role="group" aria-label="' + STR.s1.modes + '">' + modes.map((m) => '<button data-act="intake" data-arg="' + m[0] + '" aria-pressed="' + (S.intake === m[0]) + '">' + m[1] + '</button>').join('') + '</div>') + '</div>';
+  let right = '<div class="roles" role="tablist" aria-label="' + d.viewing + '">' + roles.map((x) => '<button role="tab" data-act="role" data-arg="' + x + '" aria-selected="' + (r === x) + '"><b>' + (nextRole === x ? '<span class="dot"></span>' : '') + esc(roleLabel(c, x)) + '</b><small>' + (nextRole === x ? A.actionNeeded : A.consoles[x]) + '</small></button>').join('') + '</div>';
+  if (!S.submitted) right += '<div class="empty">' + ico('phone') + '<b>' + A.empty + '</b><span class="muted">' + A.emptyHint + '</span><button class="btn" data-act="desksubmit">' + A.quick + '</button></div>';
+  else {
+    const m = metricOf(c, st, S.clockT);
+    right += '<div class="apprail"><span class="clock-t">' + esc(S.clockT) + '</span>' + chipHtml(st) + (m === 'running' ? '' : badge(m)) + '<span class="muted small grow">' + caseName(c) + ' · ' + c.sr + ' · ' + esc(c.type) + '</span><button class="btn sm quiet" data-act="stepback"' + (S.pos <= posAt(c, c.regAt) ? ' disabled' : '') + '>' + ico('stepb') + A.undo + '</button><button class="btn sm quiet" data-act="panel" data-arg="arch">' + ico('diagram') + A.map + '</button></div>';
+    if (!ne) right += '<div class="turn wait">' + ico('check') + '<span class="grow">' + (st.informed ? A.done : A.open + ' ' + esc(st.owner || '') + (st.next ? ' · ' + STR.nextUpdate + ' ' + st.next : '')) + '</span></div>';
+    else if (nextRole === r) right += '<div class="turn">' + ico('flag') + '<span class="grow"><b>' + esc(ne.act || ne.ttl) + '</b></span><button class="btn" data-act="step">' + A.doIt + ico('right') + '</button></div>';
+    else if (nextRole === 'sub') right += '<div class="turn wait">' + ico('clock') + '<span class="grow">' + fill(d.waitingOn, { who: SUBSCRIBER.name }) + '</span></div>';
+    else right += '<div class="turn wait">' + ico('clock') + '<span class="grow">' + fill(d.waitingOn, { who: esc(actorName(c, ne.a)) }) + '</span><button class="btn" data-act="role" data-arg="' + nextRole + '">' + fill(A.goTo, { who: esc(roleLabel(c, nextRole)) }) + ico('right') + '</button></div>';
+    right += ({ tap: deskTap, oap: deskOap, dc: deskDc, pe: deskPe, rev: deskRev }[r])(c, st);
+  }
+  return '<main id="main" class="app"><div class="appgrid">' + left + '<div class="stack">' + right + '</div></div></main>';
 }
 
 /* ============================================================
@@ -180,15 +191,15 @@ function panelArch(c, st) {
 /* ============================================================
    Render and events
    ============================================================ */
-let lastScreenKey = '';
+let lastScreenKey = '', opener = null, hadPanel = false;
 function render() {
   const c = cur(), st = now(), ae = document.activeElement;
   const fk = ae && ae.dataset && (ae.dataset.act || ae.dataset.chg) ? (ae.dataset.act || ae.dataset.chg) + '|' + (ae.dataset.arg || ae.value || '') : null;
   const inPanel = ae && ae.closest && ae.closest('#panel');
-  let h = bar(c, st) + strip(c, st);
+  let h = bar(c, st) + (S.mode === 'story' ? strip(c, st) : '');
   if (S.mode === 'story') h += stepper() + '<main id="main">' + qhead(c) + [null, screen1, screen2, screen3, screen4, screen5, screen6, screen7][S.screen](c, st) + '</main>';
   else h += desks(c, st);
-  h += '<footer class="foot"><p>' + STR.keys + ' ' + STR.fictional + ' ' + STR.x.namesNote + '</p></footer>';
+  if (S.mode === 'story') h += '<footer class="foot"><p>' + STR.keys + ' ' + STR.fictional + ' ' + STR.x.namesNote + '</p></footer>';
   $('#app').innerHTML = h;
   const p = S.panel;
   $('#panel').innerHTML = !p ? '' : p === 'about' ? panelAbout() : p === 'detail' ? panelDetail() : p === 'cases' ? panelCases() : p === 'fact' ? panelFact() : panelArch(c, st);
@@ -197,6 +208,8 @@ function render() {
   let el = null;
   if (fk) { const [a, v] = fk.split('|'); el = Array.from(document.querySelectorAll('[data-act="' + a + '"],[data-chg="' + a + '"]')).find((x) => (x.dataset.arg || x.value || '') === v && (!!x.closest('#panel') === !!p)) || null; }
   if (p && (!el || !inPanel)) el = $('#pclose');
+  if (!p && hadPanel && opener) { const [a, v] = opener.split('|'); el = Array.from(document.querySelectorAll('[data-act="' + a + '"]')).find((x) => (x.dataset.arg || '') === v) || el; }
+  hadPanel = !!p;
   if (!p && !el && key !== lastScreenKey) el = $('#top');
   if (el && !el.disabled) el.focus({ preventScroll: !!fk && el.id !== 'top' });
   lastScreenKey = key;
@@ -217,13 +230,14 @@ const ACT = {
   assistok: () => { S.selected = cur().target; S.reason = cur().reason; if (S.mode === 'story') go(2); else S.screen = 2; },
   submit: () => submit(true), desksubmit: () => submit(false),
   unsubmit: () => { S.submitted = false; S.pos = 0; S.clockT = null; S.overturned = false; S.appeal = false; S.opts = { w: false, alt: false }; },
-  step: () => stepTo(S.pos + 1),
+  step: () => { stepTo(S.pos + 1); if (S.mode === 'desks') { let e; while ((e = now().nextEv) && !e.act) stepTo(S.pos + 1); } },
+  uphold: () => { S.appeal = false; S.appealResult = true; },
   stepback: () => { if (S.pos > posAt(cur(), cur().regAt)) stepTo(S.pos - 1); },
   setpos: (a) => stepTo(Number(a)),
   branch: (a) => { loadCase(a, true); submit(false); go(4); },
-  overturn: () => { S.overturned = !S.overturned; },
-  again: () => { if (S.mode !== 'story' || S.screen !== 6) { S.mode = 'story'; go(6); S.s6.again = true; } else S.s6.again = !S.s6.again; },
-  disagree: () => { if (S.mode !== 'story' || S.screen !== 6) { S.mode = 'story'; go(6); S.appeal = true; } else S.appeal = !S.appeal; },
+  overturn: () => { S.overturned = !S.overturned; S.appeal = false; },
+  again: () => { if (S.mode === 'desks') { if (S.caseId === 'C101') { CASES = buildCases(S.c105Send); loadCase('C105', true); } else S.againNote = true; } else if (S.screen !== 6) { go(6); S.s6.again = true; } else S.s6.again = !S.s6.again; },
+  disagree: () => { if (S.mode === 'desks') { S.appeal = true; S.appealResult = false; S.role = 'rev'; } else if (S.screen !== 6) { go(6); S.appeal = true; } else S.appeal = !S.appeal; },
   s6note: (a) => { S.s6.note = S.s6.note === a ? null : a; },
   link: (a) => { S.s6.linked = a; },
   send: (a) => setSend(a),
@@ -245,6 +259,7 @@ const CHG = {
 };
 document.addEventListener('click', (ev) => {
   const el = ev.target.closest('[data-act]'); if (!el || el.disabled) return;
+  if (!S.panel && (el.dataset.act === 'panel' || el.dataset.act === 'fact')) opener = el.dataset.act + '|' + (el.dataset.arg || '');
   const r = ACT[el.dataset.act](el.dataset.arg, el, ev);
   if (r !== false) render();
 });

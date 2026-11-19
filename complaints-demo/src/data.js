@@ -29,8 +29,8 @@ const STR = {
   pageTitle: 'DigiConsent Complaint Management',
   fictional: 'Fictional records. Simulated actions.',
   skip: 'Skip to the demonstration',
-  modeStory: 'Guided story',
-  modeDesks: 'Role desks',
+  modeStory: 'Walkthrough',
+  modeDesks: 'App',
   modeLabel: 'Demonstration mode',
   about: 'About this solution',
   detail: 'View operating detail',
@@ -419,7 +419,7 @@ const STR = {
     roles: {
       sub: { name: 'Rohan', sub: 'Subscriber', sees: ['Own messages and calls', 'Case status, owner and next update', 'What changed and when it took effect'], cannot: ['The evidence log', 'Enterprise campaign records'] },
       tap: { sub: 'Subscriber\'s operator: owns the case', sees: ['The case in CRM, the clock and Rohan\'s status', 'The evidence log for this message, opened with a case ID', 'Findings from its own rules component'], cannot: ['Enterprise records beyond the proof returned for a task'] },
-      oap: { sub: 'Sender\'s operator: writes its half of the log', sees: ['The complaint on its DLT channel', 'The evidence log through its own rules component', 'Findings to accept or review under the matrix'], cannot: ['Rohan\'s case record in the other operator\'s CRM'] },
+      oap: { sub: 'Sender\'s operator: writes its half of the log', sees: ['The complaint on its DLT channel', 'The evidence log through its own rules component', 'Findings to accept or review under the matrix'], cannot: ['Rohan\'s case record in Vi\'s CRM'] },
       dc: { name: 'DigiConsent', sub: 'Platform: consent, tasks and trust', sees: ['Consent register and withdrawal receipts', 'Enterprise task exchange', 'Trust score history and prevention view', 'Findings and task requests sent by the operators'], cannot: ['The evidence log. It hosts the encrypted log and holds no key.'] },
       pe: { name: 'Example Retail', sub: 'Enterprise (PE) with Example Messaging (TM)', sees: ['Only the task: the question, the minimum evidence, the correction and the due time'], cannot: ['The evidence log', 'Rohan\'s other consents or complaints', 'Other enterprises\' tasks'] },
       rev: { name: 'Reviewer', sub: 'Authorised reviewer: exceptions only', sees: ['Cases the rules do not cover: conflicts, contested attribution, material sanctions and appeals', 'The finding, its supporting facts and the decision record'], cannot: ['Routine cases decided by approved rule'] }
@@ -469,6 +469,13 @@ const STR = {
     caseAlt: 'Diagram of the parties in this case and the path between them. The same content follows as an ordered list, and Read as list shows the nodes as text.',
     archClock: 'Lit to the case clock:', rulesTelco: 'The rules are telco-controlled: each operator runs its own rules component.',
     namesNote: 'Operator names are real. The records, times and results shown for them are fictional.'
+  },
+  app: {
+    consoles: { tap: 'Complaint desk', oap: 'Sender-side desk', dc: 'Platform console', pe: 'Enterprise portal', rev: 'Review queue' },
+    actionNeeded: 'Action needed', empty: 'No complaints yet', emptyHint: 'Report a message from Rohan\'s phone.', quick: 'Submit the scripted complaint',
+    undo: 'Undo', map: 'Map', doIt: 'Do it', goTo: 'Go to {who}', done: 'Resolved. Rohan has the outcome.', open: 'Open with',
+    uphold: 'Uphold the finding', upheld: 'Appeal decided: the finding is upheld. The earlier evidence and decision stand.',
+    appealTitle: 'Your appeal', appealText: 'A reviewer is looking at this case. The earlier evidence and decision are kept.'
   },
   live: { screen: 'Screen {n} of 7: {name}', clock: 'Case clock {t}. {what}', caseLoaded: 'Case {id} loaded.', submitted: 'Complaint registered.', mode: '{mode} mode.' }
 };
@@ -555,7 +562,7 @@ function buildCases(c105Send) {
       found: 'This offer was sent after your opt-out. The sender used an out-of-date suppression list.',
       done: o.w ? 'Your consent for promotional SMS from Example Retail was withdrawn and the sender corrected its list.' : 'The sender corrected its list so your 09:00 opt-out is honoured. No withdrawal was issued by this complaint.',
       protection: 'Offers from Example Retail are suppressed from 14:07. Delivery updates (VM-EXDLVR-S) are unaffected.',
-      confirmed: 'Vi (TAP), from the consent register' + (o.w ? ' receipt RC-0413' : '') + ' and list L-0912, at 14:07. You were informed at 14:08.'
+      confirmed: 'Vi (TAP), from ' + (o.w ? 'the consent register receipt RC-0413 and ' : '') + 'list L-0912, at 14:07. You were informed at 14:08.'
     }),
     score: { key: 'decrease', incident: 'Offer after opt-out, EV-101', actor: 'Example Retail (PE)', decision: 'After revocation, by approved rule', policy: 'P-demo-1', severity: 'Verified incident, first occurrence', at: '14:08' },
     follow: { task: 'Wider campaign audit of other recipients on list L-0911', owner: 'Campaign owner, Example Retail', state: 'Pending' },
@@ -723,7 +730,7 @@ function buildCases(c105Send) {
       { t: '12:01', a: 'oap', lane: 'oap', ttl: 'BSNL half not yet written', txt: 'BSNL feed current to 11:19. The 11:20 entries have not arrived. Answer: not yet available.', p: {} },
       { t: '12:02', a: 'tap', lane: 'tap', act: 'Ask Rohan one question', ttl: 'One question to Rohan', txt: 'Did you get one message or two at 11:20? Both texts are shown.', p: { needs: true, msg: ['One question: did you get one message or two at 11:20?'] } },
       { t: '12:03', a: 'sub', lane: 'tap', act: 'Answer: they look identical', ttl: 'Rohan answers: they look identical', txt: 'The case keeps both events and waits. No automatic verdict.', p: { needs: false, next: '12:15', msg: ['Thank you. We are keeping both messages on your case. Waiting for network evidence. Next update 12:15.'] } },
-      { t: '12:10', a: 'tap', lane: 'tap', act: 'Send the minute 10 update', ttl: 'Minute 10: still waiting, clock still running', txt: 'Owner: Vi evidence desk. Retry when the BSNL feed covers the full 11:20 search window. Next update 12:15. The clock keeps running from 12:00.', p: { score: true, msg: o => ['Waiting for network evidence. Vi evidence desk will retry when the other operator\'s records arrive. Next update 12:15.'].concat(o.w ? ['Your withdrawal is recorded. It is in force when confirmed.'] : []) } }
+      { t: '12:10', a: 'tap', lane: 'tap', act: 'Send the minute 10 update', ttl: 'Minute 10: still waiting, clock still running', txt: 'Owner: Vi evidence desk. Retry when the BSNL feed covers the full 11:20 search window. Next update 12:15. The clock keeps running from 12:00.', p: { score: true, msg: o => ['Waiting for network evidence. Vi evidence desk will retry when BSNL\'s records arrive. Next update 12:15.'].concat(o.w ? ['Your withdrawal is recorded. It is in force when confirmed.'] : []) } }
     ]
   };
 

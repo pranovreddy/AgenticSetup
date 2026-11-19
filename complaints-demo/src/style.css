@@ -341,10 +341,23 @@ input.time { min-height: 44px; padding: 0 10px; border: 1.5px solid var(--line-2
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
 
 #top:focus { outline: none; }
-.bar-in .btn, .bar-in .seg button { min-height: 36px; }
+@media (min-width: 761px) { .bar-in .btn, .bar-in .seg button { min-height: 36px; } }
 
 .panel > * { flex: none; }
 .edges .ico, .lane-empty .ico, p > .ico { vertical-align: -3px; display: inline-block; }
 
 .two.wide { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
 @media (max-width: 1180px) { .two.wide { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- app mode: phone on the left, the selected console on the right ---------- */
+.appgrid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 28px; align-items: start; }
+.app p.small.muted, .app .card > p.small { display: none; }
+.app .roles { margin-bottom: 0; }
+.apprail { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.apprail .clock-t { font-size: 22px; }
+.empty { border: 1.5px dashed var(--line-2); border-radius: var(--r-lg); padding: 48px 20px; display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center; }
+.empty .ico { width: 28px; height: 28px; }
+@media (max-width: 1180px) { .appgrid { grid-template-columns: minmax(0, 1fr); } }
+
+.chip.wrap { white-space: normal; border-radius: 8px; }
+@media (max-width: 760px) { .stepper ol { flex: 1 1 100%; order: 3; } .timebar input[type=range] { height: 44px; } .ph-card, .tl li, .ph-card .kv { font-size: 16px; } }

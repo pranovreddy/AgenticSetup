@@ -348,13 +348,26 @@ input.time { min-height: 44px; padding: 0 10px; border: 1.5px solid var(--line-2
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
 
 #top:focus { outline: none; }
-.bar-in .btn, .bar-in .seg button { min-height: 36px; }
+@media (min-width: 761px) { .bar-in .btn, .bar-in .seg button { min-height: 36px; } }
 
 .panel > * { flex: none; }
 .edges .ico, .lane-empty .ico, p > .ico { vertical-align: -3px; display: inline-block; }
 
 .two.wide { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
 @media (max-width: 1180px) { .two.wide { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- app mode: phone on the left, the selected console on the right ---------- */
+.appgrid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 28px; align-items: start; }
+.app p.small.muted, .app .card > p.small { display: none; }
+.app .roles { margin-bottom: 0; }
+.apprail { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.apprail .clock-t { font-size: 22px; }
+.empty { border: 1.5px dashed var(--line-2); border-radius: var(--r-lg); padding: 48px 20px; display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center; }
+.empty .ico { width: 28px; height: 28px; }
+@media (max-width: 1180px) { .appgrid { grid-template-columns: minmax(0, 1fr); } }
+
+.chip.wrap { white-space: normal; border-radius: 8px; }
+@media (max-width: 760px) { .stepper ol { flex: 1 1 100%; order: 3; } .timebar input[type=range] { height: 44px; } .ph-card, .tl li, .ph-card .kv { font-size: 16px; } }
 
 </style>
 </head>
@@ -395,8 +408,8 @@ const STR = {
   pageTitle: 'DigiConsent Complaint Management',
   fictional: 'Fictional records. Simulated actions.',
   skip: 'Skip to the demonstration',
-  modeStory: 'Guided story',
-  modeDesks: 'Role desks',
+  modeStory: 'Walkthrough',
+  modeDesks: 'App',
   modeLabel: 'Demonstration mode',
   about: 'About this solution',
   detail: 'View operating detail',
@@ -785,7 +798,7 @@ const STR = {
     roles: {
       sub: { name: 'Rohan', sub: 'Subscriber', sees: ['Own messages and calls', 'Case status, owner and next update', 'What changed and when it took effect'], cannot: ['The evidence log', 'Enterprise campaign records'] },
       tap: { sub: 'Subscriber\'s operator: owns the case', sees: ['The case in CRM, the clock and Rohan\'s status', 'The evidence log for this message, opened with a case ID', 'Findings from its own rules component'], cannot: ['Enterprise records beyond the proof returned for a task'] },
-      oap: { sub: 'Sender\'s operator: writes its half of the log', sees: ['The complaint on its DLT channel', 'The evidence log through its own rules component', 'Findings to accept or review under the matrix'], cannot: ['Rohan\'s case record in the other operator\'s CRM'] },
+      oap: { sub: 'Sender\'s operator: writes its half of the log', sees: ['The complaint on its DLT channel', 'The evidence log through its own rules component', 'Findings to accept or review under the matrix'], cannot: ['Rohan\'s case record in Vi\'s CRM'] },
       dc: { name: 'DigiConsent', sub: 'Platform: consent, tasks and trust', sees: ['Consent register and withdrawal receipts', 'Enterprise task exchange', 'Trust score history and prevention view', 'Findings and task requests sent by the operators'], cannot: ['The evidence log. It hosts the encrypted log and holds no key.'] },
       pe: { name: 'Example Retail', sub: 'Enterprise (PE) with Example Messaging (TM)', sees: ['Only the task: the question, the minimum evidence, the correction and the due time'], cannot: ['The evidence log', 'Rohan\'s other consents or complaints', 'Other enterprises\' tasks'] },
       rev: { name: 'Reviewer', sub: 'Authorised reviewer: exceptions only', sees: ['Cases the rules do not cover: conflicts, contested attribution, material sanctions and appeals', 'The finding, its supporting facts and the decision record'], cannot: ['Routine cases decided by approved rule'] }
@@ -835,6 +848,13 @@ const STR = {
     caseAlt: 'Diagram of the parties in this case and the path between them. The same content follows as an ordered list, and Read as list shows the nodes as text.',
     archClock: 'Lit to the case clock:', rulesTelco: 'The rules are telco-controlled: each operator runs its own rules component.',
     namesNote: 'Operator names are real. The records, times and results shown for them are fictional.'
+  },
+  app: {
+    consoles: { tap: 'Complaint desk', oap: 'Sender-side desk', dc: 'Platform console', pe: 'Enterprise portal', rev: 'Review queue' },
+    actionNeeded: 'Action needed', empty: 'No complaints yet', emptyHint: 'Report a message from Rohan\'s phone.', quick: 'Submit the scripted complaint',
+    undo: 'Undo', map: 'Map', doIt: 'Do it', goTo: 'Go to {who}', done: 'Resolved. Rohan has the outcome.', open: 'Open with',
+    uphold: 'Uphold the finding', upheld: 'Appeal decided: the finding is upheld. The earlier evidence and decision stand.',
+    appealTitle: 'Your appeal', appealText: 'A reviewer is looking at this case. The earlier evidence and decision are kept.'
   },
   live: { screen: 'Screen {n} of 7: {name}', clock: 'Case clock {t}. {what}', caseLoaded: 'Case {id} loaded.', submitted: 'Complaint registered.', mode: '{mode} mode.' }
 };
@@ -921,7 +941,7 @@ function buildCases(c105Send) {
       found: 'This offer was sent after your opt-out. The sender used an out-of-date suppression list.',
       done: o.w ? 'Your consent for promotional SMS from Example Retail was withdrawn and the sender corrected its list.' : 'The sender corrected its list so your 09:00 opt-out is honoured. No withdrawal was issued by this complaint.',
       protection: 'Offers from Example Retail are suppressed from 14:07. Delivery updates (VM-EXDLVR-S) are unaffected.',
-      confirmed: 'Vi (TAP), from the consent register' + (o.w ? ' receipt RC-0413' : '') + ' and list L-0912, at 14:07. You were informed at 14:08.'
+      confirmed: 'Vi (TAP), from ' + (o.w ? 'the consent register receipt RC-0413 and ' : '') + 'list L-0912, at 14:07. You were informed at 14:08.'
     }),
     score: { key: 'decrease', incident: 'Offer after opt-out, EV-101', actor: 'Example Retail (PE)', decision: 'After revocation, by approved rule', policy: 'P-demo-1', severity: 'Verified incident, first occurrence', at: '14:08' },
     follow: { task: 'Wider campaign audit of other recipients on list L-0911', owner: 'Campaign owner, Example Retail', state: 'Pending' },
@@ -1089,7 +1109,7 @@ function buildCases(c105Send) {
       { t: '12:01', a: 'oap', lane: 'oap', ttl: 'BSNL half not yet written', txt: 'BSNL feed current to 11:19. The 11:20 entries have not arrived. Answer: not yet available.', p: {} },
       { t: '12:02', a: 'tap', lane: 'tap', act: 'Ask Rohan one question', ttl: 'One question to Rohan', txt: 'Did you get one message or two at 11:20? Both texts are shown.', p: { needs: true, msg: ['One question: did you get one message or two at 11:20?'] } },
       { t: '12:03', a: 'sub', lane: 'tap', act: 'Answer: they look identical', ttl: 'Rohan answers: they look identical', txt: 'The case keeps both events and waits. No automatic verdict.', p: { needs: false, next: '12:15', msg: ['Thank you. We are keeping both messages on your case. Waiting for network evidence. Next update 12:15.'] } },
-      { t: '12:10', a: 'tap', lane: 'tap', act: 'Send the minute 10 update', ttl: 'Minute 10: still waiting, clock still running', txt: 'Owner: Vi evidence desk. Retry when the BSNL feed covers the full 11:20 search window. Next update 12:15. The clock keeps running from 12:00.', p: { score: true, msg: o => ['Waiting for network evidence. Vi evidence desk will retry when the other operator\'s records arrive. Next update 12:15.'].concat(o.w ? ['Your withdrawal is recorded. It is in force when confirmed.'] : []) } }
+      { t: '12:10', a: 'tap', lane: 'tap', act: 'Send the minute 10 update', ttl: 'Minute 10: still waiting, clock still running', txt: 'Owner: Vi evidence desk. Retry when the BSNL feed covers the full 11:20 search window. Next update 12:15. The clock keeps running from 12:00.', p: { score: true, msg: o => ['Waiting for network evidence. Vi evidence desk will retry when BSNL\'s records arrive. Next update 12:15.'].concat(o.w ? ['Your withdrawal is recorded. It is in force when confirmed.'] : []) } }
     ]
   };
 
@@ -1593,7 +1613,7 @@ const CONTENT = {
    ============================================================ */
 let CASES = buildCases('14:35');
 const S = {
-  mode: 'story', screen: 1, caseId: 'C101', role: 'sub',
+  mode: 'desks', screen: 1, caseId: 'C101', role: 'tap',
   intake: 'inbox', selected: null, shotSel: null, wrong: false,
   reason: null, box: false, boxTouched: false, submitted: false,
   pos: 0, clockT: null, opts: { w: false, alt: false },
@@ -1639,7 +1659,7 @@ function derive(c, pos, o) {
     });
     if (p.stopped) st.stoppedAt = e.t;
     if (p.finding && !st.findingAt) st.findingAt = e.t;
-    if (p.task === 'verified' || p.remedy === 'effective') st.effectiveAt = st.effectiveAt || e.t;
+    if (p.remedy === 'effective') st.effectiveAt = st.effectiveAt || e.t;
     st.last = e;
   });
   st.nextEv = list[pos] || null;
@@ -1692,7 +1712,7 @@ const target = (c) => c.inbox.find((m) => m.id === c.target);
 /* ---------- case lifecycle ---------- */
 function loadCase(id, keep) {
   S.caseId = id; S.selected = null; S.shotSel = null; S.wrong = false; S.reason = null; S.box = false; S.boxTouched = false;
-  S.submitted = false; S.pos = 0; S.clockT = null; S.opts = { w: false, alt: false }; S.overturned = false; S.appeal = false;
+  S.submitted = false; S.pos = 0; S.clockT = null; S.opts = { w: false, alt: false }; S.overturned = false; S.appeal = false; S.appealResult = false; S.againNote = false;
   S.intake = 'inbox'; S.today = false;
   const c = cur();
   S.s6 = { send: id === 'C105' ? S.c105Send : (c.repeat ? c.repeat.def : null), again: false, linked: null, note: null };
@@ -1721,7 +1741,7 @@ function go(n) {
   say(fill(STR.live.screen, { n, name: STR.screens[n].name }));
   window.scrollTo(0, 0);
 }
-function restart() { CASES = buildCases('14:35'); S.c105Send = '14:35'; S.mode = 'story'; S.role = 'sub'; S.panel = null; loadCase('C101'); }
+function restart() { CASES = buildCases('14:35'); S.c105Send = '14:35'; S.role = 'tap'; S.panel = null; loadCase('C101'); }
 let liveMsg = '';
 function say(t) { liveMsg = t; }
 
@@ -1754,7 +1774,7 @@ function bar(c, st) {
     '<div class="brand"><div class="brand-mark">' + ico('shield') + '</div><h1>' + STR.product + ' <span>' + STR.module + '</span></h1></div>' +
     '<span class="fict">' + STR.fictional + '</span>' +
     '<button class="btn" data-act="panel" data-arg="cases" aria-haspopup="dialog">' + ico('list') + STR.caseSelect + ': ' + caseName(c) + ' ' + tag(c.stage) + '</button>' +
-    '<div class="seg" role="group" aria-label="' + STR.modeLabel + '"><button data-act="mode" data-arg="story" aria-pressed="' + (S.mode === 'story') + '">' + STR.modeStory + '</button><button data-act="mode" data-arg="desks" aria-pressed="' + (S.mode === 'desks') + '">' + STR.modeDesks + '</button></div>' +
+    '<div class="seg" role="group" aria-label="' + STR.modeLabel + '"><button data-act="mode" data-arg="desks" aria-pressed="' + (S.mode === 'desks') + '">' + STR.modeDesks + '</button><button data-act="mode" data-arg="story" aria-pressed="' + (S.mode === 'story') + '">' + STR.modeStory + '</button></div>' +
     '<button class="btn" data-act="panel" data-arg="about" aria-haspopup="dialog">' + ico('book') + STR.about + '</button>' +
     '<button class="btn quiet" data-act="restart" title="' + STR.restart + ' (R)">' + ico('restart') + STR.restart + '</button>' +
     '</div></header>';
@@ -1821,7 +1841,7 @@ function consentLine(c, st) {
   if (c.kind !== 'promo') return '';
   if (st.wd === 'inforce') return fill(STR.x.prefInForce, { t: st.wdAt, f: st.inForceAt });
   if (st.wd === 'recorded') return fill(STR.x.prefWithdrawn, { t: st.wdAt });
-  return STR.x.prefUnchanged;
+  return st.effectiveAt ? '' : STR.x.prefUnchanged;
 }
 function stepsList(st) {
   const subTxt = S.overturned ? STR.x.underReview : st.sub;
@@ -1835,6 +1855,9 @@ function stepsList(st) {
 function phoneStatus(c, st, withControls) {
   const out = st.informed && c.outcome && !S.overturned ? c.outcome(S.opts) : null, R = STR.s5.resolvedCard;
   let body = '<div class="row" style="justify-content:space-between">' + '<b>' + esc(c.sr) + '</b>' + chipHtml(st) + '</div>';
+  if (S.appeal) body += '<div class="ph-card"><b>' + STR.app.appealTitle + '</b><span>' + STR.app.appealText + '</span></div>';
+  if (S.appealResult) body += '<div class="ph-card"><b>' + STR.app.appealTitle + '</b><span>' + STR.app.upheld + '</span></div>';
+  if (S.againNote) body += '<div class="ph-card"><span>' + STR.x.reportAnother + '</span></div>';
   if (S.overturned) body += '<div class="ph-card"><b>' + STR.x.correctedNotice + '</b><span>' + STR.x.correctedText + '</span></div>';
   else if (st.msg) body += '<div class="ph-card"><span class="ph-h">' + fill(STR.x.latest, { t: st.msgAt }) + '</span>' + st.msg.map((l) => '<span>' + esc(l) + '</span>').join('') + '</div>';
   if (st.needs && c.candidates) body += '<div class="ph-card"><b>' + STR.x.question + '</b>' + c.candidates.map((k) => '<span class="msg"><span class="h"><span>' + k[1] + '</span><span>11:20</span></span><span class="t">' + esc(target(c).text) + '</span></span>').join('') + '<button class="btn primary" data-act="step">' + esc(st.nextEv ? st.nextEv.act : '') + '</button></div>';
@@ -1848,7 +1871,7 @@ function phoneStatus(c, st, withControls) {
   if (!st.informed || S.overturned) body += '<div class="ph-card"><dl class="kv"><dt>' + STR.owner + '</dt><dd>' + esc(S.overturned ? STR.desk.roles.rev.sub.split(':')[0] : st.owner || STR.none) + '</dd><dt>' + STR.nextUpdate + '</dt><dd>' + esc(S.overturned ? TM.add(S.clockT, CONFIG.nextUpdateMinutes) : st.next || STR.none) + '</dd></dl></div>';
   if (out) body += '<p class="small muted">' + STR.x.reportAnother + '</p>';
   const foot = withControls ? '<div class="row"><button class="btn grow" data-act="again">' + STR.s6.again + '</button><button class="btn grow" data-act="disagree">' + STR.s6.disagree + '</button></div>' : '';
-  return phone(fill(STR.x.caseTitle, { id: caseName(c) }), body, foot, { time: S.clockT, icon: 'shield' });
+  return phone(c.id === 'VOICE' ? STR.x.voiceCase : fill(STR.x.caseTitle, { id: c.id }), body, foot, { time: S.clockT, icon: 'shield' });
 }
 function phoneFor(c, st, controls) {
   if (S.submitted) return phoneStatus(c, st, controls);
@@ -1915,7 +1938,7 @@ function timebar(c, st) {
 }
 function waitBox(c, st) {
   const s = STR.s3, open = !st.stopped || S.overturned;
-  return '<div class="card"><h4>' + s.waiting + '</h4>' + (open ? '<dl class="waitbox"><div><dt class="muted small">' + STR.x.statusNow + '</dt><dd><b>' + esc(S.overturned ? STR.x.underReview : st.sub || STR.steps[Math.max(0, st.step)]) + '</b></dd></div><div><dt class="muted small">' + STR.owner + '</dt><dd><b>' + esc(S.overturned ? STR.desk.roles.rev.name : st.owner || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.nextUpdate + '</dt><dd><b>' + esc(S.overturned ? TM.add(S.clockT, CONFIG.nextUpdateMinutes) : st.next || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.desk.crmF.feed + '</dt><dd class="small' + (c.feedWarn ? '"><span class="chip amber">' + ico('alert') + esc(c.feed) + '</span>' : '">' + esc(c.feed)) + '</dd></div></dl>' : '<p>' + s.waitingNone + ' ' + (c.follow && st.follow ? '<span class="muted">' + STR.s5.follow + ': ' + esc(c.follow.task) + '. ' + STR.s5.followNote + '</span>' : '') + '</p>') + '</div>';
+  return '<div class="card"><h4>' + s.waiting + '</h4>' + (open ? '<dl class="waitbox"><div><dt class="muted small">' + STR.x.statusNow + '</dt><dd><b>' + esc(S.overturned ? STR.x.underReview : st.sub || STR.steps[Math.max(0, st.step)]) + '</b></dd></div><div><dt class="muted small">' + STR.owner + '</dt><dd><b>' + esc(S.overturned ? STR.desk.roles.rev.name : st.owner || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.nextUpdate + '</dt><dd><b>' + esc(S.overturned ? TM.add(S.clockT, CONFIG.nextUpdateMinutes) : st.next || STR.none) + '</b></dd></div><div><dt class="muted small">' + STR.desk.crmF.feed + '</dt><dd class="small' + (c.feedWarn ? '"><span class="chip amber wrap">' + ico('alert') + esc(c.feed) + '</span>' : '">' + esc(c.feed)) + '</dd></div></dl>' : '<p>' + s.waitingNone + ' ' + (c.follow && st.follow ? '<span class="muted">' + STR.s5.follow + ': ' + esc(c.follow.task) + '. ' + STR.s5.followNote + '</span>' : '') + '</p>') + '</div>';
 }
 let LOGSPAN = 2;
 function logBand(c, st) {
@@ -2026,10 +2049,11 @@ function advanceCard(c, st) {
   const eff = [s.stages.effective, st.effectiveAt || st.inForceAt || '', rank >= 2 || w === 'inforce'];
   const inf = [s.stages.informed, st.stoppedAt || '', !!st.informed];
   const idx = st.list.findIndex((e, i) => i >= S.pos && (e.p.remedy || e.p.informed || e.p.wd === 'inforce'));
+  if (st.informed && !st.remedy && !w) return '<div class="card stack"><h3>' + s.advance + '</h3><p class="note green">' + ico('check') + '<span>' + fill(STR.stepSkipped, { why: st.skip || '' }) + ' ' + s.done + '</span></p></div>';
   let btn;
   if (idx >= 0) { const e = st.list[idx]; btn = '<button class="btn primary" data-act="setpos" data-arg="' + (idx + 1) + '">' + esc(fill(s.advanceTo, { what: e.ttl, t: e.t })) + ico('right') + '</button>'; }
   else if (st.nextEv) btn = '<button class="btn primary" data-act="step">' + STR.s3.step + ': ' + esc(st.nextEv.ttl) + ico('step') + '</button>';
-  else btn = '<p class="note ' + (st.informed ? 'green' : 'amber') + '">' + ico(st.informed ? 'check' : 'clock') + '<span>' + (st.informed ? s.done : s.stillOpen + ' ' + STR.owner + ': ' + esc(st.owner || STR.none) + '. ' + STR.nextUpdate + ': ' + esc(st.next || STR.none) + '.') + '</span></p>';
+  else btn = '<p class="note ' + (st.informed ? 'green' : 'amber') + '">' + ico(st.informed ? 'check' : 'clock') + '<span>' + (st.informed && !S.overturned ? s.done : s.stillOpen + ' ' + STR.owner + ': ' + esc(st.owner || STR.none) + '. ' + STR.nextUpdate + ': ' + esc(st.next || STR.none) + '.') + '</span></p>';
   return '<div class="card stack"><h3>' + s.advance + '</h3><div class="adv">' + [first, eff, inf].map((x) => '<div class="' + (x[2] ? 'done' : '') + '"><b>' + (x[2] ? ico('check') : ico('clock')) + x[0] + '</b><span class="small num">' + (x[2] && x[1] ? x[1] : x[2] ? '' : STR.pending) + '</span></div>').join('') + '</div>' + btn + '</div>';
 }
 function followCard(c, st) {
@@ -2105,7 +2129,7 @@ function turn(c, st, role) {
 }
 function activity(c, st, role) {
   const mine = st.applied.filter((e) => roleOf(c, e.a) === role || (c.pair === 'internal' && e.lane === 'oap' ? 'tap' : e.lane) === role);
-  return '<div class="card"><h3>' + STR.desk.activity + '</h3>' + (mine.length ? '<ol class="queue">' + mine.map((e) => '<li><span class="num">' + e.t + '</span><span><b>' + esc(e.ttl) + '</b><small>' + esc(e.txt) + '</small></span></li>').join('') + '</ol>' : '<p class="muted">' + STR.x.activityNone + '</p>') + '</div>';
+  return '<details class="x"><summary>' + STR.desk.activity + ' (' + mine.length + ')</summary><div>' + (mine.length ? '<ol class="queue">' + mine.map((e) => '<li><span class="num">' + e.t + '</span><span><b>' + esc(e.ttl) + '</b><small>' + esc(e.txt) + '</small></span></li>').join('') + '</ol>' : '<p class="muted">' + STR.x.activityNone + '</p>') + '</div></details>';
 }
 function rail(c, st, role) {
   const d = STR.desk, R = d.roles[role];
@@ -2162,7 +2186,8 @@ function deskPe(c, st) {
 }
 function deskRev(c, st) {
   const d = STR.desk; let items = '';
-  if (S.appeal) items += '<p class="note amber">' + ico('user') + '<span>' + fill(d.revAppeal, { id: caseName(c) }) + '</span></p>';
+  if (S.appeal) items += '<p class="note amber">' + ico('user') + '<span>' + fill(d.revAppeal, { id: caseName(c) }) + '</span></p><div class="row"><button class="btn primary" data-act="uphold">' + STR.app.uphold + '</button>' + (c.id === 'C101' && st.score ? '<button class="btn" data-act="overturn">' + STR.s5.overturn + '</button>' : '') + '</div>';
+  if (S.appealResult) items += '<p class="note green">' + ico('check') + '<span>' + STR.app.upheld + '</span></p>';
   if (S.submitted && st.finding && c.finding(S.opts).interim) items += '<p class="note amber">' + ico('clock') + '<span>' + fill(d.revPending, { what: esc(c.finding(S.opts).name) }) + '</span></p>';
   let h = '<div class="card stack"><h3>' + d.revQueue + '</h3>' + (items || '<p class="muted">' + d.revEmpty + '</p>');
   if (st.finding) h += findingMini(c, st);
@@ -2170,15 +2195,25 @@ function deskRev(c, st) {
   return h + '</div>' + (S.submitted ? scoreCard(c, st) : '');
 }
 function desks(c, st) {
-  const d = STR.desk, roles = rolesFor(c);
+  const d = STR.desk, A = STR.app, roles = rolesFor(c).filter((r) => r !== 'sub');
   if (roles.indexOf(S.role) < 0) S.role = 'tap';
-  const ne = S.submitted ? st.nextEv : null, nextRole = ne ? roleOf(c, ne.a) : (S.submitted ? null : 'sub');
-  let h = '<main id="main"><p class="eyebrow" style="margin-bottom:6px">' + d.viewing + '</p><div class="roles" role="tablist" aria-label="' + d.viewing + '">' + roles.map((r) => '<button role="tab" data-act="role" data-arg="' + r + '" aria-selected="' + (S.role === r) + '"><b>' + (nextRole === r ? '<span class="dot" title="' + d.yourTurn + '"></span>' : '') + esc(roleLabel(c, r)) + '</b><small>' + (c.pair === 'internal' && r === 'tap' ? STR.x.laneBoth : d.roles[r].sub) + (nextRole === r ? ' · ' + d.yourTurn : '') + '</small></button>').join('') + '</div>';
-  if (S.submitted) h += '<div style="margin-bottom:16px">' + timebar(c, st) + '</div>';
-  const r = S.role, tb = turn(c, st, r);
-  if (r === 'sub') h += '<div class="desk sub"><div class="phonecol">' + (S.submitted ? phoneStatus(c, st, st.informed) : (S.selected === c.target && S.screen >= 2 ? phoneForm(c) : phoneIntake(c))) + '</div><div class="stack">' + tb + (S.submitted ? waitBox(c, st) + activity(c, st, 'sub') : '<div class="card"><h3>' + STR.s1.prefill + '</h3>' + (S.selected === c.target ? prefillKv(c) : '<p class="muted">' + STR.s1.reportHint + '</p>') + '</div>') + '</div>' + rail(c, st, r) + '</div>';
-  else h += '<div class="desk"><div class="stack">' + tb + (S.submitted || r === 'rev' ? ({ tap: deskTap, oap: deskOap, dc: deskDc, pe: deskPe, rev: deskRev }[r])(c, st) : '') + '</div>' + rail(c, st, r) + '</div>';
-  return h + '</main>';
+  const ne = S.submitted ? st.nextEv : null, nextRole = ne ? roleOf(c, ne.a) : null, r = S.role;
+  const ph = S.submitted ? phoneStatus(c, st, !!st.informed) : (S.selected === c.target && S.screen >= 2 ? phoneForm(c) : phoneIntake(c));
+  const modes = [['inbox', STR.s1.modeInbox], ['shot', STR.s1.modeShot], ['assist', STR.s1.modeAssist]];
+  let left = '<div class="phonecol"><div class="row"><b>' + ico('user') + ' ' + SUBSCRIBER.name + '</b><span class="muted small">' + SUBSCRIBER.number + '</span></div>' + ph +
+    (S.submitted ? '' : '<div class="seg" role="group" aria-label="' + STR.s1.modes + '">' + modes.map((m) => '<button data-act="intake" data-arg="' + m[0] + '" aria-pressed="' + (S.intake === m[0]) + '">' + m[1] + '</button>').join('') + '</div>') + '</div>';
+  let right = '<div class="roles" role="tablist" aria-label="' + d.viewing + '">' + roles.map((x) => '<button role="tab" data-act="role" data-arg="' + x + '" aria-selected="' + (r === x) + '"><b>' + (nextRole === x ? '<span class="dot"></span>' : '') + esc(roleLabel(c, x)) + '</b><small>' + (nextRole === x ? A.actionNeeded : A.consoles[x]) + '</small></button>').join('') + '</div>';
+  if (!S.submitted) right += '<div class="empty">' + ico('phone') + '<b>' + A.empty + '</b><span class="muted">' + A.emptyHint + '</span><button class="btn" data-act="desksubmit">' + A.quick + '</button></div>';
+  else {
+    const m = metricOf(c, st, S.clockT);
+    right += '<div class="apprail"><span class="clock-t">' + esc(S.clockT) + '</span>' + chipHtml(st) + (m === 'running' ? '' : badge(m)) + '<span class="muted small grow">' + caseName(c) + ' · ' + c.sr + ' · ' + esc(c.type) + '</span><button class="btn sm quiet" data-act="stepback"' + (S.pos <= posAt(c, c.regAt) ? ' disabled' : '') + '>' + ico('stepb') + A.undo + '</button><button class="btn sm quiet" data-act="panel" data-arg="arch">' + ico('diagram') + A.map + '</button></div>';
+    if (!ne) right += '<div class="turn wait">' + ico('check') + '<span class="grow">' + (st.informed ? A.done : A.open + ' ' + esc(st.owner || '') + (st.next ? ' · ' + STR.nextUpdate + ' ' + st.next : '')) + '</span></div>';
+    else if (nextRole === r) right += '<div class="turn">' + ico('flag') + '<span class="grow"><b>' + esc(ne.act || ne.ttl) + '</b></span><button class="btn" data-act="step">' + A.doIt + ico('right') + '</button></div>';
+    else if (nextRole === 'sub') right += '<div class="turn wait">' + ico('clock') + '<span class="grow">' + fill(d.waitingOn, { who: SUBSCRIBER.name }) + '</span></div>';
+    else right += '<div class="turn wait">' + ico('clock') + '<span class="grow">' + fill(d.waitingOn, { who: esc(actorName(c, ne.a)) }) + '</span><button class="btn" data-act="role" data-arg="' + nextRole + '">' + fill(A.goTo, { who: esc(roleLabel(c, nextRole)) }) + ico('right') + '</button></div>';
+    right += ({ tap: deskTap, oap: deskOap, dc: deskDc, pe: deskPe, rev: deskRev }[r])(c, st);
+  }
+  return '<main id="main" class="app"><div class="appgrid">' + left + '<div class="stack">' + right + '</div></div></main>';
 }
 
 /* ============================================================
@@ -2270,15 +2305,15 @@ function panelArch(c, st) {
 /* ============================================================
    Render and events
    ============================================================ */
-let lastScreenKey = '';
+let lastScreenKey = '', opener = null, hadPanel = false;
 function render() {
   const c = cur(), st = now(), ae = document.activeElement;
   const fk = ae && ae.dataset && (ae.dataset.act || ae.dataset.chg) ? (ae.dataset.act || ae.dataset.chg) + '|' + (ae.dataset.arg || ae.value || '') : null;
   const inPanel = ae && ae.closest && ae.closest('#panel');
-  let h = bar(c, st) + strip(c, st);
+  let h = bar(c, st) + (S.mode === 'story' ? strip(c, st) : '');
   if (S.mode === 'story') h += stepper() + '<main id="main">' + qhead(c) + [null, screen1, screen2, screen3, screen4, screen5, screen6, screen7][S.screen](c, st) + '</main>';
   else h += desks(c, st);
-  h += '<footer class="foot"><p>' + STR.keys + ' ' + STR.fictional + ' ' + STR.x.namesNote + '</p></footer>';
+  if (S.mode === 'story') h += '<footer class="foot"><p>' + STR.keys + ' ' + STR.fictional + ' ' + STR.x.namesNote + '</p></footer>';
   $('#app').innerHTML = h;
   const p = S.panel;
   $('#panel').innerHTML = !p ? '' : p === 'about' ? panelAbout() : p === 'detail' ? panelDetail() : p === 'cases' ? panelCases() : p === 'fact' ? panelFact() : panelArch(c, st);
@@ -2287,6 +2322,8 @@ function render() {
   let el = null;
   if (fk) { const [a, v] = fk.split('|'); el = Array.from(document.querySelectorAll('[data-act="' + a + '"],[data-chg="' + a + '"]')).find((x) => (x.dataset.arg || x.value || '') === v && (!!x.closest('#panel') === !!p)) || null; }
   if (p && (!el || !inPanel)) el = $('#pclose');
+  if (!p && hadPanel && opener) { const [a, v] = opener.split('|'); el = Array.from(document.querySelectorAll('[data-act="' + a + '"]')).find((x) => (x.dataset.arg || '') === v) || el; }
+  hadPanel = !!p;
   if (!p && !el && key !== lastScreenKey) el = $('#top');
   if (el && !el.disabled) el.focus({ preventScroll: !!fk && el.id !== 'top' });
   lastScreenKey = key;
@@ -2307,13 +2344,14 @@ const ACT = {
   assistok: () => { S.selected = cur().target; S.reason = cur().reason; if (S.mode === 'story') go(2); else S.screen = 2; },
   submit: () => submit(true), desksubmit: () => submit(false),
   unsubmit: () => { S.submitted = false; S.pos = 0; S.clockT = null; S.overturned = false; S.appeal = false; S.opts = { w: false, alt: false }; },
-  step: () => stepTo(S.pos + 1),
+  step: () => { stepTo(S.pos + 1); if (S.mode === 'desks') { let e; while ((e = now().nextEv) && !e.act) stepTo(S.pos + 1); } },
+  uphold: () => { S.appeal = false; S.appealResult = true; },
   stepback: () => { if (S.pos > posAt(cur(), cur().regAt)) stepTo(S.pos - 1); },
   setpos: (a) => stepTo(Number(a)),
   branch: (a) => { loadCase(a, true); submit(false); go(4); },
-  overturn: () => { S.overturned = !S.overturned; },
-  again: () => { if (S.mode !== 'story' || S.screen !== 6) { S.mode = 'story'; go(6); S.s6.again = true; } else S.s6.again = !S.s6.again; },
-  disagree: () => { if (S.mode !== 'story' || S.screen !== 6) { S.mode = 'story'; go(6); S.appeal = true; } else S.appeal = !S.appeal; },
+  overturn: () => { S.overturned = !S.overturned; S.appeal = false; },
+  again: () => { if (S.mode === 'desks') { if (S.caseId === 'C101') { CASES = buildCases(S.c105Send); loadCase('C105', true); } else S.againNote = true; } else if (S.screen !== 6) { go(6); S.s6.again = true; } else S.s6.again = !S.s6.again; },
+  disagree: () => { if (S.mode === 'desks') { S.appeal = true; S.appealResult = false; S.role = 'rev'; } else if (S.screen !== 6) { go(6); S.appeal = true; } else S.appeal = !S.appeal; },
   s6note: (a) => { S.s6.note = S.s6.note === a ? null : a; },
   link: (a) => { S.s6.linked = a; },
   send: (a) => setSend(a),
@@ -2335,6 +2373,7 @@ const CHG = {
 };
 document.addEventListener('click', (ev) => {
   const el = ev.target.closest('[data-act]'); if (!el || el.disabled) return;
+  if (!S.panel && (el.dataset.act === 'panel' || el.dataset.act === 'fact')) opener = el.dataset.act + '|' + (el.dataset.arg || '');
   const r = ACT[el.dataset.act](el.dataset.arg, el, ev);
   if (r !== false) render();
 });
