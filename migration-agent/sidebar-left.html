@@ -1523,6 +1523,42 @@ body.s4-none #canvas{align-self:center}
 .s4-empty ol{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:10px 0 8px}
 .s4-empty li{display:flex;align-items:center;gap:8px;height:34px;padding:0 13px 0 6px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--ink-2)}
 .s4-empty li b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue-d);font:700 11px var(--mono)}
+/* option B: agents first as a strip of three, actions next, upload as a button pinned at the foot */
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .sb4-body{order:1}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai #s4Agents{order:-1}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-up{order:2!important;border-top:1px solid var(--line)!important;border-bottom:0!important;padding-top:16px!important}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open{order:3;display:flex!important;justify-content:center;gap:9px;margin:12px 16px 16px!important;padding:11px 12px!important;border:0!important;border-radius:12px!important;background:var(--ag-bl)!important;box-shadow:0 10px 22px -12px rgba(37,96,246,.8)!important}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open:hover{background:var(--ag-bld)!important}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open b{color:#fff;grid-row:auto}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open small{display:none}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open span{width:24px;height:24px;background:rgba(255,255,255,.2);border-color:transparent;color:#fff}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open .ch{stroke:#fff;transform:rotate(180deg)}
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open .ch{transform:none}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .c-agents .s4-ct svg{display:none}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .c-agents .s4-cb{grid-template-rows:1fr}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag{flex-direction:row;gap:6px;padding:0 14px 16px}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li,body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li:first-child{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 4px 10px;text-align:center;border:1px solid var(--line);border-radius:14px;background:#fff}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li.on{border-color:rgba(37,96,246,.35)}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li.wait{border-color:#f0d9a8;background:#fffaf0}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li b{font-size:11.5px;line-height:1.25}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li small{white-space:normal;font-size:10.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li>div{min-width:0;max-width:100%}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-ag li>span:last-child{position:absolute;top:6px;right:6px;min-width:20px;height:20px;padding:0 5px;border-radius:7px;font-size:11px}
+/* option C: one tab at a time */
+.s4-vtabs{display:none}
+body.sbv-c:not(.s4-railed) .sb4-ai .s4-vtabs{order:1;display:flex;gap:2px;margin:14px 16px 2px;padding:3px;border-radius:11px;background:var(--bg-2);flex:0 0 auto}
+.s4-vtabs button{flex:1;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;font-weight:650;color:var(--ag-mute)}
+.s4-vtabs button[aria-selected="true"]{background:#fff;color:var(--ag-ink);box-shadow:0 1px 2px rgba(16,33,59,.1)}
+.s4-vtabs button:focus-visible{outline:2px solid var(--ag-bl);outline-offset:1px}
+.s4-vtabs span{min-width:18px;height:18px;padding:0 5px;border-radius:999px;display:grid;place-items:center;font:700 10.5px var(--mono);background:#f0b03c;color:#3a2300}
+.s4-vtabs span.b{background:var(--ag-bl);color:#fff}
+body.sbv-c .sb4-ai .s4-open{display:none!important}
+body.sbv-c:not(.s4-railed)[data-vt="up"] .sb4-ai .s4-up{display:flex!important;order:2;border-bottom:0!important;padding-top:14px!important}
+body.sbv-c:not([data-vt="up"]) .sb4-ai .s4-up{display:none!important}
+body.sbv-c .sb4-ai .s4-ct{display:none!important}
+body.sbv-c .sb4-ai .s4-cb{grid-template-rows:1fr!important}
+body.sbv-c .sb4-ai .s4-card{border-bottom:0!important;padding-top:14px}
+body.sbv-c:not([data-vt="acts"]) #s4Acts,body.sbv-c:not([data-vt="agents"]) #s4Agents{display:none}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -2090,6 +2126,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
+    <div class="view-sw" role="group" aria-label="Sidebar option"><span>Sidebar option</span><div class="seg2"><button type="button" class="chip-btn is-on" data-sbv="a" aria-pressed="true">A · Sections</button><button type="button" class="chip-btn" data-sbv="b" aria-pressed="false">B · Agents first</button><button type="button" class="chip-btn" data-sbv="c" aria-pressed="false">C · Tabs</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -2136,6 +2173,7 @@ span.r-pick{cursor:default}
             </div>
             <dl class="ag-stats" id="agStats"></dl>
           </div>
+          <div class="sb4-only s4-vtabs" id="s4VTabs" role="tablist" aria-label="Agent bar"><button type="button" role="tab" data-vt="up">Upload</button><button type="button" role="tab" data-vt="acts">Actions<span id="s4VtN" hidden></span></button><button type="button" role="tab" data-vt="agents">Agents<span id="s4VtW" class="b" hidden></span></button></div>
           <div class="sb4-only s4-rail" id="s4Rail">
             <button type="button" data-rail="up" aria-label="Upload a file" title="Upload a file"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></button>
             <button type="button" data-rail="acts" id="s4RailA" title="Required actions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg><span id="s4RailN" hidden></span></button>
@@ -4732,12 +4770,13 @@ span.r-pick{cursor:default}
     const hint = UP.err || (f && !UP.lob ? 'Choose a line of business to continue.' : '');
     $('#s4Err').hidden = !hint; $('#s4Err').textContent = hint; $('#s4Err').classList.toggle('soft', !UP.err && !!hint);
     $('#s4Go').disabled = !(f && UP.lob && UP.sealed);
+    sbvSync();
     $('#s4AutoT').textContent = UP.auto ? 'Safe errors are fixed automatically.' : 'I’ll ask you before fixing any errors.';
     sb4Paint();
   }
   function s4Take(list) {
     const fs = [...list]; if (!fs.length) return;
-    UP.open = true;
+    UP.open = true; SBV.vt = 'up';
     const f = fs[0]; UP.err = '';
     if (!/\.csv$/i.test(f.name) && f.type !== 'text/csv') UP.err = `${f.name} is not a CSV file.`;
     else if (f.size > 500 * 1048576) UP.err = `${f.name} is over the 500 MB limit.`;
@@ -4753,7 +4792,7 @@ span.r-pick{cursor:default}
     const f = UP.file; if (!f || !UP.lob || !UP.sealed) return;
     const j = startJob({ lob: UP.lob, name: f.name, size: f.size, autofix: UP.auto }); j.up = Date.now();
     UP.file = null; UP.sealed = false; UP.err = ''; UP.sent = f.name; clearTimeout(UP.sentT); UP.sentT = setTimeout(() => { UP.sent = ''; renderAgent(); }, 5000);
-    UP.open = false; filter = 'all'; query = ''; flip(render, j.id); startTicker();
+    UP.open = false; SBV.vt = 'agents'; filter = 'all'; query = ''; flip(render, j.id); startTicker();
   }
   $('#s4Col').onclick = () => { S4.rail = !S4.rail; renderAgent(); $('#s4Col').focus({ preventScroll: true }); };
   $('#s4Rail').addEventListener('click', e => { const b = e.target.closest('[data-rail]'); if (!b) return; S4.rail = false; const k = b.dataset.rail; if (k === 'up') UP.open = true; else CD.man[k] = true; S4.sig = ''; CD.ag = ''; renderAgent(); if (k === 'up') $('#s4Lob').focus({ preventScroll: true }); });
@@ -4770,7 +4809,7 @@ span.r-pick{cursor:default}
   });
   $('#s4Drop').onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === $('#s4Drop') && !UP.file) { e.preventDefault(); $('#s4File').click(); } };
   /* a file dragged anywhere on the page lands in the agent zone */
-  ['dragenter', 'dragover'].forEach(t => $('#agentView').addEventListener(t, e => { if (sb4On()) { $('#s4Drop').classList.add('drag'); if (jobs.length && !UP.open) { UP.open = true; renderAgent(); } } }));
+  ['dragenter', 'dragover'].forEach(t => $('#agentView').addEventListener(t, e => { if (sb4On()) { $('#s4Drop').classList.add('drag'); if (!UP.open || SBV.vt !== 'up') { UP.open = true; SBV.vt = 'up'; renderAgent(); } } }));
   $('#agentView').addEventListener('dragleave', e => { if (!e.relatedTarget || !$('#agentView').contains(e.relatedTarget)) $('#s4Drop').classList.remove('drag'); });
   $('#agentView').addEventListener('drop', e => { if (!sb4On()) return; e.preventDefault(); e.stopImmediatePropagation(); $('#s4Drop').classList.remove('drag'); $('#agDrop').classList.remove('ag-drag'); s4Take(e.dataTransfer.files); }, true);
   function sb4Paint() {
@@ -4795,6 +4834,19 @@ span.r-pick{cursor:default}
     const j = jobs.find(x => x.id === +b.closest('.file-row2').dataset.id); if (j) a51Do([j], () => { j.authz = true; j.confirming = false; j.phase = 'submitted'; render(); }, `${j.name} submitted · ${num(j.verified)} records`);
   }, true);
   $('#canvas').addEventListener('keydown', e => { const g = e.target.closest && e.target.closest('[data-s4g]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.click(); } });
+
+  /* sidebar options: A sections, B agents first with the upload button pinned at the foot, C one tab at a time */
+  const SBV = { v: 'a', vt: 'up' };
+  function sbvSync() {
+    document.body.classList.toggle('sbv-b', SBV.v === 'b'); document.body.classList.toggle('sbv-c', SBV.v === 'c'); document.body.dataset.vt = SBV.vt;
+    $$('[data-sbv]').forEach(b => { const on = b.dataset.sbv === SBV.v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
+    $$('[data-vt]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.vt === SBV.vt)));
+    $('#s4VtN').hidden = $('#s4RailN').hidden; $('#s4VtN').textContent = $('#s4RailN').textContent;
+    $('#s4VtW').hidden = $('#s4RailW').hidden; $('#s4VtW').textContent = $('#s4RailW').textContent;
+  }
+  $$('[data-sbv]').forEach(b => { b.onclick = () => { SBV.v = b.dataset.sbv; if (SBV.v === 'c') SBV.vt = jobs.length ? (jobs.some(j => needsYou(j) && !isPending(j)) ? 'acts' : 'agents') : 'up'; renderAgent(); }; });
+  $('#s4VTabs').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if (b) { SBV.vt = b.dataset.vt; renderAgent(); } });
+  $('#s4Rail').addEventListener('click', e => { const b = e.target.closest('[data-rail]'); if (b) { SBV.vt = b.dataset.rail; sbvSync(); } });
 
   /* files in: they are checked and staged in the box; nothing starts until the user hands them over */
   const agStart = (f, lob) => startJob({ lob, name: f.name, size: f.size, autofix: $('#agAuto').checked });
