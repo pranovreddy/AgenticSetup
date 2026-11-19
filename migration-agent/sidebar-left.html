@@ -1565,6 +1565,13 @@ body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-up{order:2!important;border-top:0!impo
 body.sbv-b.sb4:not(.is-empty) .sb4-ai .sb4-body{order:3}
 body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open .ch{transform:none}
 body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open .ch{transform:rotate(180deg)}
+/* option B, open: the button becomes a plain header with a collapse icon, so Upload securely is the only button */
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open{justify-content:space-between;margin:10px 12px 0 20px!important;padding:6px 6px 6px 0!important;background:none!important;box-shadow:none!important;border-radius:10px!important}
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open:hover{background:none!important}
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open b{color:var(--ag-ink);font-size:14px}
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open span{display:none}
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open .ch{width:30px;height:30px;padding:7px;border-radius:9px;stroke:var(--ag-mute);box-sizing:border-box}
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open:hover .ch{background:var(--bg-2);stroke:var(--ag-ink)}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
