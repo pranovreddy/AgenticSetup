@@ -1572,7 +1572,9 @@ body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open b{color:var(--ag-ink);fon
 body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open span{display:none}
 body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open .ch{width:30px;height:30px;padding:7px;border-radius:9px;stroke:var(--ag-mute);box-sizing:border-box}
 body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open:hover .ch{background:var(--bg-2);stroke:var(--ag-ink)}
-.s4-fly{position:fixed;z-index:60;display:grid;place-items:center;border-radius:12px;background:#2560f6;color:#fff;font:650 13.5px var(--font);pointer-events:none;box-shadow:0 14px 28px -12px rgba(37,96,246,.8);white-space:nowrap;overflow:hidden}
+.s4-fly{position:fixed;z-index:60;font:650 13.5px var(--font);pointer-events:none;box-shadow:0 14px 28px -14px rgba(37,96,246,.7);overflow:hidden;will-change:left,top,width,height}
+.s4-fly span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.s4-fly svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -4810,20 +4812,38 @@ span.r-pick{cursor:default}
   }
   $('#s4Col').onclick = () => { S4.rail = !S4.rail; renderAgent(); $('#s4Col').focus({ preventScroll: true }); };
   $('#s4Rail').addEventListener('click', e => { const b = e.target.closest('[data-rail]'); if (!b) return; S4.rail = false; const k = b.dataset.rail; if (k === 'up') UP.open = true; else CD.man[k] = true; S4.sig = ''; CD.ag = ''; renderAgent(); if (k === 'up') $('#s4Lob').focus({ preventScroll: true }); });
-  /* option B: the blue button travels between its place at the top and the Upload securely button, so it reads as one control */
+  /* option B: one control that moves. The button morphs between its place at the top and the Upload securely button (position, size, colour and label together), the form unrolls or rolls up, and the sections below slide to their new place */
   $('#s4Open').onclick = () => {
-    const fly = SBV.v === 'b' && !RM, src = UP.open ? $('#s4Go') : $('#s4Open'), r0 = src.getBoundingClientRect();
-    UP.open = !UP.open; renderAgent();
-    if (UP.open) $('#s4Lob').focus({ preventScroll: true });
-    const dst = UP.open ? $('#s4Go') : $('#s4Open'), r1 = dst.getBoundingClientRect();
+    const fly = SBV.v === 'b' && !RM, opening = !UP.open, src = opening ? $('#s4Open') : $('#s4Go'), form = $('#s4Up'), below = $('#sb4Body');
+    const r0 = src.getBoundingClientRect(), cs0 = getComputedStyle(src), look = c => ({ backgroundColor: c.backgroundColor, color: c.color, borderRadius: c.borderRadius });
+    const l0 = look(cs0), html0 = opening ? 'Upload a file' : src.innerHTML, y0 = below.getBoundingClientRect().top;
+    let old = null; const host = form.parentNode;
+    if (fly && !opening && form.offsetParent) { const fr = form.getBoundingClientRect(); old = form.cloneNode(true); old.removeAttribute('id'); old.querySelectorAll('[id]').forEach(n => n.removeAttribute('id')); old.inert = true; Object.assign(old.style, { position: 'fixed', left: fr.left + 'px', top: fr.top + 'px', width: fr.width + 'px', margin: '0', zIndex: 58, pointerEvents: 'none', display: 'flex', background: 'var(--bg)' }); const og = old.querySelector('.s4-go'); if (og) og.style.visibility = 'hidden'; }
+    UP.open = opening; renderAgent();
+    if (opening) $('#s4Lob').focus({ preventScroll: true });
+    const dst = opening ? $('#s4Go') : $('#s4Open'), r1 = dst.getBoundingClientRect();
     if (!fly || !r0.width || !r1.width) return;
-    const g = document.createElement('div'); g.className = 's4-fly'; g.textContent = UP.open ? 'Upload securely' : 'Upload a file'; document.body.appendChild(g);
+    const T = 460, E = 'cubic-bezier(.4,0,.2,1)', l1 = look(getComputedStyle(dst)), html1 = opening ? dst.innerHTML : 'Upload a file';
     const box = r => ({ left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
-    const an = g.animate([{ ...box(r0), opacity: 1 }, { ...box(r1), opacity: 1, offset: .78 }, { ...box(r1), opacity: 0 }], { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' });
-    dst.animate([{ opacity: 0 }, { opacity: 0, offset: .7 }, { opacity: 1 }], { duration: 520 });
-    const up = $('#s4Up'); if (UP.open && up.offsetParent) up.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'ease-out' });
-    an.onfinish = () => g.remove(); setTimeout(() => g.remove(), 800);
+    const g = document.createElement('div'); g.className = 's4-fly'; g.innerHTML = `<span>${html0}</span><span>${html1}</span>`; document.body.appendChild(g);
+    dst.style.visibility = 'hidden';
+    const an = g.animate([{ ...box(r0), ...l0 }, { ...box(r1), ...l1 }], { duration: T, easing: E, fill: 'forwards' });
+    g.firstChild.animate([{ opacity: 1 }, { opacity: 0, offset: .35 }, { opacity: 0 }], { duration: T, fill: 'forwards' });
+    g.lastChild.animate([{ opacity: 0 }, { opacity: 0, offset: .35 }, { opacity: 1, offset: .8 }, { opacity: 1 }], { duration: T, fill: 'forwards' });
+    const done = () => { dst.style.visibility = ''; g.remove(); }; an.onfinish = done; setTimeout(done, T + 200);
+    /* everything under the upload slides to its new place */
+    const dy = y0 - below.getBoundingClientRect().top; if (Math.abs(dy) > 1) below.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: T, easing: E });
+    if (opening) {
+      form.animate([{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: T, easing: E });
+      [...form.children].filter(c => c.offsetParent && c !== dst).forEach((c, i) => c.animate([{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 90 + i * 45, easing: 'ease-out', fill: 'backwards' }));
+      $('#s4Open').animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, delay: 120, fill: 'backwards' });
+    } else if (old) {
+      host.appendChild(old);
+      const oa = old.animate([{ clipPath: 'inset(0 0 0 0)', opacity: 1 }, { clipPath: 'inset(0 0 100% 0)', opacity: 0 }], { duration: T * .8, easing: E, fill: 'forwards' });
+      oa.onfinish = () => old.remove(); setTimeout(() => old.remove(), T + 200);
+    }
   };
+
   $('#s4Close').onclick = () => { UP.open = false; renderAgent(); $('#s4Open').focus({ preventScroll: true }); };
   $('#s4Lob').onchange = e => { UP.lob = e.target.value; renderAgent(); };
   $('#s4File').onchange = e => { s4Take(e.target.files); e.target.value = ''; };
