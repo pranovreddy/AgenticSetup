@@ -1559,6 +1559,12 @@ body.sbv-c .sb4-ai .s4-ct{display:none!important}
 body.sbv-c .sb4-ai .s4-cb{grid-template-rows:1fr!important}
 body.sbv-c .sb4-ai .s4-card{border-bottom:0!important;padding-top:14px}
 body.sbv-c:not([data-vt="acts"]) #s4Acts,body.sbv-c:not([data-vt="agents"]) #s4Agents{display:none}
+/* option B: upload button above the agents */
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open{order:1;margin:16px 16px 4px!important}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-up{order:2!important;border-top:0!important;border-bottom:1px solid var(--line)!important;padding-top:10px!important}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .sb4-body{order:3}
+body.sbv-b.sb4:not(.is-empty) .sb4-ai .s4-open .ch{transform:none}
+body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open .ch{transform:rotate(180deg)}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
