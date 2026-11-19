@@ -19,3 +19,4 @@ Locally, open the file with a `file://` URL in Chromium; there is no server. The
 
 - `digiconsent-complaints-demo.html` is the leadership demonstration of the DigiConsent complaint management solution: a seven-screen guided story, six test cases, role desks (subscriber, both operators, DigiConsent, enterprise, reviewer) and the architecture view. One offline file, no network requests. It is built from `complaints-demo/src/` by `python3 complaints-demo/build.py`; edit the sources, not the built file. Tunable values are in `CONFIG` at the top of `complaints-demo/src/data.js`.
 - `digiconsent-complaints-flows.html` holds the flow diagrams for the same procedure (end to end, today and proposed, reporting and withdrawal, matching, findings, remedy, report again, subscriber status).
+- `digiconsent-complaints-journey.html` is the simple version for leadership: one complaint in seven steps, three outcomes, Next and Back only.

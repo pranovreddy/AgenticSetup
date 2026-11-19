@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DigiConsent Complaint Journey</title>
+<style>
+/* Layout: one flow of seven steps across the top; below it, who is acting, what Rohan sees, and one plain explanation. */
+:root {
+  --navy: #173B5E; --grey: #5B6B7B; --white: #FFFFFF; --panel: #F3F5F7; --teal: #1F6F65;
+  --amber: #8A5300; --amber-bg: #FFF1DD; --red: #A61B1B; --red-bg: #FDE7E7; --green: #1B6B2F; --green-bg: #E4F3E6;
+  --line: rgba(23, 59, 94, .16); --line-2: rgba(23, 59, 94, .30); --teal-wash: rgba(31, 111, 101, .09);
+  --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--panel); color: var(--navy); font: 16px/1.5 var(--font); }
+h1, h2, h3, p, ol, ul { margin: 0; }
+h1, h2 { text-wrap: balance; line-height: 1.2; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; border-radius: 6px; }
+svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 20px 36px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+.top { display: flex; gap: 12px 24px; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }
+.top h1 { font-size: 26px; }
+.top p { color: var(--grey); }
+.eyebrow { font-size: 12px; letter-spacing: .07em; text-transform: uppercase; font-weight: 700; color: var(--grey); }
+.fict { font-size: 12px; color: var(--grey); border: 1px dashed var(--line-2); border-radius: 999px; padding: 2px 10px; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--white); }
+.seg button { min-height: 44px; padding: 0 14px; border: 0; border-radius: 7px; background: transparent; font-weight: 600; color: var(--grey); display: inline-flex; gap: 8px; align-items: center; }
+.seg button[aria-pressed="true"] { background: var(--navy); color: var(--white); }
+/* steps */
+.steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; }
+.steps li { position: relative; }
+.steps li::before { content: ""; position: absolute; top: 21px; left: -50%; width: 100%; height: 3px; background: var(--line-2); }
+.steps li:first-child::before { display: none; }
+.steps li.done::before, .steps li.now::before { background: var(--teal); }
+.steps button { position: relative; width: 100%; border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 4px; min-height: 76px; font-weight: 600; color: var(--grey); font-size: 14px; text-align: center; }
+.steps .n { width: 44px; height: 44px; border-radius: 50%; background: var(--white); border: 3px solid var(--line-2); display: grid; place-items: center; font-weight: 700; font-size: 16px; }
+.steps li.done .n { background: var(--teal); border-color: var(--teal); color: var(--white); }
+.steps li.now .n { border-color: var(--teal); color: var(--teal); box-shadow: 0 0 0 5px var(--teal-wash); }
+.steps li.now button { color: var(--navy); }
+/* stage */
+.stage { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; align-items: start; }
+.say h2 { font-size: 28px; margin: 2px 0 10px; }
+.say .lead { font-size: 19px; max-width: 46ch; }
+.say { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.clock { display: inline-flex; gap: 10px; align-items: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.clock b { font-size: 26px; line-height: 1; }
+.chip { display: inline-flex; gap: 6px; align-items: center; padding: 3px 12px; border-radius: 999px; font-weight: 700; font-size: 14px; background: var(--teal-wash); color: var(--teal); }
+.chip.green { background: var(--green-bg); color: var(--green); } .chip.red { background: var(--red-bg); color: var(--red); } .chip.amber { background: var(--amber-bg); color: var(--amber); }
+.today { background: var(--amber-bg); color: var(--amber); border-radius: 10px; padding: 10px 14px; display: flex; gap: 10px; align-items: flex-start; max-width: 60ch; }
+.today small { font-weight: 700; letter-spacing: .05em; }
+.tag { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; border: 1px solid currentColor; border-radius: 4px; padding: 0 5px; white-space: nowrap; opacity: .85; }
+/* parties */
+.parties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) 92px repeat(3, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+.pt { border: 1.5px solid var(--line-2); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 2px; min-height: 92px; color: var(--grey); background: var(--white); min-width: 0; }
+.pt b { display: flex; gap: 6px; align-items: center; font-size: 15px; }
+.pt small { font-size: 12px; }
+.pt .do { font-size: 13.5px; font-weight: 600; margin-top: 4px; }
+.pt.on { border-color: var(--teal); background: var(--teal-wash); color: var(--navy); box-shadow: 0 0 0 2px var(--teal); }
+.pt.lock { align-items: center; justify-content: center; text-align: center; border-style: dashed; font-size: 12px; font-weight: 700; padding: 6px; }
+.pt.lock.on { color: var(--teal); }
+/* phone */
+.phone { width: 300px; max-width: 100%; height: 520px; border: 7px solid var(--navy); border-radius: 30px; background: var(--panel); display: flex; flex-direction: column; overflow: hidden; margin: 0 auto; }
+.phone .bar { display: flex; justify-content: space-between; padding: 6px 16px 2px; font-size: 12px; font-weight: 600; background: var(--white); }
+.phone .ttl { background: var(--white); padding: 8px 14px; font-weight: 700; border-bottom: 1px solid var(--line); }
+.phone .body { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+.phone .keys { display: flex; justify-content: space-around; padding: 8px 0 10px; background: var(--white); border-top: 1px solid var(--line); color: var(--grey); }
+.phone .keys svg { width: 16px; height: 16px; }
+.m { background: var(--white); border: 1.5px solid var(--line); border-radius: 4px 14px 14px 14px; padding: 9px 11px; }
+.m .h { font-size: 11.5px; font-weight: 700; color: var(--grey); display: flex; justify-content: space-between; }
+.m.sel { border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal); }
+.m .pick { color: var(--teal); font-weight: 700; font-size: 12.5px; display: flex; gap: 4px; align-items: center; margin-top: 4px; }
+.m .pick svg { width: 14px; height: 14px; }
+.cardp { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 11px; display: flex; flex-direction: column; gap: 6px; }
+.cardp h3 { font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--grey); }
+.pill { align-self: flex-start; }
+.nav { display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.btn { min-height: 48px; padding: 0 20px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--white); font-weight: 700; display: inline-flex; gap: 8px; align-items: center; }
+.btn.primary { background: var(--teal); border-color: var(--teal); color: var(--white); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.close3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.close3 > div { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.close3 b { display: block; margin-bottom: 4px; }
+.metric { background: var(--navy); color: var(--white); border-radius: 14px; padding: 18px; }
+.metric .big { font-size: 22px; font-weight: 700; line-height: 1.25; }
+.metric .base { display: inline-block; margin-top: 10px; background: var(--white); color: var(--navy); border-radius: 999px; padding: 3px 14px; font-weight: 700; }
+.foot { color: var(--grey); font-size: 13px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (max-width: 900px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .parties { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pt.lock { grid-column: 1 / -1; min-height: 44px; }
+  .steps button span.nm { display: none; } .steps li.now button span.nm { display: block; position: absolute; top: 50px; white-space: nowrap; }
+  .steps { margin-bottom: 14px; } .close3 { grid-template-columns: minmax(0, 1fr); } .say h2 { font-size: 23px; }
+}
+@media (prefers-reduced-motion: no-preference) { .pt, .steps .n { transition: background .2s, border-color .2s, box-shadow .2s; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><p class="eyebrow">DigiConsent complaint management</p><h1>One complaint, from report to resolved</h1><p>Follow Rohan's complaint step by step. Pick how the case turns out.</p></div>
+    <span class="fict">Fictional records. Simulated actions.</span>
+  </header>
+  <div id="app"></div>
+  <p class="foot">Use Next and Back, the Left and Right arrow keys, or select any step. Operator names are real. The records, times and results shown for them are fictional. Times marked SOURCED come from the programme's source documents. Case times are illustrative.</p>
+  <div id="live" class="sr" aria-live="polite"></div>
+</div>
+<script>
+/* Tunable values */
+const CONFIG = { targetMinutes: 10 };
+/* All text on the page */
+const T = {
+  outcomes: 'How the case turns out',
+  next: 'Next', back: 'Back', restart: 'Start again', today: 'TODAY', clock: 'Case clock', notStarted: 'Not started', rohanSees: 'What Rohan sees',
+  parties: { rohan: ['Rohan', 'Subscriber'], vi: ['Vi', 'Rohan\'s operator'], lock: 'Shared evidence log', bsnl: ['BSNL', 'Sender\'s operator'], dc: ['DigiConsent', 'Consent and trust platform'], ent: ['Example Retail', 'The sender'] },
+  steps: ['Report', 'Register', 'Check evidence', 'Decide', 'Fix', 'Tell Rohan', 'Where we start'],
+  close: {
+    h: 'Start small, prove it, then expand', lead: 'One number tells us whether it works.',
+    metric: 'Share of complaints that get a meaningful resolution within {t} minutes.', base: 'Baseline to be measured',
+    cols: [['Stage 1', 'Vi and BSNL, SMS from registered senders. Both operators write the shared log in shadow first.'], ['What it must prove', 'The same message is found at both ends. The evidence is there in time. Remedies are confirmed complete.'], ['Then', 'Jio and Airtel join. Calls and unregistered senders come later.']],
+    askH: 'What we ask you to sponsor', asks: ['Sponsor the solution and Stage 1.', 'Agree who decides and who fixes what.', 'Switch on automated action only after the proof is in.']
+  }
+};
+const SVC = { h: 'VM-EXDLVR-S', t: '09:10', x: 'Your order 4821 arrives today.' };
+const OUT = {
+  a: {
+    name: 'Rule broken', tone: 'red', mins: 8, start: '14:00',
+    offer: { h: 'VM-EXDLVR-P', t: '13:52', x: 'Special offer: get 30% off your next order.' }, reason: 'I already asked them to stop',
+    steps: [
+      { h: 'Rohan reports the exact message', lead: 'He taps the offer and picks a reason in his own words. He ticks one box to stop these offers and keep delivery updates. Nothing is retyped.', on: { rohan: 'Selects the offer' }, today: 'Today he finds the right app and fills in up to 9 fields by hand.', src: 1 },
+      { h: 'One case, opened in under a minute', clock: '14:00', lead: 'Vi opens one case and owns it to the end. Rohan\'s request to stop the offers is recorded straight away. It does not wait for the investigation.', on: { vi: 'Opens the case', dc: 'Records the opt-out' }, phone: ['Case C101 registered at 14:00.', 'Offers from Example Retail: withdrawn at 14:00.', 'Next update by 14:10.'] },
+      { h: 'The evidence is already there', clock: '14:01', lead: 'Each operator already logs its own checks on every message. The solution joins the two halves in one locked log that only Vi and BSNL can read. Nobody waits for the other operator to investigate.', on: { vi: 'Reads the log', lock: 1, bsnl: 'Its half is already written' }, today: 'Today, joining records across operators takes 2 days or more.', src: 1 },
+      { h: 'Decided on evidence, not on a form', clock: '14:04', lead: 'The log shows a consent on record. The sender\'s own records show Rohan opted out at 09:00, before the offer was sent. Finding: the offer was sent after his opt-out.', on: { vi: 'Applies the agreed rule', ent: 'Returns its opt-out record', bsnl: 'Accepts the finding' }, chip: ['red', 'Sent after opt-out'], phone: ['We confirmed this offer was sent after your opt-out.', 'Correction in progress.'] },
+      { h: 'The fix is proven, not just promised', clock: '14:07', lead: 'Example Retail corrects its list. The case moves on only when the opt-out is confirmed in force. Acknowledging a task does not count.', on: { ent: 'Corrects its list', dc: 'Confirms it is in force' }, chip: ['green', 'In force 14:07'], phone: ['Offers from Example Retail: stopped from 14:07.', 'Delivery updates remain enabled.'] },
+      { h: 'Rohan gets an answer and a result', clock: '14:08', lead: 'He is told what was found, what changed and when. The sender\'s trust score goes down for a verified breach.', on: { vi: 'Informs Rohan', rohan: 'Sees the outcome', dc: 'Lowers the trust score' }, done: 1, phone: ['We confirmed this offer was sent after your opt-out. Your marketing suppression took effect at 14:07. Service updates remain available.'], today: 'Today closure takes 3 to 14 days on average, and 96% of sampled complaints are classified invalid.', src: 1 }
+    ]
+  },
+  b: {
+    name: 'No rule broken', tone: 'green', mins: 7, start: '15:00',
+    offer: { h: 'VM-EXDLVR-P', t: '14:48', x: 'Special offer: get 30% off your next order.' }, reason: 'Too many offers',
+    steps: [
+      { h: 'Rohan reports the exact message', lead: 'He taps the offer and says there are too many. He ticks the box to stop these offers and keep delivery updates.', on: { rohan: 'Selects the offer' }, today: 'Today he finds the right app and fills in up to 9 fields by hand.', src: 1 },
+      { h: 'One case, opened in under a minute', clock: '15:00', lead: 'Vi opens one case. Rohan\'s request to stop the offers is recorded straight away, whatever the investigation finds.', on: { vi: 'Opens the case', dc: 'Records the opt-out' }, phone: ['Case C102 registered at 15:00.', 'Offers from Example Retail: withdrawn at 15:00.', 'Next update by 15:10.'] },
+      { h: 'The evidence is already there', clock: '15:01', lead: 'Here Vi is the operator at both ends, so the log sits inside one operator. The checks made when the message was sent are read in seconds.', on: { vi: 'Reads its own log', lock: 1 }, today: 'Today a back-office agent reviews each case: about 1 day.', src: 1 },
+      { h: 'An honest answer: nothing was broken', clock: '15:02', lead: 'Rohan gave consent on 20 October and it covered this offer. Too many offers is a preference, not a breach. The sender is not penalised.', on: { vi: 'Applies the agreed rule', ent: 'Shows how consent was given' }, chip: ['green', 'Permitted'], phone: ['No rule breach found.', 'Your withdrawal is being put in force.'] },
+      { h: 'Rohan still gets what he asked for', clock: '15:06', lead: 'His opt-out is confirmed in force. The finding and the remedy are separate: he does not need to win the complaint to stop the offers.', on: { dc: 'Confirms it is in force', ent: 'Stops the offers' }, chip: ['green', 'In force 15:06'], phone: ['Offers from Example Retail: stopped from 15:06.', 'Delivery updates remain enabled.'] },
+      { h: 'A clear answer, and the offers stop', clock: '15:07', lead: 'He is told plainly: no rule was broken, and your consent has been withdrawn. The sender\'s trust score does not change.', on: { vi: 'Informs Rohan', rohan: 'Sees the outcome' }, done: 1, phone: ['No rule breach found, but your consent for promotional SMS from Example Retail has been withdrawn.'], today: 'Today this case would close as invalid, with nothing changed for Rohan.' }
+    ]
+  },
+  c: {
+    name: 'Takes longer', tone: 'amber', mins: 27, start: '16:00',
+    offer: { h: 'VM-EXDLVR-S', t: '15:52', x: 'Your order 5307 has shipped and arrives tomorrow.' }, reason: 'This account is not mine',
+    steps: [
+      { h: 'Rohan reports a message that is not his', lead: 'He gets a delivery alert for an order he never placed. He taps it and says the account is not his.', on: { rohan: 'Selects the alert' }, today: 'Today most complaints like this are closed as "not a commercial message".' },
+      { h: 'One case, opened in under a minute', clock: '16:00', lead: 'Vi opens one case and owns it. This is a service message, so no consent is changed.', on: { vi: 'Opens the case' }, phone: ['Case C103 registered at 16:00.', 'Next update by 16:10.'] },
+      { h: 'The log answers part of the question', clock: '16:02', lead: 'The shared log shows a genuine, registered delivery alert was sent to this number. It cannot say whose order it was. Only the sender knows that.', on: { vi: 'Reads the log', lock: 1, bsnl: 'Its half is already written' } },
+      { h: 'One question to the sender, with a deadline', clock: '16:10', lead: 'The target is missed, and Rohan is not left guessing. At minute 10 he sees who is working on it and when he will hear next.', on: { vi: 'Asks one question', ent: 'Checks the order' }, chip: ['amber', 'Waiting for the sender'], phone: ['Waiting for Example Retail. Its customer data desk is checking which account this alert belongs to.', 'Next update by 16:20.'] },
+      { h: 'The sender finds and fixes its mistake', clock: '16:26', lead: 'The order was keyed with the wrong mobile number. Example Retail corrects it and returns proof. A data error, not a rule breach.', on: { ent: 'Corrects the number', vi: 'Checks the proof' }, chip: ['green', 'Corrected 16:26'], phone: ['The sender confirmed this alert belongs to another account. It is correcting the number.'] },
+      { h: 'Resolved, later than the target', clock: '16:27', lead: 'Rohan is told what happened and that alerts for his own orders continue. This case counts as a miss, and it stays in the numbers.', on: { vi: 'Informs Rohan', rohan: 'Sees the outcome' }, done: 1, phone: ['The sender corrected the number at 16:26. You will not get alerts for that account. Alerts for your own orders continue.'] }
+    ]
+  }
+};
+const S = { out: 'a', step: 0 };
+const I = {
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>', tower: '<path d="M12 10v11M8 21h8M7 5a7 7 0 000 10M17 5a7 7 0 010 10"/><circle cx="12" cy="10" r="1.5"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>', shield: '<path d="M12 3l8 3v6c0 5-3 8-8 9-5-1-8-4-8-9V6z"/>', shop: '<path d="M4 9l1-5h14l1 5M5 9v11h14V9M9 20v-6h6v6"/>',
+  check: '<path d="M4 12l5 5L20 6"/>', clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', left: '<path d="M15 5l-7 7 7 7"/>', right: '<path d="M9 5l7 7-7 7"/>', alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/>'
+};
+const ic = (n) => '<svg class="i" viewBox="0 0 24 24" aria-hidden="true">' + I[n] + '</svg>';
+const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+function phone(o, st, i) {
+  let body;
+  if (i === 0) body = [SVC, o.offer].map((m, k) => '<div class="m' + (k ? ' sel' : '') + '"><div class="h"><span>' + m.h + '</span><span>' + m.t + '</span></div>' + esc(m.x) + (k ? '<div class="pick">' + ic('check') + 'Selected</div>' : '') + '</div>').join('') + '<div class="cardp"><h3>Reason</h3>"' + esc(o.reason) + '"</div>';
+  else { const s = st, ps = o.steps.slice(0, i + 1).reverse().find((x) => x.phone); body = '<span class="chip pill ' + (s.done ? 'green' : 'amber') + '">' + ic(s.done ? 'check' : 'clock') + (s.done ? 'Resolved' : i === 1 ? 'Reported' : 'Being checked') + '</span>' + '<div class="cardp">' + ps.phone.map((l) => '<span>' + esc(l) + '</span>').join('') + '</div>'; }
+  return '<div><p class="eyebrow" style="text-align:center;margin-bottom:8px">' + T.rohanSees + '</p><div class="phone" role="group" aria-label="' + T.rohanSees + '"><div class="bar"><span>' + (st && st.clock || o.offer.t) + '</span><span>Vi 5G</span></div><div class="ttl">' + (i === 0 ? 'Messages' : 'My complaint') + '</div><div class="body">' + body + '</div><div class="keys" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 5l-9 7 9 7z" fill="currentColor"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="currentColor"/></svg><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg></div></div></div>';
+}
+function parties(on) {
+  const P = T.parties, icn = { rohan: 'user', vi: 'tower', bsnl: 'tower', dc: 'shield', ent: 'shop' };
+  return '<div class="parties" aria-label="Who is acting">' + ['rohan', 'vi', 'lock', 'bsnl', 'dc', 'ent'].map((k) => k === 'lock'
+    ? '<div class="pt lock' + (on.lock ? ' on' : '') + '">' + ic('lock') + P.lock + (on.lock ? '<span>Only the two operators can read it</span>' : '') + '</div>'
+    : '<div class="pt' + (on[k] ? ' on' : '') + '"><b>' + ic(icn[k]) + P[k][0] + '</b><small>' + P[k][1] + '</small>' + (on[k] ? '<span class="do">' + esc(on[k]) + '</span>' : '') + '</div>').join('') + '</div>';
+}
+function render() {
+  const o = OUT[S.out], i = S.step, st = o.steps[i], tgt = CONFIG.targetMinutes;
+  let h = '<div class="stack" style="display:flex;flex-direction:column;gap:18px"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span class="eyebrow">' + T.outcomes + '</span><div class="seg" role="group" aria-label="' + T.outcomes + '">' + Object.keys(OUT).map((k) => '<button data-out="' + k + '" aria-pressed="' + (S.out === k) + '">' + OUT[k].name + '</button>').join('') + '</div></div>';
+  h += '<ol class="steps">' + T.steps.map((n, k) => '<li class="' + (k < i ? 'done' : k === i ? 'now' : '') + '"><button data-step="' + k + '"' + (k === i ? ' aria-current="step"' : '') + '><span class="n">' + (k < i ? ic('check') : k + 1) + '</span><span class="nm">' + n + '</span></button></li>').join('') + '</ol>';
+  if (i < 6) {
+    const res = st.done ? (o.mins <= tgt ? ['green', 'check', 'Resolved in ' + o.mins + ' minutes. Target ' + tgt + '.'] : ['amber', 'alert', 'Resolved in ' + o.mins + ' minutes. Target ' + tgt + ' missed.']) : null;
+    h += '<section class="stage" aria-live="off">' + phone(o, st, i) + '<div class="say"><div><p class="eyebrow">Step ' + (i + 1) + ' of 7 · ' + T.steps[i] + '</p><h2 id="h" tabindex="-1">' + esc(st.h) + '</h2><p class="lead">' + esc(st.lead) + '</p></div>' +
+      '<div style="display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap"><span class="clock">' + ic('clock') + '<span class="sr">' + T.clock + '</span><b>' + (st.clock || T.notStarted) + '</b></span>' + (st.chip ? '<span class="chip ' + st.chip[0] + '">' + esc(st.chip[1]) + '</span>' : '') + (res ? '<span class="chip ' + res[0] + '">' + ic(res[1]) + res[2] + '</span>' : '') + '</div>' +
+      parties(st.on) + (st.today ? '<div class="today">' + ic('alert') + '<span><small>' + T.today + '</small><br>' + esc(st.today) + (st.src ? ' <span class="tag">SOURCED</span>' : '') + '</span></div>' : '') + '</div></section>';
+  } else {
+    const c = T.close;
+    h += '<section class="stage" style="grid-template-columns:minmax(0,1fr)"><div class="say"><div><p class="eyebrow">Step 7 of 7 · ' + T.steps[6] + '</p><h2 id="h" tabindex="-1">' + c.h + '</h2><p class="lead">' + c.lead + '</p></div><div class="metric"><p class="big">' + c.metric.replace('{t}', tgt) + '</p><span class="base">' + c.base + '</span></div><div class="close3">' + c.cols.map((x) => '<div><b>' + x[0] + '</b>' + x[1] + '</div>').join('') + '</div><div><h3 style="margin-bottom:6px">' + c.askH + '</h3><ol style="padding-left:1.3em;display:flex;flex-direction:column;gap:4px;font-size:17px">' + c.asks.map((a) => '<li>' + a + '</li>').join('') + '</ol></div></div></section>';
+  }
+  h += '<div class="nav"><button class="btn" data-go="-1"' + (i === 0 ? ' disabled' : '') + '>' + ic('left') + T.back + '</button>' + (i === 6 ? '<button class="btn primary" data-step="0">' + T.restart + '</button>' : '<button class="btn primary" data-go="1">' + T.next + ': ' + T.steps[i + 1] + ic('right') + '</button>') + '</div></div>';
+  document.getElementById('app').innerHTML = h;
+  document.getElementById('live').textContent = 'Step ' + (i + 1) + ' of 7: ' + T.steps[i];
+}
+function go(n, focus) { S.step = Math.max(0, Math.min(6, n)); render(); if (focus) { const b = document.querySelector(focus); if (b) b.focus({ preventScroll: true }); } }
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.out) { S.out = b.dataset.out; render(); document.querySelector('[data-out="' + S.out + '"]').focus(); }
+  else if (b.dataset.step) go(Number(b.dataset.step), '[data-step="' + b.dataset.step + '"]');
+  else if (b.dataset.go) go(S.step + Number(b.dataset.go), b.dataset.go === '1' ? '.nav .primary' : '.nav .btn');
+});
+document.addEventListener('keydown', (e) => { if (e.altKey || e.ctrlKey || e.metaKey) return; if (e.key === 'ArrowRight') go(S.step + 1); else if (e.key === 'ArrowLeft') go(S.step - 1); });
+render();
+</script>
+</body>
+</html>
