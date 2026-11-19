@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DigiConsent Complaint Flows</title>
+<style>
+/* Layout: an index on top, then one flow per section. Each flow is a grid of boxes over drawn connectors, with the same content as a list. */
+:root {
+  --navy: #173B5E; --grey: #5B6B7B; --white: #FFFFFF; --panel: #F3F5F7; --teal: #1F6F65;
+  --amber: #8A5300; --amber-bg: #FFF1DD; --red: #A61B1B; --red-bg: #FDE7E7; --green: #1B6B2F; --green-bg: #E4F3E6;
+  --line: rgba(23, 59, 94, .16); --line-2: rgba(23, 59, 94, .30); --teal-wash: rgba(31, 111, 101, .08); --navy-wash: rgba(23, 59, 94, .05);
+  --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--panel); color: var(--navy); font: 15px/1.5 var(--font); }
+h1, h2, h3, p, ol, ul { margin: 0; }
+h1, h2 { text-wrap: balance; line-height: 1.25; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+header.top { display: flex; gap: 12px 20px; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; }
+header.top h1 { font-size: 26px; }
+header.top p { color: var(--grey); max-width: 70ch; }
+.fict { font-size: 12px; color: var(--grey); border: 1px dashed var(--line-2); border-radius: 999px; padding: 2px 10px; }
+nav.idx { display: flex; gap: 6px; flex-wrap: wrap; position: sticky; top: 0; background: var(--panel); padding: 8px 0; z-index: 5; border-bottom: 1px solid var(--line); }
+nav.idx a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line-2); background: var(--white); color: var(--navy); font-weight: 600; text-decoration: none; font-size: 14px; }
+nav.idx a:hover { border-color: var(--navy); }
+section.flow { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 70px; }
+section.flow h2 { font-size: 20px; }
+section.flow > p { color: var(--grey); max-width: 80ch; }
+.eyebrow { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--grey); font-weight: 700; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.canvas { position: relative; }
+.canvas > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lane-bg { position: absolute; left: 0; right: 0; border-top: 1px solid var(--line-2); }
+.lane-bg:nth-child(odd) { background: var(--navy-wash); }
+.lane-lb { position: absolute; left: 0; width: 118px; padding: 8px 10px; font-weight: 700; font-size: 13px; line-height: 1.25; }
+.lane-lb small { display: block; font-weight: 500; color: var(--grey); font-size: 11.5px; }
+.nd { position: absolute; background: var(--white); border: 1.5px solid var(--navy); border-radius: 8px; padding: 6px 8px; font-size: 12.5px; line-height: 1.3; display: flex; flex-direction: column; justify-content: center; text-align: center; gap: 2px; }
+.nd .k { font-size: 9.5px; font-weight: 700; letter-spacing: .08em; color: var(--grey); }
+.nd.start { background: var(--navy); color: var(--white); border-radius: 44px; }
+.nd.start .k { color: var(--white); opacity: .8; }
+.nd.dec { border-style: dashed; border-width: 2px; background: var(--white); font-weight: 600; }
+.nd.end { border-width: 2.5px; border-color: var(--teal); background: #fff; box-shadow: inset 0 0 0 100px var(--teal-wash); border-radius: 30px 8px 30px 8px; }
+.nd.red { border-color: var(--red); background: var(--red-bg); box-shadow: none; color: var(--red); }
+.nd.green { border-color: var(--green); background: var(--green-bg); box-shadow: none; color: var(--green); }
+.nd.amber { border-color: var(--amber); background: var(--amber-bg); box-shadow: none; color: var(--amber); }
+.nd.red .k, .nd.green .k, .nd.amber .k { color: inherit; }
+.nd.log { border-color: var(--teal); color: var(--teal); box-shadow: inset 0 0 0 100px var(--teal-wash); }
+.el { position: absolute; transform: translate(-50%, -50%); background: var(--white); border: 1px solid var(--line-2); border-radius: 999px; padding: 0 7px; font-size: 11px; font-weight: 700; white-space: nowrap; color: var(--navy); }
+.tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 0 5px; border-radius: 4px; border: 1px solid var(--line-2); color: var(--grey); background: var(--white); white-space: nowrap; }
+.tag.proposed { border-style: dashed; color: var(--teal); border-color: var(--teal); }
+.legend { display: flex; gap: 8px 16px; flex-wrap: wrap; font-size: 13px; color: var(--grey); align-items: center; }
+.legend span.sw { display: inline-block; width: 26px; height: 16px; vertical-align: -3px; margin-right: 5px; border: 1.5px solid var(--navy); border-radius: 4px; background: var(--white); }
+.legend span.sw.start { background: var(--navy); border-radius: 10px; }
+.legend span.sw.dec { border-style: dashed; border-width: 2px; }
+.legend span.sw.end { border-color: var(--teal); border-width: 2.5px; border-radius: 10px 3px 10px 3px; }
+details { border: 1px solid var(--line); border-radius: 8px; }
+details > summary { cursor: pointer; padding: 10px 12px; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+details > ol { padding: 0 12px 12px 34px; display: flex; flex-direction: column; gap: 6px; max-width: 90ch; }
+details li span { color: var(--grey); }
+footer { color: var(--grey); font-size: 13px; }
+@media (max-width: 760px) { body { font-size: 16px; } header.top h1 { font-size: 22px; } nav.idx a { min-height: 44px; } .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><p class="eyebrow">DigiConsent complaint management</p><h1>Complaint flow diagrams</h1><p>How one complaint moves from the subscriber's phone to a confirmed remedy. Each flow can be read as a diagram or as a list. They follow the same procedure as the demonstration.</p></div>
+    <span class="fict">Fictional records. Simulated actions.</span>
+  </header>
+  <nav class="idx" id="idx" aria-label="Flows"></nav>
+  <div class="legend" aria-label="Legend"><span><span class="sw start"></span>Start</span><span><span class="sw"></span>Step</span><span><span class="sw dec"></span>Decision</span><span><span class="sw end"></span>End state</span><span><span class="tag">SOURCED</span> from a named document</span><span><span class="tag proposed">PROPOSED</span> new in this solution</span><span><span class="tag">ILLUSTRATIVE</span> to be agreed</span></div>
+  <main id="flows"></main>
+  <footer><p>Operator roles: TAP is the subscriber's operator (terminating access provider). OAP is the sender's operator (originating access provider). DLT is the shared register of headers, templates, consents and complaints. PE is the enterprise sender. CDR is the operator's record of a network event. Operator names are real. The records, times and results shown for them are fictional.</p></footer>
+</div>
+<script>
+/* All diagram text lives in FLOWS. Node: [id, col, row, text, kind, tone]. Edge: [from, to, label, options]. */
+const FLOWS = [
+  {
+    id: 'end-to-end', title: 'One complaint, end to end', nav: 'End to end',
+    intro: 'Who does what, in order. The subscriber\'s operator owns the case from start to finish. The deciding facts sit in one evidence log that only the two operators can read. DigiConsent never reads it.',
+    lanes: [['Subscriber', 'Rohan'], ['TAP', 'Subscriber\'s operator, e.g. Vi'], ['DLT', 'Shared register'], ['OAP', 'Sender\'s operator, e.g. BSNL'], ['Evidence log', 'PROPOSED. Two operators only'], ['DigiConsent', 'Consent, tasks, trust'], ['Enterprise', 'PE and telemarketer'], ['Reviewer', 'Exceptions only']],
+    nodes: [
+      ['s0', 0, 0, 'Selects the message, a reason and the change wanted. Nothing is retyped.', 'start'],
+      ['t1', 1, 1, 'Registers the case in CRM. SR number issued. The clock starts.'],
+      ['d1', 1, 5, 'Records the scoped withdrawal in the consent register, with a receipt.'],
+      ['l2', 2, 2, 'Carries the complaint to the OAP channel. Holds the log\'s access rule and receipts.'],
+      ['o2', 2, 3, 'Complaint arrives on its channel. Its half of the log was written at send time.'],
+      ['t3', 3, 1, 'Finds the same message at both ends and opens the log with the case ID.'],
+      ['g3', 3, 4, 'One log per message and recipient. Append-only. Every read is logged.', 'step', 'log'],
+      ['t4', 4, 1, 'Is the evidence complete for this allegation?', 'dec'],
+      ['e4', 4, 6, 'Answers one specific question and returns source evidence by the due time.'],
+      ['t5', 5, 1, 'Rules run in the TAP\'s own environment. Finding recorded with authority and rule version.'],
+      ['r5', 5, 7, 'Decides conflicts, contested attribution, material sanctions and appeals.'],
+      ['o6', 6, 3, 'Accepts the finding as it is, or reviews it, under the agreed matrix.'],
+      ['t6', 6, 1, 'Sends remedy tasks to whoever must act. Each task has an owner and a due time.'],
+      ['d7', 7, 5, 'Task exchange tracks the task. Confirms the withdrawal or correction is in force.'],
+      ['e7', 7, 6, 'Corrects the campaign, list or record. Returns proof of completion.'],
+      ['t8', 8, 1, 'Tells the subscriber the finding, what changed, when it took effect and how to challenge. Clock stops.'],
+      ['s8', 8, 0, 'Sees the outcome and the protection now in force. Can appeal or report again.', 'end'],
+      ['d9', 9, 5, 'Adds the trust score entry and updates the prevention view.', 'end']
+    ],
+    edges: [['s0', 't1', 'report'], ['t1', 'l2', 'DLT API'], ['l2', 'o2'], ['t1', 'd1', 'if the box is checked'], ['t1', 't3'], ['t3', 'g3', 'reads', 'both'], ['o2', 'g3', 'writes its half', 'vh'], ['t3', 't4'], ['t4', 'e4', 'no: one question, proof returns', 'both'], ['t4', 't5', 'yes'], ['t5', 'r5', 'rules do not reach'], ['t5', 'o6', 'finding'], ['t5', 't6'], ['t6', 'd7', 'remedy'], ['d7', 'e7', 'task and proof', 'both'], ['d7', 't8', 'effective time'], ['t8', 's8', 'outcome'], ['t8', 'd9', 'outcome']]
+  },
+  {
+    id: 'today', title: 'Today and with the solution', nav: 'Today and proposed',
+    intro: 'Only the evidence lookup step is replaced. Identifying the sender\'s operator, DLT registration and audit stay as they are. Times for today are indicative and may overlap.',
+    lanes: [['Today', 'RTM SMS'], ['Proposed', 'Stage 1 scope']],
+    nodes: [
+      ['a0', 0, 0, 'Subscriber finds a route and re-enters the sender, time and message. 9 fields on one operator\'s form. SOURCED', 'start'],
+      ['a1', 1, 0, 'TAP registers and identifies the OAP. Complaint handed to the OAP channel.'],
+      ['a2', 2, 0, 'Network records: up to 12 hours on some Vi SMSCs before the CDR can be consolidated. SOURCED', 'step', 'amber'],
+      ['a3', 3, 0, 'Scrub records: time to reach the case is not measured.', 'step', 'amber'],
+      ['a4', 4, 0, 'Joining across operators: 2 days expected, often longer. SOURCED', 'step', 'amber'],
+      ['a5', 5, 0, 'Back-office agent reviews: about 1 day. SOURCED'],
+      ['a6', 6, 0, 'Closure is the end state. 96% of the analysed RTM sample was classified invalid. SOURCED', 'end', 'red'],
+      ['b0', 0, 1, 'Subscriber selects the exact message. Types none of the fields. PROPOSED', 'start'],
+      ['b1', 1, 1, 'TAP registers and identifies the OAP, as today. A checked box records the withdrawal now.'],
+      ['b2', 2, 1, 'TAP reads one evidence log holding both operators\' checks. Target: searchable within a minute.', 'step', 'log'],
+      ['b4', 4, 1, 'Approved rule decides where evidence is complete. A reviewer takes the exceptions.'],
+      ['b5', 5, 1, 'Remedy executed and confirmed in force, with proof.'],
+      ['b6', 6, 1, 'Outcome sent: what was found, what changed and when. Target: within {targetMinutes} minutes.', 'end', 'green']
+    ],
+    edges: [['a0', 'a1'], ['a1', 'a2'], ['a2', 'a3'], ['a3', 'a4'], ['a4', 'a5'], ['a5', 'a6'], ['b0', 'b1'], ['b1', 'b2'], ['b2', 'b4'], ['b4', 'b5'], ['b5', 'b6']]
+  },
+  {
+    id: 'intake', title: 'Reporting and the consent withdrawal rule', nav: 'Report and withdraw',
+    intro: 'Submitting registers the complaint. Only an explicitly checked box authorises a withdrawal. The withdrawal never waits for the finding, and an unchecked box never switches off the investigation.',
+    nodes: [
+      ['a', 1, 0, 'Subscriber selects one message or call', 'start'],
+      ['b', 1, 1, 'Event prefilled. Reason chosen in the subscriber\'s words. Category inferred in the backend.'],
+      ['c', 1, 2, 'Suspected fraud with money already lost?', 'dec'],
+      ['c1', 2, 2, 'First action: Call 1930. The prepared report waits.', 'end', 'red'],
+      ['d', 1, 3, 'Matching promotional consent on record for this sender and channel?', 'dec'],
+      ['d1', 2, 3, 'Nothing to withdraw. Offer a DND block, which the subscriber confirms. Register and investigate.', 'end'],
+      ['e', 1, 4, 'Did the subscriber check the withdrawal box?', 'dec'],
+      ['e0', 0, 4, 'Register and investigate. Preference unchanged. No withdrawal, receipt or enforcement timer.'],
+      ['e1', 2, 4, 'Withdrawal requested at registration. Recorded in the register in the same minute.'],
+      ['e2', 2, 5, 'In force when the sender\'s systems and scrubbing honour it. Only then is the remedy complete.', 'step', 'green'],
+      ['f', 1, 6, 'One case at the TAP. Acknowledged with a next-update time. Tracked against the enterprise either way.', 'end']
+    ],
+    edges: [['a', 'b'], ['b', 'c'], ['c', 'c1', 'yes'], ['c', 'd', 'no'], ['d', 'd1', 'no'], ['d', 'e', 'yes'], ['e', 'e0', 'unchecked'], ['e', 'e1', 'checked'], ['e1', 'e2'], ['e0', 'f', '', 'vh'], ['e2', 'f', '', 'vh']]
+  },
+  {
+    id: 'match', title: 'Finding the same message and reading the evidence', nav: 'Match and evidence',
+    intro: 'Three ways to find the message, tried in order. The search may return several candidates and never guesses. A timeout or a missing record is never turned into "invalid".',
+    nodes: [
+      ['a', 0, 0, 'TAP starts the match for the case', 'start'],
+      ['b', 0, 1, 'Correlation ID carried between the two systems?', 'dec'],
+      ['c', 0, 2, 'Mapping between each end\'s local message IDs?', 'dec'],
+      ['d', 0, 3, 'Bounded fallback on recipient, header and a time window. How many candidates?', 'dec'],
+      ['d1', 0, 4, 'Ambiguous: ask the subscriber one question, or retry when the feed is ready. The clock keeps running.', 'end', 'amber'],
+      ['m', 1, 2, 'Matched. The fact established advances, nothing more.', 'step', 'green'],
+      ['n', 1, 4, 'Not yet available, wrong operator or unavailable: retry, correct the route or escalate. Case ID is kept.'],
+      ['n1', 1, 5, 'No match after recovery is exhausted: a reviewer reports Unable to determine, with limits and appeal rights.', 'end', 'amber'],
+      ['p', 2, 2, 'Is the log complete and fresh for this route and event?', 'dec'],
+      ['p1', 2, 1, 'Decide from the log. No routine request to the OAP.', 'end', 'green'],
+      ['p2', 2, 3, 'Mark the case evidence pending. Follow today\'s path, then backfill.', 'end', 'amber']
+    ],
+    edges: [['a', 'b'], ['b', 'c', 'no'], ['c', 'd', 'no'], ['d', 'd1', 'several'], ['b', 'm', 'yes'], ['c', 'm', 'yes'], ['d', 'm', 'one'], ['d', 'n', 'none'], ['n', 'n1'], ['m', 'p'], ['p', 'p1', 'yes'], ['p', 'p2', 'no']]
+  },
+  {
+    id: 'findings', title: 'From evidence to a finding', nav: 'Findings',
+    intro: 'Seven findings can come from the log and one from enterprise evidence. The order shown is a reading aid. The rules and the position of the sender\'s operator are illustrative and to be agreed. Anything the rules do not cover goes to a person.',
+    nodes: [
+      ['q1', 0, 0, 'Is a check missing from the log?', 'dec'], ['f1', 1, 0, 'Not verifiable. Reviewer records the limits. Never closed as invalid.', 'end', 'amber'],
+      ['q2', 0, 1, 'Did the header, template or PE-TM chain check fail?', 'dec'], ['f2', 1, 1, 'Unregistered content or chain. Registration corrected, template or chain blocked. OAP reviews.', 'end', 'red'],
+      ['q3', 0, 2, 'Did the preference block the category, yet the message was delivered?', 'dec'], ['f3', 1, 2, 'Scrub miss. Fixed by the owner of that scrubber. No enterprise penalty. OAP reviews.', 'end', 'red'],
+      ['q4', 0, 3, 'Promotional content in a service or transactional template?', 'dec'], ['f4', 1, 3, 'Category misuse. Needs the actual content, not just the label. OAP reviews.', 'end', 'red'],
+      ['q5', 0, 4, 'Service message that reached the wrong person?', 'dec'], ['f5', 1, 4, 'Enterprise error confirmed, from the enterprise\'s own record. Source record corrected.', 'end', 'amber'],
+      ['q6', 0, 5, 'Promotional message with valid consent at send time?', 'dec'], ['f6', 1, 5, 'No consent. Sender stops and fixes acquisition. DND block offered. OAP accepts.', 'end', 'red'],
+      ['q7', 0, 6, 'Revoked before the send, in the register or the enterprise\'s own opt-out record?', 'dec'], ['f7', 1, 6, 'After revocation. Scoped suppression with an effective time. OAP accepts.', 'end', 'red'],
+      ['f8', 0, 7, 'Consent on record. Origin and scope verified. Reviewed when the subscriber disputes it.', 'end', 'green']
+    ],
+    edges: [['q1', 'f1', 'yes'], ['q1', 'q2', 'no'], ['q2', 'f2', 'yes'], ['q2', 'q3', 'no'], ['q3', 'f3', 'yes'], ['q3', 'q4', 'no'], ['q4', 'f4', 'yes'], ['q4', 'q5', 'no'], ['q5', 'f5', 'yes'], ['q5', 'q6', 'no'], ['q6', 'f6', 'no'], ['q6', 'q7', 'yes'], ['q7', 'f7', 'yes'], ['q7', 'f8', 'no']]
+  },
+  {
+    id: 'remedy', title: 'Remedy and the enterprise task', nav: 'Remedy and task',
+    intro: 'Two things must finish: the subscriber\'s relief and the sender\'s fix. Acknowledging a task finishes neither. Completion needs scope, outcome, effective time and a proof reference.',
+    nodes: [
+      ['a', 0, 0, 'Assigned: question, minimum evidence, correction, due time and named owner', 'start'],
+      ['b', 1, 0, 'Acknowledged: received, nothing more'],
+      ['c', 2, 0, 'Investigating: evidence returned for the one question asked'],
+      ['d', 3, 0, 'Applied: correction dispatched, not yet in force'],
+      ['e', 4, 0, 'Verified: in force, with effective time and proof reference', 'step', 'green'],
+      ['f', 5, 0, 'Subscriber informed. The user remedy is complete.', 'end', 'green'],
+      ['b1', 1, 1, 'Overdue: escalation contact notified. TAP updates the subscriber with owner and next update.', 'step', 'amber'],
+      ['c1', 2, 1, 'Disputed: goes to the authorised reviewer through the task exchange.', 'step', 'amber'],
+      ['d1', 3, 1, 'Failed: the owner retries with the same action ID.', 'step', 'red']
+    ],
+    edges: [['a', 'b'], ['b', 'c'], ['c', 'd'], ['d', 'e'], ['e', 'f'], ['b', 'b1', 'deadline passes'], ['c', 'c1', 'enterprise disagrees'], ['d', 'd1', 'retry', 'both']]
+  },
+  {
+    id: 'again', title: 'If it happens again, or the subscriber disagrees', nav: 'Report again',
+    intro: 'Asked first: is this the same problem? A new send is classified by its send time against the time the earlier action came into force, not the time it was recorded and not the delivery time.',
+    nodes: [
+      ['a', 0, 0, 'Subscriber comes back to a case', 'start'],
+      ['b', 0, 1, 'Same event submitted again?', 'dec'], ['b1', 1, 1, 'Duplicate: existing case returned. No second demerit, no second withdrawal, clock not reset.', 'end'],
+      ['c', 0, 2, 'Does the subscriber disagree with the finding?', 'dec'], ['c1', 1, 2, 'Appeal: reviewer assigned, earlier evidence preserved. A wrong demerit is reversed.', 'end', 'amber'],
+      ['d', 0, 3, 'New send from the same sender, in the same purpose scope?', 'dec'], ['d1', 1, 3, 'Different purpose: explain. A delivery update after an offers-only opt-out may be expected.', 'end'],
+      ['e', 0, 4, 'Was it sent before the earlier fix came into force?', 'dec'], ['e1', 1, 4, 'Continued exposure: separate event linked to the active correction. Assessed on its own.', 'end', 'amber'],
+      ['f', 0, 5, 'Failed-fix investigation: linked complaint, find which control failed, repeat demerit only after attribution.', 'end', 'red']
+    ],
+    edges: [['a', 'b'], ['b', 'b1', 'yes'], ['b', 'c', 'no'], ['c', 'c1', 'yes'], ['c', 'd', 'no'], ['d', 'd1', 'no'], ['d', 'e', 'yes'], ['e', 'e1', 'yes'], ['e', 'f', 'no']]
+  },
+  {
+    id: 'status', title: 'What the subscriber sees', nav: 'Subscriber status',
+    intro: 'Six steps and four status words: Reported, Being checked, Needs you, Resolved. No final message reads Closed, Disposed, Invalid, Rejected or Forwarded. Every open state shows an owner and a next update.',
+    nodes: [
+      ['a', 0, 0, 'Registered. Chip: Reported', 'start'],
+      ['b', 1, 0, 'Checking evidence. Chip: Being checked'],
+      ['c', 2, 0, 'Finding available. Chip: Being checked'],
+      ['d', 3, 0, 'Action in progress. Chip: Being checked'],
+      ['e', 4, 0, 'Action effective. Chip: Being checked'],
+      ['f', 5, 0, 'Outcome sent. Chip: Resolved', 'end', 'green'],
+      ['b1', 1, 1, 'Waiting for enterprise, waiting for network evidence, or under review. Owner and next update shown.', 'step', 'amber'],
+      ['b2', 0, 1, 'A question to the subscriber. Chip: Needs you', 'step', 'amber'],
+      ['f1', 5, 1, 'Reopened on appeal or overturned finding. Chip: Being checked, with a Reopened tag.', 'step', 'amber'],
+      ['c1', 3, 1, 'No action required: the reason is given and the action steps are skipped.']
+    ],
+    edges: [['a', 'b'], ['b', 'c'], ['c', 'd'], ['d', 'e'], ['e', 'f'], ['b', 'b1', '', 'both'], ['b1', 'b2', 'ask', 'both'], ['f', 'f1', 'reopen'], ['c', 'c1', '', 'vh']]
+  }
+];
+const CONFIG = { targetMinutes: 10 };
+const CW = 222, CH = 168, BW = 194, BH = 118, PAD = 16;
+const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+const txt = (s) => esc(s.replace('{targetMinutes}', CONFIG.targetMinutes)).replace(/\b(SOURCED|PROPOSED|ILLUSTRATIVE)\b/g, (m) => '<span class="tag' + (m === 'PROPOSED' ? ' proposed' : '') + '">' + m + '</span>');
+function renderFlow(f) {
+  const gx = f.lanes ? 124 : 0, N = {};
+  let maxC = 0, maxR = 0;
+  f.nodes.forEach((n) => { N[n[0]] = { c: n[1], r: n[2], x: gx + PAD + n[1] * CW + CW / 2, y: PAD + n[2] * CH + CH / 2, t: n[3], k: n[4] || 'step', tone: n[5] || '' }; maxC = Math.max(maxC, n[1]); maxR = Math.max(maxR, n[2]); });
+  if (f.lanes) maxR = f.lanes.length - 1;
+  const W = gx + PAD * 2 + (maxC + 1) * CW, H = PAD * 2 + (maxR + 1) * CH;
+  let svg = '', labels = '';
+  f.edges.forEach((e) => {
+    const a = N[e[0]], b = N[e[1]], o = e[3] || '', pts = [];
+    const sx = Math.sign(b.x - a.x), sy = Math.sign(b.y - a.y);
+    if (a.r === b.r) pts.push([a.x + sx * BW / 2, a.y], [b.x - sx * BW / 2, b.y]);
+    else if (a.c === b.c) pts.push([a.x, a.y + sy * BH / 2], [b.x, b.y - sy * BH / 2]);
+    else if (o.indexOf('vh') >= 0) pts.push([a.x, a.y + sy * BH / 2], [a.x, b.y], [b.x - sx * BW / 2, b.y]);
+    else pts.push([a.x + sx * BW / 2, a.y], [b.x, a.y], [b.x, b.y - sy * BH / 2]);
+    svg += '<polyline points="' + pts.map((p) => p.join(',')).join(' ') + '" fill="none" stroke="#173B5E" stroke-width="1.6" marker-end="url(#ar-' + f.id + ')"' + (o.indexOf('both') >= 0 ? ' marker-start="url(#ar-' + f.id + ')"' : '') + '/>';
+    if (e[2]) { const last = pts.length - 1, p = pts.length === 2 ? [(pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2] : [(pts[last - 1][0] + pts[last][0]) / 2, (pts[last - 1][1] + pts[last][1]) / 2]; labels += '<span class="el" style="left:' + p[0] + 'px;top:' + p[1] + 'px">' + esc(e[2]) + '</span>'; }
+  });
+  let lanes = '';
+  if (f.lanes) lanes = f.lanes.map((l, i) => '<div class="lane-bg" style="top:' + (PAD + i * CH) + 'px;height:' + CH + 'px"><div class="lane-lb">' + esc(l[0]) + '<small>' + txt(l[1]) + '</small></div></div>').join('');
+  const kinds = { start: 'START', dec: 'DECISION', end: 'END STATE', step: '' };
+  const boxes = f.nodes.map((n) => { const d = N[n[0]]; return '<div class="nd ' + d.k + ' ' + d.tone + '" style="left:' + (d.x - BW / 2) + 'px;top:' + (d.y - BH / 2) + 'px;width:' + BW + 'px;height:' + BH + 'px">' + (kinds[d.k] ? '<span class="k">' + kinds[d.k] + '</span>' : '') + '<span>' + txt(d.t) + '</span></div>'; }).join('');
+  const list = f.nodes.map((n) => {
+    const outs = f.edges.filter((e) => e[0] === n[0]).map((e) => (e[2] ? e[2] + ': ' : '') + N[e[1]].t.replace(/\s*(SOURCED|PROPOSED|ILLUSTRATIVE)/, ''));
+    const lane = f.lanes ? '<b>' + esc(f.lanes[n[2]][0]) + '.</b> ' : '';
+    return '<li>' + lane + txt(n[3]) + (outs.length ? ' <span>Then: ' + outs.map(esc).join(' | ') + '</span>' : '') + '</li>';
+  }).join('');
+  return '<section class="flow" id="' + f.id + '" aria-labelledby="h-' + f.id + '"><h2 id="h-' + f.id + '">' + esc(f.title) + '</h2><p>' + esc(f.intro) + '</p>' +
+    '<div class="scroll" tabindex="0" role="img" aria-label="Flow diagram: ' + esc(f.title) + '. The same content follows as a list."><div class="canvas" style="width:' + W + 'px;height:' + H + 'px">' + lanes +
+    '<svg viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true"><defs><marker id="ar-' + f.id + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1l10 4-10 4z" fill="#173B5E"/></marker></defs>' + svg + '</svg>' + boxes + labels + '</div></div>' +
+    '<details><summary>Read as list</summary><ol>' + list + '</ol></details></section>';
+}
+document.getElementById('idx').innerHTML = FLOWS.map((f) => '<a href="#' + f.id + '">' + esc(f.nav) + '</a>').join('');
+const host = document.getElementById('flows');
+host.style.cssText = 'display:flex;flex-direction:column;gap:20px';
+host.innerHTML = FLOWS.map(renderFlow).join('');
+</script>
+</body>
+</html>
