@@ -4,10 +4,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Templates summary screen</title><style>.proto,#pmb,#pm,#upnext{display:none !important}html.sx body{opacity:0}</style><script>document.documentElement.classList.add("sx")</script><script>/* standalone: opens on the "Templates mapped" step-done screen and stays there */
-addEventListener("load",function(){setTimeout(function(){document.getElementById("pmb").click(); var b=document.querySelector("[data-x=ok-templates]"); if(b) b.click(); setTimeout(function(){document.body.click()},900)},1200); setTimeout(function(){document.documentElement.classList.remove("sx")},1500);
- /* hold on this screen: stop the "Up next" countdown so it never moves on */
- var iv=setInterval(function(){var u=document.getElementById("upnext"); if(!u) return; var s=u.querySelector("[data-a=upstay]"); if(s){s.click(); clearInterval(iv)}},100)})</script>
+<title>Templates summary step</title><style>.proto,#pmb,#pm,#upnext{display:none !important}html.sx body{opacity:0}</style><script>document.documentElement.classList.add("sx")</script><script>/* standalone: opens straight on the Templates summary step (98 out of 100) and stays there */
+addEventListener("load",function(){setTimeout(function(){document.getElementById("pmb").click(); var b=document.querySelector("[data-x=tpl-summary]"); if(b) b.click(); setTimeout(function(){document.body.click()},900)},1200); setTimeout(function(){document.documentElement.classList.remove("sx")},1700)})</script>
 <style>
 :root{
   --deep:#0b37c9; --ink:#ffffff; --navy:#0a2a8f; --muted:rgba(10,42,143,.55); --amber:#ffd27a;
@@ -3780,7 +3778,7 @@ var XMENU=[["Agreements",[["Can't be loaded","gate-fail"],["Acceptance refused",
   ["Team",[["Nothing found","nothing-team"],["Couldn't prepare, first try","fail-team"],["Couldn't prepare, after two tries","fail2-team"],["Do it later","later-team"],["Success: invites sent","ok-team"],["Success: saved for later","ok-team-later"],["Coming back to a finished step","back-team"],["Details: nothing found","notice-team-nothing"],["Save changes dialog","dialog-team"]]],
   ["GTM partners",[["Couldn't prepare, first try","fail-gtm"],["Couldn't prepare, after two tries","fail2-gtm"],["No rate cards, locked","norate-gtm"],["Success: partners selected","ok-gtm"],["Save changes dialog","dialog-gtm"]]],
   ["Brands and LOBs",[["Sent for approval: in review card","pm-all"],["Edited: templates are remapped","rc-tpl"],["Nothing found","nothing-brands"],["One brand, two LOBs suggested","brands-single"],["Couldn't prepare","fail-brands"],["Details: no suggestion prepared","notice-brands-noprep"],["Details: save failed","derr-brands"],["Success: sent for approval","ok-brands"],["Save changes dialog","dialog-brands"],["All edited: amber, waiting","pm-all"],["All edited: templates locked","pm-all-lock"],["Partly edited: done, N under review","pm-partial"],["Partly edited: templates warning","pm-partial-warn"],["LOB removed: remapping","pm-remove-remap"]]],
-  ["Templates",[["Mapping templates to brands and LOBs","tpl-mapping"],["Nothing found","nothing-templates"],["Not prepared by AI","unmapped-templates"],["No brands or LOBs approved","nobl-templates"],["Trying again","busy-templates"],["Couldn't prepare, first try","fail-templates"],["Couldn't prepare, after two tries","fail2-templates"],["Success: templates mapped","ok-templates"],["Needs attention","attention-templates"],["Save changes dialog","dialog-templates"]]],
+  ["Templates",[["Mapping templates to brands and LOBs","tpl-mapping"],["Nothing found","nothing-templates"],["Not prepared by AI","unmapped-templates"],["No brands or LOBs approved","nobl-templates"],["Trying again","busy-templates"],["Couldn't prepare, first try","fail-templates"],["Couldn't prepare, after two tries","fail2-templates"],["Summary","tpl-summary"],["Success: templates mapped","ok-templates"],["Needs attention","attention-templates"],["Save changes dialog","dialog-templates"]]],
   ["Finale",[["Skipped steps","fin-skipped"],["Window not open yet","fin-notopen"],["Window open","fin-open"],["Window closed","fin-closed"]]],
   ["Whole screen",[["Offline","offline-x"],["Setup failed to load","loadfail-deck"],["Card failed to load","loadfail-card"],["Details failed to load","loadfail-deep"]]]];
 
@@ -3812,6 +3810,7 @@ XS["ok-team"]=function(){rStep(1); later(function(){finishStep(function(){comple
 XS["ok-team-later"]=function(){rStep(1); later(function(){finishStep(function(){complete(1,"Team saved for later")})},300)};
 XS["ok-brands"]=function(){rStep(stepIx("brands"),function(){if(BRANDS[0]) BRANDS[0].lobs.push("New line of business")}); later(function(){finishStep(function(){complete(stepIx("brands"),"Brands and LOBs set up")})},300)};
 XS["ok-gtm"]=function(){rStep(stepIx("gtm")); later(function(){finishStep(function(){complete(stepIx("gtm"),"Partners confirmed")})},300)};
+XS["tpl-summary"]=function(){rStep(4,function(){F.tplGate="ok"})};
 XS["ok-templates"]=function(){rStep(4,function(){F.tplGate="ok"}); later(function(){finishStep(function(){complete(4,"Templates mapped")})},300)};
 /* coming back to a finished step */
 function dvOpen(i,pre){rStep(i<4?i+1:4,function(){if(pre) pre(); F.status[i]="done"; if(F.later) F.later[i]=0}); later(function(){stepOverview(i); later(function(){F.dvNext=true; expandCard()},700)},400)}
