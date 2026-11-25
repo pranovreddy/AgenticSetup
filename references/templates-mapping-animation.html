@@ -2497,7 +2497,7 @@ function recalc(kind,then){
   say({kick:"Onboarding Agent",line:b?"Recreating your brands and lines of business":(ln||"Remapping templates as brands and LOBs changed"),
     sub:b?"You updated your KYC details, so I'm recreating your brands and LOBs to match.":"",
     extra:'<ul class="think" id="rcthink" data-s="rc"></ul>'+(b?'':'<div class="rcbox"><div class="rcbt"><b>This process may take some time</b><span>Finish later from the templates page or wait here</span></div><button class="btn ghost" data-a="rcskip">'+I("clock")+'Do It Later</button></div>'),
-    status:[b?"Recreating":"Remapping","still"],prog:{label:"Steps",items:STEPN,states:states(5,b?stepIx("brands"):4,b?stepIx("brands"):4)}});
+    status:[b?"Recreating":(ln?"Mapping":"Remapping"),"still"],prog:{label:"Steps",items:STEPN,states:states(5,b?stepIx("brands"):4,b?stepIx("brands"):4)}});
   corePulse(); F.rcKind=kind; F.rcThen=then;
   rcThinkStart(b?["Reading your updated KYC details","Checking the new details against your DLT headers","Rebuilding your brands and lines of business"]:["Reading your DLT templates",ln?"Matching each template to your brands and lines of business":"Matching each template to your updated lines of business","Flagging any template that needs your attention"]);
   var sim=F.rcSim; F.rcSim=null;
