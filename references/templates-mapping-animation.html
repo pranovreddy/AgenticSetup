@@ -4,10 +4,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mapping templates to brands and LOBs · animation</title><style>.proto,#pmb,#pm{display:none !important}#replay{position:fixed;right:20px;top:20px;z-index:99;font:600 13px Inter,system-ui,sans-serif;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);border-radius:10px;padding:9px 14px;cursor:pointer}</style><script>/* standalone: plays "Mapping templates to brands and LOBs" and repeats every 11 seconds */
+<title>Mapping templates to brands and LOBs · animation</title><style>.proto,#pmb,#pm{display:none !important}#replay{position:fixed;right:20px;top:20px;z-index:99;font:600 13px Inter,system-ui,sans-serif;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);border-radius:10px;padding:9px 14px;cursor:pointer}</style><script>/* standalone: plays "Mapping templates to brands and LOBs" and repeats every 12 seconds */
 addEventListener("load",function(){function run(){var b=document.querySelector("[data-x=tpl-mapping]"); if(!b) return; b.click(); setTimeout(function(){document.body.click()},900)}
  setTimeout(function(){document.getElementById("pmb").click(); run(); document.getElementById("pm").classList.remove("on"); document.querySelectorAll(".pm.on,#pm.on").forEach(function(e){e.classList.remove("on")})},1200);
- setInterval(run,11500)})</script>
+ setInterval(run,12500)})</script>
 <style>
 :root{
   --deep:#0b37c9; --ink:#ffffff; --navy:#0a2a8f; --muted:rgba(10,42,143,.55); --amber:#ffd27a;
@@ -2422,7 +2422,7 @@ addEventListener("message",function(e){var d=e.data; if(!d||!d.agLoader||d.state
 function proc(at){F.mode="proc"; F.procT0=clock-(at||0)*PROC_SLOW; F.procI=-1; procTick(); later(measure,820,true)}
 function phaseOf(s,lt){return s.pill?s.pill:s.id==="intro"?"Planning":s.id==="sources"?"Observing":(lt/s.dur<.38?"Reasoning":"Drafting")}
 /* one line of the agent's reasoning at a time: it types in, stays, then types out before the next */
-var TYPE_CPS=80;
+var TYPE_CPS=30;
 function thoughtTick(sc,lt){
   var ul=$("think"); if(!ul||ul.dataset.s!==sc.id) return;
   var L=sc.log, n=-1; for(var q=0;q<L.length;q++) if(lt>=L[q][0]) n=q;
@@ -2484,7 +2484,7 @@ function profEdited(){return PROFILE.some(function(r,k){return String(r[1])!==St
 /* a retry or a remap plays the step's own animation, on its own, in the middle: no neighbouring cards */
 function soloOn(k){var ix=STEP_IX[k]; document.body.classList.add("hysolo"); if(ix!=null){hyBuildDeck(); hyFocusStep(ix,REDUCE)} else if(HYMAP[k]) hyShow(HYMAP[k]); hyFit(); later(hyFit,60)}
 /* the remap lists its stages the way the first-time steps do: each line types in, then ticks when the next begins */
-function rcThinkStart(rows){var t0=performance.now(), gap=REDUCE?0:1700, iv=setInterval(function(){var ul=$("rcthink"); if(F.mode!=="msg"||(!ul&&performance.now()-t0>3000)){clearInterval(iv); return} if(!ul) return;
+function rcThinkStart(rows){var t0=performance.now(), gap=REDUCE?0:3000, iv=setInterval(function(){var ul=$("rcthink"); if(F.mode!=="msg"||(!ul&&performance.now()-t0>3000)){clearInterval(iv); return} if(!ul) return;
   var now=performance.now(), cur=Math.min(rows.length-1,Math.floor((now-t0)/gap));
   for(var k=0;k<=cur;k++){var li=ul.querySelector('li[data-n="'+k+'"]'); if(!li){li=document.createElement("li"); li.dataset.n=k; li.dataset.s=now; li.innerHTML="<i></i><span></span>"; ul.appendChild(li)}
     var fin=k<cur, typed=fin?rows[k].length:Math.min(rows[k].length,Math.floor((now-(+li.dataset.s))/1000*TYPE_CPS));
