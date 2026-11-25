@@ -1723,6 +1723,19 @@ body.upx.sb4 .sb4-ai .s4-go.ux-sending{pointer-events:none;background:#0f2a66!im
 .ux-trust li{display:inline-flex;align-items:center;gap:4px;font:500 10.5px var(--font);color:#66738f;white-space:nowrap}
 .ux-trust svg{width:11px;height:11px;fill:none;stroke:#1f9d5f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .ux-foot{padding-bottom:14px!important}
+/* no session key in the header */
+.ux-key{display:none!important}
+/* drop-zone icon: a two-tone shield with the upload arrow in a soft disc; it lifts when a file is over the zone */
+.ux-di2{width:66px!important;height:66px!important;border:0!important;border-radius:50%!important;background:#fff!important;display:grid!important;place-items:center;box-shadow:0 0 0 7px rgba(37,96,246,.07),0 12px 24px -14px rgba(37,96,246,.7)!important;transition:box-shadow .25s,transform .25s}
+.ux-di2 svg{width:42px!important;height:42px!important;fill:none;stroke:none!important;filter:drop-shadow(0 4px 5px rgba(29,80,224,.3))}
+.ux-di2 .ar{transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.s4-drop:hover .ux-di2 .ar,.s4-drop:focus-visible .ux-di2 .ar,.s4-drop.over .ux-di2 .ar,.s4-drop.drag .ux-di2 .ar{transform:translateY(-2.5px)}
+.s4-drop:hover .ux-di2{box-shadow:0 0 0 10px rgba(37,96,246,.1),0 14px 28px -14px rgba(37,96,246,.8)!important}
+.s4-drop.over .ux-di2,.s4-drop.drag .ux-di2{transform:scale(1.07);box-shadow:0 0 0 12px rgba(37,96,246,.14),0 16px 30px -14px rgba(37,96,246,.85)!important}
+body.upx[data-sec="b"] .ux-di2,body.upx[data-sec="c"] .ux-di2,body.upx[data-sec="b"] .s4-drop:hover .ux-di2,body.upx[data-sec="c"] .s4-drop:hover .ux-di2{width:50px!important;height:50px!important;background:none!important;box-shadow:none!important}
+body.upx[data-sec="b"] .ux-di2 svg,body.upx[data-sec="c"] .ux-di2 svg{width:46px!important;height:46px!important}
+body.upx[data-sec="d"] .ux-di2{box-shadow:0 0 0 6px rgba(37,96,246,.06),0 10px 20px -14px rgba(37,96,246,.5)!important}
+@media (prefers-reduced-motion:reduce){.ux-di2,.ux-di2 .ar{transition:none}}
 /* security styles B, C and D: quieter takes on the same cues (A is the dark vault above) */
 .ux-bar{display:none}
 body.upx.sb4[data-sec="b"] .sb4-ai .ag-hero,body.upx.sb4[data-sec="c"] .sb4-ai .ag-hero,body.upx.sb4[data-sec="d"] .sb4-ai .ag-hero{background:#fff!important;border-bottom:1px solid #e3e8f1!important}
@@ -5025,7 +5038,7 @@ span.r-pick{cursor:default}
       const LK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
       drop.classList.toggle('sealed', !!f && UP.sealed);
       drop.innerHTML = f ? `<span class="s4-fi" aria-hidden="true">CSV<i>${LK}</i></span><span class="s4-fn"><b title="${esc(f.name)}">${esc(f.name)}</b>${UP.sealed ? `<small class="enc">${LK}Encrypted · AES-256</small><small class="s4-hash">SHA-256 ${UP.hash}</small>` : `<small class="s4-ing">Encrypting <span id="s4Scr">${hex(14)}</span></small><span class="s4-encbar"><i></i></span>`}</span><button type="button" class="s4-rm" id="s4Rm" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`
-        : `<span class="s4-di ux-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="sh" d="M12 2.6l7.6 2.9v6c0 4.5-3 8.1-7.6 9.7-4.6-1.6-7.6-5.2-7.6-9.7v-6z"/><path d="M12 15.4V9.2M9.3 11.7L12 9l2.7 2.7"/></svg></span><b>Drop your CSV here</b><span class="s4-dl">or <u>browse</u> · <button type="button" id="s4Sample">try a sample</button></span><small class="s4-lim">Encrypted on this device · CSV up to 100 MB</small>`;
+        : `<span class="s4-di ux-di2" aria-hidden="true"><svg viewBox="0 0 48 48"><defs><linearGradient id="uxSh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fa9ff"/><stop offset="1" stop-color="#1d50e0"/></linearGradient></defs><path d="M24 4l16 6v12.5c0 9.6-6.400 17.200-16 20.500C14.400 39.700 8 32.100 8 22.500V10z" fill="url(#uxSh)" stroke="none"/><path d="M24 4v39C14.400 39.700 8 32.100 8 22.500V10z" fill="#fff" fill-opacity=".17" stroke="none"/><path d="M24 7.400l12.800 4.800v10.300c0 7.900-5.100 14.200-12.800 17.100" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1"/><circle cx="24" cy="23" r="9.500" fill="#fff" fill-opacity=".2" stroke="none"/><g class="ar"><path d="M24 28.200v-9.600M19.900 22.400L24 18.300l4.100 4.100" fill="none" stroke="#fff" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span><b>Drop your CSV here</b><span class="s4-dl">or <u>browse</u> · <button type="button" id="s4Sample">try a sample</button></span><small class="s4-lim">Encrypted on this device · CSV up to 100 MB</small>`;
     }
     const hint = UP.err;
     $('#s4Err').hidden = !hint; $('#s4Err').textContent = hint; $('#s4Err').classList.toggle('soft', !UP.err && !!hint);
