@@ -1688,6 +1688,30 @@ body.upx.sb4.s4-railed .sb4-ai{background:#fff!important}
 /* the bar is fixed to the window, so it never scrolls away with the list */
 body.upx.sb4 .sb4-ai{position:fixed!important;left:var(--sidebar);top:0!important;width:372px;height:100vh!important;z-index:5}
 body.upx.sb4.s4-railed .sb4-ai{width:68px}
+/* fixed colours: the page is light only, whatever theme the viewer is in. The format card sits outside .agent, so it carries its own colour values, and the checkbox is drawn rather than left to the system */
+html{color-scheme:only light!important}
+.ux-pop{--ag-ink:#0f1a33;--ag-ink2:#33415f;--ag-mute:#5d6b8e;--ag-faint:#66738f;--ag-bl:#2560f6;--ag-bld:#154ace;--line:#e3e8f1;color-scheme:only light;color:#0f1a33!important;background:#fff!important}
+.ux-pop b,.ux-pop li b{color:#0f1a33!important}
+.ux-pop small,.ux-pop code{color:#5d6b8e!important}
+.ux-pop .ux-cap{color:#66738f!important}
+.ux-pop ul{background:#fbfcfe!important;border-color:#e3e8f1!important}
+.ux-pop li{border-bottom-color:#e3e8f1!important}
+.ux-pop li.req::before{background:#2560f6!important}
+.ux-pop .s4-tpl{color:#0f1a33!important;background:#fff!important;border:1px solid #d5dbe7!important}
+.ux-pop .s4-tpl:hover{color:#154ace!important;border-color:#2560f6!important}
+.ux-pop .s4-rm{color:#5d6b8e!important;background:none!important}
+.ux-pop .s4-rm svg{stroke:#5d6b8e!important}
+.s4-dec input{-webkit-appearance:none;appearance:none;flex:0 0 16px;border:1.5px solid #aab4c8!important;border-radius:4px;background:#fff!important;cursor:pointer;transition:background .15s,border-color .15s}
+.s4-dec input:hover{border-color:#2560f6!important}
+.s4-dec input:checked{border-color:#2560f6!important;background:#2560f6 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat!important}
+.s4-dec input:focus-visible{outline:2px solid #2560f6;outline-offset:2px}
+/* declaration, simple: a plain checkbox and one paragraph, no background or border in any state */
+.s4-dec,.s4-dec:hover,.s4-dec:has(input:checked){padding:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important}
+.s4-dec input{width:16px!important;height:16px!important;margin-top:2px!important;background:none}
+.s4-dec span,.s4-dec:has(input:checked) span{font-size:12px!important;line-height:1.55!important;color:var(--ag-mute)!important}
+.s4-dec span b{font-weight:inherit!important;color:inherit!important}
+.s4-dec em{display:inline!important;margin:0!important;color:inherit!important}
+.s4-dec em::before{content:" "}
 /* no section headers: the controls label themselves (titles stay for screen readers) */
 .ux-t{position:absolute!important;width:1px;height:1px;min-height:0!important;padding:0!important;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .ux-n{display:none!important}
