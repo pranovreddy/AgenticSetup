@@ -1583,6 +1583,36 @@ body.sbv-d.sb4.s4-railed .sb4-ai .ag-hero{padding:16px 0 4px!important;border-bo
 body.sbv-d.sb4.s4-railed .sb4-ai .s4-rail{padding-top:6px!important}
 body.sbv-d.sb4.s4-railed .sb4-ai [data-rail="up"]{background:var(--ag-bl);color:#fff;box-shadow:0 8px 18px -10px rgba(37,96,246,.8)}
 body.sbv-d.sb4.s4-railed .sb4-ai [data-rail="up"] svg{stroke:#fff}
+/* upload form: file limits, CSV format, declaration and what is still pending */
+.s4-lim{display:block;margin-top:6px;font-size:11px;color:var(--ag-faint)}
+.s4-fmt{border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12.5px}
+.s4-fmt summary{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;list-style:none;color:var(--ag-ink)}
+.s4-fmt summary::-webkit-details-marker{display:none}
+.s4-fmt summary span{margin-left:auto;font-size:11.5px;color:var(--ag-mute)}
+.s4-fmt summary svg{width:14px;height:14px;fill:none;stroke:var(--ag-mute);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.s4-fmt[open] summary svg{transform:rotate(180deg)}
+.s4-fmt ul{list-style:none;margin:0;padding:2px 12px 4px;border-top:1px solid var(--line)}
+.s4-fmt li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0 7px 12px;position:relative;border-bottom:1px dashed var(--line)}
+.s4-fmt li:last-child{border-bottom:0}
+.s4-fmt li::before{content:"";position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#c3cbdb}
+.s4-fmt li.req::before{background:var(--ag-bl)}
+.s4-fmt li b{font-weight:600;font-size:12px;color:var(--ag-ink)}
+.s4-fmt li.req b::after{content:" *";color:#d0364a}
+.s4-fmt code{font:500 10.5px var(--mono);color:var(--ag-mute);white-space:nowrap}
+.s4-tpl{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 24px);margin:4px 12px 12px;padding:8px;border:1px solid var(--line);border-radius:10px;font:600 12.5px var(--font);color:var(--ag-ink);background:#fff}
+.s4-tpl:hover{border-color:rgba(37,96,246,.4);color:var(--ag-bld)}
+.s4-tpl svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.s4-dec{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border:1px solid rgba(37,96,246,.22);border-radius:12px;background:rgba(237,243,255,.45);cursor:pointer;text-align:left}
+.s4-dec input{flex:0 0 auto;width:16px;height:16px;margin:1px 0 0;accent-color:var(--ag-bl)}
+.s4-dec span{font-size:11.5px;line-height:1.5;color:var(--ag-mute)}
+.s4-dec:has(input:checked){border-color:rgba(37,96,246,.45);background:rgba(237,243,255,.8)}
+.s4-dec:has(input:checked) span{color:var(--ag-ink)}
+.s4-todo{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:-2px;font-size:11.5px;color:var(--ag-mute)}
+.s4-pips{display:inline-flex;gap:3px}
+.s4-pips i{width:14px;height:3px;border-radius:2px;background:#d5dbe7;transition:background .25s}
+.s4-pips i.on{background:var(--ag-bl)}
+.s4-todo.ok{color:#17804d}
+.s4-todo.ok .s4-pips i{background:#1f9d5f}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -2214,7 +2244,13 @@ span.r-pick{cursor:default}
             <div class="s4-drop" id="s4Drop" role="button" tabindex="0" aria-label="Drop one CSV file here, or press Enter to choose a file"></div>
             <input type="file" id="s4File" accept=".csv,text/csv" hidden>
             <p class="s4-err" id="s4Err" role="alert" hidden></p>
+            <details class="s4-fmt" id="s4Fmt"><summary><b>CSV format</b><span>2 required · 3 optional</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+              <ul><li class="req"><b>Customer Mobile Number</b><code>10 digit</code></li><li class="req"><b>Consent Collection Date</b><code>YYYY-MM-DD</code></li><li><b>Consent Validity Date</b><code>YYYY-MM-DD</code></li><li><b>Preferable Language</b><code>ISO code</code></li><li><b>Channel Preference</b><code>SMS/Voice</code></li></ul>
+              <button type="button" class="s4-tpl" id="s4Tpl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7 11l5 5 5-5M5 20h14"/></svg>Download template</button>
+            </details>
+            <label class="s4-dec" for="s4Dec"><input type="checkbox" id="s4Dec"><span>We, HDFC Bank, confirm that the customer consents uploaded comply with applicable laws, TRAI regulations and directions. We affirm the verification and accuracy of the uploaded consents and acknowledge that false declarations may lead to legal action.</span></label>
             <button type="button" class="btn btn-pri s4-go" id="s4Go" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Upload securely</button>
+            <p class="s4-todo" id="s4Todo"><span class="s4-pips" aria-hidden="true"><i></i><i></i><i></i></span><span id="s4TodoT"></span></p>
             <p class="s4-auto"><span id="s4AutoT"></span> <button type="button" id="s4AutoB">Change</button></p>
             <p class="s4-foot"><span class="s4-shield"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted in your browser</span><span>AES-256 · the file is sealed before it leaves this device</span></p>
           </div>
@@ -4700,7 +4736,7 @@ span.r-pick{cursor:default}
   $('#s4Q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); render(); });
   $('#s4Sort').addEventListener('change', e => { sortBy = e.target.value; render(); });
   /* the agent zone takes one file at a time for a chosen line of business. It speaks only about the upload in hand; the list on the right is the one place that shows each file's status */
-  const UP = { open: true, file: null, lob: '', auto: true, sealed: false, hash: '', err: '', sent: '', sentT: 0, sealT: 0, n: 0 };
+  const UP = { open: true, file: null, lob: '', auto: true, sealed: false, hash: '', err: '', sent: '', sentT: 0, sealT: 0, n: 0, dec: false };
   function s4Msg() {
     const f = UP.file;
     if (UP.sent) return [`Got it. I’ve started on ${UP.sent}.`, 'Add the next file whenever you’re ready.'];
@@ -4789,11 +4825,14 @@ span.r-pick{cursor:default}
       const LK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
       drop.classList.toggle('sealed', !!f && UP.sealed);
       drop.innerHTML = f ? `<span class="s4-fi" aria-hidden="true">CSV<i>${LK}</i></span><span class="s4-fn"><b title="${esc(f.name)}">${esc(f.name)}</b>${UP.sealed ? `<small class="enc">${LK}Encrypted · AES-256</small><small class="s4-hash">SHA-256 ${UP.hash}</small>` : `<small class="s4-ing">Encrypting <span id="s4Scr">${hex(14)}</span></small><span class="s4-encbar"><i></i></span>`}</span><button type="button" class="s4-rm" id="s4Rm" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`
-        : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg><i>${LK}</i></span><b>Drop one CSV file here</b><span class="s4-dl">or <u>choose a file</u> · <button type="button" id="s4Sample">try a sample</button></span>`;
+        : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg><i>${LK}</i></span><b>Drop one CSV file here</b><span class="s4-dl">or <u>choose a file</u> · <button type="button" id="s4Sample">try a sample</button></span><small class="s4-lim">One file · CSV only · up to 100 MB</small>`;
     }
-    const hint = UP.err || (f && !UP.lob ? 'Choose a line of business to continue.' : '');
+    const hint = UP.err;
     $('#s4Err').hidden = !hint; $('#s4Err').textContent = hint; $('#s4Err').classList.toggle('soft', !UP.err && !!hint);
-    $('#s4Go').disabled = !(f && UP.lob && UP.sealed);
+    $('#s4Go').disabled = !(f && UP.lob && UP.sealed && UP.dec); $('#s4Dec').checked = UP.dec;
+    { const done = [!!UP.lob, !!f && UP.sealed, UP.dec], n = done.filter(Boolean).length;
+      $$('#s4Todo .s4-pips i').forEach((p, i) => p.classList.toggle('on', i < n)); $('#s4Todo').classList.toggle('ok', n === 3);
+      $('#s4TodoT').textContent = !UP.lob ? 'Select a line of business to get started.' : !f ? 'Add your CSV file.' : !UP.sealed ? 'Encrypting your file…' : !UP.dec ? 'Confirm the declaration to upload.' : 'Ready to upload.'; }
     sbvSync();
     $('#s4AutoT').textContent = UP.auto ? 'Safe errors are fixed automatically.' : 'I’ll ask you before fixing any errors.';
     sb4Paint();
@@ -4803,7 +4842,7 @@ span.r-pick{cursor:default}
     UP.open = true; SBV.vt = 'up';
     const f = fs[0]; UP.err = '';
     if (!/\.csv$/i.test(f.name) && f.type !== 'text/csv') UP.err = `${f.name} is not a CSV file.`;
-    else if (f.size > 500 * 1048576) UP.err = `${f.name} is over the 500 MB limit.`;
+    else if (f.size > 100 * 1048576) UP.err = `${f.name} is over the 100 MB limit.`;
     else {
       UP.file = { name: f.name, size: f.size }; UP.sealed = false; UP.sent = ''; clearTimeout(UP.sealT);
       clearInterval(UP.scrT); UP.scrT = setInterval(() => { const e = $('#s4Scr'); if (e) e.textContent = hex(14); }, 70);
@@ -4813,9 +4852,9 @@ span.r-pick{cursor:default}
     renderAgent();
   }
   function s4Hand() {
-    const f = UP.file; if (!f || !UP.lob || !UP.sealed) return;
+    const f = UP.file; if (!f || !UP.lob || !UP.sealed || !UP.dec) return;
     const j = startJob({ lob: UP.lob, name: f.name, size: f.size, autofix: UP.auto }); j.up = Date.now();
-    UP.file = null; UP.sealed = false; UP.err = ''; UP.sent = f.name; clearTimeout(UP.sentT); UP.sentT = setTimeout(() => { UP.sent = ''; renderAgent(); }, 5000);
+    UP.file = null; UP.sealed = false; UP.dec = false; UP.err = ''; UP.sent = f.name; clearTimeout(UP.sentT); UP.sentT = setTimeout(() => { UP.sent = ''; renderAgent(); }, 5000);
     UP.open = false; SBV.vt = 'agents'; filter = 'all'; query = ''; flip(render, j.id); startTicker();
   }
   $('#s4Col').onclick = () => { S4.rail = !S4.rail; if (S4.rail) UP.open = false; else if (SBV.v === 'd') UP.open = true; renderAgent(); $('#s4Col').focus({ preventScroll: true }); };
@@ -4857,6 +4896,8 @@ span.r-pick{cursor:default}
   $('#s4File').onchange = e => { s4Take(e.target.files); e.target.value = ''; };
   $('#s4Go').onclick = s4Hand;
   $('#s4AutoB').onclick = () => { UP.auto = !UP.auto; renderAgent(); };
+  $('#s4Dec').onchange = e => { UP.dec = e.target.checked; renderAgent(); };
+  $('#s4Tpl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['customer_mobile_number,consent_collection_date,consent_validity_date,preferable_language,channel_preference\n'], { type: 'text/csv' })); a.download = 'consent_upload_template.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast('Template downloaded'); };
   $('#s4Drop').addEventListener('click', e => {
     if (e.target.closest('#s4Rm')) { UP.file = null; UP.err = ''; clearTimeout(UP.sealT); clearInterval(UP.scrT); renderAgent(); return; }
     if (e.target.closest('#s4Sample')) { if (!UP.lob) UP.lob = 'Credit Cards'; s4Take([{ name: `${UP.lob.toLowerCase().replace(/\s+/g, '_')}_batch${++UP.n}.csv`, size: (9 + UP.n * 4 % 23) * 1048576, type: 'text/csv' }]); return; }
