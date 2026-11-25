@@ -1688,6 +1688,41 @@ body.upx.sb4.s4-railed .sb4-ai{background:#fff!important}
 /* the bar is fixed to the window, so it never scrolls away with the list */
 body.upx.sb4 .sb4-ai{position:fixed!important;left:var(--sidebar);top:0!important;width:372px;height:100vh!important;z-index:5}
 body.upx.sb4.s4-railed .sb4-ai{width:68px}
+/* secure feel: a dark vault header with a shield and the session key, a shield drop target, a sealed hand-over and a trust line */
+body.upx.sb4 .sb4-ai .ag-hero{position:relative;overflow:hidden;gap:12px!important;padding:18px 14px 18px 20px!important;border-bottom:0!important;background:#0d1a3a linear-gradient(150deg,#0b1632 0%,#12285a 62%,#173a82 100%)!important}
+body.upx.sb4 .sb4-ai .ag-hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(118deg,rgba(255,255,255,.045) 0 1px,transparent 1px 9px);pointer-events:none}
+body.upx.sb4 .sb4-ai .ag-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,#2fd38f,#2560f6 55%,transparent)}
+body.upx.sb4 .sb4-ai .ag-hero>*{position:relative}
+.ux-shield{flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.ux-shield svg{width:24px;height:24px;fill:none;stroke:#bcd3ff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ux-shield .sh{fill:rgba(96,150,255,.28);stroke:#8fb6ff}
+.ux-shield rect{fill:#fff;stroke:none}
+body.upx.sb4 .sb4-ai .sb4-hd{gap:6px!important;min-width:0;flex:1 1 auto}
+body.upx.sb4 .sb4-ai .sb4-hd b{color:#fff!important;font-size:16px!important}
+.ux-enc{padding:0!important;background:none!important;color:#5fe0a8!important;font-size:12px!important;cursor:default!important}
+.ux-key{display:inline-flex;align-items:center;gap:6px;font:500 10.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.5);cursor:help}
+.ux-key code{font:inherit;color:rgba(255,255,255,.82);letter-spacing:.08em}
+.ux-key i{width:6px;height:6px;border-radius:50%;background:#2fd38f;box-shadow:0 0 0 0 rgba(47,211,143,.6);animation:ux-live 2.4s ease-out infinite}
+@keyframes ux-live{0%{box-shadow:0 0 0 0 rgba(47,211,143,.55)}70%,100%{box-shadow:0 0 0 7px rgba(47,211,143,0)}}
+body.upx.sb4 .sb4-ai .s4-col{align-self:flex-start;color:#fff!important;background:none!important}
+body.upx.sb4 .sb4-ai .s4-col svg{stroke:rgba(255,255,255,.75)!important}
+body.upx.sb4 .sb4-ai .s4-col:hover{background:rgba(255,255,255,.12)!important}
+body.upx.sb4.s4-railed .sb4-ai .ag-hero{padding:14px 0!important;justify-content:center}
+body.upx.sb4.s4-railed .sb4-ai .ux-shield{display:none}
+body.upx.sb4.s4-railed .sb4-ai .s4-col{align-self:center}
+body.upx.sb4 .sb4-ai .s4-drop:not(.has){border-color:rgba(37,96,246,.45)!important;background:linear-gradient(180deg,rgba(237,243,255,.75),rgba(237,243,255,.3))!important}
+.ux-di{width:58px!important;height:58px!important;border:0!important;border-radius:50%!important;background:#fff!important;box-shadow:0 0 0 7px rgba(37,96,246,.07),0 10px 22px -12px rgba(37,96,246,.6)!important;display:grid!important;place-items:center}
+.ux-di svg{width:32px!important;height:32px!important;fill:none;stroke:#fff!important;stroke-width:1.9!important;stroke-linecap:round;stroke-linejoin:round}
+.ux-di .sh{fill:#3b74f7;stroke:#2560f6!important;stroke-width:1!important}
+body.upx.sb4 .sb4-ai .s4-drop:hover .ux-di,body.upx.sb4 .sb4-ai .s4-drop.over .ux-di{box-shadow:0 0 0 10px rgba(37,96,246,.1),0 12px 26px -12px rgba(37,96,246,.75)!important}
+.ux-di{transition:box-shadow .25s}
+body.upx.sb4 .sb4-ai .s4-lim{display:inline-flex;align-items:center;gap:5px}
+body.upx.sb4 .sb4-ai .s4-go.ux-sending{pointer-events:none;background:#0f2a66!important;background-image:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 70%)!important;background-size:220% 100%!important;animation:ux-send .9s linear}
+@keyframes ux-send{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.ux-trust{list-style:none;display:flex;justify-content:space-between;gap:6px;margin:2px 0 0;padding:10px 0 0;border-top:1px dashed #e3e8f1}
+.ux-trust li{display:inline-flex;align-items:center;gap:4px;font:500 10.5px var(--font);color:#66738f;white-space:nowrap}
+.ux-trust svg{width:11px;height:11px;fill:none;stroke:#1f9d5f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ux-foot{padding-bottom:14px!important}
 /* fixed colours: the page is light only, whatever theme the viewer is in. The format card sits outside .agent, so it carries its own colour values, and the checkbox is drawn rather than left to the system */
 html{color-scheme:only light!important}
 .ux-pop{--ag-ink:#0f1a33;--ag-ink2:#33415f;--ag-mute:#5d6b8e;--ag-faint:#66738f;--ag-bl:#2560f6;--ag-bld:#154ace;--line:#e3e8f1;color-scheme:only light;color:#0f1a33!important;background:#fff!important}
@@ -2345,7 +2380,7 @@ span.r-pick{cursor:default}
           <div class="sb4-ai" id="sb4Ai">
           <div class="ag-hero" id="agHero" data-blob="run">
             <span class="ai-blob ag-blob" aria-hidden="true"><canvas></canvas><span class="mark"></span></span>
-            <div class="sb4-only sb4-hd"><b>Migration agent</b><span class="sb4-state" id="sb4State"><i></i><span></span></span><span class="ux-enc" title="AES-256. The file is sealed in your browser before it leaves this device."><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted end-to-end</span></div>
+            <span class="ux-shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="sh" d="M12 2.6l7.6 2.9v6c0 4.5-3 8.1-7.6 9.7-4.6-1.6-7.6-5.2-7.6-9.7v-6z"/><rect x="8.9" y="11" width="6.2" height="4.8" rx="1.2"/><path d="M10.2 11V9.6a1.8 1.8 0 013.6 0V11"/></svg></span><div class="sb4-only sb4-hd"><b>Migration agent</b><span class="sb4-state" id="sb4State"><i></i><span></span></span><span class="ux-enc" title="AES-256. The file is sealed in your browser before it leaves this device."><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted end-to-end</span><span class="ux-key" title="Fingerprint of the key made for this session. It never leaves this device."><i></i>Session key <code id="uxKey"></code></span></div>
             <button type="button" class="sb4-only s4-col" id="s4Col" aria-expanded="true" aria-label="Collapse the agent bar" title="Collapse"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6M19 6v12"/></svg></button>
             <div class="ag-say" aria-live="polite">
               <h2 id="agSay">Drop your files. I’ll handle the rest.</h2>
@@ -2386,6 +2421,7 @@ span.r-pick{cursor:default}
               <p class="s4-auto"><span id="s4AutoT"></span> <button type="button" id="s4AutoB" role="switch" aria-label="Fix safe errors automatically">Change</button></p>
               <button type="button" class="btn btn-pri s4-go" id="s4Go" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Upload securely</button>
               <p class="s4-todo" id="s4Todo"><span class="s4-pips" aria-hidden="true"><i></i><i></i><i></i></span><span id="s4TodoT"></span></p>
+              <ul class="ux-trust" aria-label="How this upload is protected"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>AES-256</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Isolated validation</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No outside access</li></ul>
             </div>
           </div>
           <button type="button" class="sb4-only s4-open" id="s4Open"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Upload a file</b><small>or drop a CSV anywhere</small><svg class="ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -4959,7 +4995,7 @@ span.r-pick{cursor:default}
       const LK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
       drop.classList.toggle('sealed', !!f && UP.sealed);
       drop.innerHTML = f ? `<span class="s4-fi" aria-hidden="true">CSV<i>${LK}</i></span><span class="s4-fn"><b title="${esc(f.name)}">${esc(f.name)}</b>${UP.sealed ? `<small class="enc">${LK}Encrypted · AES-256</small><small class="s4-hash">SHA-256 ${UP.hash}</small>` : `<small class="s4-ing">Encrypting <span id="s4Scr">${hex(14)}</span></small><span class="s4-encbar"><i></i></span>`}</span><button type="button" class="s4-rm" id="s4Rm" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`
-        : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg><i>${LK}</i></span><b>Drop your CSV here</b><span class="s4-dl">or <u>browse</u> · <button type="button" id="s4Sample">try a sample</button></span><small class="s4-lim">CSV only · up to 100 MB</small>`;
+        : `<span class="s4-di ux-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="sh" d="M12 2.6l7.6 2.9v6c0 4.5-3 8.1-7.6 9.7-4.6-1.6-7.6-5.2-7.6-9.7v-6z"/><path d="M12 15.4V9.2M9.3 11.7L12 9l2.7 2.7"/></svg></span><b>Drop your CSV here</b><span class="s4-dl">or <u>browse</u> · <button type="button" id="s4Sample">try a sample</button></span><small class="s4-lim">Encrypted on this device · CSV up to 100 MB</small>`;
     }
     const hint = UP.err;
     $('#s4Err').hidden = !hint; $('#s4Err').textContent = hint; $('#s4Err').classList.toggle('soft', !UP.err && !!hint);
@@ -5028,7 +5064,10 @@ span.r-pick{cursor:default}
   $('#s4Close').onclick = () => { UP.open = false; renderAgent(); $('#s4Open').focus({ preventScroll: true }); };
   $('#s4Lob').onchange = e => { UP.lob = e.target.value; renderAgent(); };
   $('#s4File').onchange = e => { s4Take(e.target.files); e.target.value = ''; };
-  $('#s4Go').onclick = s4Hand;
+  /* a short sealed hand-over, so the upload reads as a secure transfer */
+  $('#s4Go').onclick = () => { const b = $('#s4Go'); if (b.classList.contains('ux-sending') || b.disabled) return; if (RM) return s4Hand();
+    const html = b.innerHTML; b.classList.add('ux-sending'); b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Sending over secure channel…';
+    setTimeout(() => { b.classList.remove('ux-sending'); b.innerHTML = html; s4Hand(); }, 900); };
   $('#s4AutoB').onclick = () => { UP.auto = !UP.auto; renderAgent(); };
   /* CSV format opens as a card beside the bar, so the form does not jump */
   { const pop = document.createElement('div'); pop.className = 'ux-pop'; pop.id = 'uxPop'; pop.hidden = true; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', 'CSV format');
@@ -5075,7 +5114,7 @@ span.r-pick{cursor:default}
   $('#canvas').addEventListener('keydown', e => { const g = e.target.closest && e.target.closest('[data-s4g]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.click(); } });
 
   /* sidebar options: A sections, B agents first with the upload button pinned at the foot, C one tab at a time */
-  document.body.classList.add('upx'); const SBV = { v: 'd', vt: 'up' };
+  document.body.classList.add('upx'); { const h = () => Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, '0'); $('#uxKey').textContent = [h(), h(), h(), h()].join(' '); } const SBV = { v: 'd', vt: 'up' };
   function sbvSync() {
     document.body.classList.toggle('sbv-b', SBV.v === 'b'); document.body.classList.toggle('sbv-c', SBV.v === 'c'); document.body.classList.toggle('sbv-d', SBV.v === 'd'); $('.sb4-hd b').textContent = 'Upload consent file'; document.body.dataset.vt = SBV.vt;
     $$('[data-sbv]').forEach(b => { const on = b.dataset.sbv === SBV.v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
