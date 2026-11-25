@@ -1575,6 +1575,14 @@ body.sbv-b.sb4.s4-upon:not(.is-empty) .sb4-ai .s4-open:hover .ch{background:var(
 .s4-fly{position:fixed;z-index:60;font:650 13.5px var(--font);pointer-events:none;box-shadow:0 14px 28px -14px rgba(37,96,246,.7);overflow:hidden;will-change:left,top,width,height}
 .s4-fly span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
 .s4-fly svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* option D: the sidebar is only the upload; it collapses to a rail with one upload button */
+body.sbv-d.sb4 .sb4-ai .sb4-body,body.sbv-d.sb4 .sb4-ai .s4-open,body.sbv-d.sb4 .sb4-ai .s4-vtabs,body.sbv-d.sb4 .sb4-ai .ag-blob,body.sbv-d.sb4 .sb4-ai .sb4-state,body.sbv-d.sb4 .sb4-ai [data-rail="acts"],body.sbv-d.sb4 .sb4-ai [data-rail="agents"]{display:none!important}
+body.sbv-d.sb4:not(.s4-railed) .sb4-ai .s4-up{display:flex!important;order:2;border:0!important;padding-top:16px!important}
+body.sbv-d.sb4 .sb4-ai .sb4-hd b{font-size:15px}
+body.sbv-d.sb4.s4-railed .sb4-ai .ag-hero{padding:16px 0 4px!important;border-bottom:0!important}
+body.sbv-d.sb4.s4-railed .sb4-ai .s4-rail{padding-top:6px!important}
+body.sbv-d.sb4.s4-railed .sb4-ai [data-rail="up"]{background:var(--ag-bl);color:#fff;box-shadow:0 8px 18px -10px rgba(37,96,246,.8)}
+body.sbv-d.sb4.s4-railed .sb4-ai [data-rail="up"] svg{stroke:#fff}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .empty h3{font-size:15px;font-weight:650;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
@@ -2142,7 +2150,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    <div class="view-sw" role="group" aria-label="Sidebar option"><span>Sidebar option</span><div class="seg2"><button type="button" class="chip-btn is-on" data-sbv="a" aria-pressed="true">A · Sections</button><button type="button" class="chip-btn" data-sbv="b" aria-pressed="false">B · Agents first</button><button type="button" class="chip-btn" data-sbv="c" aria-pressed="false">C · Tabs</button></div></div>
+    <div class="view-sw" role="group" aria-label="Sidebar option"><span>Sidebar option</span><div class="seg2"><button type="button" class="chip-btn is-on" data-sbv="a" aria-pressed="true">A · Sections</button><button type="button" class="chip-btn" data-sbv="b" aria-pressed="false">B · Agents first</button><button type="button" class="chip-btn" data-sbv="c" aria-pressed="false">C · Tabs</button><button type="button" class="chip-btn" data-sbv="d" aria-pressed="false">D · Upload only</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -4810,7 +4818,7 @@ span.r-pick{cursor:default}
     UP.file = null; UP.sealed = false; UP.err = ''; UP.sent = f.name; clearTimeout(UP.sentT); UP.sentT = setTimeout(() => { UP.sent = ''; renderAgent(); }, 5000);
     UP.open = false; SBV.vt = 'agents'; filter = 'all'; query = ''; flip(render, j.id); startTicker();
   }
-  $('#s4Col').onclick = () => { S4.rail = !S4.rail; renderAgent(); $('#s4Col').focus({ preventScroll: true }); };
+  $('#s4Col').onclick = () => { S4.rail = !S4.rail; if (S4.rail) UP.open = false; else if (SBV.v === 'd') UP.open = true; renderAgent(); $('#s4Col').focus({ preventScroll: true }); };
   $('#s4Rail').addEventListener('click', e => { const b = e.target.closest('[data-rail]'); if (!b) return; S4.rail = false; const k = b.dataset.rail; if (k === 'up') UP.open = true; else CD.man[k] = true; S4.sig = ''; CD.ag = ''; renderAgent(); if (k === 'up') $('#s4Lob').focus({ preventScroll: true }); });
   /* option B: one control that moves. The button morphs between its place at the top and the Upload securely button (position, size, colour and label together), the form unrolls or rolls up, and the sections below slide to their new place */
   $('#s4Open').onclick = () => {
@@ -4885,13 +4893,13 @@ span.r-pick{cursor:default}
   /* sidebar options: A sections, B agents first with the upload button pinned at the foot, C one tab at a time */
   const SBV = { v: 'a', vt: 'up' };
   function sbvSync() {
-    document.body.classList.toggle('sbv-b', SBV.v === 'b'); document.body.classList.toggle('sbv-c', SBV.v === 'c'); document.body.dataset.vt = SBV.vt;
+    document.body.classList.toggle('sbv-b', SBV.v === 'b'); document.body.classList.toggle('sbv-c', SBV.v === 'c'); document.body.classList.toggle('sbv-d', SBV.v === 'd'); $('.sb4-hd b').textContent = SBV.v === 'd' ? 'Upload a file' : 'Migration agent'; document.body.dataset.vt = SBV.vt;
     $$('[data-sbv]').forEach(b => { const on = b.dataset.sbv === SBV.v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
     $$('[data-vt]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.vt === SBV.vt)));
     $('#s4VtN').hidden = $('#s4RailN').hidden; $('#s4VtN').textContent = $('#s4RailN').textContent;
     $('#s4VtW').hidden = $('#s4RailW').hidden; $('#s4VtW').textContent = $('#s4RailW').textContent;
   }
-  $$('[data-sbv]').forEach(b => { b.onclick = () => { SBV.v = b.dataset.sbv; if (SBV.v === 'c') SBV.vt = jobs.length ? (jobs.some(j => needsYou(j) && !isPending(j)) ? 'acts' : 'agents') : 'up'; renderAgent(); }; });
+  $$('[data-sbv]').forEach(b => { b.onclick = () => { SBV.v = b.dataset.sbv; if (SBV.v === 'd') UP.open = !S4.rail; if (SBV.v === 'c') SBV.vt = jobs.length ? (jobs.some(j => needsYou(j) && !isPending(j)) ? 'acts' : 'agents') : 'up'; renderAgent(); }; });
   $('#s4VTabs').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if (b) { SBV.vt = b.dataset.vt; renderAgent(); } });
   $('#s4Rail').addEventListener('click', e => { const b = e.target.closest('[data-rail]'); if (b) { SBV.vt = b.dataset.rail; sbvSync(); } });
 
