@@ -130,22 +130,32 @@ body{background:hsl(var(--background));color:var(--ink)}
 .chipbtn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--ink-2);transition:border-color var(--t1) var(--ease),color var(--t1) var(--ease),background var(--t1) var(--ease)}
 .chipbtn:hover{border-color:var(--blue-line);color:var(--blue);background:var(--blue-soft)}
 
-/* the scanner: beam reads the image, then each message / call gets a box */
-.scan{display:flex;flex-direction:column;gap:12px;animation:up 420ms var(--ease) both}
-.scan__frame{position:relative;overflow:hidden;border-radius:14px;border:1px solid var(--line-2);background:#fff;box-shadow:0 0 0 4px var(--blue-soft);transition:box-shadow var(--t3) var(--ease)}
-.scan[data-s="ready"] .scan__frame{box-shadow:0 0 0 4px var(--green-soft)}
-.scan__img{display:block;width:100%;max-height:340px;object-fit:contain;transition:filter var(--t3) var(--ease)}
-.scan[data-s="reading"] .scan__img{filter:saturate(.75) brightness(.98)}
-.scan__beam{position:absolute;left:0;right:0;top:0;height:46%;pointer-events:none;background:linear-gradient(180deg,rgba(51,102,240,0),rgba(51,102,240,.16));border-bottom:2px solid var(--blue);box-shadow:0 6px 16px -2px rgba(51,102,240,.5);transform:translateY(-100%);animation:beam 1.5s var(--ease-io) infinite}
-@keyframes beam{to{transform:translateY(220%)}}
-.scan__box{position:absolute;padding:0;border:0;background:transparent;cursor:pointer;animation:boxin 420ms var(--ease) both}
-.scan__box::before{content:"";position:absolute;inset:3px;border-radius:9px;border:1.5px solid var(--blue-line);background:rgba(51,102,240,.05);transition:border-color var(--t2) var(--ease),background var(--t2) var(--ease),box-shadow var(--t2) var(--ease)}
-.scan__box.is-on::before{border-color:var(--blue);border-width:2px;background:rgba(51,102,240,.1);box-shadow:0 0 0 3px var(--blue-soft)}
-.scan__box.is-dim::before{border-color:var(--line-2);background:rgba(255,255,255,.55)}
-.scan__n{position:absolute;right:9px;bottom:9px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700}
-.scan__box.is-dim .scan__n{background:var(--faint)}
-@keyframes boxin{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
-.scan__foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* a finished step folds to one row: tick, what was chosen, Change */
+.step--sum{flex-direction:row;align-items:center;gap:12px;padding:12px 14px 12px 18px;border-radius:18px;box-shadow:0 1px 2px rgba(20,40,100,.05)}
+.sum{display:flex;flex:1;min-width:0;flex-direction:column;gap:1px}
+.sum__l{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.sum__v{min-width:0;font-size:14px;font-weight:600;line-height:1.35;color:var(--ink)}
+.sum__row{display:flex;align-items:center;gap:8px;min-width:0}
+.sum__row .ic{flex:none;color:var(--blue)}
+.sum__col{display:flex;flex-direction:column;gap:1px;min-width:0}
+.sum__time{font-size:11.5px;font-weight:500;color:var(--mut);font-variant-numeric:tabular-nums}
+.sum__sub{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--mut)}
+.sum__sub--clip{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum__thumb{width:40px;height:40px;flex:none;border-radius:10px;border:1px solid var(--line-2);object-fit:cover;object-position:left top;background:#fff}
+.sum__chg{flex:none;align-self:center;min-height:36px;padding:6px 8px}
+
+/* processing the uploaded screenshot */
+.proc{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;border:1px solid var(--blue-line);background:linear-gradient(180deg,rgba(51,102,240,.06),var(--surface));animation:up 420ms var(--ease) both}
+.proc__thumb{position:relative;width:52px;height:52px;flex:none;overflow:hidden;border-radius:12px;border:1px solid var(--line-2);background:var(--sk-a)}
+.proc__thumb img{width:100%;height:100%;object-fit:cover;object-position:left top}
+.proc__thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.75) 50%,transparent 70%);transform:translateX(-100%);animation:sheen 1.4s var(--ease-io) infinite}
+.proc__b{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.proc__t{font-size:14.5px;font-weight:700}
+.proc__s{font-size:12.5px;color:var(--mut)}
+.proc__bar{position:relative;display:block;height:3px;margin-top:7px;border-radius:3px;background:var(--surface-3);overflow:hidden}
+.proc__bar i{position:absolute;inset:0 auto 0 0;width:40%;border-radius:inherit;background:var(--blue);animation:indet 1.3s var(--ease-io) infinite}
+@keyframes indet{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+.proc .core{flex:none;margin-right:4px}
 
 .evs{display:flex;flex-direction:column;gap:10px}
 .ev{display:flex;align-items:flex-start;gap:12px;width:100%;padding:13px;text-align:left;border-radius:16px;background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1.5px solid var(--line-2);color:var(--ink);animation:up 420ms var(--ease) both}
@@ -334,5 +344,6 @@ body{background:hsl(var(--background));color:var(--ink)}
 
 @media (prefers-reduced-motion:reduce){
   .cx *,.cx *::before,.cx *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .scan__beam,.pk,.ripple{display:none}
+  .pk,.ripple,.proc__thumb::after{display:none}
 }
+.cx .link{font-size:13px;font-weight:600}

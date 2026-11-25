@@ -188,22 +188,32 @@ body{background:hsl(var(--background));color:var(--ink)}
 .chipbtn{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--ink-2);transition:border-color var(--t1) var(--ease),color var(--t1) var(--ease),background var(--t1) var(--ease)}
 .chipbtn:hover{border-color:var(--blue-line);color:var(--blue);background:var(--blue-soft)}
 
-/* the scanner: beam reads the image, then each message / call gets a box */
-.scan{display:flex;flex-direction:column;gap:12px;animation:up 420ms var(--ease) both}
-.scan__frame{position:relative;overflow:hidden;border-radius:14px;border:1px solid var(--line-2);background:#fff;box-shadow:0 0 0 4px var(--blue-soft);transition:box-shadow var(--t3) var(--ease)}
-.scan[data-s="ready"] .scan__frame{box-shadow:0 0 0 4px var(--green-soft)}
-.scan__img{display:block;width:100%;max-height:340px;object-fit:contain;transition:filter var(--t3) var(--ease)}
-.scan[data-s="reading"] .scan__img{filter:saturate(.75) brightness(.98)}
-.scan__beam{position:absolute;left:0;right:0;top:0;height:46%;pointer-events:none;background:linear-gradient(180deg,rgba(51,102,240,0),rgba(51,102,240,.16));border-bottom:2px solid var(--blue);box-shadow:0 6px 16px -2px rgba(51,102,240,.5);transform:translateY(-100%);animation:beam 1.5s var(--ease-io) infinite}
-@keyframes beam{to{transform:translateY(220%)}}
-.scan__box{position:absolute;padding:0;border:0;background:transparent;cursor:pointer;animation:boxin 420ms var(--ease) both}
-.scan__box::before{content:"";position:absolute;inset:3px;border-radius:9px;border:1.5px solid var(--blue-line);background:rgba(51,102,240,.05);transition:border-color var(--t2) var(--ease),background var(--t2) var(--ease),box-shadow var(--t2) var(--ease)}
-.scan__box.is-on::before{border-color:var(--blue);border-width:2px;background:rgba(51,102,240,.1);box-shadow:0 0 0 3px var(--blue-soft)}
-.scan__box.is-dim::before{border-color:var(--line-2);background:rgba(255,255,255,.55)}
-.scan__n{position:absolute;right:9px;bottom:9px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700}
-.scan__box.is-dim .scan__n{background:var(--faint)}
-@keyframes boxin{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
-.scan__foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* a finished step folds to one row: tick, what was chosen, Change */
+.step--sum{flex-direction:row;align-items:center;gap:12px;padding:12px 14px 12px 18px;border-radius:18px;box-shadow:0 1px 2px rgba(20,40,100,.05)}
+.sum{display:flex;flex:1;min-width:0;flex-direction:column;gap:1px}
+.sum__l{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.sum__v{min-width:0;font-size:14px;font-weight:600;line-height:1.35;color:var(--ink)}
+.sum__row{display:flex;align-items:center;gap:8px;min-width:0}
+.sum__row .ic{flex:none;color:var(--blue)}
+.sum__col{display:flex;flex-direction:column;gap:1px;min-width:0}
+.sum__time{font-size:11.5px;font-weight:500;color:var(--mut);font-variant-numeric:tabular-nums}
+.sum__sub{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--mut)}
+.sum__sub--clip{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum__thumb{width:40px;height:40px;flex:none;border-radius:10px;border:1px solid var(--line-2);object-fit:cover;object-position:left top;background:#fff}
+.sum__chg{flex:none;align-self:center;min-height:36px;padding:6px 8px}
+
+/* processing the uploaded screenshot */
+.proc{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;border:1px solid var(--blue-line);background:linear-gradient(180deg,rgba(51,102,240,.06),var(--surface));animation:up 420ms var(--ease) both}
+.proc__thumb{position:relative;width:52px;height:52px;flex:none;overflow:hidden;border-radius:12px;border:1px solid var(--line-2);background:var(--sk-a)}
+.proc__thumb img{width:100%;height:100%;object-fit:cover;object-position:left top}
+.proc__thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.75) 50%,transparent 70%);transform:translateX(-100%);animation:sheen 1.4s var(--ease-io) infinite}
+.proc__b{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.proc__t{font-size:14.5px;font-weight:700}
+.proc__s{font-size:12.5px;color:var(--mut)}
+.proc__bar{position:relative;display:block;height:3px;margin-top:7px;border-radius:3px;background:var(--surface-3);overflow:hidden}
+.proc__bar i{position:absolute;inset:0 auto 0 0;width:40%;border-radius:inherit;background:var(--blue);animation:indet 1.3s var(--ease-io) infinite}
+@keyframes indet{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+.proc .core{flex:none;margin-right:4px}
 
 .evs{display:flex;flex-direction:column;gap:10px}
 .ev{display:flex;align-items:flex-start;gap:12px;width:100%;padding:13px;text-align:left;border-radius:16px;background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1.5px solid var(--line-2);color:var(--ink);animation:up 420ms var(--ease) both}
@@ -392,8 +402,9 @@ body{background:hsl(var(--background));color:var(--ink)}
 
 @media (prefers-reduced-motion:reduce){
   .cx *,.cx *::before,.cx *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .scan__beam,.pk,.ripple{display:none}
+  .pk,.ripple,.proc__thumb::after{display:none}
 }
+.cx .link{font-size:13px;font-weight:600}
 </style></head>
 <body><div id="root"></div>
 <script>/**
@@ -1070,7 +1081,11 @@ function Header({ title, sub, back, right }) {
           sub && h("p", { className: "text-xs text-muted-foreground mt-0.5 truncate" }, sub))),
       right !== false && h("button", { type: "button", onClick: () => nav("/complaint-history"), "aria-label": "Complaint history", className: "header-icon-btn" }, ic("history", 16))));
 }
-function Step({ n, done, title, hint, children, id }) {
+function Step({ n, done, title, label, hint, children, id, summary, onChange, changeLabel }) {
+  if (summary) return h("section", { className: "step step--sum is-done", id },
+    h("span", { className: "step__n" }, ic("check", 12)),
+    h("div", { className: "sum" }, h("span", { className: "sum__l" }, label), h("div", { className: "sum__v" }, summary)),
+    onChange && h("button", { type: "button", className: "link sum__chg", onClick: onChange, "aria-label": (changeLabel || "Change") + " " + label.toLowerCase() }, changeLabel || "Change"));
   return h("section", { className: "step" + (done ? " is-done" : ""), id },
     h("div", { className: "step__head" },
       h("span", { className: "step__n" }, done ? ic("check", 12) : n),
@@ -1091,6 +1106,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const [note, setNote] = useState("");
   const [revoke, setRevoke] = useState(false);
   const [announce, setAnnounce] = useState("");
+  const [edit, setEdit] = useState(null);                // a finished step reopened with "Change"
   const fileRef = useRef(null), timers = useRef([]), listRef = useRef(null), locked = useRef(false);
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.current.push(id); };
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
@@ -1105,8 +1121,9 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const canRevoke = !!sel && !!sel.permission && !!reason;
   const canSubmit = !!sel && !!reason;
 
-  const resetChoices = () => { setSelId(null); setReasonId(null); setMoreOpen(false); setRevoke(false); };
+  const resetChoices = () => { setEdit(null); setSelId(null); setReasonId(null); setMoreOpen(false); setRevoke(false); };
   const pickType = t => {
+    setEdit(null);
     if (t === evType) return;
     clearTimers(); setEvType(t); setShot(null); setScan("idle"); resetChoices();
   };
@@ -1114,15 +1131,15 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const begin = (url, det) => {
     clearTimers(); resetChoices();
     setShot({ url, shared: null, items: det.items, boxes: det.boxes || null, masked: !!det.mask });
-    setScan("reading"); setAnnounce("Reading your screenshot");
+    setScan("reading"); setAnnounce("Processing your screenshot");
     (det.mask ? maskImage(url, det.mask) : Promise.resolve(url)).then(shared => setShot(s => (s && s.url === url ? { ...s, shared } : s)));
-    later(() => { setScan("finding"); setAnnounce("Identifying the " + noun); }, RM ? 300 : 1500);
+    later(() => setScan("finding"), RM ? 300 : 1300);
     later(() => {
       setScan("ready");
       if (det.items.length === 1) setSelId(det.items[0].id);
       setAnnounce(det.items.length === 1 ? "Found the " + noun + ". Choose what bothered you." : det.items.length + " " + noun + "s found. Choose the one you want to report.");
-      later(() => { if (listRef.current) listRef.current.scrollIntoView({ block: "nearest", behavior: RM ? "auto" : "smooth" }); }, 120);
-    }, RM ? 600 : 3000);
+      
+    }, RM ? 600 : 2600);
   };
   const useSample = s => begin(sampleUrl(s), { items: s.ids.map(id => ITEMS[id]), boxes: s.boxes, mask: s.mask });
   const onFile = ev => {
@@ -1134,8 +1151,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
     rd.onload = e2 => begin(e2.target.result, { items: [generic(evType)] });
     rd.readAsDataURL(file);
   };
-  const pickItem = id => { setSelId(id); setReasonId(null); setMoreOpen(false); setRevoke(false); };
-  const pickReason = id => { setReasonId(id); setRevoke(id === "agreed"); };
+  const pickItem = id => { setEdit(null); setSelId(id); setReasonId(null); setMoreOpen(false); setRevoke(false); };
+  const pickReason = id => { setEdit(null); setReasonId(id); setRevoke(id === "agreed"); };
   const submit = () => {
     if (!canSubmit || locked.current) return;
     locked.current = true;                                 // a double tap can't file twice
@@ -1144,8 +1161,10 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
 
   const stepsDone = [!!evType, scan === "ready" && !!sel, !!reason];
   const progress = [!!evType, !!shot, !!sel, !!reason];
-  const scanLabel = scan === "reading" ? "Reading your screenshot" : scan === "finding" ? "Identifying the " + noun + (shot && shot.items.length > 1 ? "s" : "")
-    : items.length === 1 ? "1 " + noun + " found" : items.length + " " + noun + "s found";
+  const found = items.length === 1 ? "1 " + noun + " found" : items.length + " " + noun + "s found";
+  const thumb = shot ? (shot.masked ? shot.shared : shot.url) : null;
+  const clearShot = () => { clearTimers(); setShot(null); setScan("idle"); resetChoices(); };
+  const multi = items.length > 1;
 
   return h("div", { className: "cx min-h-screen bg-background" },
     h(Header, { title: "Raise a complaint", sub: "Report an unwanted message or call" }),
@@ -1155,7 +1174,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
       h("input", { ref: fileRef, id: "cx-file", type: "file", accept: "image/*", onChange: onFile, className: "hidden" }),
 
       /* 1. message or call */
-      h(Step, { n: 1, done: stepsDone[0], title: "What do you want to report?" },
+      h(Step, { n: 1, done: stepsDone[0], title: "What do you want to report?", label: "Reporting",
+        summary: evType && edit !== 1 ? h("span", { className: "sum__row" }, ic(evType === "call" ? "phone" : "message", 15), evType === "call" ? "A call" : "A message") : null, onChange: () => setEdit(1) },
         h("div", { className: "kinds", role: "radiogroup", "aria-label": "What do you want to report?" },
           [["message", "Message", "SMS offers, reminders, codes", "message"], ["call", "Call", "Sales, service or unknown calls", "phone"]].map(([id, t, s, icn]) =>
             h("button", { key: id, type: "button", role: "radio", "aria-checked": evType === id, onClick: () => pickType(id), className: "kind" + (evType === id ? " is-on" : "") },
@@ -1163,9 +1183,13 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
               h("span", { className: "kind__t" }, t), h("span", { className: "kind__s" }, s),
               h("span", { className: "kind__ck" }, ic("check", 11)))))),
 
-      /* 2. the screenshot, scanned */
-      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: "Add a screenshot",
-        hint: evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report." },
+      /* 2. the screenshot: upload, then a short "processing" state */
+      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: "Add a screenshot", label: "Screenshot",
+        hint: evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report.",
+        summary: scan === "ready" ? h("span", { className: "sum__row" },
+          h("img", { src: thumb || shot.url, alt: "", className: "sum__thumb" }),
+          h("span", { className: "sum__col" }, found, shot.masked && h("span", { className: "sum__sub" }, ic("lock", 11), "One-time code hidden"))) : null,
+        onChange: clearShot, changeLabel: "Replace" },
         !shot
           ? h("div", { className: "up" },
               h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
@@ -1176,40 +1200,39 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("span", { className: "samples__l" }, "No screenshot handy? Try a demo one"),
                 h("div", { className: "samples__row" }, SAMPLES[evType].map(s =>
                   h("button", { key: s.key, type: "button", className: "chipbtn", onClick: () => useSample(s) }, ic("image", 13), s.label)))))
-          : h("div", { className: "scan", "data-s": scan },
-              h("div", { className: "scan__frame" },
-                h("img", { src: shot.shared || shot.url, alt: "Your uploaded screenshot", className: "scan__img" }),
-                shot.boxes && scan !== "reading" && shot.boxes.map((b, i) => {
-                  const it = shot.items[i], on = scan === "ready" && it.id === selId;
-                  return h("button", { key: it.id, type: "button", tabIndex: -1, "aria-hidden": true, className: "scan__box" + (on ? " is-on" : "") + (scan === "ready" && selId && !on ? " is-dim" : ""),
-                    style: { left: b.x + "%", top: b.y + "%", width: b.w + "%", height: b.h + "%", animationDelay: i * 130 + "ms" }, onClick: () => scan === "ready" && pickItem(it.id) },
-                    h("span", { className: "scan__n" }, i + 1));
-                }),
-                scan !== "ready" && h("span", { className: "scan__beam" }),
-                h("span", { className: "reticle" + (scan !== "ready" ? " on" : "") }, h("i", null), h("i", null), h("i", null), h("i", null))),
-              h("div", { className: "scan__foot" },
-                h("div", { className: "status", "data-state": scan === "ready" ? "done" : "work" },
-                  scan === "ready" ? okdot() : h(Spin), h(Roll, { text: scanLabel })),
-                h("button", { type: "button", className: "link", onClick: () => { clearTimers(); setShot(null); setScan("idle"); resetChoices(); } }, ic("refresh", 13), "Replace")),
-              h("p", { className: "fine" }, ic("lock", 12), shot.masked ? "We hid a one-time code. Only this image is shared with your complaint." : "Only this image is shared with your complaint."))),
+          : h("div", { className: "proc" },
+              h("span", { className: "proc__thumb" }, thumb && h("img", { src: thumb, alt: "" })),
+              h("div", { className: "proc__b" },
+                h("span", { className: "proc__t" }, "Processing your screenshot"),
+                h(Roll, { text: scan === "reading" ? "Reading the image" : "Finding the " + noun + "s in it", cls: "proc__s" }),
+                h("span", { className: "proc__bar" }, h("i", null))),
+              h(Blob, { size: 44, state: "tool" }))),
 
       /* 3. the messages / calls found in it */
       scan === "ready" && h(Step, { n: 3, done: !!sel, key: "found", id: "cx-found",
-        title: items.length > 1 ? "Which " + noun + " do you want to report?" : "We found this " + noun,
-        hint: items.length > 1 ? "We found " + items.length + " in your screenshot. Pick one." : items[0].generic ? "This prototype can’t read your own screenshots yet, so it shows a placeholder." : null },
-        h("div", { className: "evs", role: items.length > 1 ? "radiogroup" : undefined, ref: listRef },
-          items.map((it, i) => h(EventCard, { key: it.id, it, idx: i, on: items.length > 1 ? selId === it.id : true, onPick: items.length > 1 ? () => pickItem(it.id) : null })))),
+        title: "Which " + noun + " do you want to report?", label: sel && sel.type === "call" ? "Call" : "Message",
+        hint: "We found " + items.length + " in your screenshot. Pick one.",
+        summary: sel && (!multi || edit !== 3) ? h("span", { className: "sum__col" },
+          h("span", { className: "sum__row" }, sel.sender, h("span", { className: "sum__time" }, sel.time)),
+          h("span", { className: "sum__sub sum__sub--clip" }, sel.generic ? "Placeholder: this prototype can’t read your own screenshots yet." : maskedText(sel))) : null,
+        onChange: multi ? () => setEdit(3) : null },
+        h("div", { className: "evs", role: "radiogroup", ref: listRef },
+          items.map((it, i) => h(EventCard, { key: it.id, it, idx: i, on: selId === it.id, onPick: () => pickItem(it.id) })))),
 
-      /* 4. reason, comment, consent */
-      sel && h(Step, { n: 4, done: !!reason, key: "why-" + sel.id, title: "What bothered you?" },
+      /* 4. reason */
+      sel && h(Step, { n: 4, done: !!reason, key: "why-" + sel.id, title: "What bothered you?", label: "Reason",
+        summary: reason && edit !== 4 ? reason.label : null, onChange: () => setEdit(4) },
         h("div", { className: "reasons", role: "radiogroup", "aria-label": "What bothered you?" },
           reasons.main.concat(moreOpen || reasons.more.some(r => r.id === reasonId) ? reasons.more : []).map((r, i) =>
             h("button", { key: r.id, type: "button", role: "radio", "aria-checked": reasonId === r.id, onClick: () => pickReason(r.id), className: "reason" + (reasonId === r.id ? " is-on" : ""), style: { animationDelay: i * 45 + "ms" } },
               h("span", { className: "radio" + (reasonId === r.id ? " is-on" : "") }, reasonId === r.id ? ic("check", 12) : null),
               h("span", null, r.label)))),
-        reasons.more.length > 0 && !moreOpen && !reasons.more.some(r => r.id === reasonId) && h("button", { type: "button", className: "link", onClick: () => setMoreOpen(true) }, "More reasons", ic("chevron", 13)),
+        reasons.more.length > 0 && !moreOpen && !reasons.more.some(r => r.id === reasonId) && h("button", { type: "button", className: "link", onClick: () => setMoreOpen(true) }, "More reasons", ic("chevron", 13))),
+
+      /* 5. comment and consent, both optional */
+      reason && h(Step, { n: 5, key: "more-" + sel.id, title: "Anything to add?", hint: "Both are optional." },
         h("div", { className: "field" },
-          h("label", { htmlFor: "cx-note" }, "Add a comment ", h("span", null, "(optional)")),
+          h("label", { htmlFor: "cx-note" }, "Comment"),
           h("textarea", { id: "cx-note", value: note, onChange: ev => setNote(ev.target.value.slice(0, 300)), rows: 3, className: "textarea",
             placeholder: sel.type === "call" ? "For example, what the caller said or offered" : "Anything else we should know" }),
           h("span", { className: "field__count" }, note.length + "/300")),
@@ -1220,10 +1243,10 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
             h("span", { className: "revoke__t" }, "Also revoke my consent"),
             h("span", { className: "revoke__s" }, "Stop " + sel.permission.purpose + " from " + (br ? br.name : "this sender") + " by " + chan(sel.permission.channels) + ". You can give it again from My Wallet.")))),
 
-      /* 5. submit */
-      sel && h("div", { className: "submit" },
+      /* submit */
+      reason && h("div", { className: "submit" },
         h("button", { type: "button", onClick: submit, disabled: !canSubmit, className: "cta" }, "Submit complaint", ic("arrow", 17)),
-        h("p", { className: "fine fine--center" }, ic("bolt", 12), canSubmit ? "We start investigating straight away. Most complaints close in under a minute." : "Choose a reason to continue.")),
+        h("p", { className: "fine fine--center" }, ic("bolt", 12), "We start investigating straight away. Most complaints close in under a minute.")),
 
       h(Proto, { fast, setFast })));
 }

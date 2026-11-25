@@ -369,7 +369,11 @@ function Header({ title, sub, back, right }) {
           sub && h("p", { className: "text-xs text-muted-foreground mt-0.5 truncate" }, sub))),
       right !== false && h("button", { type: "button", onClick: () => nav("/complaint-history"), "aria-label": "Complaint history", className: "header-icon-btn" }, ic("history", 16))));
 }
-function Step({ n, done, title, hint, children, id }) {
+function Step({ n, done, title, label, hint, children, id, summary, onChange, changeLabel }) {
+  if (summary) return h("section", { className: "step step--sum is-done", id },
+    h("span", { className: "step__n" }, ic("check", 12)),
+    h("div", { className: "sum" }, h("span", { className: "sum__l" }, label), h("div", { className: "sum__v" }, summary)),
+    onChange && h("button", { type: "button", className: "link sum__chg", onClick: onChange, "aria-label": (changeLabel || "Change") + " " + label.toLowerCase() }, changeLabel || "Change"));
   return h("section", { className: "step" + (done ? " is-done" : ""), id },
     h("div", { className: "step__head" },
       h("span", { className: "step__n" }, done ? ic("check", 12) : n),
@@ -390,6 +394,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const [note, setNote] = useState("");
   const [revoke, setRevoke] = useState(false);
   const [announce, setAnnounce] = useState("");
+  const [edit, setEdit] = useState(null);                // a finished step reopened with "Change"
   const fileRef = useRef(null), timers = useRef([]), listRef = useRef(null), locked = useRef(false);
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.current.push(id); };
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
@@ -404,8 +409,9 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const canRevoke = !!sel && !!sel.permission && !!reason;
   const canSubmit = !!sel && !!reason;
 
-  const resetChoices = () => { setSelId(null); setReasonId(null); setMoreOpen(false); setRevoke(false); };
+  const resetChoices = () => { setEdit(null); setSelId(null); setReasonId(null); setMoreOpen(false); setRevoke(false); };
   const pickType = t => {
+    setEdit(null);
     if (t === evType) return;
     clearTimers(); setEvType(t); setShot(null); setScan("idle"); resetChoices();
   };
@@ -413,15 +419,15 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const begin = (url, det) => {
     clearTimers(); resetChoices();
     setShot({ url, shared: null, items: det.items, boxes: det.boxes || null, masked: !!det.mask });
-    setScan("reading"); setAnnounce("Reading your screenshot");
+    setScan("reading"); setAnnounce("Processing your screenshot");
     (det.mask ? maskImage(url, det.mask) : Promise.resolve(url)).then(shared => setShot(s => (s && s.url === url ? { ...s, shared } : s)));
-    later(() => { setScan("finding"); setAnnounce("Identifying the " + noun); }, RM ? 300 : 1500);
+    later(() => setScan("finding"), RM ? 300 : 1300);
     later(() => {
       setScan("ready");
       if (det.items.length === 1) setSelId(det.items[0].id);
       setAnnounce(det.items.length === 1 ? "Found the " + noun + ". Choose what bothered you." : det.items.length + " " + noun + "s found. Choose the one you want to report.");
-      later(() => { if (listRef.current) listRef.current.scrollIntoView({ block: "nearest", behavior: RM ? "auto" : "smooth" }); }, 120);
-    }, RM ? 600 : 3000);
+      
+    }, RM ? 600 : 2600);
   };
   const useSample = s => begin(sampleUrl(s), { items: s.ids.map(id => ITEMS[id]), boxes: s.boxes, mask: s.mask });
   const onFile = ev => {
@@ -433,8 +439,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
     rd.onload = e2 => begin(e2.target.result, { items: [generic(evType)] });
     rd.readAsDataURL(file);
   };
-  const pickItem = id => { setSelId(id); setReasonId(null); setMoreOpen(false); setRevoke(false); };
-  const pickReason = id => { setReasonId(id); setRevoke(id === "agreed"); };
+  const pickItem = id => { setEdit(null); setSelId(id); setReasonId(null); setMoreOpen(false); setRevoke(false); };
+  const pickReason = id => { setEdit(null); setReasonId(id); setRevoke(id === "agreed"); };
   const submit = () => {
     if (!canSubmit || locked.current) return;
     locked.current = true;                                 // a double tap can't file twice
@@ -443,8 +449,10 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
 
   const stepsDone = [!!evType, scan === "ready" && !!sel, !!reason];
   const progress = [!!evType, !!shot, !!sel, !!reason];
-  const scanLabel = scan === "reading" ? "Reading your screenshot" : scan === "finding" ? "Identifying the " + noun + (shot && shot.items.length > 1 ? "s" : "")
-    : items.length === 1 ? "1 " + noun + " found" : items.length + " " + noun + "s found";
+  const found = items.length === 1 ? "1 " + noun + " found" : items.length + " " + noun + "s found";
+  const thumb = shot ? (shot.masked ? shot.shared : shot.url) : null;
+  const clearShot = () => { clearTimers(); setShot(null); setScan("idle"); resetChoices(); };
+  const multi = items.length > 1;
 
   return h("div", { className: "cx min-h-screen bg-background" },
     h(Header, { title: "Raise a complaint", sub: "Report an unwanted message or call" }),
@@ -454,7 +462,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
       h("input", { ref: fileRef, id: "cx-file", type: "file", accept: "image/*", onChange: onFile, className: "hidden" }),
 
       /* 1. message or call */
-      h(Step, { n: 1, done: stepsDone[0], title: "What do you want to report?" },
+      h(Step, { n: 1, done: stepsDone[0], title: "What do you want to report?", label: "Reporting",
+        summary: evType && edit !== 1 ? h("span", { className: "sum__row" }, ic(evType === "call" ? "phone" : "message", 15), evType === "call" ? "A call" : "A message") : null, onChange: () => setEdit(1) },
         h("div", { className: "kinds", role: "radiogroup", "aria-label": "What do you want to report?" },
           [["message", "Message", "SMS offers, reminders, codes", "message"], ["call", "Call", "Sales, service or unknown calls", "phone"]].map(([id, t, s, icn]) =>
             h("button", { key: id, type: "button", role: "radio", "aria-checked": evType === id, onClick: () => pickType(id), className: "kind" + (evType === id ? " is-on" : "") },
@@ -462,9 +471,13 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
               h("span", { className: "kind__t" }, t), h("span", { className: "kind__s" }, s),
               h("span", { className: "kind__ck" }, ic("check", 11)))))),
 
-      /* 2. the screenshot, scanned */
-      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: "Add a screenshot",
-        hint: evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report." },
+      /* 2. the screenshot: upload, then a short "processing" state */
+      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: "Add a screenshot", label: "Screenshot",
+        hint: evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report.",
+        summary: scan === "ready" ? h("span", { className: "sum__row" },
+          h("img", { src: thumb || shot.url, alt: "", className: "sum__thumb" }),
+          h("span", { className: "sum__col" }, found, shot.masked && h("span", { className: "sum__sub" }, ic("lock", 11), "One-time code hidden"))) : null,
+        onChange: clearShot, changeLabel: "Replace" },
         !shot
           ? h("div", { className: "up" },
               h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
@@ -475,40 +488,39 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("span", { className: "samples__l" }, "No screenshot handy? Try a demo one"),
                 h("div", { className: "samples__row" }, SAMPLES[evType].map(s =>
                   h("button", { key: s.key, type: "button", className: "chipbtn", onClick: () => useSample(s) }, ic("image", 13), s.label)))))
-          : h("div", { className: "scan", "data-s": scan },
-              h("div", { className: "scan__frame" },
-                h("img", { src: shot.shared || shot.url, alt: "Your uploaded screenshot", className: "scan__img" }),
-                shot.boxes && scan !== "reading" && shot.boxes.map((b, i) => {
-                  const it = shot.items[i], on = scan === "ready" && it.id === selId;
-                  return h("button", { key: it.id, type: "button", tabIndex: -1, "aria-hidden": true, className: "scan__box" + (on ? " is-on" : "") + (scan === "ready" && selId && !on ? " is-dim" : ""),
-                    style: { left: b.x + "%", top: b.y + "%", width: b.w + "%", height: b.h + "%", animationDelay: i * 130 + "ms" }, onClick: () => scan === "ready" && pickItem(it.id) },
-                    h("span", { className: "scan__n" }, i + 1));
-                }),
-                scan !== "ready" && h("span", { className: "scan__beam" }),
-                h("span", { className: "reticle" + (scan !== "ready" ? " on" : "") }, h("i", null), h("i", null), h("i", null), h("i", null))),
-              h("div", { className: "scan__foot" },
-                h("div", { className: "status", "data-state": scan === "ready" ? "done" : "work" },
-                  scan === "ready" ? okdot() : h(Spin), h(Roll, { text: scanLabel })),
-                h("button", { type: "button", className: "link", onClick: () => { clearTimers(); setShot(null); setScan("idle"); resetChoices(); } }, ic("refresh", 13), "Replace")),
-              h("p", { className: "fine" }, ic("lock", 12), shot.masked ? "We hid a one-time code. Only this image is shared with your complaint." : "Only this image is shared with your complaint."))),
+          : h("div", { className: "proc" },
+              h("span", { className: "proc__thumb" }, thumb && h("img", { src: thumb, alt: "" })),
+              h("div", { className: "proc__b" },
+                h("span", { className: "proc__t" }, "Processing your screenshot"),
+                h(Roll, { text: scan === "reading" ? "Reading the image" : "Finding the " + noun + "s in it", cls: "proc__s" }),
+                h("span", { className: "proc__bar" }, h("i", null))),
+              h(Blob, { size: 44, state: "tool" }))),
 
       /* 3. the messages / calls found in it */
       scan === "ready" && h(Step, { n: 3, done: !!sel, key: "found", id: "cx-found",
-        title: items.length > 1 ? "Which " + noun + " do you want to report?" : "We found this " + noun,
-        hint: items.length > 1 ? "We found " + items.length + " in your screenshot. Pick one." : items[0].generic ? "This prototype can’t read your own screenshots yet, so it shows a placeholder." : null },
-        h("div", { className: "evs", role: items.length > 1 ? "radiogroup" : undefined, ref: listRef },
-          items.map((it, i) => h(EventCard, { key: it.id, it, idx: i, on: items.length > 1 ? selId === it.id : true, onPick: items.length > 1 ? () => pickItem(it.id) : null })))),
+        title: "Which " + noun + " do you want to report?", label: sel && sel.type === "call" ? "Call" : "Message",
+        hint: "We found " + items.length + " in your screenshot. Pick one.",
+        summary: sel && (!multi || edit !== 3) ? h("span", { className: "sum__col" },
+          h("span", { className: "sum__row" }, sel.sender, h("span", { className: "sum__time" }, sel.time)),
+          h("span", { className: "sum__sub sum__sub--clip" }, sel.generic ? "Placeholder: this prototype can’t read your own screenshots yet." : maskedText(sel))) : null,
+        onChange: multi ? () => setEdit(3) : null },
+        h("div", { className: "evs", role: "radiogroup", ref: listRef },
+          items.map((it, i) => h(EventCard, { key: it.id, it, idx: i, on: selId === it.id, onPick: () => pickItem(it.id) })))),
 
-      /* 4. reason, comment, consent */
-      sel && h(Step, { n: 4, done: !!reason, key: "why-" + sel.id, title: "What bothered you?" },
+      /* 4. reason */
+      sel && h(Step, { n: 4, done: !!reason, key: "why-" + sel.id, title: "What bothered you?", label: "Reason",
+        summary: reason && edit !== 4 ? reason.label : null, onChange: () => setEdit(4) },
         h("div", { className: "reasons", role: "radiogroup", "aria-label": "What bothered you?" },
           reasons.main.concat(moreOpen || reasons.more.some(r => r.id === reasonId) ? reasons.more : []).map((r, i) =>
             h("button", { key: r.id, type: "button", role: "radio", "aria-checked": reasonId === r.id, onClick: () => pickReason(r.id), className: "reason" + (reasonId === r.id ? " is-on" : ""), style: { animationDelay: i * 45 + "ms" } },
               h("span", { className: "radio" + (reasonId === r.id ? " is-on" : "") }, reasonId === r.id ? ic("check", 12) : null),
               h("span", null, r.label)))),
-        reasons.more.length > 0 && !moreOpen && !reasons.more.some(r => r.id === reasonId) && h("button", { type: "button", className: "link", onClick: () => setMoreOpen(true) }, "More reasons", ic("chevron", 13)),
+        reasons.more.length > 0 && !moreOpen && !reasons.more.some(r => r.id === reasonId) && h("button", { type: "button", className: "link", onClick: () => setMoreOpen(true) }, "More reasons", ic("chevron", 13))),
+
+      /* 5. comment and consent, both optional */
+      reason && h(Step, { n: 5, key: "more-" + sel.id, title: "Anything to add?", hint: "Both are optional." },
         h("div", { className: "field" },
-          h("label", { htmlFor: "cx-note" }, "Add a comment ", h("span", null, "(optional)")),
+          h("label", { htmlFor: "cx-note" }, "Comment"),
           h("textarea", { id: "cx-note", value: note, onChange: ev => setNote(ev.target.value.slice(0, 300)), rows: 3, className: "textarea",
             placeholder: sel.type === "call" ? "For example, what the caller said or offered" : "Anything else we should know" }),
           h("span", { className: "field__count" }, note.length + "/300")),
@@ -519,10 +531,10 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
             h("span", { className: "revoke__t" }, "Also revoke my consent"),
             h("span", { className: "revoke__s" }, "Stop " + sel.permission.purpose + " from " + (br ? br.name : "this sender") + " by " + chan(sel.permission.channels) + ". You can give it again from My Wallet.")))),
 
-      /* 5. submit */
-      sel && h("div", { className: "submit" },
+      /* submit */
+      reason && h("div", { className: "submit" },
         h("button", { type: "button", onClick: submit, disabled: !canSubmit, className: "cta" }, "Submit complaint", ic("arrow", 17)),
-        h("p", { className: "fine fine--center" }, ic("bolt", 12), canSubmit ? "We start investigating straight away. Most complaints close in under a minute." : "Choose a reason to continue.")),
+        h("p", { className: "fine fine--center" }, ic("bolt", 12), "We start investigating straight away. Most complaints close in under a minute.")),
 
       h(Proto, { fast, setFast })));
 }
