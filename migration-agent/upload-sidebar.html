@@ -5051,7 +5051,7 @@ span.r-pick{cursor:default}
   $('#canvas').addEventListener('keydown', e => { const g = e.target.closest && e.target.closest('[data-s4g]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.click(); } });
 
   /* sidebar options: A sections, B agents first with the upload button pinned at the foot, C one tab at a time */
-  const SBV = { v: 'd', vt: 'up' };
+  document.body.classList.add('upx'); const SBV = { v: 'd', vt: 'up' };
   function sbvSync() {
     document.body.classList.toggle('sbv-b', SBV.v === 'b'); document.body.classList.toggle('sbv-c', SBV.v === 'c'); document.body.classList.toggle('sbv-d', SBV.v === 'd'); $('.sb4-hd b').textContent = 'Upload consent file'; document.body.dataset.vt = SBV.vt;
     $$('[data-sbv]').forEach(b => { const on = b.dataset.sbv === SBV.v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
