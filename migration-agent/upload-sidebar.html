@@ -1723,6 +1723,35 @@ body.upx.sb4 .sb4-ai .s4-go.ux-sending{pointer-events:none;background:#0f2a66!im
 .ux-trust li{display:inline-flex;align-items:center;gap:4px;font:500 10.5px var(--font);color:#66738f;white-space:nowrap}
 .ux-trust svg{width:11px;height:11px;fill:none;stroke:#1f9d5f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .ux-foot{padding-bottom:14px!important}
+/* security styles B, C and D: quieter takes on the same cues (A is the dark vault above) */
+.ux-bar{display:none}
+body.upx.sb4[data-sec="b"] .sb4-ai .ag-hero,body.upx.sb4[data-sec="c"] .sb4-ai .ag-hero,body.upx.sb4[data-sec="d"] .sb4-ai .ag-hero{background:#fff!important;border-bottom:1px solid #e3e8f1!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .ag-hero::before,body.upx.sb4[data-sec="b"] .sb4-ai .ag-hero::after,body.upx.sb4[data-sec="c"] .sb4-ai .ag-hero::before,body.upx.sb4[data-sec="c"] .sb4-ai .ag-hero::after,body.upx.sb4[data-sec="d"] .sb4-ai .ag-hero::before,body.upx.sb4[data-sec="d"] .sb4-ai .ag-hero::after{display:none}
+body.upx.sb4[data-sec="b"] .sb4-ai .sb4-hd b,body.upx.sb4[data-sec="c"] .sb4-ai .sb4-hd b,body.upx.sb4[data-sec="d"] .sb4-ai .sb4-hd b{color:#0f1a33!important;font-size:17px!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .ux-enc,body.upx.sb4[data-sec="c"] .sb4-ai .ux-enc,body.upx.sb4[data-sec="d"] .sb4-ai .ux-enc{color:#17804d!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .s4-col,body.upx.sb4[data-sec="c"] .sb4-ai .s4-col,body.upx.sb4[data-sec="d"] .sb4-ai .s4-col{color:#33415f!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .s4-col svg,body.upx.sb4[data-sec="c"] .sb4-ai .s4-col svg,body.upx.sb4[data-sec="d"] .sb4-ai .s4-col svg{stroke:#5d6b8e!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .s4-col:hover,body.upx.sb4[data-sec="c"] .sb4-ai .s4-col:hover,body.upx.sb4[data-sec="d"] .sb4-ai .s4-col:hover{background:#f1f4fa!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .ag-hero,body.upx.sb4[data-sec="c"] .sb4-ai .ag-hero{padding:18px 14px 16px 22px!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .ux-shield,body.upx.sb4[data-sec="b"] .sb4-ai .ux-key,body.upx.sb4[data-sec="b"] .sb4-ai .ux-trust,body.upx.sb4[data-sec="c"] .sb4-ai .ux-shield,body.upx.sb4[data-sec="c"] .sb4-ai .ux-key,body.upx.sb4[data-sec="c"] .sb4-ai .ux-trust{display:none!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .s4-drop .ux-di,body.upx.sb4[data-sec="b"] .sb4-ai .s4-drop:hover .ux-di,body.upx.sb4[data-sec="b"] .sb4-ai .s4-drop.over .ux-di,body.upx.sb4[data-sec="c"] .sb4-ai .s4-drop .ux-di,body.upx.sb4[data-sec="c"] .sb4-ai .s4-drop:hover .ux-di,body.upx.sb4[data-sec="c"] .sb4-ai .s4-drop.over .ux-di{width:42px!important;height:42px!important;background:none!important;box-shadow:none!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .ux-di svg,body.upx.sb4[data-sec="c"] .sb4-ai .ux-di svg{width:36px!important;height:36px!important;stroke:#2560f6!important;stroke-width:1.7!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .ux-di .sh,body.upx.sb4[data-sec="c"] .sb4-ai .ux-di .sh{fill:#fff!important;stroke:#2560f6!important;stroke-width:1.5!important}
+body.upx.sb4[data-sec="b"] .sb4-ai .s4-drop:not(.has),body.upx.sb4[data-sec="c"] .sb4-ai .s4-drop:not(.has){background:rgba(237,243,255,.45)!important;border-color:rgba(37,96,246,.35)!important}
+body.upx.sb4[data-sec="c"] .sb4-ai .ux-enc{display:none!important}
+body.upx.sb4[data-sec="c"] .sb4-ai .ux-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px -22px -14px;padding:9px 22px;border-top:1px solid #e3e8f1;background:#f4f7fb;font:600 11.5px var(--font);color:#17804d}
+.ux-bar span{display:inline-flex;align-items:center;gap:6px}
+.ux-bar svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ux-bar code{font:500 10.5px var(--mono);letter-spacing:.06em;color:#66738f;cursor:help}
+body.upx.sb4[data-sec="d"] .sb4-ai .ag-hero{background:#f4f8ff linear-gradient(155deg,#e8f0ff 0%,#f6f9ff 65%,#fff 100%)!important}
+body.upx.sb4[data-sec="d"] .sb4-ai .ag-hero::before{display:block;background:repeating-linear-gradient(118deg,rgba(37,96,246,.055) 0 1px,transparent 1px 9px)}
+body.upx.sb4[data-sec="d"] .sb4-ai .ux-shield{background:#fff;box-shadow:inset 0 0 0 1px #d6e2fb,0 8px 16px -12px rgba(37,96,246,.7)}
+body.upx.sb4[data-sec="d"] .sb4-ai .ux-shield svg{stroke:#2560f6}
+body.upx.sb4[data-sec="d"] .sb4-ai .ux-shield .sh{fill:#e3edff;stroke:#2560f6}
+body.upx.sb4[data-sec="d"] .sb4-ai .ux-shield rect{fill:#2560f6}
+body.upx.sb4[data-sec="d"] .sb4-ai .ux-key{color:#66738f}
+body.upx.sb4[data-sec="d"] .sb4-ai .ux-key code{color:#33415f}
+body.upx.sb4[data-sec="d"] .sb4-ai .s4-drop .ux-di{box-shadow:0 0 0 6px rgba(37,96,246,.06)!important}
 /* fixed colours: the page is light only, whatever theme the viewer is in. The format card sits outside .agent, so it carries its own colour values, and the checkbox is drawn rather than left to the system */
 html{color-scheme:only light!important}
 .ux-pop{--ag-ink:#0f1a33;--ag-ink2:#33415f;--ag-mute:#5d6b8e;--ag-faint:#66738f;--ag-bl:#2560f6;--ag-bld:#154ace;--line:#e3e8f1;color-scheme:only light;color:#0f1a33!important;background:#fff!important}
@@ -2343,7 +2372,7 @@ span.r-pick{cursor:default}
       <a class="nav-item is-muted" href="#">Integrations</a>
       <a class="nav-item is-muted" href="#">Consent Acquisition</a>
     </nav>
-    
+    <div class="view-sw" role="group" aria-label="Security style"><span>Security style</span><div class="seg2"><button type="button" class="chip-btn is-on" data-sec="a" aria-pressed="true">A · Vault</button><button type="button" class="chip-btn" data-sec="b" aria-pressed="false">B · Quiet</button><button type="button" class="chip-btn" data-sec="c" aria-pressed="false">C · Status bar</button><button type="button" class="chip-btn" data-sec="d" aria-pressed="false">D · Soft</button></div></div>
     <div class="sidebar-user"><b>Ravi Menon</b><span>Super Admin</span></div>
   </aside>
 
@@ -2380,7 +2409,7 @@ span.r-pick{cursor:default}
           <div class="sb4-ai" id="sb4Ai">
           <div class="ag-hero" id="agHero" data-blob="run">
             <span class="ai-blob ag-blob" aria-hidden="true"><canvas></canvas><span class="mark"></span></span>
-            <span class="ux-shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="sh" d="M12 2.6l7.6 2.9v6c0 4.5-3 8.1-7.6 9.7-4.6-1.6-7.6-5.2-7.6-9.7v-6z"/><rect x="8.9" y="11" width="6.2" height="4.8" rx="1.2"/><path d="M10.2 11V9.6a1.8 1.8 0 013.6 0V11"/></svg></span><div class="sb4-only sb4-hd"><b>Migration agent</b><span class="sb4-state" id="sb4State"><i></i><span></span></span><span class="ux-enc" title="AES-256. The file is sealed in your browser before it leaves this device."><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted end-to-end</span><span class="ux-key" title="Fingerprint of the key made for this session. It never leaves this device."><i></i>Session key <code id="uxKey"></code></span></div>
+            <span class="ux-shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="sh" d="M12 2.6l7.6 2.9v6c0 4.5-3 8.1-7.6 9.7-4.6-1.6-7.6-5.2-7.6-9.7v-6z"/><rect x="8.9" y="11" width="6.2" height="4.8" rx="1.2"/><path d="M10.2 11V9.6a1.8 1.8 0 013.6 0V11"/></svg></span><div class="sb4-only sb4-hd"><b>Migration agent</b><span class="sb4-state" id="sb4State"><i></i><span></span></span><span class="ux-enc" title="AES-256. The file is sealed in your browser before it leaves this device."><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted end-to-end</span><span class="ux-key" title="Fingerprint of the key made for this session. It never leaves this device."><i></i>Session key <code id="uxKey" class="ux-kv"></code></span></div>
             <button type="button" class="sb4-only s4-col" id="s4Col" aria-expanded="true" aria-label="Collapse the agent bar" title="Collapse"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6M19 6v12"/></svg></button>
             <div class="ag-say" aria-live="polite">
               <h2 id="agSay">Drop your files. I’ll handle the rest.</h2>
@@ -2422,6 +2451,7 @@ span.r-pick{cursor:default}
               <button type="button" class="btn btn-pri s4-go" id="s4Go" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Upload securely</button>
               <p class="s4-todo" id="s4Todo"><span class="s4-pips" aria-hidden="true"><i></i><i></i><i></i></span><span id="s4TodoT"></span></p>
               <ul class="ux-trust" aria-label="How this upload is protected"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>AES-256</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Isolated validation</li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No outside access</li></ul>
+              <p class="ux-bar"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Encrypted end-to-end</span><code class="ux-kv" title="Fingerprint of the key made for this session. It never leaves this device."></code></p>
             </div>
           </div>
           <button type="button" class="sb4-only s4-open" id="s4Open"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg></span><b>Upload a file</b><small>or drop a CSV anywhere</small><svg class="ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -5114,7 +5144,7 @@ span.r-pick{cursor:default}
   $('#canvas').addEventListener('keydown', e => { const g = e.target.closest && e.target.closest('[data-s4g]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.click(); } });
 
   /* sidebar options: A sections, B agents first with the upload button pinned at the foot, C one tab at a time */
-  document.body.classList.add('upx'); { const h = () => Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, '0'); $('#uxKey').textContent = [h(), h(), h(), h()].join(' '); } const SBV = { v: 'd', vt: 'up' };
+  document.body.classList.add('upx'); { const h = () => Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, '0'); const k = [h(), h(), h(), h()].join(' '); document.querySelectorAll('.ux-kv').forEach(n => n.textContent = k); document.body.dataset.sec = 'a'; document.querySelectorAll('[data-sec]:not(body)').forEach(b => b.onclick = () => { document.body.dataset.sec = b.dataset.sec; document.querySelectorAll('[data-sec]:not(body)').forEach(x => { const on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', String(on)); }); }); } const SBV = { v: 'd', vt: 'up' };
   function sbvSync() {
     document.body.classList.toggle('sbv-b', SBV.v === 'b'); document.body.classList.toggle('sbv-c', SBV.v === 'c'); document.body.classList.toggle('sbv-d', SBV.v === 'd'); $('.sb4-hd b').textContent = 'Upload consent file'; document.body.dataset.vt = SBV.vt;
     $$('[data-sbv]').forEach(b => { const on = b.dataset.sbv === SBV.v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
