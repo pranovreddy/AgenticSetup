@@ -222,6 +222,7 @@ table.dir{width:100%;border-collapse:collapse;table-layout:fixed}
 .hub [data-node]{cursor:pointer;transition:opacity .15s}
 .hub g[data-node^="id:"]{cursor:default}
 .hub .nd{stroke:#fff;stroke-width:3}
+.hub .plate{filter:drop-shadow(0 2px 4px rgba(11,26,51,.08))}
 .hub .edge{stroke:#d3d9e4;stroke-width:2;opacity:1;stroke-linecap:round;transition:opacity .15s,stroke .15s,stroke-width .15s}
 .hub.hl .edge{opacity:.3}
 .hub.hl .edge.on{stroke:var(--c);opacity:1;stroke-width:2.6}
@@ -908,7 +909,7 @@ function renderHub(body, f, s){
   // 4) fit the canvas to the graph
   const pts = [{x:0,y:0}, ...Object.values(ep), ...Object.values(ip)];
   const minX=Math.min(...pts.map(p=>p.x)), maxX=Math.max(...pts.map(p=>p.x)), minY=Math.min(...pts.map(p=>p.y)), maxY=Math.max(...pts.map(p=>p.y));
-  const padT=64, padB=96, H=Math.round(maxY-minY+padT+padB);
+  const padT=112, padB=118, H=Math.round(maxY-minY+padT+padB);
   const tx=W/2-(minX+maxX)/2, ty=padT-minY;
   const mv = p => { p.x=Math.round(p.x+tx); p.y=Math.round(p.y+ty); };
   Object.values(ep).forEach(mv); Object.values(ip).forEach(mv);
@@ -922,35 +923,38 @@ function renderHub(body, f, s){
     i.others.forEach(x=>{ const q=ep[x];
       g += `<line class="edge" data-eid="${i.id}" data-eent="${x}" style="--c:${c}" x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}"/>`; });
   });
-  // identifiers — small nodes, coloured by type
+  // identifiers — small, quiet nodes tinted by type
   s.forEach(i=>{
     const t=TYPES[i.type], p=ip[i.id];
     g += `<g data-node="id:${i.id}">
-      <circle class="nd" cx="${p.x}" cy="${p.y}" r="17" fill="${t.c}"/>
-      ${svgIcon(t.icon, p.x-8, p.y-8, 16, '#fff')}
-      <text class="halo" x="${p.x}" y="${p.y+34}" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0b1a33">${i.short}</text>
-      <text class="halo" x="${p.x}" y="${p.y+47}" text-anchor="middle" font-family="Geist Mono, ui-monospace, monospace" font-size="8.5" font-weight="600" letter-spacing="1" fill="${t.c}">${t.label.toUpperCase()} · <tspan fill="#b91c1c">−${i.pts}</tspan></text></g>`;
+      <circle cx="${p.x}" cy="${p.y}" r="18" fill="#fff"/>
+      <circle cx="${p.x}" cy="${p.y}" r="14" fill="${t.bg}" stroke="${t.c}" stroke-width="1.5"/>
+      ${svgIcon(t.icon, p.x-7, p.y-7, 14, t.c)}
+      <text class="halo" x="${p.x}" y="${p.y+30}" text-anchor="middle" font-size="11" font-weight="600" fill="#3b4660">${i.short}</text>
+      <text class="halo" x="${p.x}" y="${p.y+42}" text-anchor="middle" font-family="Geist Mono, ui-monospace, monospace" font-size="8" font-weight="600" letter-spacing="1" fill="${t.c}">${t.label.toUpperCase()} · <tspan fill="#b91c1c">−${i.pts}</tspan></text></g>`;
   });
-  // linked enterprises — larger nodes, coloured by trust band
-  L.forEach(x=>{
-    const e=E[x], eb=band(e.trust), p=ep[x];
-    g += `<g data-node="ent:${x}">
-      ${e.blacklisted?`<circle cx="${p.x}" cy="${p.y}" r="36" fill="none" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4 3"/>`:''}
-      <circle class="nd" cx="${p.x}" cy="${p.y}" r="28" fill="${eb.c}"/>
-      <text x="${p.x}" y="${p.y+6}" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">${e.trust}</text>
-      <text class="halo" x="${p.x}" y="${p.y+(e.blacklisted?56:50)}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b1a33">${e.name}</text>
-      <text class="halo" x="${p.x}" y="${p.y+(e.blacklisted?71:65)}" text-anchor="middle" font-size="10.5" font-weight="600" fill="${e.blacklisted?'#b91c1c':eb.c}">${e.blacklisted?'Blacklisted':eb.l+' · '+STATUS[e.status]}</text></g>`;
-  });
-  // focal enterprise
-  g += `<g data-node="focal:${f.id}">
-    <circle cx="${cx}" cy="${cy}" r="49" fill="none" stroke="${b.c}" stroke-opacity=".2" stroke-width="6"/>
-    <circle class="nd" cx="${cx}" cy="${cy}" r="40" fill="${b.c}"/>
-    <text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="27" font-weight="600" fill="#fff" letter-spacing="-1">${f.trust}</text>
-    <text x="${cx}" y="${cy+20}" text-anchor="middle" font-family="Geist Mono, ui-monospace, monospace" font-size="7.5" font-weight="600" letter-spacing="1" fill="#fff" fill-opacity=".8">TRUST</text>
-    <text class="halo" x="${cx}" y="${cy+72}" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0b1a33">${f.name}</text>
-    <text class="halo" x="${cx}" y="${cy+87}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#b91c1c">−${s.reduce((a,i)=>a+i.pts,0)} from shared identifiers</text></g>`;
+  // enterprises — brand-coloured nodes with a name plate and a trust badge
+  const entNode = (e, p, focal) => {
+    const eb=band(e.trust), r=focal?44:32, up=!focal && p.y<cy-40;
+    const sub = focal ? `−${s.reduce((a,i)=>a+i.pts,0)} from shared identifiers` : e.blacklisted ? 'Blacklisted' : eb.l+' · '+STATUS[e.status];
+    const fs=focal?14.5:13, w=Math.round(Math.max(e.name.length*fs*.6, sub.length*5.7)+28), h=42;
+    const ly = up ? p.y-r-(e.blacklisted?18:12)-h : p.y+r+(e.blacklisted?18:12);
+    const bw=focal?44:36, bh=focal?24:20, bx=p.x+r*.72, by=p.y-r*.72;
+    return `<g data-node="${focal?'focal':'ent'}:${e.id}">
+      <circle cx="${p.x}" cy="${p.y}" r="${r+11}" fill="${eb.num}" fill-opacity="${focal?.2:.13}"/>
+      ${e.blacklisted?`<circle cx="${p.x}" cy="${p.y}" r="${r+8}" fill="none" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4 3"/>`:''}
+      <circle class="nd" cx="${p.x}" cy="${p.y}" r="${r}" fill="${e.col}"/>
+      <text x="${p.x}" y="${p.y+(focal?8:6)}" text-anchor="middle" font-size="${focal?23:17}" font-weight="700" fill="#fff">${e.ini}</text>
+      <rect x="${bx-bw/2}" y="${by-bh/2}" width="${bw}" height="${bh}" rx="${bh/2}" fill="${eb.c}" stroke="#fff" stroke-width="2"/>
+      <text x="${bx}" y="${by+(focal?4.5:4)}" text-anchor="middle" font-size="${focal?13:11.5}" font-weight="700" fill="#fff">${e.trust}</text>
+      <rect class="plate" x="${p.x-w/2}" y="${ly}" width="${w}" height="${h}" rx="10" fill="#fff" stroke="${focal?eb.c:'#d9dfea'}" stroke-width="${focal?1.5:1}"/>
+      <text x="${p.x}" y="${ly+18}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="#0b1a33">${e.name}</text>
+      <text x="${p.x}" y="${ly+33}" text-anchor="middle" font-size="10.5" font-weight="600" fill="${focal||e.blacklisted?'#b91c1c':eb.c}">${sub}</text></g>`;
+  };
+  L.forEach(x=>{ g += entNode(E[x], ep[x], false); });
+  g += entNode(f, {x:cx,y:cy}, true);
   body.innerHTML = `<div class="hub" id="hub">
-    <div class="hub-key"><span><i class="k-ent"></i>Enterprise · trust score inside</span><span><i class="k-id"></i>Shared identifier · sits between the enterprises that share it</span></div>
+    <div class="hub-key"><span><i class="k-ent"></i>Enterprise · trust score on the badge</span><span><i class="k-id"></i>Shared identifier · sits between the enterprises that share it</span></div>
     <svg viewBox="0 0 ${W} ${H}">${g}</svg></div>`;
   wireHL(document.getElementById('hub'), s);
   window._redraw = null;
