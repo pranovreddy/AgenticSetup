@@ -1688,6 +1688,11 @@ body.upx.sb4.s4-railed .sb4-ai{background:#fff!important}
 /* the bar is fixed to the window, so it never scrolls away with the list */
 body.upx.sb4 .sb4-ai{position:fixed!important;left:var(--sidebar);top:0!important;width:372px;height:100vh!important;z-index:5}
 body.upx.sb4.s4-railed .sb4-ai{width:68px}
+/* no section headers: the controls label themselves (titles stay for screen readers) */
+.ux-t{position:absolute!important;width:1px;height:1px;min-height:0!important;padding:0!important;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ux-n{display:none!important}
+.ux-step{padding-bottom:16px!important}
+.ux-steps{padding-top:22px!important}
 /* CSV format: one quiet row under the drop zone, details in a card beside the bar */
 .ux-fmt{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ux-fmt button{display:inline-flex;align-items:center;gap:6px;margin:0!important;font:600 12.5px var(--font);color:var(--ag-mute)}
@@ -4930,7 +4935,7 @@ span.r-pick{cursor:default}
       const LK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
       drop.classList.toggle('sealed', !!f && UP.sealed);
       drop.innerHTML = f ? `<span class="s4-fi" aria-hidden="true">CSV<i>${LK}</i></span><span class="s4-fn"><b title="${esc(f.name)}">${esc(f.name)}</b>${UP.sealed ? `<small class="enc">${LK}Encrypted · AES-256</small><small class="s4-hash">SHA-256 ${UP.hash}</small>` : `<small class="s4-ing">Encrypting <span id="s4Scr">${hex(14)}</span></small><span class="s4-encbar"><i></i></span>`}</span><button type="button" class="s4-rm" id="s4Rm" aria-label="Remove ${esc(f.name)}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`
-        : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg><i>${LK}</i></span><b>Drop your CSV here</b><span class="s4-dl">or <u>browse</u> · <button type="button" id="s4Sample">try a sample</button></span>`;
+        : `<span class="s4-di" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></svg><i>${LK}</i></span><b>Drop your CSV here</b><span class="s4-dl">or <u>browse</u> · <button type="button" id="s4Sample">try a sample</button></span><small class="s4-lim">CSV only · up to 100 MB</small>`;
     }
     const hint = UP.err;
     $('#s4Err').hidden = !hint; $('#s4Err').textContent = hint; $('#s4Err').classList.toggle('soft', !UP.err && !!hint);
