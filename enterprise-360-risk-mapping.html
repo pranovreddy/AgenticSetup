@@ -221,16 +221,20 @@ table.dir{width:100%;border-collapse:collapse;table-layout:fixed}
 .hub .halo{paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
 .hub [data-node]{cursor:pointer;transition:opacity .15s}
 .hub g[data-node^="id:"]{cursor:default}
-.hub .nd{stroke:#fff;stroke-width:3}
-.hub .plate{filter:drop-shadow(0 2px 4px rgba(11,26,51,.08))}
-.hub .edge{stroke:#d3d9e4;stroke-width:2;opacity:1;stroke-linecap:round;transition:opacity .15s,stroke .15s,stroke-width .15s}
-.hub.hl .edge{opacity:.3}
-.hub.hl .edge.on{stroke:var(--c);opacity:1;stroke-width:2.6}
-.hub-key{display:flex;gap:22px;font-size:11.5px;color:var(--mute);margin-bottom:4px}
+.hub svg{border:1px solid var(--line);border-radius:14px;background:radial-gradient(#dde3ee 1px,transparent 1.2px) 0 0/22px 22px,#fafbfd}
+.hub .nd{stroke:#fff;stroke-width:3;filter:drop-shadow(0 3px 6px rgba(11,26,51,.18))}
+.hub .plate{filter:drop-shadow(0 2px 5px rgba(11,26,51,.1))}
+.hub .chip{filter:drop-shadow(0 1px 3px rgba(11,26,51,.08));transition:stroke-width .15s}
+.hub.hl g.on .chip{stroke-width:2}
+.hub .edge{stroke:var(--c);stroke-width:1.8;opacity:.42;stroke-linecap:round;transition:opacity .15s,stroke-width .15s}
+.hub.hl .edge{opacity:.1}
+.hub.hl .edge.on{opacity:1;stroke-width:2.8}
+.hub-key{display:flex;gap:22px;font-size:11.5px;color:var(--mute);margin-bottom:12px}
 .hub-key span{display:inline-flex;align-items:center;gap:7px}
 .hub-key i{display:block;border-radius:50%}
 .hub-key .k-ent{width:16px;height:16px;background:#5c6781}
-.hub-key .k-id{width:10px;height:10px;background:#8590a8}
+.hub-key .k-id{width:18px;height:10px;border-radius:5px;background:#fff;border:1.5px solid #8590a8}
+.hub-key .k-ln{width:18px;height:2px;border-radius:1px;background:#8590a8}
 
 /* variation C — matrix */
 table.mx{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
@@ -923,15 +927,16 @@ function renderHub(body, f, s){
     i.others.forEach(x=>{ const q=ep[x];
       g += `<line class="edge" data-eid="${i.id}" data-eent="${x}" style="--c:${c}" x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}"/>`; });
   });
-  // identifiers — small, quiet nodes tinted by type
+  // identifiers — compact chips tinted by type, so no link runs through a label
   s.forEach(i=>{
-    const t=TYPES[i.type], p=ip[i.id];
+    const t=TYPES[i.type], p=ip[i.id], tag=`${t.label.toUpperCase()} · −${i.pts}`;
+    const w=Math.round(Math.max(i.short.length*7.3, tag.length*5.6)+52), h=38, x0=p.x-w/2;
     g += `<g data-node="id:${i.id}">
-      <circle cx="${p.x}" cy="${p.y}" r="18" fill="#fff"/>
-      <circle cx="${p.x}" cy="${p.y}" r="14" fill="${t.bg}" stroke="${t.c}" stroke-width="1.5"/>
-      ${svgIcon(t.icon, p.x-7, p.y-7, 14, t.c)}
-      <text class="halo" x="${p.x}" y="${p.y+30}" text-anchor="middle" font-size="11" font-weight="600" fill="#3b4660">${i.short}</text>
-      <text class="halo" x="${p.x}" y="${p.y+42}" text-anchor="middle" font-family="Geist Mono, ui-monospace, monospace" font-size="8" font-weight="600" letter-spacing="1" fill="${t.c}">${t.label.toUpperCase()} · <tspan fill="#b91c1c">−${i.pts}</tspan></text></g>`;
+      <rect class="chip" x="${x0}" y="${p.y-h/2}" width="${w}" height="${h}" rx="${h/2}" fill="#fff" stroke="${t.bd}" stroke-width="1.25"/>
+      <circle cx="${x0+19}" cy="${p.y}" r="13" fill="${t.bg}"/>
+      ${svgIcon(t.icon, x0+12, p.y-7, 14, t.c)}
+      <text x="${x0+38}" y="${p.y-1.5}" font-size="11.5" font-weight="600" fill="#0b1a33">${i.short}</text>
+      <text x="${x0+38}" y="${p.y+10.5}" font-family="Geist Mono, ui-monospace, monospace" font-size="8" font-weight="600" letter-spacing=".8" fill="${t.c}">${t.label.toUpperCase()} · <tspan fill="#b91c1c">−${i.pts}</tspan></text></g>`;
   });
   // enterprises — brand-coloured nodes with a name plate and a trust badge
   const entNode = (e, p, focal) => {
@@ -954,7 +959,7 @@ function renderHub(body, f, s){
   L.forEach(x=>{ g += entNode(E[x], ep[x], false); });
   g += entNode(f, {x:cx,y:cy}, true);
   body.innerHTML = `<div class="hub" id="hub">
-    <div class="hub-key"><span><i class="k-ent"></i>Enterprise · trust score on the badge</span><span><i class="k-id"></i>Shared identifier · sits between the enterprises that share it</span></div>
+    <div class="hub-key"><span><i class="k-ent"></i>Enterprise · trust score on the badge</span><span><i class="k-id"></i>Shared identifier · sits between the enterprises that share it</span><span><i class="k-ln"></i>Link colour = identifier type</span></div>
     <svg viewBox="0 0 ${W} ${H}">${g}</svg></div>`;
   wireHL(document.getElementById('hub'), s);
   window._redraw = null;
