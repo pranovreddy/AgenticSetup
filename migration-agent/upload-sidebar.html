@@ -1688,6 +1688,28 @@ body.upx.sb4.s4-railed .sb4-ai{background:#fff!important}
 /* the bar is fixed to the window, so it never scrolls away with the list */
 body.upx.sb4 .sb4-ai{position:fixed!important;left:var(--sidebar);top:0!important;width:372px;height:100vh!important;z-index:5}
 body.upx.sb4.s4-railed .sb4-ai{width:68px}
+/* CSV format: one quiet row under the drop zone, details in a card beside the bar */
+.ux-fmt{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ux-fmt button{display:inline-flex;align-items:center;gap:6px;margin:0!important;font:600 12.5px var(--font);color:var(--ag-mute)}
+.ux-fmt button:hover,.ux-fmt #uxFmtB[aria-expanded="true"]{color:var(--ag-bld)}
+.ux-fmt svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ux-pop{position:fixed;z-index:70;width:316px;padding:16px 18px 18px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 24px 60px -24px rgba(16,33,59,.35),0 2px 6px rgba(16,33,59,.06);animation:ux-popin .2s cubic-bezier(.22,1,.36,1)}
+.ux-pop[hidden]{display:none}
+.ux-pop::before{content:"";position:absolute;left:-6px;top:var(--ay,40px);width:10px;height:10px;margin-top:-5px;background:#fff;border-left:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+@keyframes ux-popin{0%{opacity:0;transform:translateX(-6px)}100%{opacity:1;transform:none}}
+.ux-ph{display:grid;grid-template-columns:1fr auto;row-gap:2px;align-items:center;margin-bottom:4px}
+.ux-ph b{font:650 14.5px var(--font);color:var(--ag-ink)}
+.ux-ph small{grid-column:1;font-size:12px;color:var(--ag-mute)}
+.ux-ph .s4-rm{grid-column:2;grid-row:1/3}
+.ux-pop ul{list-style:none;margin:0;padding:0 12px;border:1px solid var(--line);border-radius:11px;background:#fbfcfe}
+.ux-pop li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0 8px 12px;position:relative;border-bottom:1px dashed var(--line)}
+.ux-pop li:last-child{border-bottom:0}
+.ux-pop li::before{content:"";position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#c3cbdb}
+.ux-pop li.req::before{background:var(--ag-bl)}
+.ux-pop li b{font:600 12.5px var(--font);color:var(--ag-ink)}
+.ux-pop li.req b::after{content:" *";color:#d0364a}
+.ux-pop code{font:500 10.5px var(--mono);color:var(--ag-mute);white-space:nowrap}
+.ux-pop .s4-tpl{width:100%;margin:14px 0 0}
 /* declaration: no box, just the checkbox and its text */
 body.upx.sb4 .sb4-ai .s4-dec,body.upx.sb4 .sb4-ai .s4-dec:hover,body.upx.sb4 .sb4-ai .s4-dec:has(input:checked){padding:0!important;border:0!important;background:none!important;border-radius:0!important}
 .empty-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
@@ -2326,13 +2348,7 @@ span.r-pick{cursor:default}
                   <div class="s4-drop" id="s4Drop" role="button" tabindex="0" aria-label="Drop one CSV file here, or press Enter to choose a file"></div>
                   <input type="file" id="s4File" accept=".csv,text/csv" hidden>
                   <p class="s4-err" id="s4Err" role="alert" hidden></p>
-                  <details class="s4-fmt" id="s4Fmt"><summary><b>What goes in the file</b><span>5 columns</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-                    <p class="ux-cap">Required</p>
-                    <ul><li class="req"><b>Customer Mobile Number</b><code>10 digit</code></li><li class="req"><b>Consent Collection Date</b><code>YYYY-MM-DD</code></li></ul>
-                    <p class="ux-cap">Optional</p>
-                    <ul><li><b>Consent Validity Date</b><code>YYYY-MM-DD</code></li><li><b>Preferable Language</b><code>ISO code</code></li><li><b>Channel Preference</b><code>SMS/Voice</code></li></ul>
-                  </details>
-                  <button type="button" class="ux-tpl" id="s4Tpl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7 11l5 5 5-5M5 20h14"/></svg>Download template</button></div></section>
+                  <div class="ux-fmt"><button type="button" id="uxFmtB" aria-expanded="false" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>CSV format</button><button type="button" class="ux-tpl" id="s4Tpl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5M7 11l5 5 5-5M5 20h14"/></svg>Template</button></div></div></section>
               <section class="ux-step" data-ux="2"><span class="ux-n" aria-hidden="true"><b>3</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
                 <div class="ux-b"><div class="ux-t"><span>Declaration</span></div>
                   <label class="s4-dec" for="s4Dec"><input type="checkbox" id="s4Dec"><span><b>We, HDFC Bank, confirm</b> that the customer consents uploaded comply with applicable laws, TRAI regulations and directions.<em>We affirm the verification and accuracy of the uploaded consents and acknowledge that false declarations may lead to legal action.</em></span></label></div></section>
@@ -4985,6 +5001,15 @@ span.r-pick{cursor:default}
   $('#s4File').onchange = e => { s4Take(e.target.files); e.target.value = ''; };
   $('#s4Go').onclick = s4Hand;
   $('#s4AutoB').onclick = () => { UP.auto = !UP.auto; renderAgent(); };
+  /* CSV format opens as a card beside the bar, so the form does not jump */
+  { const pop = document.createElement('div'); pop.className = 'ux-pop'; pop.id = 'uxPop'; pop.hidden = true; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', 'CSV format');
+    pop.innerHTML = '<div class="ux-ph"><b>CSV format</b><small>One header row, then one customer per row</small><button type="button" class="s4-rm" id="uxPopX" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><p class="ux-cap">Required</p><ul><li class="req"><b>Customer Mobile Number</b><code>10 digit</code></li><li class="req"><b>Consent Collection Date</b><code>YYYY-MM-DD</code></li></ul><p class="ux-cap">Optional</p><ul><li><b>Consent Validity Date</b><code>YYYY-MM-DD</code></li><li><b>Preferable Language</b><code>ISO code</code></li><li><b>Channel Preference</b><code>SMS/Voice</code></li></ul><button type="button" class="s4-tpl" id="uxPopT">Download template</button>';
+    document.body.appendChild(pop);
+    const btn = $('#uxFmtB'), set = on => { pop.hidden = !on; btn.setAttribute('aria-expanded', String(on)); if (on) { const r = btn.getBoundingClientRect(), s = $('#sb4Ai').getBoundingClientRect(); pop.style.left = s.right + 12 + 'px'; const top = Math.max(12, Math.min(r.top - 56, innerHeight - pop.offsetHeight - 12)); pop.style.top = top + 'px'; pop.style.setProperty('--ay', Math.max(18, Math.min(r.top + r.height / 2 - top, pop.offsetHeight - 18)) + 'px'); } };
+    btn.onclick = () => set(pop.hidden); $('#uxPopX').onclick = () => { set(false); btn.focus(); }; $('#uxPopT').onclick = () => $('#s4Tpl').click();
+    document.addEventListener('click', e => { if (!pop.hidden && !pop.contains(e.target) && !btn.contains(e.target)) set(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !pop.hidden) { set(false); btn.focus(); } });
+    $('#s4Col').addEventListener('click', () => set(false)); }
   $('#s4Dec').onchange = e => { UP.dec = e.target.checked; renderAgent(); };
   $('#s4Tpl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['customer_mobile_number,consent_collection_date,consent_validity_date,preferable_language,channel_preference\n'], { type: 'text/csv' })); a.download = 'consent_upload_template.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast('Template downloaded'); };
   $('#s4Drop').addEventListener('click', e => {
