@@ -4,8 +4,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Templates summary screen</title><style>.proto,#pmb,#pm{display:none !important}</style><script>/* standalone: opens straight on the Templates summary screen */
-addEventListener("load",function(){setTimeout(function(){document.getElementById("pmb").click(); var b=document.querySelector("[data-x=ok-templates]"); if(b) b.click(); setTimeout(function(){document.body.click()},900)},1200)})</script>
+<title>Templates summary screen</title><style>.proto,#pmb,#pm,#upnext{display:none !important}html.sx body{opacity:0}</style><script>document.documentElement.classList.add("sx")</script><script>/* standalone: opens on the "Templates mapped" step-done screen and stays there */
+addEventListener("load",function(){setTimeout(function(){document.getElementById("pmb").click(); var b=document.querySelector("[data-x=ok-templates]"); if(b) b.click(); setTimeout(function(){document.body.click()},900)},1200); setTimeout(function(){document.documentElement.classList.remove("sx")},1500);
+ /* hold on this screen: stop the "Up next" countdown so it never moves on */
+ var iv=setInterval(function(){var u=document.getElementById("upnext"); if(!u) return; var s=u.querySelector("[data-a=upstay]"); if(s){s.click(); clearInterval(iv)}},100)})</script>
 <style>
 :root{
   --deep:#0b37c9; --ink:#ffffff; --navy:#0a2a8f; --muted:rgba(10,42,143,.55); --amber:#ffd27a;
