@@ -461,6 +461,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
       h("div", { className: "segs", "aria-hidden": true }, progress.map((d, i) => h("div", { key: i, className: "seg" + (d ? " done" : "") }, h("i", null)))),
       h("input", { ref: fileRef, id: "cx-file", type: "file", accept: "image/*", onChange: onFile, className: "hidden" }),
 
+      /* one card; each step is a section in it that folds once answered */
+      h("div", { className: "steps" },
       /* 1. message or call */
       h(Step, { n: 1, done: stepsDone[0], title: "What do you want to report?", label: "Reporting",
         summary: evType && edit !== 1 ? h("span", { className: "sum__row" }, ic(evType === "call" ? "phone" : "message", 15), evType === "call" ? "A call" : "A message") : null, onChange: () => setEdit(1) },
@@ -529,7 +531,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
           h("span", { className: "revoke__box" }, ic("check", 12)),
           h("span", { className: "revoke__txt" },
             h("span", { className: "revoke__t" }, "Also revoke my consent"),
-            h("span", { className: "revoke__s" }, "Stop " + sel.permission.purpose + " from " + (br ? br.name : "this sender") + " by " + chan(sel.permission.channels) + ". You can give it again from My Wallet.")))),
+            h("span", { className: "revoke__s" }, "Stop " + sel.permission.purpose + " from " + (br ? br.name : "this sender") + " by " + chan(sel.permission.channels) + ". You can give it again from My Wallet."))))),
 
       /* submit */
       reason && h("div", { className: "submit" },

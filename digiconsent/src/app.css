@@ -347,3 +347,18 @@ body{background:hsl(var(--background));color:var(--ink)}
   .pk,.ripple,.proc__thumb::after{display:none}
 }
 .cx .link{font-size:13px;font-weight:600}
+
+/* ---------- one card for the whole form: steps are sections, options are plain rows ---------- */
+.steps{border-radius:22px;background:var(--surface);border:1px solid var(--edge);box-shadow:var(--sh-card);overflow:hidden}
+.steps .step{border:0;border-radius:0;box-shadow:none;background:none;border-top:1px solid var(--line)}
+.steps .step:first-child{border-top:0}
+.steps .step--sum{padding:12px 12px 12px 18px;background:var(--surface-2)}
+.steps .evs{gap:0}
+.steps .ev,.steps .ev.is-on{padding:12px 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
+.steps .ev:first-child{border-top:0;padding-top:0}
+.steps .ev:last-child{padding-bottom:0}
+.steps .reasons{border:0;border-radius:0;overflow:visible}
+.steps .reason{padding-left:0;padding-right:0}
+.steps .reason:hover,.steps .reason.is-on{background:none}
+.steps .reason:first-child{padding-top:0;min-height:40px}
+.steps .revoke,.steps .revoke.is-on{padding:14px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none}
