@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enterprise 360 — WiselyConsent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..900&family=Geist+Mono:wght@400..800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#0b1a33; --mute:#5c6781; --faint:#8590a8;
+  --line:#e4e8f0; --line2:#eef1f6; --page:#eef1f6;
+  --blue:#2563eb; --blue-d:#1d4ed8; --blue-t:#eef4ff; --blue-b:#bfdbfe;
+  --red:#dc2626; --red-t:#fee2e2;
+  --shadow:0 4px 8px rgba(11,26,51,.06),0 1px 2px rgba(11,26,51,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--page)}
+body{font-family:'Geist',system-ui,sans-serif;color:var(--ink);font-size:13px;-webkit-font-smoothing:antialiased;min-width:1280px}
+button{font-family:inherit;cursor:pointer;color:inherit}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+svg{flex-shrink:0}
+
+/* ── Shell ─────────────────────────────── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:252px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0}
+.sb-logo{height:60px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:8px;padding:0 20px}
+.sb-logo b{font-size:19px;font-weight:700;letter-spacing:-.4px}
+.sb-nav{flex:1;overflow-y:auto;padding:10px 0 14px}
+.sb-sec{font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:9px;letter-spacing:1.44px;text-transform:uppercase;color:var(--mute);padding:16px 20px 0;line-height:13.5px}
+.sb-sec:first-child{padding-top:8px}
+.sb-item{display:flex;align-items:center;gap:11px;height:37.5px;padding:0 20px 0 23px;border-left:3px solid transparent;font-weight:500;font-size:13px;color:var(--ink);cursor:pointer}
+.sb-item:hover{background:#f7f9fd}
+.sb-item.mt{margin-top:6px}
+.sb-item .ic{color:#5c6781}
+.sb-item.active{background:var(--blue-t);border-left-color:var(--blue);color:var(--blue-d);font-weight:600}
+.sb-item.active .ic{color:var(--blue-d)}
+.sb-item.dim{color:var(--faint);opacity:.78}
+.sb-item .r{margin-left:auto;display:flex}
+.sb-sub{padding:4px 10px 4px 36px;display:flex;flex-direction:column;gap:4px}
+.sb-subi{height:34px;border:1px solid transparent;border-radius:10px;display:flex;align-items:center;gap:9px;padding:0 9px;font-weight:700;font-size:12.5px;cursor:pointer}
+.sb-subi:hover{background:#f7f9fd}
+.sb-subi.active{background:#fff;border-color:var(--blue-b);box-shadow:0 6px 8px rgba(37,99,235,.08);color:var(--blue-d);font-weight:850}
+.sb-subi .ic{color:#5c6781}.sb-subi.active .ic{color:var(--blue-d)}
+.sb-user{border-top:1px solid var(--line2);display:flex;align-items:center;gap:10px;padding:15px 20px 14px}
+.av-rm{width:34px;height:34px;border-radius:17px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:600;font-size:12px}
+.role{display:inline-block;margin-top:4px;background:#fff4da;color:#8a6d2a;font-weight:700;font-size:10px;letter-spacing:.4px;text-transform:uppercase;padding:2px 6px;border-radius:999px;line-height:15px}
+
+.col{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:61px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:14px;position:sticky;top:0;z-index:30}
+.crumbs{display:flex;align-items:center;gap:4px;font-size:13px;line-height:20px;color:var(--mute)}
+.crumbs a{color:var(--mute);text-decoration:none;cursor:pointer}
+.crumbs a:hover{color:var(--blue)}
+.crumbs .cur{color:var(--ink);font-weight:600}
+.crumbs .sep{font-size:11px;color:var(--faint)}
+.tb-sp{flex:1}
+.bell{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#f8fafd;display:grid;place-items:center;position:relative;color:var(--ink)}
+.bell::after{content:"";position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:#ef4444;border:1.5px solid #fff}
+.reg{display:flex;align-items:center;gap:10px;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:#f8fafd}
+.reg b{display:block;font-size:11.5px;font-weight:700;line-height:15px}
+.reg small{display:block;font-family:'Geist Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);line-height:13px}
+main{padding:32px 40px 40px;max-width:1260px;width:100%}
+h1{font-size:30px;font-weight:600;letter-spacing:-.6px;line-height:38px}
+
+/* ── Cards ─────────────────────────────── */
+.card{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:12px;box-shadow:var(--shadow)}
+.card-h{padding:14px 18px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.card-t{display:flex;gap:8px;align-items:center;font-weight:600;font-size:15px;line-height:22.5px}
+.icb{width:20px;height:20px;border-radius:6px;background:var(--blue-t);display:grid;place-items:center;color:var(--blue)}
+.card-s{font-size:11.5px;color:var(--mute);padding-top:3px;line-height:17.25px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.kpi{position:relative;padding:17px 53px 17px 18px;min-height:128px;overflow:hidden}
+.kpi.g-blue{background:linear-gradient(180deg,#eef4ff,#fff 62%)}
+.kpi.g-red{background:linear-gradient(180deg,#fee2e2,#fff 62%)}
+.kpi-l{font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:9.5px;letter-spacing:1.3px;text-transform:uppercase;line-height:12.8px;color:var(--mute);max-width:178px;min-height:26px}
+.kpi-v{display:flex;align-items:baseline;gap:4px;margin-top:11px}
+.kpi-v b{font-size:32px;font-weight:600;letter-spacing:-.8px;line-height:32px}
+.kpi-v span{font-weight:500;font-size:12px;color:var(--mute)}
+.kpi-f{font-size:11px;color:var(--mute);padding-top:8px;line-height:15.4px}
+.kpi-i{position:absolute;right:16px;top:15px;width:28px;height:28px;border-radius:8px;display:grid;place-items:center}
+
+/* ── Directory table ───────────────────── */
+.filters{display:flex;gap:6px;align-items:center;flex:1;flex-wrap:wrap}
+.pill-btn{height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:800;font-size:11.5px;color:var(--mute);display:inline-flex;align-items:center;gap:6px}
+.pill-btn:hover{border-color:#c9d3e6}
+.pill-btn.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.pill-btn.low{border-color:#f5c2c2;color:#b91c1c;background:#fff7f7}
+.pill-btn.low.on{background:var(--red);border-color:var(--red);color:#fff}
+.pill-btn .cnt{font-family:'Geist Mono',ui-monospace,monospace;font-size:10px;opacity:.85}
+.search{height:38px;width:340px;border:1px solid #dce6f8;border-radius:10px;display:flex;align-items:center;gap:9px;padding:0 14px;color:var(--faint)}
+.search input{border:0;outline:0;flex:1;font:inherit;font-size:13px;color:var(--ink);background:transparent}
+.search input::placeholder{color:var(--faint)}
+.btn-o{height:38px;border:1px solid #dce6f8;border-radius:10px;background:#fff;display:inline-flex;align-items:center;gap:7px;padding:0 13px;font-weight:600;font-size:12.5px}
+.btn-p{height:36px;border:1px solid var(--blue);border-radius:10px;background:var(--blue);color:#fff;display:inline-flex;align-items:center;gap:7px;padding:0 14px;font-weight:600;font-size:12.5px}
+.alert{margin:0 18px;margin-top:14px;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:linear-gradient(90deg,#fff1f1,#fff 80%);border:1px solid #f9d4d4;font-size:12.5px;color:#7f1d1d}
+.alert .a-ic{width:26px;height:26px;border-radius:8px;background:var(--red-t);display:grid;place-items:center;color:var(--red)}
+.alert b{font-weight:700}
+.alert button{margin-left:auto;border:0;background:none;color:var(--red);font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:4px}
+table.dir{width:100%;border-collapse:collapse;table-layout:fixed}
+.dir th{font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);text-align:left;padding:9px 12px;background:#f7f9fc;border-bottom:1px solid var(--line);white-space:nowrap;user-select:none}
+.dir th.sortable{cursor:pointer}
+.dir th.sorted{color:var(--blue)}
+.dir th .ar{display:inline-block;margin-left:4px;opacity:.6}
+.dir th.r,.dir td.r{text-align:right}
+.dir td{padding:11.5px 12px;border-bottom:1px solid var(--line);font-size:12.5px;line-height:18.75px;vertical-align:middle}
+.dir tbody tr{cursor:pointer;transition:background .12s}
+.dir tbody tr:hover{background:#f7f9fd}
+.dir tbody tr.row-low{background:#fffafa}
+.dir tbody tr.row-low:hover{background:#fff3f3}
+.dir tbody tr.row-low td:first-child{box-shadow:inset 3px 0 0 #ef4444}
+.ent{display:flex;align-items:center;gap:10px;font-weight:600;min-width:0}
+.ent span.n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:9.5px;flex-shrink:0;letter-spacing:.2px}
+.muted{color:var(--mute)}
+.status{display:inline-flex;align-items:center;gap:5px;height:20.5px;padding:2px 9px;border-radius:3px;font-weight:600;font-size:11px;white-space:nowrap}
+.status i{width:6px;height:6px;border-radius:3px;background:currentColor}
+.st-approved{background:#e0f1e7;color:#15814c}
+.st-partial{background:var(--blue-t);color:var(--blue-d)}
+.st-review{background:#fff4da;color:#8a6d2a}
+.st-rejected{background:var(--red-t);color:#b91c1c}
+.st-blacklisted{background:#7f1d1d;color:#fff}
+.tcell{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.tnum{font-weight:700;font-size:13px;min-width:18px;text-align:right}
+.band{display:inline-flex;align-items:center;height:19px;padding:0 7px;border-radius:999px;font-weight:700;font-size:10px;letter-spacing:.2px;white-space:nowrap}
+.b-healthy{background:#e0f1e7;color:#15814c}
+.b-watch{background:#fff4da;color:#8a6d2a}
+.b-risk{background:#ffedd5;color:#c2410c}
+.b-low{background:var(--red-t);color:#b91c1c}
+.links-chip{display:inline-flex;align-items:center;gap:3px;height:19px;padding:0 6px;border-radius:999px;border:1px solid #f5c2c2;background:#fff;color:#b91c1c;font-weight:700;font-size:10px;white-space:nowrap}
+.tfoot{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 16px}
+.tfoot .mono{font-size:10px;font-weight:700;color:var(--mute)}
+.pager{display:flex;gap:6px}
+.pager button{width:26px;height:24px;border-radius:999px;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.pager button:disabled{opacity:.4;cursor:default}
+.empty-row td{text-align:center;color:var(--mute);padding:28px}
+
+/* charts */
+.chart-wrap{padding:18px}
+.legend-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line2);font-size:12px;font-weight:500}
+.legend-row:last-child{border-bottom:0}
+.legend-row b{color:var(--blue-d);font-weight:700}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:7px;vertical-align:-1px}
+.bar-low{cursor:pointer}
+.bar-low:hover rect{opacity:.85}
+
+/* ── Detail page ───────────────────────── */
+.back{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12.5px;color:var(--mute);background:none;border:0;margin-bottom:14px}
+.back:hover{color:var(--blue)}
+.hero{display:grid;grid-template-columns:1fr auto;gap:28px;padding:22px 24px;overflow:hidden}
+.hero.lowh{background:linear-gradient(180deg,#fee2e2,#fff 70%)}
+.hero-top{display:flex;align-items:center;gap:14px}
+.hero .av{width:48px;height:48px;border-radius:12px;font-size:14px}
+.hero h1{font-size:26px;line-height:32px}
+.meta{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:12px;color:var(--mute);flex-wrap:wrap}
+.meta .dot{width:3px;height:3px;border-radius:50%;background:#b6bfd1}
+.summary{margin-top:16px;font-size:13.5px;line-height:21px;color:#26344d;max-width:720px}
+.summary b{font-weight:700;color:var(--ink)}
+.summary .red{color:#b91c1c;font-weight:700}
+.gauge{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:170px}
+.gauge .lbl{font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:9.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--mute);margin-bottom:4px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
+.stat{padding:15px 18px}
+.stat .kpi-l{min-height:0}
+.stat .v{font-size:26px;font-weight:600;letter-spacing:-.6px;line-height:30px;margin-top:8px}
+.stat .f{font-size:11px;color:var(--mute);margin-top:4px;line-height:15px}
+
+.seg{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;background:#f7f9fc}
+.seg button{height:28px;border:0;background:transparent;border-radius:999px;padding:0 12px;font-weight:700;font-size:11.5px;color:var(--mute);display:inline-flex;align-items:center;gap:6px}
+.seg button .k{font-family:'Geist Mono',ui-monospace,monospace;font-size:9.5px;opacity:.7}
+.seg button.on{background:#fff;color:var(--blue-d);box-shadow:0 1px 2px rgba(11,26,51,.08),0 0 0 1px var(--blue-b)}
+.legend{display:flex;gap:16px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--line2);font-size:11.5px;color:var(--mute);flex-wrap:wrap}
+.legend .lg{display:inline-flex;align-items:center;gap:6px}
+.legend .tip{margin-left:auto;font-family:'Geist Mono',ui-monospace,monospace;font-size:10px;font-weight:700;color:var(--blue)}
+.tchip{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;flex-shrink:0}
+.map-body{padding:22px 24px 26px;position:relative}
+
+/* variation A — lanes */
+.lanes{position:relative;display:grid;grid-template-columns:240px 1fr 280px;column-gap:96px;align-items:center;min-height:300px}
+.lanes-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.lane{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+.lane-h{font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:9.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--mute);margin-bottom:2px}
+.lanes-heads{display:grid;grid-template-columns:240px 1fr 280px;column-gap:96px;margin-bottom:12px}
+.focal{border:1px solid #f5c2c2;border-radius:12px;padding:16px;background:linear-gradient(180deg,#fff1f1,#fff);box-shadow:var(--shadow)}
+.focal.ok{border-color:var(--line);background:#fff}
+.focal .row{display:flex;align-items:center;gap:10px}
+.focal .nm{font-weight:700;font-size:13.5px;line-height:18px}
+.focal .sc{display:flex;align-items:baseline;gap:6px;margin-top:14px}
+.focal .sc b{font-size:34px;font-weight:600;letter-spacing:-1px;line-height:34px}
+.focal .sc span{color:var(--mute);font-size:12px}
+.focal .net{margin-top:10px;font-size:11.5px;color:var(--mute);line-height:16px}
+.focal .net b{color:#b91c1c}
+.idc{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;transition:opacity .15s,border-color .15s,box-shadow .15s;cursor:default}
+.idc .t1{font-weight:700;font-size:12.5px;line-height:17px}
+.idc .t1 small{font-weight:500;color:var(--mute);font-size:11px;margin-left:4px}
+.idc .t2{grid-column:2/4;font-size:11.5px;color:var(--mute);line-height:16px}
+.idc .tag{font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:8.5px;letter-spacing:1px;text-transform:uppercase}
+.idc .tchip{grid-row:1/3;align-self:start;width:28px;height:28px;border-radius:8px}
+.pts{font-family:'Geist Mono',ui-monospace,monospace;font-weight:700;font-size:11px;color:#b91c1c;white-space:nowrap}
+.entc{border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;cursor:pointer;transition:opacity .15s,border-color .15s,box-shadow .15s}
+.entc:hover{border-color:var(--blue-b)}
+.entc.bl{border-color:#f5a3a3;background:linear-gradient(180deg,#fff5f5,#fff)}
+.entc .row{display:flex;align-items:center;gap:9px}
+.entc .nm{font-weight:700;font-size:12.5px;line-height:17px;flex:1;min-width:0}
+.entc .row2{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+.entc .row3{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--mute)}
+.entc .row3 a{color:var(--blue);font-weight:600;text-decoration:none}
+.bl-badge{font-family:'Geist Mono',ui-monospace,monospace;font-weight:700;font-size:8.5px;letter-spacing:1px;color:#fff;background:#b91c1c;padding:2px 6px;border-radius:4px}
+.edge{fill:none;stroke-width:1.6;opacity:.55;transition:opacity .15s,stroke-width .15s}
+.hl .edge{opacity:.08}
+.hl .edge.on{opacity:1;stroke-width:2.6}
+.hl [data-node]{opacity:.28}
+.hl [data-node].on{opacity:1}
+.hl .idc.on,.hl .entc.on{box-shadow:0 0 0 2px var(--blue-b),var(--shadow)}
+
+/* variation B — hub */
+.hub svg{width:100%;height:auto;display:block}
+.hub text{font-family:'Geist',sans-serif}
+.hub .halo{paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.hub [data-node]{cursor:pointer;transition:opacity .15s}
+.hub g[data-node^="id:"]{cursor:default}
+.hub .nd{stroke:#fff;stroke-width:3}
+.hub .edge{stroke:#d3d9e4;stroke-width:2;opacity:1;stroke-linecap:round;transition:opacity .15s,stroke .15s,stroke-width .15s}
+.hub.hl .edge{opacity:.3}
+.hub.hl .edge.on{stroke:var(--c);opacity:1;stroke-width:2.6}
+.hub-key{display:flex;gap:22px;font-size:11.5px;color:var(--mute);margin-bottom:4px}
+.hub-key span{display:inline-flex;align-items:center;gap:7px}
+.hub-key i{display:block;border-radius:50%}
+.hub-key .k-ent{width:16px;height:16px;background:#5c6781}
+.hub-key .k-id{width:10px;height:10px;background:#8590a8}
+
+/* variation C — matrix */
+table.mx{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+.mx th{font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--mute);text-align:left;padding:10px 12px;background:#f7f9fc;border-bottom:1px solid var(--line)}
+.mx th .hh{display:flex;align-items:center;gap:7px}
+.mx th .imp{display:block;margin-top:3px;color:#b91c1c;letter-spacing:.4px}
+.mx td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:12.5px}
+.mx tr.mrow{transition:opacity .15s}
+.mx tr.mrow td:first-child{cursor:pointer}
+.mx .cellchip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px;border-radius:7px;border:1px solid;font-weight:600;font-size:11.5px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;transition:opacity .15s,box-shadow .15s}
+.mx .none{color:#c3cad8;font-size:14px}
+.ovl{display:flex;align-items:center;gap:8px}
+.ovl .segs{display:flex;gap:3px}
+.ovl .segs i{width:14px;height:6px;border-radius:2px;background:#e8ecf3}
+.ovl .segs i.f{background:#ef4444}
+.mx-note{font-size:11.5px;color:var(--mute);margin-top:12px}
+.hl .mx [data-node]{opacity:.3}
+.hl .mx [data-node].on{opacity:1}
+.hl .mx .cellchip.on{box-shadow:0 0 0 2px var(--blue-b)}
+
+/* breakdown + actions */
+.split{display:grid;grid-template-columns:1.45fr 1fr;gap:14px;margin-top:14px}
+.bd-body{padding:18px}
+.bd-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:#f1f4f9}
+.bd-bar i{display:block;height:100%}
+.bd-scale{display:flex;justify-content:space-between;font-family:'Geist Mono',ui-monospace,monospace;font-size:9.5px;color:var(--faint);margin-top:5px}
+.bd-g{margin-top:16px}
+.bd-gh{display:flex;justify-content:space-between;font-family:'Geist Mono',ui-monospace,monospace;font-weight:600;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mute);padding-bottom:6px;border-bottom:1px solid var(--line)}
+.bd-gh b{color:#b91c1c}
+.bd-r{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:12.5px;line-height:17px}
+.bd-r:last-child{border-bottom:0}
+.bd-r .tx{flex:1}
+.bd-r .tx small{display:block;color:var(--mute);font-size:11px}
+.bd-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:10px 12px;border-radius:10px;background:#f7f9fc;font-weight:600}
+.act{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:12.5px;line-height:18px}
+.act:last-child{border-bottom:0}
+.act .num{width:22px;height:22px;border-radius:7px;background:var(--blue-t);color:var(--blue-d);font-family:'Geist Mono',ui-monospace,monospace;font-weight:700;font-size:10.5px;display:grid;place-items:center;flex-shrink:0}
+.act-btns{display:flex;gap:8px;margin-top:14px}
+.empty{text-align:center;padding:44px 20px;color:var(--mute)}
+.empty .e-ic{width:44px;height:44px;border-radius:12px;background:#e0f1e7;color:#15814c;display:grid;place-items:center;margin:0 auto 12px}
+.empty b{display:block;color:var(--ink);font-size:14px;margin-bottom:4px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none;z-index:99}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.mt14{margin-top:14px}.mt18{margin-top:18px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="col">
+    <header class="topbar">
+      <nav class="crumbs" id="crumbs"></nav>
+      <div class="tb-sp"></div>
+      <button class="bell" aria-label="Notifications"><span id="ic-bell"></span></button>
+      <div class="reg">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="#eef4ff"/><path d="M5 11c3-3 13-3 16 0M7 14c2.5-2 9.5-2 12 0M9 17c2-1.3 6-1.3 8 0" stroke="#1d4ed8" stroke-width="1.6" fill="none" stroke-linecap="round"/><text x="13" y="24" text-anchor="middle" font-size="4.5" font-weight="800" fill="#1d4ed8" font-family="Geist, system-ui, sans-serif">TRAI</text></svg>
+        <div><b>Telecom Regu..</b><small>Regulator</small></div>
+      </div>
+    </header>
+    <main id="view"></main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   ICONS (lucide-style strokes, redrawn to match the Figma set)
+   ════════════════════════════════════════════════════════════════ */
+const P = {
+  home:'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  shieldAlert:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+  shieldCheck:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  up:'<path d="m18 15-6-6-6 6"/>', down:'<path d="m6 9 6 6 6-6"/>',
+  left:'<path d="m15 18-6-6 6-6"/>', right:'<path d="m9 18 6-6-6-6"/>',
+  arrowLeft:'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  arrowRight:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  migrate:'<path d="M17 12H3"/><path d="m11 18 6-6-6-6"/><path d="M21 5v14"/>',
+  ban:'<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+  lines:'<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>',
+  lock:'<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  panel:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  sliders:'<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
+  building:'<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/>',
+  signpost:'<path d="M12 13v8"/><path d="M12 3v3"/><path d="M18 6a2 2 0 0 1 1.39.56l2.3 2.22a1 1 0 0 1 0 1.44l-2.3 2.22A2 2 0 0 1 18 13H6a2 2 0 0 1-1.39-.56l-2.3-2.22a1 1 0 0 1 0-1.44l2.3-2.22A2 2 0 0 1 6 6z"/>',
+  userPlus:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  bell:'<path d="M10.27 21a2 2 0 0 0 3.46 0"/><path d="M3.26 15.33A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.67C19.41 13.96 18 12.5 18 8A6 6 0 0 0 6 8c0 4.5-1.41 5.96-2.74 7.33"/>',
+  send:'<path d="M14.54 21.69a.5.5 0 0 0 .94-.03l6.5-19a.5.5 0 0 0-.64-.63l-19 6.5a.5.5 0 0 0-.02.93l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/>',
+  activity:'<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
+  grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  funnel:'<path d="M10 20a1 1 0 0 0 .55.9l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .52-1.34L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.74 1.67l7.22 7.99A2 2 0 0 1 10 14z"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  idcard:'<rect width="20" height="14" x="2" y="5" rx="2"/><circle cx="8" cy="12" r="2.2"/><path d="M14 10h4M14 14h4"/>',
+  user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  pin:'<path d="M20 10c0 5-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 15 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8M16 17H8M10 9H8"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  network:'<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/>',
+  pie:'<path d="M21 12c.55 0 1-.45.95-1A10 10 0 0 0 13 2.05c-.55-.05-1 .4-1 .95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>',
+  bars:'<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9M13 17V5M8 17v-3"/>',
+  gauge:'<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  list:'<path d="M9 6h12M9 12h12M9 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  flag:'<path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.33 2q2 0 3.07-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.53"/>',
+};
+function icon(n, s=16, c='currentColor', w=1.75){
+  return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]||''}</svg>`;
+}
+function svgIcon(n, x, y, s, c, w=2){
+  return `<svg x="${x}" y="${y}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DATA — real brands as in Figma; low-trust examples are fictional
+   ════════════════════════════════════════════════════════════════ */
+const ENT = [
+  {id:'jio', name:'Reliance Jio',    ini:'Jio', col:'#0a2885', industry:'Telecom',        status:'approved', consents:17.5, subs:4.90, trust:86, pe:'PE_1101'},
+  {id:'pp',  name:'PhonePe',         ini:'PP',  col:'#5f259f', industry:'Fintech',        status:'approved', consents:17.1, subs:5.81, trust:92, pe:'PE_1102'},
+  {id:'ic',  name:'ICICI Bank',      ini:'IC',  col:'#f15a22', industry:'BFSI',           status:'approved', consents:15.9, subs:4.83, trust:88, pe:'PE_1103'},
+  {id:'am',  name:'Amazon India',    ini:'AM',  col:'#ff9900', industry:'E-commerce',     status:'approved', consents:14.2, subs:4.49, trust:88, pe:'PE_1104'},
+  {id:'d11', name:'Dream11',         ini:'D1',  col:'#e11d48', industry:'Gaming',         status:'review',   consents:13.8, subs:4.03, trust:76, pe:'PE_1105'},
+  {id:'tn',  name:'Tata Neu',        ini:'TN',  col:'#2563eb', industry:'E-commerce',     status:'approved', consents:11.8, subs:3.45, trust:90, pe:'PE_1106'},
+  {id:'bf',  name:'Bajaj Finance',   ini:'BF',  col:'#005baa', industry:'BFSI',           status:'approved', consents:11.3, subs:3.84, trust:69, pe:'PE_1107'},
+  {id:'bb',  name:'BigBasket',       ini:'BB',  col:'#84c225', industry:'E-commerce',     status:'approved', consents:11.0, subs:3.61, trust:78, pe:'PE_1108'},
+  {id:'sw',  name:'Swiggy',          ini:'SW',  col:'#fc8019', industry:'Food & Delivery',status:'approved', consents:10.9, subs:3.71, trust:79, pe:'PE_1109'},
+  {id:'cr',  name:'CRED',            ini:'CR',  col:'#111827', industry:'Fintech',        status:'approved', consents:10.5, subs:2.94, trust:86, pe:'PE_1110'},
+  // fictional network (from the ConsentOS graph prototype)
+  {id:'e1',  name:'FinCo Services',        ini:'FS', col:'#0ea5e9', industry:'Fintech', status:'approved', consents:2.40, subs:0.82, trust:78, pe:'PE_1001', fic:true},
+  {id:'e2',  name:'Digital Pay Solutions', ini:'DP', col:'#6366f1', industry:'Fintech', status:'approved', consents:1.90, subs:0.61, trust:45, pe:'PE_2001', fic:true},
+  {id:'e3',  name:'QuickCredit India',     ini:'QC', col:'#f97316', industry:'Fintech', status:'partial',  consents:0.84, subs:0.22, trust:28, pe:'PE_3001', fic:true},
+  {id:'e4',  name:'MoneyGrow Ventures',    ini:'MG', col:'#b91c1c', industry:'Fintech', status:'review',   consents:0.02, subs:0.01, trust:12, pe:'PE_4001', fic:true},
+  {id:'e5',  name:'Lotus365 Gaming',       ini:'LG', col:'#9d174d', industry:'Gaming',  status:'blacklisted', consents:0, subs:0, trust:5, pe:'PE_5001', fic:true, blacklisted:true},
+];
+const E = Object.fromEntries(ENT.map(e=>[e.id,e]));
+
+const TYPES = {
+  pan:      {label:'PAN',      icon:'idcard', c:'#6d28d9', bg:'#f3effe', bd:'#ddd0fb', order:0},
+  director: {label:'Director', icon:'user',   c:'#b45309', bg:'#fff4da', bd:'#f3dca6', order:1},
+  address:  {label:'Address',  icon:'pin',    c:'#0f766e', bg:'#e0f5f1', bd:'#b9e5dc', order:2},
+  template: {label:'Template', icon:'file',   c:'#1d4ed8', bg:'#eef4ff', bd:'#cbdcff', order:3},
+};
+const IDS = [
+  {id:'p1', type:'pan',      label:'AAACF1234M',         short:'AAACF1234M',   sub:'PAN',                 ents:['e2','e3']},
+  {id:'p2', type:'pan',      label:'BBACG5678K',         short:'BBACG5678K',   sub:'PAN',                 ents:['e4','e5']},
+  {id:'d1', type:'director', label:'Rajesh Kumar',       short:'Rajesh Kumar', sub:'DIN 08123456',        ents:['e2','e3','e4']},
+  {id:'d2', type:'director', label:'Priya Sharma',       short:'Priya Sharma', sub:'DIN 07654321',        ents:['e1','e2']},
+  {id:'d3', type:'director', label:'Amit Verma',         short:'Amit Verma',   sub:'DIN 09876543',        ents:['e4','e5']},
+  {id:'a1', type:'address',  label:'404, Business Hub',  short:'404, Business Hub', sub:'Andheri East, Mumbai', ents:['e2','e3','e4']},
+  {id:'t1', type:'template', label:'Loan-offer template set', short:'Loan-offer set', sub:'92% content match', ents:['e2','e3','e4']},
+];
+const OWN = {
+  e4:[{t:'8 of 12 sender headers blacklisted', s:'67% header blacklist rate', v:8},{t:'Blacklisted CTA in active templates', s:'quickfinance.icu', v:6},{t:'142 complaints', s:'18.2 per header', v:5},{t:'No DLT traffic in 12 months', s:'Dormant registration', v:3}],
+  e3:[{t:'Blacklisted CTA in active templates', s:'yono8.com', v:14},{t:'SBI YONO brand impersonation', s:'Brand used in CTAs', v:14},{t:'Complaint rate above threshold', s:'11.4 per header', v:6}],
+  e2:[{t:'Header blacklist rate', s:'1 of 12 headers', v:6},{t:'Complaint rate', s:'4.1 per header', v:5},{t:'KYC re-verification pending', s:'1 LOB', v:4}],
+  e5:[{t:'Blacklisted after onboarding', s:'Regulator action', v:40},{t:'Illegal gambling brand', s:'Lotus365', v:20},{t:'Blacklisted CTA in templates', s:'lotus365.cc', v:17}],
+  e1:[{t:'Limited operating history', s:'< 6 months on DLT', v:10},{t:'Partial KYC on 1 LOB', s:'Awaiting GST proof', v:6}],
+};
+const ACTIONS = {
+  e4:['Block new DLT registrations under PAN <b>BBACG5678K</b>', 'Escalate directors <b>Rajesh Kumar</b> and <b>Amit Verma</b> for KYC review', 'Suspend the shared <b>loan-offer template set</b> across all 3 entities'],
+  e3:['Re-verify ownership of PAN <b>AAACF1234M</b> with Digital Pay Solutions', 'Arrest YONO-branded CTAs in active templates', 'Inspect <b>404, Business Hub</b> for further shell registrations'],
+  e2:['Enhanced due diligence on director <b>Rajesh Kumar</b>', 'Compare template content against QuickCredit and MoneyGrow', 'Request proof of an independent operating address'],
+  e5:['Keep blacklisted and reject reactivation requests', 'Block any new entity under PAN <b>BBACG5678K</b>', 'Flag director <b>Amit Verma</b> across all registrations'],
+  e1:['Monitor director <b>Priya Sharma</b>, who also sits on a low-trust enterprise', 'Complete pending KYC on the remaining LOB'],
+};
+
+/* ── Scoring helpers ─────────────────────────────────────────── */
+function band(s){
+  if(s>=85) return {k:'healthy', l:'Healthy',   num:'#22c58b', c:'#15814c'};
+  if(s>=70) return {k:'watch',   l:'Watch',     num:'#f5a524', c:'#b7791f'};
+  if(s>=50) return {k:'risk',    l:'At risk',   num:'#ef4444', c:'#c2410c'};
+  return            {k:'low',    l:'Low trust', num:'#dc2626', c:'#b91c1c'};
+}
+const shared = eid => IDS.filter(i=>i.ents.includes(eid) && i.ents.length>1)
+  .map(i=>({...i, others:i.ents.filter(x=>x!==eid), pts:impact(i,eid)}))
+  .sort((a,b)=>TYPES[a.type].order-TYPES[b.type].order || b.pts-a.pts);
+const linked = eid => [...new Set(shared(eid).flatMap(i=>i.others))];
+function impact(idf, eid){
+  const others = idf.ents.filter(x=>x!==eid).map(x=>E[x]);
+  const hasBL = others.some(o=>o.blacklisted);
+  if(idf.type==='pan') return 12 + (hasBL?12:0);
+  const per = {director:6,address:4,template:3}[idf.type];
+  let v = others.reduce((s,o)=>s+(o.trust<50?per:2),0);
+  if(idf.type==='director' && hasBL) v += 10;
+  return v;
+}
+function ownSignals(e){
+  const net = shared(e.id).reduce((s,i)=>s+i.pts,0);
+  if(OWN[e.id]) return OWN[e.id];
+  const rest = 100-e.trust-net;
+  return rest>0 ? [{t:'Operational signals', s:'Complaints, header health and KYC', v:rest}] : [];
+}
+const names = arr => { const n=arr.map(x=>E[x].name); return n.length<=1?n.join(''):n.slice(0,-1).join(', ')+' and '+n[n.length-1]; };
+function describe(i){
+  const n = names(i.others);
+  return {pan:`Same PAN as ${n}`, director:`Also a director of ${n}`, address:`Same registered address as ${n}`, template:`Near-identical templates to ${n}`}[i.type];
+}
+function secondDegree(xid, focal){
+  const first = new Set([focal, ...linked(focal)]);
+  const out = new Set();
+  IDS.filter(i=>i.ents.includes(xid)).forEach(i=>i.ents.forEach(o=>{ if(!first.has(o)) out.add(o); }));
+  return [...out];
+}
+
+/* ── Formatting ──────────────────────────────────────────────── */
+const STATUS = {approved:'Approved', partial:'Partially Approved', review:'Under-review', rejected:'Rejected', blacklisted:'Blacklisted'};
+const statusPill = s => `<span class="status st-${s}"><i></i>${STATUS[s]}</span>`;
+const bandPill = s => { const b=band(s); return `<span class="band b-${b.k}">${b.l}</span>`; };
+const cr = v => v===0 ? '0' : (Number.isInteger(v) ? v+' Cr' : v.toFixed(2)+' Cr');
+const avatar = (e, s=28) => `<span class="av" style="background:${e.col};width:${s}px;height:${s}px">${e.ini}</span>`;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2200); }
+
+/* ════════════════════════════════════════════════════════════════
+   SHELL — sidebar + breadcrumb
+   ════════════════════════════════════════════════════════════════ */
+function renderSidebar(){
+  const item = (ic,label,extra='',cls='') => `<div class="sb-item ${cls}"><span class="ic">${icon(ic,17)}</span>${label}${extra}</div>`;
+  const sub  = (ic,label,cls='') => `<div class="sb-subi ${cls}" ${cls==='active'?'onclick="go(\'#/\')"':''}><span class="ic">${icon(ic,18)}</span>${label}</div>`;
+  document.getElementById('sidebar').innerHTML = `
+    <div class="sb-logo">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <rect x="9.5" y="1" width="7" height="7" rx="1.6" transform="rotate(45 13 4.5)" fill="#2563eb"/>
+        <rect x="9.5" y="18" width="7" height="7" rx="1.6" transform="rotate(45 13 21.5)" fill="#2563eb"/>
+        <rect x="1" y="9.5" width="7" height="7" rx="1.6" transform="rotate(45 4.5 13)" fill="#7aa2f7"/>
+        <rect x="18" y="9.5" width="7" height="7" rx="1.6" transform="rotate(45 21.5 13)" fill="#7aa2f7"/>
+        <circle cx="13" cy="13" r="2.4" fill="#1d4ed8"/>
+      </svg>
+      <b>WiselyConsent</b>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">Workspace</div>
+      ${item('home','Home','','mt')}
+      ${item('star','Ask Wise Albert','<span class="r" style="text-shadow:0 0 6px rgba(164,139,255,.7)">✦</span>')}
+      <div class="sb-sec">Analytics 360</div>
+      ${item('alert','Complaints','','mt')}
+      ${item('shield','Consents',`<span class="ic" style="display:flex">${icon('up',14)}</span>`)}
+      <div class="sb-sub">${sub('migrate','Migration')}${sub('ban','Revocation')}</div>
+      <div style="height:6px"></div>
+      ${item('lines','Scrubbing',`<span class="r">${icon('lock',17,'#8590a8')}</span>`,'dim')}
+      ${item('panel','Assets')}
+      ${item('users','Stakeholders',`<span class="ic" style="display:flex">${icon('up',14)}</span>`,'active')}
+      <div class="sb-sub">${sub('users','Subscribers')}${sub('sliders','Telco 360')}${sub('building','Enterprise 360','active')}${sub('signpost','GTM Partners')}</div>
+      <div class="sb-sec">Admin</div>
+      ${item('userPlus','Manage Users','','mt')}
+      ${item('clock','Audit Trail')}
+    </div>
+    <div class="sb-user"><div class="av-rm">RM</div><div><div style="font-weight:700;font-size:12.5px;line-height:18.75px">Ravi Menon</div><span class="role">Super Admin</span></div></div>`;
+  document.getElementById('ic-bell').innerHTML = icon('bell',16);
+}
+function setCrumbs(extra){
+  const sep = '<span class="sep">›</span>';
+  document.getElementById('crumbs').innerHTML = `<a>Home</a>${sep}<a>Stakeholders</a>${sep}` +
+    (extra ? `<a onclick="go('#/')">Enterprise 360</a>${sep}<span class="cur">${extra}</span>` : `<span class="cur">Enterprise 360</span>`);
+}
+function go(h){ location.hash = h; }
+
+/* ════════════════════════════════════════════════════════════════
+   DASHBOARD
+   ════════════════════════════════════════════════════════════════ */
+const DS = {status:'all', low:false, q:'', sort:{k:'consents',dir:-1}, page:0};
+const PAGE = 10;
+const lowCount = () => ENT.filter(e=>e.trust<50).length;
+
+function renderDash(){
+  setCrumbs(null);
+  document.title = 'Enterprise 360 — WiselyConsent';
+  const v = document.getElementById('view');
+  v.innerHTML = `
+    <h1>Enterprise 360</h1>
+    <div class="kpis">
+      <div class="card kpi g-blue">
+        <div class="kpi-l" style="color:var(--blue-d)">Onboarded to Wisely Consent</div>
+        <div class="kpi-v"><b style="color:var(--blue)">3,000</b><span>· 5,000 in DLT</span></div>
+        <div class="kpi-f">60% onboarded · 2,000 pending</div>
+        <div class="kpi-i" style="background:#fff;color:var(--blue)">${icon('send',18)}</div>
+      </div>
+      <div class="card kpi">
+        <div class="kpi-l">Enterprises Uploading Consents</div>
+        <div class="kpi-v"><b style="font-size:26px;line-height:26px">2,280</b><span>· 76%</span></div>
+        <div class="kpi-f">of 3,000 onboarded enterprises</div>
+        <div class="kpi-i" style="background:var(--blue-t);color:var(--blue)">${icon('building',18)}</div>
+      </div>
+      <div class="card kpi g-red">
+        <div class="kpi-l" style="color:var(--red);min-height:13px">Blacklisted</div>
+        <div class="kpi-v" style="margin-top:11px"><b style="color:var(--red)">2</b></div>
+        <div class="kpi-f">enterprises blacklisted after onboarding</div>
+        <div class="kpi-i" style="background:var(--red-t);color:var(--red)">${icon('activity',18)}</div>
+      </div>
+      <div class="card kpi g-red">
+        <div class="kpi-l" style="color:var(--red);min-height:13px">Asset Mapping</div>
+        <div class="kpi-v" style="margin-top:11px"><b style="color:var(--red)">27</b><span>%</span></div>
+        <div class="kpi-f">templates mapped to LOBs</div>
+        <div class="kpi-i" style="background:var(--red-t);color:var(--red)">${icon('grid',18)}</div>
+      </div>
+    </div>
+
+    <div class="grid2 mt18">
+      <div class="card">
+        <div class="card-h"><div><div class="card-t"><span class="icb">${icon('funnel',14)}</span>Enterprise Consent Activity Funnel</div><div class="card-s">DLT registered Enterprises → Registered on Wisely Consent → Migration completed</div></div></div>
+        <div class="chart-wrap">${funnelSVG()}</div>
+      </div>
+      <div class="card">
+        <div class="card-h"><div><div class="card-t"><span class="icb">${icon('pie',14)}</span>Distribution by Industry</div><div class="card-s">Enterprises who have uploaded consents</div></div></div>
+        <div class="chart-wrap">${industrySVG()}</div>
+      </div>
+    </div>
+
+    <div class="grid2 mt14">
+      <div class="card">
+        <div class="card-h"><div><div class="card-t"><span class="icb">${icon('clock',14)}</span>Enterprise KYC Status with CO</div><div class="card-s">Active, under review, and blacklisted · share of register</div></div></div>
+        <div class="chart-wrap" style="display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:300px;gap:12px">
+          <div style="display:grid;place-items:center">${donutSVG()}</div>
+          <div>
+            <div class="legend-row"><span><i class="sw" style="background:#1d4ed8"></i>Approved</span><b>21</b></div>
+            <div class="legend-row"><span><i class="sw" style="background:#60a5fa"></i>Partially Approved</span><b>3</b></div>
+            <div class="legend-row"><span><i class="sw" style="background:#93c5fd"></i>Rejected</span><b>2</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><div><div class="card-t"><span class="icb">${icon('clock',14)}</span>Trust Score Distribution</div><div class="card-s">Enterprise trust/health bands · avg 73/100</div></div></div>
+        <div class="chart-wrap">${trustSVG()}</div>
+      </div>
+    </div>
+
+    <div class="card mt18" id="dir">
+      <div class="card-h" style="flex-direction:column;align-items:stretch;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="card-t"><span style="color:var(--blue);display:flex">${icon('building',20)}</span>Enterprise Directory</div>
+          <span class="mono" style="font-weight:800;font-size:10px;color:var(--blue);letter-spacing:.4px">Click row for entity detail</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="filters" id="filters"></div>
+          <label class="search">${icon('search',16)}<input id="q" placeholder="Search by enterprise name, CIN, PE ID / DLT ID…" value="${DS.q}"/></label>
+          <button class="btn-o">${icon('lines',14)}Filters</button>
+        </div>
+      </div>
+      <div class="alert" id="lowAlert">
+        <span class="a-ic">${icon('link',14)}</span>
+        <span><b>${lowCount()} enterprises have a trust score below 50.</b> They share PAN, directors, addresses or templates with other enterprises.</span>
+        <button onclick="setLow(true)">Show low-trust ${icon('arrowRight',13)}</button>
+      </div>
+      <div style="padding:4px 18px 0">
+        <table class="dir">
+          <colgroup><col style="width:21%"><col style="width:13%"><col style="width:16%"><col style="width:13%"><col style="width:14%"><col style="width:23%"></colgroup>
+          <thead><tr id="thead"></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="tfoot"><span class="mono" id="pinfo"></span><div class="pager"><button id="prev" aria-label="Previous page">${icon('left',12)}</button><button id="next" aria-label="Next page">${icon('right',12)}</button></div></div>
+    </div>`;
+  document.getElementById('q').addEventListener('input', e=>{ DS.q=e.target.value; DS.page=0; renderTable(); });
+  document.getElementById('prev').onclick = ()=>{ DS.page--; renderTable(); };
+  document.getElementById('next').onclick = ()=>{ DS.page++; renderTable(); };
+  renderTable();
+}
+function setStatus(s){ DS.status=s; DS.low=false; DS.page=0; renderTable(); }
+function setLow(on){ DS.low=on; DS.status='all'; DS.page=0; DS.sort={k:'trust',dir:1}; renderTable(); document.getElementById('dir').scrollIntoView({behavior:'smooth',block:'start'}); }
+function setSort(k){ DS.sort = DS.sort.k===k ? {k, dir:-DS.sort.dir} : {k, dir: k==='trust'?1:-1}; renderTable(); }
+
+function renderTable(){
+  const F = [['all','All'],['approved','Approved'],['partial','Partially Approved'],['review','Under Review'],['rejected','Rejected']];
+  document.getElementById('filters').innerHTML =
+    F.map(([k,l])=>`<button class="pill-btn ${!DS.low&&DS.status===k?'on':''}" onclick="setStatus('${k}')">${l}</button>`).join('') +
+    `<button class="pill-btn low ${DS.low?'on':''}" onclick="setLow(${!DS.low})">${icon('link',12)}Low trust <span class="cnt">${lowCount()}</span></button>`;
+  document.getElementById('lowAlert').style.display = DS.low ? 'none' : 'flex';
+
+  const cols = [['name','Enterprise'],['industry','Industry'],['status','Status'],['consents','Active consents','r'],['subs','Active subscribers','r'],['trust','Trust score','r']];
+  document.getElementById('thead').innerHTML = cols.map(([k,l,a])=>{
+    const on = DS.sort.k===k; const ar = on ? (DS.sort.dir>0?'↑':'↓') : '↕';
+    return `<th class="sortable ${a||''} ${on?'sorted':''}" onclick="setSort('${k}')">${l}<span class="ar">${ar}</span></th>`;
+  }).join('');
+
+  let rows = ENT.filter(e=>{
+    if(DS.low && e.trust>=50) return false;
+    if(!DS.low && DS.status!=='all'){
+      if(DS.status==='rejected' && !['rejected','blacklisted'].includes(e.status)) return false;
+      if(DS.status!=='rejected' && e.status!==DS.status) return false;
+    }
+    const q = DS.q.trim().toLowerCase();
+    return !q || e.name.toLowerCase().includes(q) || e.pe.toLowerCase().includes(q);
+  });
+  const {k,dir} = DS.sort;
+  rows.sort((a,b)=> typeof a[k]==='string' ? a[k].localeCompare(b[k])*dir : (a[k]-b[k])*dir);
+  const total = rows.length, pages = Math.max(1, Math.ceil(total/PAGE));
+  DS.page = Math.min(Math.max(DS.page,0), pages-1);
+  const slice = rows.slice(DS.page*PAGE, DS.page*PAGE+PAGE);
+
+  document.getElementById('tbody').innerHTML = slice.length ? slice.map(e=>{
+    const b = band(e.trust); const s = shared(e.id); const L = linked(e.id);
+    const chip = e.trust<50 && s.length ? `<span class="links-chip" title="Shares ${s.length} identifiers with ${L.length} enterprises">${icon('link',10)}${s.length} links</span>` : '';
+    return `<tr class="${e.trust<50?'row-low':''}" onclick="go('#/e/${e.id}/${VIEW}')">
+      <td><div class="ent">${avatar(e)}<span class="n">${e.name}</span></div></td>
+      <td class="muted">${e.industry}</td>
+      <td>${statusPill(e.status)}</td>
+      <td class="r">${cr(e.consents)}</td>
+      <td class="r">${cr(e.subs)}</td>
+      <td class="r"><div class="tcell">${chip}${bandPill(e.trust)}<span class="tnum" style="color:${b.num}">${e.trust}</span></div></td>
+    </tr>`;
+  }).join('') : `<tr class="empty-row"><td colspan="6">No enterprises match these filters.</td></tr>`;
+  document.getElementById('pinfo').textContent = total ? `${DS.page*PAGE+1}–${DS.page*PAGE+slice.length} of ${total} enterprises` : '0 enterprises';
+  document.getElementById('prev').disabled = DS.page===0;
+  document.getElementById('next').disabled = DS.page>=pages-1;
+}
+
+/* ── Dashboard charts (redrawn from Figma geometry) ──────────── */
+function funnelSVG(){
+  const segs = [
+    {pts:'22,8 367,8 320,101 69,101', c:'#1d4ed8', v:'5,000', l:'DLT registered Enterprises', ly:55},
+    {pts:'72,104 317,104 306,197 82,197', c:'#2563eb', v:'3,000', l:'Registered on WiselyConsent', ly:150},
+    {pts:'86,200 303,200 262,292 126,292', c:'#60a5fa', v:'2,280', l:'Enterprise who have uploaded consents', ly:246},
+  ];
+  return `<svg viewBox="0 0 540 300" width="100%" style="max-width:540px">${segs.map((s,i)=>{
+    const xEdge = [344,312,277][i];
+    return `<polygon points="${s.pts}" fill="${s.c}"/>
+      <text x="195" y="${s.ly+4}" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">${s.v}</text>
+      <line x1="${xEdge}" y1="${s.ly}" x2="${xEdge+14}" y2="${s.ly}" stroke="#c7d2e3"/>
+      <text x="${xEdge+20}" y="${s.ly+4}" fill="#5c6781" font-size="10" font-weight="600">${s.l}</text>`;
+  }).join('')}</svg>`;
+}
+function industrySVG(){
+  const d=[['E-commerce',24],['BFSI',21],['Fintech',20],['Telecom',16],['Gaming',12],['Food & Delivery',10],['Insurance',9],['Services',3]];
+  return `<svg viewBox="0 0 540 300" width="100%" style="max-width:540px">${d.map(([l,v],i)=>{
+    const y=18+i*33, w=v/24*302;
+    return `<text x="88" y="${y+10}" text-anchor="end" fill="#5c6781" font-size="10">${l}</text>
+      <rect x="96" y="${y}" width="${w}" height="13" rx="6.5" fill="#2563eb"/>
+      <text x="${100+w}" y="${y+10}" fill="#0b1a33" font-size="10" font-weight="700">${v}</text>`;
+  }).join('')}</svg>`;
+}
+function donutSVG(){
+  const r=46, C=2*Math.PI*r, parts=[[21,'#1d4ed8'],[3,'#60a5fa'],[2,'#93c5fd']];
+  let off=0; const gap=2;
+  return `<svg viewBox="0 0 120 120" width="150" height="150" style="transform:rotate(-90deg)">${parts.map(([v,c])=>{
+    const len=v/26*C; const s=`<circle cx="60" cy="60" r="${r}" fill="none" stroke="${c}" stroke-width="12" stroke-dasharray="${Math.max(len-gap,0)} ${C}" stroke-dashoffset="${-off}"/>`; off+=len; return s;
+  }).join('')}<g style="transform:rotate(90deg);transform-origin:60px 60px"><text x="60" y="61" text-anchor="middle" font-size="18" font-weight="700" fill="#0b1a33">26</text><text x="60" y="75" text-anchor="middle" font-size="6.5" fill="#5c6781" letter-spacing=".4">ENTERPRISES</text></g></svg>`;
+}
+function trustSVG(){
+  const d=[['95-100',1,'#1d4ed8'],['85-94',9,'#2563eb'],['70-84',8,'#3b82f6'],['50-69',4,'#60a5fa'],['<50',4,'#f87171']];
+  const base=246, h=20.578;
+  let g = [0,2,4,6,8,10].map((t,i)=>`<line x1="53" x2="524" y1="${base-i*41.1}" y2="${base-i*41.1}" stroke="#eef1f6"/><text x="44" y="${base-i*41.1+4}" text-anchor="end" font-size="9" fill="#8590a8">${t}</text>`).join('');
+  g += d.map(([l,v,c],i)=>{
+    const x=78+i*97.6, bh=v*h, low=l==='<50';
+    return `<g class="${low?'bar-low':''}" ${low?'onclick="setLow(true)"':''}>${low?'<title>View low-trust enterprises</title>':''}
+      <rect x="${x}" y="${base-bh}" width="47" height="${bh}" rx="2" fill="${c}"/>
+      <text x="${x+23.5}" y="${base-bh-8}" text-anchor="middle" font-size="10" font-weight="700" fill="${low?'#b91c1c':'#0b1a33'}">${v}</text>
+      <text x="${x+23.5}" y="${base+15}" text-anchor="middle" font-size="9" fill="${low?'#b91c1c':'#5c6781'}" font-weight="${low?700:400}">${l}</text></g>`;
+  }).join('');
+  return `<svg viewBox="0 0 540 280" width="100%" style="max-width:540px">${g}<text x="525" y="22" text-anchor="end" font-size="9.5" font-weight="700" fill="#b91c1c" font-family="Geist Mono, ui-monospace, monospace" style="cursor:pointer" onclick="setLow(true)">Click &lt;50 to see why →</text></svg>`;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DETAIL PAGE
+   ════════════════════════════════════════════════════════════════ */
+const VIEWS = {lanes:'Linked lanes', hub:'Network graph', matrix:'Matrix'};
+let VIEW = 'lanes';
+let CUR = null;
+
+function renderDetail(id){
+  const e = E[id]; CUR = e;
+  const s = shared(id), L = linked(id), b = band(e.trust);
+  const net = s.reduce((a,i)=>a+i.pts,0);
+  const own = ownSignals(e), ownSum = own.reduce((a,o)=>a+o.v,0);
+  const bl = L.filter(x=>E[x].blacklisted);
+  setCrumbs(e.name);
+  document.title = `${e.name} — Enterprise 360`;
+
+  let sum;
+  if(!s.length){
+    sum = `<b>${e.name}</b> shares no PAN, director, address or template with any other enterprise. Its score reflects its own operational signals only.`;
+  } else {
+    sum = `${e.name}${/s$/.test(e.name)?"'":"'s"} trust score is <b>${e.trust}</b> mainly because it shares <b>${s.length} identifier${s.length>1?'s':''}</b> with <b>${L.length} other enterprise${L.length>1?'s':''}</b>` +
+      (bl.length ? `, including <span class="red">${names(bl)}, which is blacklisted</span>` : '') +
+      `. These links account for <b>−${net}</b> of the ${100-e.trust} points lost.`;
+  }
+
+  document.getElementById('view').innerHTML = `
+    <button class="back" onclick="go('#/')">${icon('arrowLeft',14)}Enterprise 360</button>
+    <div class="card hero ${e.trust<50?'lowh':''}">
+      <div>
+        <div class="hero-top">${avatar(e,48)}<div>
+          <h1>${e.name}</h1>
+          <div class="meta"><span class="mono">${e.pe}</span><span class="dot"></span><span>${e.industry}</span><span class="dot"></span>${statusPill(e.status)}${e.fic?'<span class="dot"></span><span style="font-style:italic">Sample data</span>':''}</div>
+        </div></div>
+        <p class="summary">${sum}</p>
+      </div>
+      <div class="gauge"><div class="lbl">Trust score</div>${gaugeSVG(e.trust)}${bandPill(e.trust)}</div>
+    </div>
+
+    <div class="stats">
+      ${statTile('Shared identifiers', s.length, s.length? s.map(i=>TYPES[i.type].label).filter((v,i,a)=>a.indexOf(v)===i).join(' · ') : 'None found', s.length?'#b91c1c':'#15814c')}
+      ${statTile('Linked enterprises', L.length, L.length? `Avg trust ${Math.round(L.reduce((a,x)=>a+E[x].trust,0)/L.length)}` : 'Not connected', L.length?'#0b1a33':'#15814c')}
+      ${statTile('Blacklisted links', bl.length, bl.length? names(bl) : 'None', bl.length?'#b91c1c':'#15814c')}
+      ${statTile('Score lost to network', s.length?'−'+net:'0', s.length? `${Math.round(net/(100-e.trust||1)*100)}% of total deductions` : 'No network penalty', s.length?'#b91c1c':'#15814c')}
+    </div>
+
+    <div class="card mt14" id="mapCard">
+      <div class="card-h" style="align-items:center">
+        <div><div class="card-t"><span class="icb">${icon('network',14)}</span>Shared-entity map</div>
+        <div class="card-s">How ${e.name} connects to other enterprises through PAN, directors, addresses and templates</div></div>
+        <div class="seg" role="tablist">${Object.entries(VIEWS).map(([k,l],i)=>`<button role="tab" class="${VIEW===k?'on':''}" onclick="setView('${k}')"><span class="k">${'ABC'[i]}</span>${l}</button>`).join('')}</div>
+      </div>
+      ${s.length ? `<div class="legend">${Object.values(TYPES).map(t=>`<span class="lg"><span class="tchip" style="background:${t.bg};color:${t.c};width:18px;height:18px">${icon(t.icon,11)}</span>${t.label}</span>`).join('')}
+        <span class="lg"><span class="band b-low" style="height:16px">Low trust</span><span class="band b-watch" style="height:16px">Watch</span></span>
+        <span class="tip">Hover to trace a link · click an enterprise to open it</span></div>` : ''}
+      <div class="map-body" id="mapBody"></div>
+    </div>
+
+    <div class="split">
+      <div class="card">
+        <div class="card-h"><div><div class="card-t"><span class="icb">${icon('gauge',14)}</span>Why the score is ${e.trust}</div><div class="card-s">Every enterprise starts at 100. Points are removed for shared identifiers and the enterprise's own signals.</div></div></div>
+        <div class="bd-body">${breakdown(e, s, net, own, ownSum)}</div>
+      </div>
+      <div class="card">
+        <div class="card-h"><div><div class="card-t"><span class="icb">${icon('flag',14)}</span>Recommended actions</div><div class="card-s">${s.length?'Based on the shared identifiers above':'No network risk detected'}</div></div></div>
+        <div class="bd-body">
+          ${(ACTIONS[id]||['Continue standard monitoring']).map((a,i)=>`<div class="act"><span class="num">${i+1}</span><span>${a}</span></div>`).join('')}
+          <div class="act-btns">
+            <button class="btn-p" onclick="toast('Escalated for compliance review')">${icon('shieldAlert',14)}Escalate for review</button>
+            <button class="btn-o" style="height:36px" onclick="toast('Report exported')">${icon('download',14)}Export report</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  renderMap();
+}
+function statTile(l,v,f,c){ return `<div class="card stat"><div class="kpi-l">${l}</div><div class="v" style="color:${c}">${v}</div><div class="f">${f}</div></div>`; }
+function gaugeSVG(score){
+  const b=band(score), r=52, C=Math.PI*r, len=score/100*C;
+  return `<svg width="150" height="92" viewBox="0 0 150 92"><path d="M23 80 A52 52 0 0 1 127 80" fill="none" stroke="#eef1f6" stroke-width="12" stroke-linecap="round"/>
+    <path d="M23 80 A52 52 0 0 1 127 80" fill="none" stroke="${b.num}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${len} ${C}"/>
+    <text x="75" y="74" text-anchor="middle" font-size="34" font-weight="600" fill="${b.num}" letter-spacing="-1" font-family="Geist, system-ui, sans-serif">${score}</text>
+    <text x="75" y="89" text-anchor="middle" font-size="9.5" fill="#8590a8" font-family="Geist Mono, ui-monospace, monospace">/ 100</text></svg>`;
+}
+function breakdown(e, s, net, own, ownSum){
+  const b = band(e.trust);
+  const bar = `<div class="bd-bar"><i style="width:${e.trust}%;background:${b.num}" title="Remaining score ${e.trust}"></i>${
+      s.map(i=>`<i style="width:${i.pts}%;background:${TYPES[i.type].c};opacity:.85;border-left:1px solid #fff" title="${TYPES[i.type].label} −${i.pts}"></i>`).join('')}${
+      own.map(o=>`<i style="width:${o.v}%;background:repeating-linear-gradient(45deg,#cbd3e1 0 3px,#e3e8f0 3px 6px);border-left:1px solid #fff" title="${o.t} −${o.v}"></i>`).join('')}</div>
+    <div class="bd-scale"><span>0</span><span>Score ${e.trust}</span><span>100</span></div>`;
+  const g1 = s.length ? `<div class="bd-g"><div class="bd-gh"><span>From shared identifiers</span><b>−${net}</b></div>${
+    s.map(i=>{ const t=TYPES[i.type]; return `<div class="bd-r"><span class="tchip" style="background:${t.bg};color:${t.c}">${icon(t.icon,12)}</span><span class="tx">${describe(i)}<small>${t.label} · ${i.label}</small></span><span class="pts">−${i.pts}</span></div>`; }).join('')}</div>` : '';
+  const g2 = own.length ? `<div class="bd-g"><div class="bd-gh"><span>Own signals</span><b>−${ownSum}</b></div>${
+    own.map(o=>`<div class="bd-r"><span class="tchip" style="background:#f1f4f9;color:#5c6781">${icon('activity',12)}</span><span class="tx">${o.t}<small>${o.s}</small></span><span class="pts">−${o.v}</span></div>`).join('')}</div>` : '';
+  return bar + g1 + g2 + `<div class="bd-total"><span>Trust score</span><span style="color:${b.num};font-size:16px">${e.trust} <span style="color:#8590a8;font-size:11px;font-weight:500">/ 100</span></span></div>`;
+}
+
+function setView(v){ VIEW=v; history.replaceState(null,'',`#/e/${CUR.id}/${v}`); document.querySelectorAll('.seg button').forEach((b,i)=>b.classList.toggle('on', Object.keys(VIEWS)[i]===v)); renderMap(); }
+function renderMap(){
+  const body = document.getElementById('mapBody');
+  const s = shared(CUR.id);
+  if(!s.length){
+    body.innerHTML = `<div class="empty"><div class="e-ic">${icon('shieldCheck',22)}</div><b>No shared entities found</b>This enterprise doesn't share a PAN, director, registered address or template with any other enterprise on the platform.</div>`;
+    return;
+  }
+  ({lanes:renderLanes, hub:renderHub, matrix:renderMatrix})[VIEW](body, CUR, s);
+}
+
+/* ── Highlighting (shared by all three variations) ───────────── */
+function wireHL(root, s){
+  const nodes = root.querySelectorAll('[data-node]');
+  const edges = root.querySelectorAll('[data-eid]');
+  const set = (ids, ents) => {
+    root.classList.add('hl');
+    nodes.forEach(n=>{ const [k,v]=n.dataset.node.split(':'); n.classList.toggle('on', k==='focal' || (k==='id'?ids.has(v):ents.has(v))); });
+    edges.forEach(ed=>{ const ent=ed.dataset.eent; ed.classList.toggle('on', ids.has(ed.dataset.eid) && (!ent || ents.has(ent))); });
+  };
+  const clear = () => { root.classList.remove('hl'); nodes.forEach(n=>n.classList.remove('on')); edges.forEach(e=>e.classList.remove('on')); };
+  nodes.forEach(n=>{
+    const [k,v] = n.dataset.node.split(':');
+    if(k==='focal') return;
+    n.addEventListener('mouseenter', ()=>{
+      if(k==='id'){ const i=s.find(x=>x.id===v); set(new Set([v]), new Set(i.others)); }
+      else { set(new Set(s.filter(i=>i.others.includes(v)).map(i=>i.id)), new Set([v])); }
+    });
+    n.addEventListener('mouseleave', clear);
+    if(k==='ent') n.addEventListener('click', ()=>go(`#/e/${v}/${VIEW}`));
+  });
+}
+
+/* ── Variation A: Linked lanes ───────────────────────────────── */
+function entCard(x, focal, s){
+  const e=E[x], b=band(e.trust), cnt=s.filter(i=>i.others.includes(x)).length, sd=secondDegree(x, focal.id);
+  return `<div class="entc ${e.blacklisted?'bl':''}" data-node="ent:${x}">
+    <div class="row">${avatar(e,26)}<span class="nm">${e.name}</span></div>
+    <div class="row2"><span class="tnum" style="color:${b.num};min-width:0">${e.trust}</span>${bandPill(e.trust)}${statusPill(e.status)}</div>
+    <div class="row3"><span>Shares ${cnt} identifier${cnt>1?'s':''}</span>${sd.length?`<span title="${names(sd)}">+${sd.length} more link${sd.length>1?'s':''}</span>`:''}</div>
+  </div>`;
+}
+function renderLanes(body, f, s){
+  const L = linked(f.id);
+  // order enterprises by the average position of the identifiers they share (fewer crossings)
+  const pos = Object.fromEntries(s.map((i,k)=>[i.id,k]));
+  L.sort((a,b)=>{ const m=x=>{const r=s.filter(i=>i.others.includes(x));return r.reduce((t,i)=>t+pos[i.id],0)/r.length}; return m(a)-m(b); });
+  const net = s.reduce((a,i)=>a+i.pts,0), b=band(f.trust);
+  body.innerHTML = `
+    <div class="lanes-heads"><div class="lane-h">This enterprise</div><div class="lane-h">What it shares · ${s.length}</div><div class="lane-h">With these enterprises · ${L.length}</div></div>
+    <div class="lanes" id="lanes">
+      <svg class="lanes-svg" id="lanesSvg"></svg>
+      <div class="lane"><div class="focal ${f.trust<50?'':'ok'}" data-node="focal:${f.id}" id="focalCard">
+        <div class="row">${avatar(f,32)}<div class="nm">${f.name}</div></div>
+        <div class="sc"><b style="color:${b.num}">${f.trust}</b><span>/ 100</span>${bandPill(f.trust)}</div>
+        <div class="net">Shared identifiers cost <b>−${net} points</b></div>
+      </div></div>
+      <div class="lane">${s.map(i=>{ const t=TYPES[i.type]; return `
+        <div class="idc" data-node="id:${i.id}" style="border-left:3px solid ${t.c}">
+          <span class="tchip" style="background:${t.bg};color:${t.c}">${icon(t.icon,15)}</span>
+          <div class="t1"><span class="tag" style="color:${t.c}">${t.label}</span><br>${i.label}<small>${i.type==='pan'?'':i.sub}</small></div>
+          <span class="pts">−${i.pts}</span>
+          <div class="t2">${describe(i)}</div>
+        </div>`; }).join('')}</div>
+      <div class="lane">${L.map(x=>entCard(x,f,s)).join('')}</div>
+    </div>`;
+  const draw = () => {
+    const wrap = document.getElementById('lanes'); if(!wrap) return;
+    const W = wrap.getBoundingClientRect();
+    const rel = el => { const r=el.getBoundingClientRect(); return {l:r.left-W.left, r:r.right-W.left, y:r.top-W.top+r.height/2}; };
+    const fc = rel(document.getElementById('focalCard'));
+    const curve = (x1,y1,x2,y2) => { const dx=(x2-x1)*.5; return `M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`; };
+    let out = '';
+    s.forEach(i=>{
+      const c = TYPES[i.type].c, ic = rel(wrap.querySelector(`[data-node="id:${i.id}"]`));
+      out += `<path class="edge" data-eid="${i.id}" data-eent="" stroke="${c}" d="${curve(fc.r,fc.y,ic.l,ic.y)}"/>`;
+      i.others.forEach(x=>{
+        const ec = rel(wrap.querySelector(`[data-node="ent:${x}"]`));
+        out += `<path class="edge" data-eid="${i.id}" data-eent="${x}" stroke="${c}" d="${curve(ic.r,ic.y,ec.l,ec.y)}"/>`;
+      });
+      out += `<circle cx="${ic.l}" cy="${ic.y}" r="3" fill="${c}"/><circle cx="${ic.r}" cy="${ic.y}" r="3" fill="${c}"/>`;
+    });
+    out += `<circle cx="${fc.r}" cy="${fc.y}" r="3.5" fill="#0b1a33"/>`;
+    document.getElementById('lanesSvg').innerHTML = out;
+    wireHL(wrap, s);
+  };
+  requestAnimationFrame(draw);
+  window._redraw = draw;
+}
+
+/* ── Variation B: Network graph ──────────────────────────────── */
+function renderHub(body, f, s){
+  const W=1144, R=400, L=linked(f.id);
+  const rad = a => a*Math.PI/180;
+  // 1) enterprises that share an identifier with each other (not only with the focal one) form a cluster
+  const par = Object.fromEntries(L.map(x=>[x,x]));
+  const find = x => par[x]===x ? x : (par[x]=find(par[x]));
+  const multi = s.filter(i=>i.others.length>1);
+  multi.forEach(i=>i.others.slice(1).forEach(x=>{ par[find(x)] = find(i.others[0]); }));
+  const comps = Object.values(L.reduce((m,x)=>((m[find(x)]=m[find(x)]||[]).push(x),m),{})).sort((a,b)=>b.length-a.length);
+  // 2) each cluster gets its own side of the focal enterprise
+  const ep = {};
+  comps.forEach((c,k)=>{
+    const base = comps.length<=2 ? k*180 : k*360/comps.length;
+    const step = c.length>1 ? Math.min(60, 150/(c.length-1)) : 0;
+    c.forEach((x,j)=>{ const a=rad(base+(j-(c.length-1)/2)*step); ep[x]={x:Math.cos(a)*R, y:Math.sin(a)*R}; });
+  });
+  // 3) each identifier sits in the middle of the enterprises that share it
+  const cen = o => { const p=[{x:0,y:0},...o.map(x=>ep[x])]; return {x:p.reduce((a,q)=>a+q.x,0)/p.length, y:p.reduce((a,q)=>a+q.y,0)/p.length}; };
+  const groups = {};
+  s.forEach(i=>{ const k=[...i.others].sort().join('|'); (groups[k]=groups[k]||[]).push(i); });
+  const ip = {};
+  Object.values(groups).forEach(g=>{
+    const o=g[0].others, c=cen(o), m=g.length;
+    if(o.length===1){
+      const q=ep[o[0]], d=Math.hypot(q.x,q.y), px=-q.y/d, py=q.x/d;
+      let ox=0, oy=0;
+      const cl = multi.find(i=>i.others.includes(o[0]));   // keep clear of a pool shared by the same pair
+      if(cl){ const cc=cen(cl.others), vx=c.x-cc.x, vy=c.y-cc.y, vl=Math.hypot(vx,vy)||1; ox=vx/vl*72; oy=vy/vl*72; }
+      g.forEach((i,j)=>{ const t=(j-(m-1)/2)*116; ip[i.id]={x:c.x+px*t+ox, y:c.y+py*t+oy}; });
+    } else {
+      const a0=Math.atan2(c.y,c.x)+(m===2?Math.PI/2:0), rho = m===1 ? 0 : m===2 ? 64 : 88;
+      g.forEach((i,j)=>{ const a=a0+j*2*Math.PI/m; ip[i.id]={x:c.x+Math.cos(a)*rho, y:c.y+Math.sin(a)*rho}; });
+    }
+  });
+  // 4) fit the canvas to the graph
+  const pts = [{x:0,y:0}, ...Object.values(ep), ...Object.values(ip)];
+  const minX=Math.min(...pts.map(p=>p.x)), maxX=Math.max(...pts.map(p=>p.x)), minY=Math.min(...pts.map(p=>p.y)), maxY=Math.max(...pts.map(p=>p.y));
+  const padT=64, padB=96, H=Math.round(maxY-minY+padT+padB);
+  const tx=W/2-(minX+maxX)/2, ty=padT-minY;
+  const mv = p => { p.x=Math.round(p.x+tx); p.y=Math.round(p.y+ty); };
+  Object.values(ep).forEach(mv); Object.values(ip).forEach(mv);
+  const cx=Math.round(tx), cy=Math.round(ty), b=band(f.trust);
+
+  let g = '';
+  // edges — neutral until hovered, then tinted by identifier type
+  s.forEach(i=>{
+    const c=TYPES[i.type].c, p=ip[i.id];
+    g += `<line class="edge" data-eid="${i.id}" data-eent="" style="--c:${c}" x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}"/>`;
+    i.others.forEach(x=>{ const q=ep[x];
+      g += `<line class="edge" data-eid="${i.id}" data-eent="${x}" style="--c:${c}" x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}"/>`; });
+  });
+  // identifiers — small nodes, coloured by type
+  s.forEach(i=>{
+    const t=TYPES[i.type], p=ip[i.id];
+    g += `<g data-node="id:${i.id}">
+      <circle class="nd" cx="${p.x}" cy="${p.y}" r="17" fill="${t.c}"/>
+      ${svgIcon(t.icon, p.x-8, p.y-8, 16, '#fff')}
+      <text class="halo" x="${p.x}" y="${p.y+34}" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0b1a33">${i.short}</text>
+      <text class="halo" x="${p.x}" y="${p.y+47}" text-anchor="middle" font-family="Geist Mono, ui-monospace, monospace" font-size="8.5" font-weight="600" letter-spacing="1" fill="${t.c}">${t.label.toUpperCase()} · <tspan fill="#b91c1c">−${i.pts}</tspan></text></g>`;
+  });
+  // linked enterprises — larger nodes, coloured by trust band
+  L.forEach(x=>{
+    const e=E[x], eb=band(e.trust), p=ep[x];
+    g += `<g data-node="ent:${x}">
+      ${e.blacklisted?`<circle cx="${p.x}" cy="${p.y}" r="36" fill="none" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4 3"/>`:''}
+      <circle class="nd" cx="${p.x}" cy="${p.y}" r="28" fill="${eb.c}"/>
+      <text x="${p.x}" y="${p.y+6}" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">${e.trust}</text>
+      <text class="halo" x="${p.x}" y="${p.y+(e.blacklisted?56:50)}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0b1a33">${e.name}</text>
+      <text class="halo" x="${p.x}" y="${p.y+(e.blacklisted?71:65)}" text-anchor="middle" font-size="10.5" font-weight="600" fill="${e.blacklisted?'#b91c1c':eb.c}">${e.blacklisted?'Blacklisted':eb.l+' · '+STATUS[e.status]}</text></g>`;
+  });
+  // focal enterprise
+  g += `<g data-node="focal:${f.id}">
+    <circle cx="${cx}" cy="${cy}" r="49" fill="none" stroke="${b.c}" stroke-opacity=".2" stroke-width="6"/>
+    <circle class="nd" cx="${cx}" cy="${cy}" r="40" fill="${b.c}"/>
+    <text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="27" font-weight="600" fill="#fff" letter-spacing="-1">${f.trust}</text>
+    <text x="${cx}" y="${cy+20}" text-anchor="middle" font-family="Geist Mono, ui-monospace, monospace" font-size="7.5" font-weight="600" letter-spacing="1" fill="#fff" fill-opacity=".8">TRUST</text>
+    <text class="halo" x="${cx}" y="${cy+72}" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0b1a33">${f.name}</text>
+    <text class="halo" x="${cx}" y="${cy+87}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#b91c1c">−${s.reduce((a,i)=>a+i.pts,0)} from shared identifiers</text></g>`;
+  body.innerHTML = `<div class="hub" id="hub">
+    <div class="hub-key"><span><i class="k-ent"></i>Enterprise · trust score inside</span><span><i class="k-id"></i>Shared identifier · sits between the enterprises that share it</span></div>
+    <svg viewBox="0 0 ${W} ${H}">${g}</svg></div>`;
+  wireHL(document.getElementById('hub'), s);
+  window._redraw = null;
+}
+
+/* ── Variation C: Matrix ─────────────────────────────────────── */
+function renderMatrix(body, f, s){
+  const L = linked(f.id);
+  const types = Object.keys(TYPES);
+  const rows = L.map(x=>({x, ids:s.filter(i=>i.others.includes(x))}))
+    .sort((a,b)=>b.ids.length-a.ids.length || E[a.x].trust-E[b.x].trust);
+  const typeImp = t => s.filter(i=>i.type===t).reduce((a,i)=>a+i.pts,0);
+  body.innerHTML = `<div id="mx"><table class="mx">
+    <colgroup><col style="width:24%"><col style="width:11%">${types.map(()=>'<col style="width:14%">').join('')}<col style="width:9%"></colgroup>
+    <thead><tr><th>Linked enterprise</th><th>Trust</th>${types.map(t=>{ const T=TYPES[t], imp=typeImp(t); return `<th><span class="hh"><span class="tchip" style="background:${T.bg};color:${T.c};width:18px;height:18px">${icon(T.icon,11)}</span>Same ${T.label}</span><span class="imp">${imp?'−'+imp+' pts':'<span style="color:#c3cad8">—</span>'}</span></th>`; }).join('')}<th>Overlap</th></tr></thead>
+    <tbody>${rows.map(({x,ids})=>{
+      const e=E[x], b=band(e.trust);
+      return `<tr class="mrow" data-node="ent:${x}">
+        <td><div class="ent">${avatar(e)}<span class="n">${e.name}</span></div>${e.blacklisted?'<div style="margin:6px 0 0 38px"><span class="bl-badge">BLACKLISTED</span></div>':''}</td>
+        <td><span class="tnum" style="color:${b.num}">${e.trust}</span> ${bandPill(e.trust)}</td>
+        ${types.map(t=>{ const hit=ids.filter(i=>i.type===t); const T=TYPES[t];
+          return `<td>${hit.length? hit.map(i=>`<span class="cellchip" data-node="id:${i.id}" style="background:${T.bg};border-color:${T.bd};color:${T.c}" title="${i.label} · ${i.sub}">${icon(T.icon,12)}${i.short}</span>`).join(' ') : '<span class="none">—</span>'}</td>`; }).join('')}
+        <td><div class="ovl"><span class="segs">${types.map((t,k)=>`<i class="${k<ids.length?'f':''}"></i>`).join('')}</span><b style="font-size:12px">${ids.length}/4</b></div></td>
+      </tr>`; }).join('')}</tbody></table>
+    <p class="mx-note">Each row is an enterprise that shares at least one identifier with ${f.name}. A filled cell names the exact PAN, director, address or template they have in common.</p></div>`;
+  // In the matrix, hovering a chip highlights that identifier across every row
+  const root = document.getElementById('mx');
+  root.querySelectorAll('.cellchip').forEach(ch=>{
+    ch.addEventListener('mouseenter', ev=>{
+      ev.stopPropagation();
+      const id = ch.dataset.node.split(':')[1], i = s.find(z=>z.id===id);
+      root.classList.add('hl');
+      root.querySelectorAll('[data-node]').forEach(n=>{ const [k,v]=n.dataset.node.split(':'); n.classList.toggle('on', k==='id'? v===id : i.others.includes(v)); });
+    });
+    ch.addEventListener('mouseleave', ()=>{ root.classList.remove('hl'); root.querySelectorAll('.on').forEach(n=>n.classList.remove('on')); });
+  });
+  root.querySelectorAll('tr.mrow td:first-child').forEach(td=>td.addEventListener('click', ()=>go(`#/e/${td.parentElement.dataset.node.split(':')[1]}/${VIEW}`)));
+  window._redraw = null;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ROUTER
+   ════════════════════════════════════════════════════════════════ */
+function route(){
+  const p = (location.hash.slice(1)||'/').split('/').filter(Boolean);
+  if(p[0]==='e' && E[p[1]]){ if(VIEWS[p[2]]) VIEW=p[2]; renderDetail(p[1]); }
+  else renderDash();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', route);
+window.addEventListener('resize', ()=>window._redraw && window._redraw());
+renderSidebar();
+route();
+document.fonts && document.fonts.ready.then(()=>window._redraw && window._redraw());
+</script>
+</body>
+</html>
