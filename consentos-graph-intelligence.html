@@ -60,6 +60,9 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 .dlead{margin:0 0 12px;font-size:13px;line-height:1.5;color:var(--s-muted)}
 .frow{display:flex;align-items:flex-start;gap:10px;border:0;background:none;text-align:left;cursor:pointer;
   padding:10px 8px;margin:0 -8px;width:calc(100% + 16px);border-radius:10px;font-size:13.5px;font-weight:500;transition:background .15s}
+.frow{position:relative;padding-top:12px;padding-bottom:12px}
+.frow+.frow::before{content:"";position:absolute;left:8px;right:8px;top:0;height:1px;background:var(--s-line)}
+.frow.on::before,.frow.on+.frow::before{display:none}
 .frow:hover{background:rgba(37,99,235,.06)}
 .frow.on{background:var(--s-soft);box-shadow:inset 0 0 0 1px #cfdcfb}
 .frow small{display:block;font-size:12.5px;font-weight:400;color:var(--s-muted);margin-top:1px}
