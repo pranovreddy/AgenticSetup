@@ -1435,7 +1435,8 @@ function Receipt({ c, fast, setFast, onNew }) {
         h("ul", { className: "verdict__acts" }, out.actions.map(a => h("li", { key: a }, okdot(out.state === "resolved" ? "ok" : "warn"), a))),
         review && h("p", { className: "banner" }, "We’ve opened a review on this case. You’ll see it in your complaint history."),
         owned && h("p", { className: "banner banner--ok" }, "Thanks for confirming. This sign-up stays on record as yours and the case is closed."),
-        h("div", { className: "btns" + (out.next.go === "review" ? " btns--stack" : "") },
+        /* once the subscriber answers, only the matching message stays */
+        !(review || owned) && h("div", { className: "btns" + (out.next.go === "review" ? " btns--stack" : "") },
           h("button", { type: "button", className: "btn btn--primary", onClick: () => { setOwned(false); doNext(out.next); } }, out.next.label),
           out.next.go === "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: () => { setReview(false); setOwned(true); } }, "Yes, I gave this consent"),
           out.next.go !== "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: onNew }, "Report another"))),
