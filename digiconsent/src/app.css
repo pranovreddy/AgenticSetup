@@ -417,3 +417,13 @@ body{background:hsl(var(--background));color:var(--ink)}
 .rc__meta--2{grid-template-columns:1fr 1fr}
 .rc[data-tone="rejected"]{--accent:var(--rose);--accent-soft:var(--rose-soft)}
 .verdict--rejected{--tone:var(--rose);--tone-soft:var(--rose-soft);--tone-ink:#b02a38}
+
+/* history + stored receipts: in-progress and waiting states */
+.sa-chip--live{background:var(--blue-soft);color:#2347D6}
+.hc__live,.hc__wait{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.hc__live{color:#2347D6}.hc__live .spin{width:13px;height:13px}
+.hc__wait{color:#8a5a08}
+.verdict--in .status{align-self:flex-start;margin-top:2px}
+.verdict--in .status .spin .a{stroke:var(--amber)}
+.tr__ic--wait{background:var(--amber-soft);color:var(--amber)}
+.tr--run .tr__b{gap:3px}

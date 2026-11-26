@@ -475,6 +475,16 @@ body{background:hsl(var(--background));color:var(--ink)}
 .rc__meta--2{grid-template-columns:1fr 1fr}
 .rc[data-tone="rejected"]{--accent:var(--rose);--accent-soft:var(--rose-soft)}
 .verdict--rejected{--tone:var(--rose);--tone-soft:var(--rose-soft);--tone-ink:#b02a38}
+
+/* history + stored receipts: in-progress and waiting states */
+.sa-chip--live{background:var(--blue-soft);color:#2347D6}
+.hc__live,.hc__wait{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.hc__live{color:#2347D6}.hc__live .spin{width:13px;height:13px}
+.hc__wait{color:#8a5a08}
+.verdict--in .status{align-self:flex-start;margin-top:2px}
+.verdict--in .status .spin .a{stroke:var(--amber)}
+.tr__ic--wait{background:var(--amber-soft);color:var(--amber)}
+.tr--run .tr__b{gap:3px}
 </style></head>
 <body><div id="root"></div>
 <script>/**
@@ -856,13 +866,19 @@ const BRANDS = {};
 Object.keys(LOGOS).forEach(id => { BRANDS[id] = { id, name: NAMES[id], logo: LOGOS[id] }; });
 
 /* complaints filed in this session, shown on the history page */
+const C = (icon, name, text, tone) => ({ icon, name, text, tone: tone || "ok" });
 const SEED = [
   { id: "CMP-X8K2M9PL", state: "under_review", mode: "SMS", date: "10 Mar 2026", desc: "Received unauthorized promotional SMS from unknown sender.",
-    head: "We’re still checking this.", res: "We’ve asked the sender’s operator for the consent record behind this SMS. The result will appear here." },
+    head: "We’re still checking this.", res: "We’ve asked the sender’s operator for the consent record behind this SMS. The result will appear here.",
+    wait: "Taking longer than expected", sender: "Unknown sender", reason: "I never signed up for this",
+    checks: [C("receipt", "Complaint registered", "Case opened and your screenshot saved."), C("tower", "Network record", "Delivered to your number on 10 Mar 2026 at 4:18 PM."), C("funnel", "Delivery rules", "Sent as promotional under a header registered with another operator.", "warn")],
+    pending: { icon: "signature", name: "Consent record", text: "Waiting for the sender’s operator to share the consent record. They have up to 7 days to reply." } },
   { id: "CMP-R4JN7YBQ", state: "resolved", mode: "Robo Call", date: "28 Feb 2026", desc: "Automated call received despite consent revocation.",
-    head: "Your complaint was upheld.", res: "Your opt-out was in force when this call was made. We raised a violation with the operator that placed it." },
+    head: "Your complaint was upheld.", res: "Your opt-out was in force when this call was made. We raised a violation with the operator that placed it.", sender: "Robo call · 1409 series", reason: "I already opted out",
+    checks: [C("receipt", "Complaint registered", "Case opened from your call log."), C("tower", "Network record", "Call reached your number on 28 Feb 2026 at 11:02 AM."), C("funnel", "Delivery rules", "Placed as a promotional call from a registered telemarketer line."), C("bellOff", "Opt-out register", "You opted out on 20 Feb 2026. This call was made 8 days later.", "bad"), C("scale", "Decision: Upheld", "Violation raised with the operator that placed the call.")] },
   { id: "CMP-W1DF5GHT", state: "rejected", mode: "Voice Call", date: "15 Feb 2026", desc: "Unwanted sales call during late hours.",
-    head: "Complaint not upheld.", res: "The caller held your consent for sales calls when this was made. You can revoke it any time from My Wallet." },
+    head: "Complaint not upheld.", res: "The caller held your consent for sales calls when this was made. You can revoke it any time from My Wallet.", sender: "Voice call · 1409 series", reason: "I never signed up for this",
+    checks: [C("receipt", "Complaint registered", "Case opened from your call log."), C("tower", "Network record", "Call reached your number on 15 Feb 2026 at 8:47 PM."), C("signature", "Consent record", "You agreed on 3 Jan 2026 to receive sales calls from this caller."), C("sliders", "Your preferences", "Your preferences allowed calls until 9 PM when this was made."), C("scale", "Decision: Not upheld", "The call was within your consent and your preferred hours.", "warn")] },
 ];
 let FILED = [];
 const fileCase = c => {
@@ -1382,15 +1398,15 @@ function Receipt({ c, fast, setFast, onNew }) {
   const [review, setReview] = useState(false);
   const [owned, setOwned] = useState(false);            // "Yes, I gave this consent"
   const speed = useRef(fast ? 5 : 1).current;
-  const verdictRef = useRef(null);
+  const verdictRef = useRef(null), logRef = useRef([]);
 
   useEffect(() => { window.__liveId = c.id; return () => { if (window.__liveId === c.id) window.__liveId = null; }; }, []);
   useEffect(() => {
     const ids = [], t0 = performance.now(), now = () => (performance.now() - t0) / 1000 * speed;
     const at = (ms, fn) => ids.push(setTimeout(fn, ms / speed));
     const up = fn => setS(p => ({ ...p, ...fn(p) }));
-    const logRow = (p, row) => p.log.concat([{ ...row, at: Math.round(now()) }]);
-    fileCase({ id: c.id, state: "under_review", mode: c.item.type === "call" ? "Call" : "SMS", desc: c.reasonLabel, brand: c.brandName });
+    const logRow = (p, row) => { const r = { ...row, at: Math.round(now()) }; if (!logRef.current.some(x => x.name === r.name)) logRef.current.push(r); return p.log.concat([r]); };
+    fileCase({ id: c.id, state: "under_review", mode: c.item.type === "call" ? "Call" : "SMS", desc: c.reasonLabel, brand: c.brandName, sender: c.item.sender, reason: c.reasonLabel, note: c.note, live: "Registering your complaint" });
     const tick = setInterval(() => setSecs(now()), 250);
     let t = 0;
     at(500, () => up(p => ({ log: logRow(p, { icon: "receipt", name: "Complaint registered", text: "Case " + c.id + (c.source === "dialer" ? " opened from your call log." : c.source === "messages" ? " opened from your messages." : " opened and your screenshot saved."), tone: "ok" }) })));
@@ -1417,13 +1433,16 @@ function Receipt({ c, fast, setFast, onNew }) {
       const sec = Math.round(t / 1000);
       setSecs(sec); setTook(sec);
       up(p => ({ stage: "done", kick: p.kick + 1, label: out.state === "resolved" ? "Complaint closed" : "Handed over with evidence" }));
-      fileCase({ id: c.id, state: out.state === "resolved" ? "resolved" : "under_review", desc: c.reasonLabel + " · " + out.head });
+      fileCase({ id: c.id, state: out.state === "resolved" ? "resolved" : "under_review", desc: c.reasonLabel + " · " + out.head, live: null, head: out.head, res: out.body, verdict: out.verdict,
+        wait: out.state === "resolved" ? null : "Waiting for the sender to respond",
+        checks: logRef.current.map(r => C(r.icon, r.name, r.text, r.tone)) });
       ids.push(setTimeout(() => setSettled(true), RM ? 0 : 1700));   // let the blob turn green, then show the resolution in its place
     });
     return () => { ids.forEach(clearTimeout); clearInterval(tick); };
   }, []);
 
   const done = s.stage === "done", tone = done ? out.state : "work";
+  useEffect(() => { if (!done) fileCase({ id: c.id, live: s.label }); }, [s.label, done]);   // history shows the stage it is in
   const nDone = s.src.filter(v => v === "done").length;
   const order = ["register", "evidence", "decide", "act", "wrap", "done"], si = order.indexOf(s.stage);
   const track = [["Registered", 1], ["Evidence", 2], ["Decision", 3], [out.state === "resolved" ? "Closed" : "Handed over", 5]];
@@ -1531,8 +1550,10 @@ function History() {
         h("div", { className: "hc__b" },
           h("div", { className: "hc__top" },
             h("span", { className: "hc__t" }, (c.brand ? c.brand + " · " : "") + c.mode),
-            h("span", { className: "sa-chip sa-chip--" + c.state }, SA_LABEL[c.state])),
+            h("span", { className: "sa-chip sa-chip--" + (c.live ? "live" : c.state) }, c.live ? "Investigating" : SA_LABEL[c.state])),
           h("span", { className: "hc__d" }, c.desc),
+          c.live ? h("span", { className: "hc__live" }, h(Spin), c.live)
+            : c.wait && c.state === "under_review" ? h("span", { className: "hc__wait" }, ic("clock", 13), c.wait) : null,
           h("span", { className: "hc__m" }, h("span", { className: "hc__id" }, c.id), h("span", null, c.date), c.isNew && h("span", { className: "sa-new" }, "New"))),
         h("span", { className: "hc__go" }, ic("chevron", 16)))),
       h("button", { type: "button", className: "btn btn--primary", onClick: () => nav("/complaint") }, "Raise a complaint")));
@@ -1564,13 +1585,28 @@ function PastReceipt({ id }) {
         h("div", { className: "rc__perf" }),
         h("div", { className: "rc__agent rc__agent--done" },
           h("div", { className: "verdict verdict--in verdict--" + tone },
-            h("span", { className: "eyebrow eyebrow--tone" }, c.state === "under_review" ? "In progress" : "Resolution"),
+            h("span", { className: "eyebrow eyebrow--tone" }, c.state === "under_review" ? (c.wait || "In progress") : c.verdict || "Resolution"),
             h("h3", null, head),
-            h("p", null, res)))),
+            h("p", null, res),
+            c.state === "under_review" && h("div", { className: "status status--lg", "data-state": "wait" }, h(Spin), h("span", null, c.pending ? "Waiting on: " + c.pending.name : "Waiting for the sender")),
+            c.state === "under_review" && h("p", { className: "fine" }, ic("clock", 12), "Most complaints close in under a minute. This one needs a reply from outside DigiConsent, so it is taking longer. We’ll notify you when it closes.")))),
+      (c.checks || c.pending) && h("section", { className: "trail" },
+        h("div", { className: "trail__head" }, h("h3", null, "What we checked"), h("span", { className: "num" }, (c.checks || []).length + (c.state === "under_review" ? " so far" : " steps"))),
+        h("ol", { className: "trail__list" },
+          (c.checks || []).map((r, k) => h("li", { key: k, className: "tr" + (/^Decision/.test(r.name) ? " tr--strong" : "") },
+            h("span", { className: "tr__ic tr__ic--" + r.tone }, ic(r.icon, 15)),
+            h("div", { className: "tr__b" }, h("span", { className: "tr__n" }, r.name), h("span", { className: "tr__t" }, r.text)))),
+          c.pending && h("li", { className: "tr tr--run" },
+            h("span", { className: "tr__ic tr__ic--wait" }, ic(c.pending.icon, 15)),
+            h("div", { className: "tr__b" }, h("span", { className: "tr__n" }, c.pending.name), h("span", { className: "tr__t" }, c.pending.text)),
+            h(Spin)))),
       h("section", { className: "details" },
         h("h3", null, "What you reported"),
         h("dl", { className: "facts" },
-          h("div", null, h("dt", null, c.head ? "Complaint" : "Reason"), h("dd", null, reason)))),
+          c.sender && h("div", null, h("dt", null, /call/i.test(c.mode) ? "Call from" : "Message from"), h("dd", null, c.sender + (c.brand ? " · " + c.brand : ""))),
+          h("div", null, h("dt", null, "Reason"), h("dd", null, c.reason || reason)),
+          c.head && !c.reason && h("div", null, h("dt", null, "Details"), h("dd", null, c.desc)),
+          c.note && h("div", null, h("dt", null, "Your comment"), h("dd", null, c.note)))),
       h("button", { type: "button", className: "btn btn--ghost", onClick: () => nav(-1) }, "Back to history")));
 }
 function Home() {
