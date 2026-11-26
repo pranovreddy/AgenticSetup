@@ -440,6 +440,20 @@ body{background:hsl(var(--background));color:var(--ink)}
 @media (prefers-reduced-motion:reduce){.rc__okmark path{stroke-dashoffset:0}}
 .rc__okt{font-weight:600;font-size:16px;letter-spacing:-.01em}
 .rc__sub{max-width:none}
+
+/* history card: what it was, how it ended, and the reference */
+.hc{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:18px;border:1px solid var(--edge);background:var(--surface);box-shadow:0 1px 2px rgba(20,40,100,.05)}
+.hc__ic{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:12px;background:var(--amber-soft);color:var(--amber)}
+.hc--resolved .hc__ic{background:var(--green-soft);color:var(--green)}
+.hc--rejected .hc__ic{background:var(--rose-soft);color:var(--rose)}
+.hc__b{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+.hc__top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hc__t{margin:0;min-width:0;font-size:14.5px;font-weight:700;letter-spacing:-.005em;overflow-wrap:anywhere}
+.hc__top .sa-chip{flex:none}
+.hc__d{margin:0;font-size:13px;line-height:1.45;color:var(--ink-2)}
+.hc__m{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:2px 0 0;font-size:11.5px;color:var(--mut)}
+.hc__id{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
+.hc__m .sa-new{margin-left:0}
 </style></head>
 <body><div id="root"></div>
 <script>/**
@@ -1478,14 +1492,14 @@ function History() {
   return h("div", { className: "cx min-h-screen bg-background" },
     h(Header, { title: "Complaint history", sub: "Track your complaints", right: false }),
     h("div", { className: "app-page px-5 md:px-8 cx-body" },
-      all.map(c => h("div", { key: c.id, className: "sa-card" },
-        h("div", { className: "sa-top" }, h("span", { className: "sa-id" }, c.id, c.isNew && h("span", { className: "sa-new" }, "New")), h("span", { className: "sa-chip sa-chip--" + c.state }, SA_LABEL[c.state])),
-        h("p", { className: "sa-meta" }, c.mode + " · " + c.date + (c.brand ? " · " + c.brand : "")),
-        h("p", { className: "sa-desc" }, c.desc),
-        h("div", { className: "sa-track" },
-          h("div", { className: "sa-step ok" }, "Registered"),
-          h("div", { className: "sa-step " + (c.state === "under_review" ? "on" : "ok") }, "Checking"),
-          h("div", { className: "sa-step " + (c.state === "under_review" ? "" : c.state === "rejected" ? "on" : "ok") }, c.state === "rejected" ? "Closed" : "Resolved")))),
+      all.map(c => h("article", { key: c.id, className: "hc hc--" + c.state },
+        h("span", { className: "hc__ic" }, ic(/call/i.test(c.mode) ? "phone" : "message", 18)),
+        h("div", { className: "hc__b" },
+          h("div", { className: "hc__top" },
+            h("h2", { className: "hc__t" }, (c.brand ? c.brand + " · " : "") + c.mode),
+            h("span", { className: "sa-chip sa-chip--" + c.state }, SA_LABEL[c.state])),
+          h("p", { className: "hc__d" }, c.desc),
+          h("p", { className: "hc__m" }, h("span", { className: "hc__id" }, c.id), h("span", null, c.date), c.isNew && h("span", { className: "sa-new" }, "New"))))),
       h("button", { type: "button", className: "btn btn--primary", onClick: () => nav("/complaint") }, "Raise a complaint")));
 }
 function Home() {

@@ -108,3 +108,5 @@
 .sim.is-on .sim__slot{color:var(--blue)}
 .sim__num{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .sim__op{font-size:12px;color:var(--mut)}
+/* consent option: a plain row under its heading, no box */
+.tray__revoke,.tray__revoke.is-on{margin-top:-4px;padding:0;border:0;border-radius:0;background:none}

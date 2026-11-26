@@ -731,14 +731,14 @@ function History() {
   return h("div", { className: "cx min-h-screen bg-background" },
     h(Header, { title: "Complaint history", sub: "Track your complaints", right: false }),
     h("div", { className: "app-page px-5 md:px-8 cx-body" },
-      all.map(c => h("div", { key: c.id, className: "sa-card" },
-        h("div", { className: "sa-top" }, h("span", { className: "sa-id" }, c.id, c.isNew && h("span", { className: "sa-new" }, "New")), h("span", { className: "sa-chip sa-chip--" + c.state }, SA_LABEL[c.state])),
-        h("p", { className: "sa-meta" }, c.mode + " · " + c.date + (c.brand ? " · " + c.brand : "")),
-        h("p", { className: "sa-desc" }, c.desc),
-        h("div", { className: "sa-track" },
-          h("div", { className: "sa-step ok" }, "Registered"),
-          h("div", { className: "sa-step " + (c.state === "under_review" ? "on" : "ok") }, "Checking"),
-          h("div", { className: "sa-step " + (c.state === "under_review" ? "" : c.state === "rejected" ? "on" : "ok") }, c.state === "rejected" ? "Closed" : "Resolved")))),
+      all.map(c => h("article", { key: c.id, className: "hc hc--" + c.state },
+        h("span", { className: "hc__ic" }, ic(/call/i.test(c.mode) ? "phone" : "message", 18)),
+        h("div", { className: "hc__b" },
+          h("div", { className: "hc__top" },
+            h("h2", { className: "hc__t" }, (c.brand ? c.brand + " · " : "") + c.mode),
+            h("span", { className: "sa-chip sa-chip--" + c.state }, SA_LABEL[c.state])),
+          h("p", { className: "hc__d" }, c.desc),
+          h("p", { className: "hc__m" }, h("span", { className: "hc__id" }, c.id), h("span", null, c.date), c.isNew && h("span", { className: "sa-new" }, "New"))))),
       h("button", { type: "button", className: "btn btn--primary", onClick: () => nav("/complaint") }, "Raise a complaint")));
 }
 function Home() {
