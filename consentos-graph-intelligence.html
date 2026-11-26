@@ -45,20 +45,13 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 .brand img{display:block;height:24px;width:auto}
 .brand h1{margin:0;padding-left:14px;border-left:1px solid #c5d0e6;font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.3;white-space:nowrap}
 
-/* headline numbers: top of the right panel, above the key findings */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);margin:0 0 22px;padding:12px 0;border-radius:14px;background:rgba(255,255,255,.78);
-  border:1px solid var(--tint-line);box-shadow:inset 0 1px 0 #fff,0 10px 24px -20px rgba(20,50,140,.55)}
-.stat{padding:0 14px;border-left:1px solid var(--tint-line);min-width:0}
-.stat:first-child{border-left:0}
-.stat b{display:block;font-size:24px;font-weight:650;letter-spacing:-.025em;line-height:1.1;font-variant-numeric:tabular-nums}
-.stat span{font-size:12px;color:var(--s-muted)}
-.stat.crit b{color:var(--r-crit)}
-
 /* key findings (default content of the right panel) */
 .fhd{display:flex;align-items:center;gap:10px;margin:0 0 4px}
 .dtitle{margin:0;font-size:18px;font-weight:650;letter-spacing:-.02em}
 .fcount{font-size:12px;font-weight:600;color:var(--s-blue);background:var(--s-white);border:1px solid #cfdcfb;border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums}
-.dlead{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--s-muted)}
+.dlead{margin:0 0 6px;font-size:13.5px;line-height:1.5;color:var(--s-muted)}
+.dlead b{font-weight:600;color:var(--s-ink)}
+.dlead b.crit{color:var(--r-crit)}
 .fgrp{display:flex;align-items:center;gap:8px;margin:20px 0 4px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .fgrp::after{content:"";flex:1;height:1px;background:var(--s-line)}
 .fgrp.crit{color:var(--r-crit)} .fgrp.med{color:var(--r-med)}
@@ -358,11 +351,8 @@ LINKS.forEach(([s, t]) => { adj.get(s).push(t); adj.get(t).push(s); });
 
 // ───────────────────────────── CHROME ─────────────────────────────
 const ents = nodes.filter(n => n.type === "enterprise");
-const STATS_HTML = `<div class="stats">` + [
-  [ents.length, "Enterprises", ""],
-  [ents.filter(n => n.risk === "blacklisted").length, "Blacklisted", ""],
-  [ents.filter(n => n.risk === "critical").length, "Critical", "crit"],
-].map(([v, l, c]) => `<div class="stat ${c}"><b>${v}</b><span>${l}</span></div>`).join("") + `</div>`;
+const nEnt = k => ents.filter(n => n.risk === k).length;
+const SUMMARY = `Across <b>${ents.length} enterprises</b>: <b>${nEnt("blacklisted")} blacklisted</b>, <b class="crit">${nEnt("critical")} critical</b>.`;
 
 $("typeList").innerHTML = Object.entries(TYPES).map(([k, t]) =>
   `<button class="ty" data-type="${k}" aria-pressed="true">${icon(k)}<span>${t.label}</span><span class="n">${nodes.filter(n => n.type === k).length}</span></button>`).join("");
@@ -509,8 +499,8 @@ function renderDetail() {
       return `<button class="frow ${c}${on ? " on" : ""}" data-finding="${i}" aria-pressed="${on}"><span class="tile">${icon(f.ic)}</span><span class="ft">${esc(f.t)}<small>${esc(f.s)}</small></span><svg class="i go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`; };
     const grp = (sev, label, c) => { const rows = FINDINGS.map((f, i) => f.sev === sev ? frow(f, i) : "").filter(Boolean);
       return rows.length ? `<div class="fgrp ${c}">${label}<b>${rows.length}</b></div>${rows.join("")}` : ""; };
-    det.innerHTML = STATS_HTML + `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>
-      <p class="dlead">Select a finding to see it on the graph.</p>` + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
+    det.innerHTML = `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>
+      <p class="dlead">${SUMMARY}</p>` + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
     return;
   }
   const d = byId.get(mode.id), [l1, ...rest] = d.name.split("\n"), ent = d.type === "enterprise";
