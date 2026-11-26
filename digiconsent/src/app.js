@@ -586,6 +586,7 @@ function Receipt({ c, fast, setFast, onNew }) {
   const [secs, setSecs] = useState(0);
   const [took, setTook] = useState(null);
   const [review, setReview] = useState(false);
+  const [owned, setOwned] = useState(false);            // "Yes, I gave this consent"
   const speed = useRef(fast ? 5 : 1).current;
   const verdictRef = useRef(null);
 
@@ -681,8 +682,10 @@ function Receipt({ c, fast, setFast, onNew }) {
         h("p", null, out.body),
         h("ul", { className: "verdict__acts" }, out.actions.map(a => h("li", { key: a }, okdot(out.state === "resolved" ? "ok" : "warn"), a))),
         review && h("p", { className: "banner" }, "We’ve opened a review on this case. You’ll see it in your complaint history."),
-        h("div", { className: "btns" },
-          h("button", { type: "button", className: "btn btn--primary", onClick: () => doNext(out.next) }, out.next.label),
+        owned && h("p", { className: "banner banner--ok" }, "Thanks for confirming. This sign-up stays on record as yours and the case is closed."),
+        h("div", { className: "btns" + (out.next.go === "review" ? " btns--stack" : "") },
+          h("button", { type: "button", className: "btn btn--primary", onClick: () => { setOwned(false); doNext(out.next); } }, out.next.label),
+          out.next.go === "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: () => { setReview(false); setOwned(true); } }, "Yes, I gave this consent"),
           out.next.go !== "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: onNew }, "Report another"))),
 
       /* what the agent checked, as it happens */
