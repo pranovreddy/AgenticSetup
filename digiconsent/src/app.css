@@ -396,3 +396,8 @@ body{background:hsl(var(--background));color:var(--ink)}
 .hc__m{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:2px 0 0;font-size:11.5px;color:var(--mut)}
 .hc__id{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
 .hc__m .sa-new{margin-left:0}
+
+/* resolved: the resolution sits where the agent animation was */
+.rc__agent--done{align-items:stretch;gap:16px;padding:14px 18px 18px;animation:rack 560ms var(--ease) both}
+.rc__agent--done .track{padding:0}
+.verdict--in{padding:0;border:0;border-radius:0;background:none;box-shadow:none;animation:none}

@@ -587,6 +587,7 @@ function Receipt({ c, fast, setFast, onNew }) {
   const [s, setS] = useState({ stage: "register", label: "Registering your complaint", src: plan.src.map(() => "queued"), active: -1, kick: 0, log: [], running: null });
   const [secs, setSecs] = useState(0);
   const [took, setTook] = useState(null);
+  const [settled, setSettled] = useState(false);        // the animation has given way to the resolution
   const [review, setReview] = useState(false);
   const [owned, setOwned] = useState(false);            // "Yes, I gave this consent"
   const speed = useRef(fast ? 5 : 1).current;
@@ -625,7 +626,7 @@ function Receipt({ c, fast, setFast, onNew }) {
       setSecs(sec); setTook(sec);
       up(p => ({ stage: "done", kick: p.kick + 1, label: out.state === "resolved" ? "Complaint closed" : "Handed over with evidence" }));
       fileCase({ id: c.id, state: out.state === "resolved" ? "resolved" : "under_review", desc: c.reasonLabel + " · " + out.head });
-      ids.push(setTimeout(() => { if (verdictRef.current) verdictRef.current.scrollIntoView({ block: "nearest", behavior: RM ? "auto" : "smooth" }); }, 500));
+      ids.push(setTimeout(() => setSettled(true), RM ? 0 : 1700));   // let the blob turn green, then show the resolution in its place
     });
     return () => { ids.forEach(clearTimeout); clearInterval(tick); };
   }, []);
@@ -649,6 +650,7 @@ function Receipt({ c, fast, setFast, onNew }) {
   const title = done ? (out.state === "resolved" ? "Complaint resolved" : "Complaint handed over") : s.stage === "decide" ? "Reaching a decision" : s.stage === "act" ? "Acting on the decision" : "Investigating your complaint";
   const p = c.item.permission;
 
+  const trackEl = h("ol", { className: "track" }, track.map(([lb, to], k) => h("li", { key: lb, className: "track__s " + segState(k, to) }, h("span", { className: "seg " + segState(k, to) }, h("i", null)), lb)));
   return h("div", { className: "cx min-h-screen bg-background" },
     h(Header, { title: "Complaint receipt", sub: done ? (out.state === "resolved" ? "Resolved in " + took + " seconds" : "Handed over in " + took + " seconds") : "We’re working on it now" }),
     h("div", { className: "bf-sr", role: "status", "aria-live": "polite", "aria-atomic": true }, done ? out.head + " " + out.body : s.label),
@@ -670,18 +672,10 @@ function Receipt({ c, fast, setFast, onNew }) {
           h("div", null, h("dt", null, "Time taken"), h("dd", { className: "num" }, done ? took + " seconds" : fmtClock(secs)))),
         h("div", { className: "rc__perf" }),
 
-        h("div", { className: "rc__agent" },
-          h("h2", { className: "rc__title" }, h(Roll, { text: title, cls: "roll--title" })),
-          h("p", { className: "rc__sub" }, done ? (out.state === "resolved" ? "Every check below ran against your records." : "We’ve done all we can without the sender.") : "Usually 30 to 60 seconds. You can leave this page."),
-          h(AgentStage, { plan, src: s.src, active: s.active, stage: s.stage, kick: s.kick, tone }),
-          h("div", { className: "status status--lg", "data-state": done ? (out.state === "resolved" ? "done" : "wait") : "work" },
-            done ? okdot(out.state === "resolved" ? "ok" : "warn") : h(Spin),
-            h(Roll, { text: s.label }),
-            s.stage === "evidence" && h("span", { className: "pcount" }, h("b", null, Math.min(nDone + 1, plan.src.length)), "/", plan.src.length)),
-          h("ol", { className: "track" }, track.map(([lb, to], k) => h("li", { key: lb, className: "track__s " + segState(k, to) }, h("span", { className: "seg " + segState(k, to) }, h("i", null)), lb))))),
-
-      /* the answer */
-      done && h("section", { className: "verdict verdict--" + out.state, ref: verdictRef },
+        settled
+          /* resolved: the animation folds away and the resolution takes its place */
+          ? h("div", { className: "rc__agent rc__agent--done", ref: verdictRef },
+              h("div", { className: "verdict verdict--in verdict--" + out.state },
         h("span", { className: "eyebrow eyebrow--tone" }, out.verdict),
         h("h3", null, out.head),
         h("p", null, out.body),
@@ -693,6 +687,16 @@ function Receipt({ c, fast, setFast, onNew }) {
           h("button", { type: "button", className: "btn btn--primary", onClick: () => { setOwned(false); doNext(out.next); } }, out.next.label),
           out.next.go === "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: () => { setReview(false); setOwned(true); } }, "Yes, I gave this consent"),
           out.next.go !== "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: onNew }, "Report another"))),
+              trackEl)
+          : h("div", { className: "rc__agent" },
+          h("h2", { className: "rc__title" }, h(Roll, { text: title, cls: "roll--title" })),
+          h("p", { className: "rc__sub" }, done ? (out.state === "resolved" ? "Every check below ran against your records." : "We’ve done all we can without the sender.") : "Usually 30 to 60 seconds. You can leave this page."),
+          h(AgentStage, { plan, src: s.src, active: s.active, stage: s.stage, kick: s.kick, tone }),
+          h("div", { className: "status status--lg", "data-state": done ? (out.state === "resolved" ? "done" : "wait") : "work" },
+            done ? okdot(out.state === "resolved" ? "ok" : "warn") : h(Spin),
+            h(Roll, { text: s.label }),
+            s.stage === "evidence" && h("span", { className: "pcount" }, h("b", null, Math.min(nDone + 1, plan.src.length)), "/", plan.src.length)),
+          trackEl)),
 
       /* what the agent checked, as it happens */
       h("section", { className: "trail" },
