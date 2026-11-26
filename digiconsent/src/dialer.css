@@ -115,3 +115,10 @@
 /* after submitting: a small "Reported" mark on the row; no receipt in this version */
 .dl-done{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:1px 7px;border-radius:999px;background:rgba(240,138,11,.14);font-size:10.5px;font-weight:700;color:#9a5a05;vertical-align:middle}
 .ms-reported{display:flex;align-items:center;justify-content:center;gap:5px;margin:0;font-size:12.5px;font-weight:700;color:#9a5a05}
+
+/* submit is the tick in the tray's top right corner, as in the system report sheets */
+.tray__ok{display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;background:#1E7BF2;color:#fff;box-shadow:0 6px 14px -6px rgba(30,123,242,.7);transition:background var(--t2) var(--ease),box-shadow var(--t2) var(--ease),transform var(--t1) var(--ease)}
+.tray__ok svg{stroke-width:2.6}
+.tray__ok:disabled{background:var(--surface-3);color:var(--faint);box-shadow:none;cursor:not-allowed}
+.tray__ok:not(:disabled):active{transform:scale(.94)}
+.tray__hint{margin:0;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);font-size:12px;line-height:1.45;text-align:center;color:var(--mut)}
