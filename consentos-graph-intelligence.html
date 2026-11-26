@@ -170,6 +170,11 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 .sec p{margin:0;font-size:13.5px;line-height:1.6;color:var(--s-ink2)}
 .sec p.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .more{border:0;background:none;padding:0;margin-top:6px;color:var(--s-blue);font-size:13px;font-weight:600;cursor:pointer}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0;font-size:13px}
+.kv dt{color:var(--s-muted)}
+.kv dd{margin:0;text-align:right;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.lk{border:0;background:none;padding:0;color:var(--s-blue);font-weight:600;cursor:pointer}
+.lk:hover{text-decoration:underline;text-underline-offset:3px}
 .met{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:2px 12px}
 .met+.met{margin-top:14px}
 .met .k{font-size:13px;color:var(--s-muted)}
@@ -238,40 +243,40 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 <script>
 // ───────────────────────────── DATA (as shared by the AA team) ─────────────────────────────
 const NODES = [
-  { id:"e1", name:"FinCo Services\nPvt Ltd", type:"enterprise", risk:"low", shell:15, trust:78, peId:"PE_1001",
+  { id:"e1", name:"HRIDAY FINCORP\nPRIVATE LIMITED", type:"enterprise", risk:"low", shell:15, trust:78, peId:"1201159306713479620", dlt:"jio.com",
     desc:"Clean enterprise. All identity checks pass. Single director, unique address, clean header and complaint profile. No network connections to high-risk entities." },
-  { id:"e2", name:"Digital Pay\nSolutions", type:"enterprise", risk:"medium", shell:42, trust:45, peId:"PE_2001",
+  { id:"e2", name:"DIGITAL PAYMENT\nSOLUTIONS", type:"enterprise", risk:"medium", shell:42, trust:45, peId:"1201168858152523285", dlt:"jio.com",
     desc:"Shares director Rajesh Kumar with HIGH and CRITICAL risk entities. Participates in address farm at Andheri East. Template content similarity with two high-risk entities detected." },
-  { id:"e3", name:"QuickCredit\nIndia Pvt Ltd", type:"enterprise", risk:"high", shell:68, trust:28, peId:"PE_3001",
-    desc:"Address farm participant. Shares PAN with Digital Pay Solutions. Template similarity across network. YONO/SBI brand impersonation embedded in DLT templates. Blacklisted CTA domain (yono8.com) found in active templates." },
-  { id:"e4", name:"MoneyGrow\nVentures", type:"enterprise", risk:"critical", shell:87, trust:12, peId:"PE_4001",
+  { id:"e3", name:"QUICK LOAN\n& FINANCE", type:"enterprise", risk:"high", shell:68, trust:28, peId:"1701165028439887925", dlt:"vmipl.com",
+    desc:"Address farm participant. Shares PAN with DIGITAL PAYMENT SOLUTIONS. Template similarity across network. YONO/SBI brand impersonation embedded in DLT templates. Blacklisted CTA domain (yono8.com) found in active templates." },
+  { id:"e4", name:"Money Grow", type:"enterprise", risk:"critical", shell:87, trust:12, peId:"1201160274861378691", dlt:"jio.com",
     desc:"CRITICAL: Central node in fraud network. Address farm + shared PAN + shared director + blacklisted phishing CTA + 67% header blacklist rate + 18.2 complaints per header + zero DLT volume over 12 months. Linked to blacklisted entity via director Amit Verma." },
-  { id:"e5", name:"Lotus365\nGaming Ltd", type:"enterprise", risk:"blacklisted", shell:95, trust:5, peId:"PE_5001",
-    desc:"BLACKLISTED. Operates illegal gambling platform. Lotus365 brand impersonation confirmed. Blacklisted CTA (lotus365.cc) embedded in DLT templates. Shares director and PAN cluster with CRITICAL entity MoneyGrow Ventures." },
+  { id:"e5", name:"THE FUTURE TECH", type:"enterprise", risk:"blacklisted", shell:95, trust:5, peId:"1201160415305950883", dlt:"jio.com",
+    desc:"BLACKLISTED. Operates illegal gambling platform. Lotus365 brand impersonation confirmed. Blacklisted CTA (lotus365.cc) embedded in DLT templates. Shares director and PAN cluster with CRITICAL entity Money Grow." },
 
   { id:"d1", name:"Rajesh Kumar\nDIN: 08123456", type:"director", risk:"flagged",
-    desc:"Director concentration risk. Appears as director in 3 enterprises: Digital Pay Solutions (MEDIUM), QuickCredit India (HIGH), MoneyGrow Ventures (CRITICAL). Any new entity with this director should be treated as elevated risk." },
+    desc:"Director concentration risk. Appears as director in 3 enterprises: DIGITAL PAYMENT SOLUTIONS (MEDIUM), QUICK LOAN & FINANCE (HIGH), Money Grow (CRITICAL). Any new entity with this director should be treated as elevated risk." },
   { id:"d2", name:"Priya Sharma\nDIN: 07654321", type:"director", risk:"clean",
-    desc:"Single primary enterprise director. Appears in FinCo Services (clean) and Digital Pay Solutions (medium — the shared director risk comes from the other director). No independent risk signals." },
+    desc:"Single primary enterprise director. Appears in HRIDAY FINCORP PRIVATE LIMITED (clean) and DIGITAL PAYMENT SOLUTIONS (medium — the shared director risk comes from the other director). No independent risk signals." },
   { id:"d3", name:"Amit Verma\nDIN: 09876543", type:"director", risk:"flagged",
-    desc:"HIGH-RISK director. Appears as director in MoneyGrow Ventures (CRITICAL) and Lotus365 Gaming (BLACKLISTED). Any new entity registration by this director should be immediately escalated." },
+    desc:"HIGH-RISK director. Appears as director in Money Grow (CRITICAL) and THE FUTURE TECH (BLACKLISTED). Any new entity registration by this director should be immediately escalated." },
 
   { id:"a1", name:"404, Business Hub\nAndheri East, Mumbai", type:"address", risk:"farm", cluster:3,
-    desc:"ADDRESS FARM: 3 distinct DLT entities registered at this address — Digital Pay Solutions, QuickCredit India, and MoneyGrow Ventures. Classic shell company registration pattern. +5 risk points per F8 scoring." },
+    desc:"ADDRESS FARM: 3 distinct DLT entities registered at this address — DIGITAL PAYMENT SOLUTIONS, QUICK LOAN & FINANCE, and Money Grow. Classic shell company registration pattern. +5 risk points per F8 scoring." },
   { id:"a2", name:"12, Corporate Park\nBKC, Mumbai", type:"address", risk:"clean", cluster:1,
     desc:"Unique address. Single entity registered here. No farm signal. Address verified against GST and MCA records." },
 
   { id:"p1", name:"PAN: AAACF1234M", type:"pan", risk:"suspicious", entityCount:2,
-    desc:"2 DLT entities operating under this PAN: Digital Pay Solutions (MEDIUM) and QuickCredit India (HIGH). +5 risk points per F9 PAN clustering signal." },
+    desc:"2 DLT entities operating under this PAN: DIGITAL PAYMENT SOLUTIONS (MEDIUM) and QUICK LOAN & FINANCE (HIGH). +5 risk points per F9 PAN clustering signal." },
   { id:"p2", name:"PAN: BBACG5678K", type:"pan", risk:"suspicious", entityCount:2,
-    desc:"2 DLT entities: MoneyGrow Ventures (CRITICAL) and Lotus365 Gaming (BLACKLISTED). Maximum-risk PAN cluster — one entity is blacklisted. Any new registration under this PAN should be blocked." },
+    desc:"2 DLT entities: Money Grow (CRITICAL) and THE FUTURE TECH (BLACKLISTED). Maximum-risk PAN cluster — one entity is blacklisted. Any new registration under this PAN should be blocked." },
 
   { id:"cta1", name:"lotus365.cc", type:"cta", risk:"blacklisted",
-    desc:"Blacklisted. Illegal online gambling platform. .cc TLD associated with high spam rates. Found embedded in Lotus365 Gaming Ltd active DLT templates. CTA engine arrested this domain." },
+    desc:"Blacklisted. Illegal online gambling platform. .cc TLD associated with high spam rates. Found embedded in THE FUTURE TECH active DLT templates. CTA engine arrested this domain." },
   { id:"cta2", name:"yono8.com", type:"cta", risk:"blacklisted",
-    desc:"Blacklisted. SBI YONO brand impersonation. Part of a 11-domain sequential generation campaign (yono8–yono10, yonorummy025–038). Found in QuickCredit India templates." },
+    desc:"Blacklisted. SBI YONO brand impersonation. Part of a 11-domain sequential generation campaign (yono8–yono10, yonorummy025–038). Found in QUICK LOAN & FINANCE templates." },
   { id:"cta3", name:"quickfinance.icu", type:"cta", risk:"blacklisted",
-    desc:"Blacklisted. Phishing domain targeting loan applicants. .icu TLD — globally among the highest spam rates. Found in MoneyGrow Ventures active templates." },
+    desc:"Blacklisted. Phishing domain targeting loan applicants. .icu TLD — globally among the highest spam rates. Found in Money Grow active templates." },
 
   { id:"h1", name:"12 headers\n8 blacklisted (67%)", type:"header", risk:"blacklisted",
     desc:"CRITICAL: 67% header blacklist rate. 8 of 12 registered headers have been blacklisted by telecom operators for spam. Enterprise has no clean communication pathway remaining. F2 signal maxed." },
@@ -284,17 +289,23 @@ const NODES = [
     desc:"Normal complaint rate. 3 complaints across 30 headers (0.1 per header). Well within acceptable range. F6 signal clear." },
 
   { id:"t1", name:"Similar templates\n3 entities", type:"template", risk:"suspicious",
-    desc:"SUSPICIOUS: Near-identical template content detected across Digital Pay Solutions, QuickCredit India, and MoneyGrow Ventures — three nominally independent enterprises. Indicates coordinated messaging campaign run through multiple entities to evade per-entity complaint thresholds." },
+    desc:"SUSPICIOUS: Near-identical template content detected across DIGITAL PAYMENT SOLUTIONS, QUICK LOAN & FINANCE, and Money Grow — three nominally independent enterprises. Indicates coordinated messaging campaign run through multiple entities to evade per-entity complaint thresholds." },
 
   { id:"b1", name:"LOTUS365\nImpersonation", type:"brand", risk:"blacklisted",
-    desc:"Brand impersonation confirmed. Lotus365 is operating as an illegal gambling brand. Registered under Lotus365 Gaming Ltd on DLT. CTA domains (lotus365.cc, lotus365.club) confirmed blacklisted." },
+    desc:"Brand impersonation confirmed. Lotus365 is operating as an illegal gambling brand. Registered under THE FUTURE TECH on DLT. CTA domains (lotus365.cc, lotus365.club) confirmed blacklisted." },
   { id:"b2", name:"YONO\nSBI brand hijack", type:"brand", risk:"blacklisted",
-    desc:"SBI YONO brand hijacking. 11 confirmed impersonation domains arrested by CTA engine (yono8–yono10, yono-777.vip, yonorummy025–038 series). QuickCredit India using YONO-branded CTAs in templates to impersonate SBI." },
+    desc:"SBI YONO brand hijacking. 11 confirmed impersonation domains arrested by CTA engine (yono8–yono10, yono-777.vip, yonorummy025–038 series). QUICK LOAN & FINANCE using YONO-branded CTAs in templates to impersonate SBI." },
 
   { id:"tr1", name:"0 messages\n12 months", type:"traffic", risk:"suspicious",
     desc:"ANOMALY: Zero DLT message volume over 12 months despite having 12 registered headers (8 of which are now blacklisted). Dormant-registration shell indicator. F4 maximum risk signal triggered." },
   { id:"tr2", name:"2.3M messages a month\nNormal pattern", type:"traffic", risk:"clean",
     desc:"Normal volume pattern. 2.3M messages/month. Operator distribution (Airtel 42%, Jio 38%, VIL 14%, BSNL 6%) consistent with declared business activity. F4 signal clear." },
+
+  // Registered DLT (the platform each enterprise is registered on)
+  { id:"r1", name:"jio.com\nRegistered DLT", type:"dlt", risk:"clean",
+    desc:"Registered DLT for 4 of the 5 enterprises: HRIDAY FINCORP PRIVATE LIMITED, DIGITAL PAYMENT SOLUTIONS, Money Grow and THE FUTURE TECH." },
+  { id:"r2", name:"vmipl.com\nRegistered DLT", type:"dlt", risk:"clean",
+    desc:"Registered DLT for 1 enterprise: QUICK LOAN & FINANCE." },
 ];
 
 const LINKS = [
@@ -307,6 +318,7 @@ const LINKS = [
   ["e2","t1"],["e3","t1"],["e4","t1"],
   ["e5","b1"],["e3","b2"],["b2","cta2"],
   ["e4","tr1"],["e1","tr2"],
+  ["e1","r1"],["e2","r1"],["e4","r1"],["e5","r1"],["e3","r2"],
 ];
 
 const FINDINGS = [
@@ -330,6 +342,7 @@ const TYPES = {
   brand:     { label:"Brand",       r:17, d:"M3 11.5V4a1 1 0 0 1 1-1h7.5l9 9-8.5 8.5zM7.5 7.5h.01" },
   complaint: { label:"Complaints",  r:17, d:"M12 4 2.5 20h19zM12 10v4M12 17h.01" },
   traffic:   { label:"DLT traffic", r:17, d:"M4 20V11M10 20V4M16 20v-7M21 20H3" },
+  dlt:       { label:"Registered DLT", r:17, d:"M5 4h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM5 13h14a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1zM8 7.5h.01M8 16.5h.01M12 7.5h4M12 16.5h4" },
 };
 const TIER_OF = { blacklisted:"blacklisted", critical:"critical", high:"high", flagged:"high", farm:"high",
                   medium:"medium", suspicious:"medium", low:"low", clean:"low" };
@@ -378,7 +391,9 @@ svg.call(zoom).on("dblclick.zoom", null);
 
 const sim = d3.forceSimulation(nodes)
   .force("link", d3.forceLink(links).id(d => d.id)
-    .distance(l => l.target.type === "director" || l.target.type === "address" ? 140 : 105).strength(.4))
+    .distance(l => l.target.type === "dlt" ? 190 : l.target.type === "director" || l.target.type === "address" ? 140 : 105)
+    // a shared DLT platform is a weak tie: it should not pull unrelated enterprises together
+    .strength(l => l.target.type === "dlt" ? .06 : .4))
   .force("charge", d3.forceManyBody().strength(-680))
   .force("collide", d3.forceCollide().radius(d => R(d) + 30))
   .force("x", d3.forceX(0).strength(.075))
@@ -511,9 +526,10 @@ function renderDetail() {
   let h = `<button class="back" data-close="1"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Key findings</button>
     <div class="dh"><div class="tile">${icon(d.type)}</div>
       <div class="tx"><h2>${esc(l1)}${rest.length && ent ? " " + esc(rest.join(" ")) : ""}</h2>
-      <div class="sub">${TYPES[d.type].label}${rest.length && !ent ? " · " + esc(rest.join(" ")) : ""}${d.peId ? " · " + d.peId : ""}</div>${chip(d)}</div></div>`;
+      <div class="sub">${TYPES[d.type].label}${rest.length && !ent && rest.join(" ") !== TYPES[d.type].label ? " · " + esc(rest.join(" ")) : ""}</div>${chip(d)}</div></div>`;
 
   if (ent) {
+    h += `<div class="sec"><dl class="kv"><dt>PE ID</dt><dd>${d.peId}</dd><dt>Registered DLT</dt><dd><button class="lk" data-node="${nodes.find(n => n.type === "dlt" && n.name.startsWith(d.dlt + "\n")).id}">${esc(d.dlt)}</button></dd></dl></div>`;
     const sc = d.shell >= 75 ? "var(--r-crit)" : d.shell >= 50 ? "var(--r-high)" : d.shell >= 30 ? "var(--r-med)" : "var(--r-low)";
     const tc = d.trust >= 70 ? "var(--r-low)" : d.trust >= 50 ? "var(--r-med)" : d.trust >= 30 ? "var(--r-high)" : "var(--r-crit)";
     const st = d.shell >= 75 ? "Block and escalate" : d.shell >= 50 ? "Manual review" : d.shell >= 30 ? "Enhanced due diligence" : "Standard onboarding";
@@ -532,7 +548,7 @@ function renderDetail() {
 
   const conns = adj.get(d.id).map(id => byId.get(id));
   h += `<div class="sec"><h6>Connected to ${conns.length}</h6><div>${conns.map(n =>
-    `<button class="row" data-node="${n.id}" title="${TYPES[n.type].label}">${icon(n.type)}<span class="nm">${esc(n.name.split("\n")[0])}</span>${chip(n)}</button>`).join("")}</div></div>`;
+    `<button class="row" data-node="${n.id}" title="${TYPES[n.type].label}">${icon(n.type)}<span class="nm">${esc(n.type === "enterprise" ? n.name.replace(/\n/g, " ") : n.name.split("\n")[0])}</span>${chip(n)}</button>`).join("")}</div></div>`;
   det.innerHTML = h;
   det.scrollTop = 0;
 }
