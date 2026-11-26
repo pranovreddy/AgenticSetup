@@ -1304,7 +1304,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   };
 
   const stepsDone = [!!evType, scan === "ready" && !!sel, !!reason];
-  const progress = [!!evType, !!shot, !!sel, !!reason];
+  const progress = [!!evType, scan === "ready", !!sel, !!reason, !!reason && (note.trim().length > 0 || revoke)];   // one bar per step
   const found = items.length === 1 ? "1 " + noun + " found" : items.length + " " + noun + "s found";
   const thumb = shot ? (shot.masked ? shot.shared : shot.url) : null;
   const clearShot = () => { clearTimers(); setShot(null); setScan("idle"); resetChoices(); };
@@ -1314,7 +1314,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
     h(Header, { title: "Raise a complaint", sub: "Report an unwanted message or call" }),
     h("div", { className: "bf-sr", role: "status", "aria-live": "polite", "aria-atomic": true }, announce),
     h("div", { className: "app-page px-5 md:px-8 cx-body" },
-      h("div", { className: "segs", "aria-hidden": true }, progress.map((d, i) => h("div", { key: i, className: "seg" + (d ? " done" : "") }, h("i", null)))),
+      h("div", { className: "segs", style: { gridTemplateColumns: "repeat(" + progress.length + ",1fr)" }, "aria-hidden": true }, progress.map((d, i) => h("div", { key: i, className: "seg" + (d ? " done" : "") }, h("i", null)))),
       h("input", { ref: fileRef, id: "cx-file", type: "file", accept: "image/*", onChange: onFile, className: "hidden" }),
 
       /* one card; each step is a section in it that folds once answered */
