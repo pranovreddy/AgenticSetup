@@ -380,7 +380,7 @@ const TIER_C = Object.fromEntries(TIERS.map(t => [t.k, t.c]));
 const entSorted = TIERS.flatMap(t => ents.filter(n => tier(n) === t.k));
 const nLow = ents.filter(n => tier(n) === "low").length;
 const ENT_HTML = `<div class="ent">
-  <div class="ent-h"><b>${ents.length} enterprises</b><span>${nLow} low risk, ${ents.length - nLow} at risk</span></div>
+  <div class="ent-h"><b>Across ${ents.length} enterprises</b><span>${nLow} low risk, ${ents.length - nLow} at risk</span></div>
   <div class="ebar">${entSorted.map(n => `<button data-node="${n.id}" style="--c:${TIER_C[tier(n)]}" aria-label="${esc(n.name.replace(/\n/g, " "))}, ${STATUS[n.risk]}"></button>`).join("")}</div>
   <div class="etip" id="etip"></div>
 </div>`;
