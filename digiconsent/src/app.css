@@ -380,3 +380,4 @@ body{background:hsl(var(--background));color:var(--ink)}
 .rc__okt{margin:0;font-size:17px;font-weight:800;letter-spacing:-.015em;color:#0b6b4b}
 .rc__oks{margin:1px 0 0;font-size:12.5px;line-height:1.4;color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){.rc__okmark path{stroke-dashoffset:0}}
+.rc__okt{font-weight:600;font-size:16px;letter-spacing:-.01em}
