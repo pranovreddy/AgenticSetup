@@ -49,9 +49,18 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 .fhd{display:flex;align-items:center;gap:10px;margin:0 0 4px}
 .dtitle{margin:0;font-size:18px;font-weight:650;letter-spacing:-.02em}
 .fcount{font-size:12px;font-weight:600;color:var(--s-blue);background:var(--s-white);border:1px solid #cfdcfb;border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums}
-.dlead{margin:0 0 6px;font-size:13.5px;line-height:1.5;color:var(--s-muted)}
-.dlead b{font-weight:600;color:var(--s-ink)}
-.dlead b.crit{color:var(--r-crit)}
+/* enterprises at a glance: one segment per enterprise, coloured by risk, like a storage bar */
+.ent{margin:0 0 26px}
+.ent-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 9px;font-size:12.5px;color:var(--s-muted)}
+.ent-h b{font-size:14px;font-weight:600;color:var(--s-ink);letter-spacing:-.005em}
+.ebar{display:flex;gap:2px;height:12px;border-radius:6px;overflow:hidden}
+.ebar button{flex:1;border:0;padding:0;cursor:pointer;background:var(--c);transition:opacity .15s}
+.ebar:hover button{opacity:.45} .ebar button:hover{opacity:1}
+.ebar button:focus-visible{outline-offset:-2px;outline-color:#fff}
+.eleg{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:11px}
+.eleg button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:0;font-size:12.5px;color:var(--s-ink2);cursor:pointer;white-space:nowrap}
+.eleg button:hover{color:var(--s-blue);text-decoration:underline;text-underline-offset:3px}
+.eleg i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
 .fgrp{display:flex;align-items:center;gap:8px;margin:20px 0 4px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .fgrp::after{content:"";flex:1;height:1px;background:var(--s-line)}
 .fgrp.crit{color:var(--r-crit)} .fgrp.med{color:var(--r-med)}
@@ -362,8 +371,14 @@ LINKS.forEach(([s, t]) => { adj.get(s).push(t); adj.get(t).push(s); });
 
 // ───────────────────────────── CHROME ─────────────────────────────
 const ents = nodes.filter(n => n.type === "enterprise");
-const nEnt = k => ents.filter(n => n.risk === k).length;
-const SUMMARY = `Across <b>${ents.length} enterprises</b>: <b>${nEnt("blacklisted")} blacklisted</b>, <b class="crit">${nEnt("critical")} critical</b>.`;
+const TIER_C = Object.fromEntries(TIERS.map(t => [t.k, t.c]));
+const entSorted = TIERS.flatMap(t => ents.filter(n => tier(n) === t.k));
+const nLow = ents.filter(n => tier(n) === "low").length;
+const ENT_HTML = `<div class="ent">
+  <div class="ent-h"><b>${ents.length} enterprises</b><span>${nLow} low risk, ${ents.length - nLow} at risk</span></div>
+  <div class="ebar">${entSorted.map(n => `<button data-node="${n.id}" style="--c:${TIER_C[tier(n)]}" title="${esc(n.name.replace(/\n/g, " "))}: ${STATUS[n.risk]}" aria-label="${esc(n.name.replace(/\n/g, " "))}, ${STATUS[n.risk]}"></button>`).join("")}</div>
+  <div class="eleg">${entSorted.map(n => `<button data-node="${n.id}" style="--c:${TIER_C[tier(n)]}" title="${STATUS[n.risk]}"><i></i>${esc(n.name.split("\n")[0])}</button>`).join("")}</div>
+</div>`;
 
 $("typeList").innerHTML = Object.entries(TYPES).map(([k, t]) =>
   `<button class="ty" data-type="${k}" aria-pressed="true">${icon(k)}<span>${t.label}</span><span class="n">${nodes.filter(n => n.type === k).length}</span></button>`).join("");
@@ -510,8 +525,7 @@ function renderDetail() {
       return `<button class="frow ${c}${on ? " on" : ""}" data-finding="${i}" aria-pressed="${on}"><span class="tile">${icon(f.ic)}</span><span class="ft">${esc(f.t)}<small>${esc(f.s)}</small></span><svg class="i go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`; };
     const grp = (sev, label, c) => { const rows = FINDINGS.map((f, i) => f.sev === sev ? frow(f, i) : "").filter(Boolean);
       return rows.length ? `<div class="fgrp ${c}">${label}<b>${rows.length}</b></div>${rows.join("")}` : ""; };
-    det.innerHTML = `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>
-      <p class="dlead">${SUMMARY}</p>` + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
+    det.innerHTML = ENT_HTML + `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>` + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
     return;
   }
   const d = byId.get(mode.id), [l1, ...rest] = d.name.split("\n"), ent = d.type === "enterprise";
