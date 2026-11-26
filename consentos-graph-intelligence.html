@@ -7,65 +7,58 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <style>
-/* Layout: product app shell. White rails with hairlines either side of one soft canvas that holds the graph.
+/* Layout: a blue-tinted side panel that tells the story (title, three numbers, key findings) beside one open canvas
+   for the graph. Controls sit on the canvas and stay folded until asked for; node detail floats in on selection.
    Colour is reserved for risk; node types are told apart by icon and size, never by hue. */
 :root{
   color-scheme:light;
-  /* product surface tokens (same values as the agentic setup prototypes) */
   --s-ink:#0f1b3d; --s-ink2:#35466a; --s-muted:#5b6b8c; --s-faint:#8a96ad;
   --s-line:#e6ebf3; --s-line2:#d9e0ec; --s-blue:#2563eb; --s-soft:#eef3ff;
   --s-canvas:#f6f8fc; --s-white:#fff;
-  /* risk scale: text colour, soft fill, ring */
+  --tint-1:#dfe9ff; --tint-2:#ecf2ff; --tint-3:#f5f8ff; --tint-line:#d5e0f8;
   --r-low:#0f8a5f;  --r-low-soft:#e5f6ee;  --r-low-ring:#1aa772;
   --r-med:#a55a05;  --r-med-soft:#fff4e0;  --r-med-ring:#e0a020;
   --r-high:#c2410c; --r-high-soft:#fff1e6; --r-high-ring:#e8662a;
   --r-crit:#b42318; --r-crit-soft:#fdecec; --r-crit-ring:#d92d20;
   --r-black:#0f1b3d; --r-black-soft:#e9edf5;
   --node-line:#c3cde0; --link:#c9d2e3;
+  --shadow:0 18px 40px -22px rgba(15,27,61,.35);
   --ease-out:cubic-bezier(.22,1,.36,1);
   --font:Inter,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:var(--s-canvas);color:var(--s-ink);font:14px/1.45 var(--font);-webkit-font-smoothing:antialiased;
-  display:flex;flex-direction:column;overflow:hidden}
+body{background:var(--s-canvas);color:var(--s-ink);font:14px/1.45 var(--font);-webkit-font-smoothing:antialiased;overflow:hidden}
 button{font:inherit;color:inherit}
 svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-:focus-visible{outline:2px solid var(--s-blue);outline-offset:2px;border-radius:6px}
+:focus-visible{outline:2px solid var(--s-blue);outline-offset:2px;border-radius:8px}
+h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--s-faint);font-weight:600}
 
-/* top bar */
-.topb{flex:none;min-height:60px;display:flex;align-items:center;gap:20px;padding:10px 24px;
-  background:var(--s-white);border-bottom:1px solid var(--s-line)}
-.lg{display:flex;align-items:center;gap:9px;font-weight:650;font-size:15px;white-space:nowrap}
+.shell{position:relative;height:100%;display:grid;grid-template-columns:296px minmax(0,1fr)}
+
+/* side panel: blue wash from the top */
+.side{min-height:0;overflow:auto;padding:22px 16px 24px;border-right:1px solid var(--tint-line);
+  background:linear-gradient(180deg,var(--tint-1) 0,var(--tint-2) 38%,var(--tint-3) 100%)}
+.side-head{padding:0 8px 22px}
+.lg{display:flex;align-items:center;gap:9px;font-weight:650;font-size:15px}
 .lg svg{width:20px;height:20px;color:var(--s-blue)}
-.ttl{min-width:0;padding-left:20px;border-left:1px solid var(--s-line)}
-.ttl h1{margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
-.ttl p{margin:1px 0 0;font-size:12.5px;color:var(--s-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stats{margin-left:auto;display:flex;gap:22px;flex:none}
-.stat{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}
-.stat b{font-size:18px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.stat span{font-size:11.5px;color:var(--s-muted);white-space:nowrap}
+.side h1{margin:26px 0 6px;font-size:22px;line-height:1.15;font-weight:650;letter-spacing:-.025em;text-wrap:balance}
+.side .lead{margin:0;font-size:13px;line-height:1.5;color:var(--s-ink2)}
+.stats{display:flex;margin-top:20px}
+.stat{flex:1;padding-left:12px;border-left:1px solid var(--tint-line)}
+.stat:first-child{padding-left:0;border-left:0}
+.stat b{display:block;font-size:22px;font-weight:650;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--s-muted)}
 .stat.crit b{color:var(--r-crit)}
+.findings h6{margin:0 8px 6px;color:#7384a8}
+.frow{display:flex;align-items:flex-start;gap:10px;width:100%;border:0;background:none;text-align:left;cursor:pointer;
+  padding:9px 8px;border-radius:10px;font-size:13.5px;font-weight:500;transition:background .15s,box-shadow .15s}
+.frow:hover{background:rgba(255,255,255,.6)}
+.frow.on{background:var(--s-white);box-shadow:0 8px 20px -14px rgba(20,50,140,.45),0 0 0 1px var(--tint-line)}
+.frow small{display:block;font-size:12.5px;font-weight:400;color:var(--s-muted);margin-top:1px}
+.frow .sev{width:8px;height:8px;border-radius:50%;flex:none;margin:6px 2px 0}
 
-/* shell */
-.shell{flex:1;min-height:0;display:grid;grid-template-columns:232px minmax(0,1fr) 320px}
-.rail,.detail{background:var(--s-white);overflow:auto;min-height:0}
-.rail{border-right:1px solid var(--s-line);padding:14px 12px 20px}
-.detail{border-left:1px solid var(--s-line);padding:20px 20px 28px}
-h6{margin:6px 8px 6px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--s-faint);font-weight:600}
-.nsec{padding:0 0 14px}
-.nit{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;font-size:13.5px;color:var(--s-ink2);
-  padding:7px 10px;border-radius:8px;cursor:pointer;text-align:left;transition:background .15s,color .15s,opacity .15s}
-.nit:hover{background:var(--s-canvas)}
-.nit svg.i{color:#7c89a3}
-.nit .n{margin-left:auto;font-size:12px;color:var(--s-faint);font-variant-numeric:tabular-nums}
-.nit[aria-pressed="false"].ty{opacity:.45}
-.nit[aria-pressed="false"].ty span:first-of-type{text-decoration:line-through}
-.nit.on{background:var(--s-soft);color:var(--s-blue);font-weight:600}
-.nit .sw{width:10px;height:10px;border-radius:50%;flex:none;margin:0 3px}
-.hint{margin:4px 10px 0;font-size:12.5px;line-height:1.55;color:var(--s-muted)}
-
-/* graph */
+/* graph canvas */
 .graph{position:relative;min-width:0;min-height:0;overflow:hidden}
 #gsvg{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
 #gsvg:active{cursor:grabbing}
@@ -81,6 +74,8 @@ h6{margin:6px 8px 6px;font-size:11.5px;letter-spacing:.06em;text-transform:upper
 .nd .ic{fill:none;stroke:var(--s-ink2);stroke-linecap:round;stroke-linejoin:round}
 .nd text{font:11px var(--font);fill:var(--s-muted);text-anchor:middle;paint-order:stroke;stroke:var(--s-canvas);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none}
 .nd text .l1{fill:var(--s-ink2);font-weight:500}
+.nd text .l2{display:none}
+.nd.ent text .l2,.nd.foc text .l2,.nd:hover text .l2{display:inline}
 .nd.ent text .l1{fill:var(--s-ink);font-weight:600}
 .nd.ent text{font-size:11.5px}
 .nd.t-low.ent .disc{fill:var(--r-low-soft);stroke:var(--r-low-ring)}       .nd.t-low.ent .ic{stroke:var(--r-low)}
@@ -91,23 +86,48 @@ h6{margin:6px 8px 6px;font-size:11.5px;letter-spacing:.06em;text-transform:upper
 .nd.t-blacklisted .disc{fill:var(--r-black);stroke:var(--r-black)}          .nd.t-blacklisted .ic{stroke:#fff}
 .nd.t-blacklisted.ent .halo{stroke:var(--r-black)}
 
-.ctrl{position:absolute;right:16px;bottom:16px;display:flex;flex-direction:column;background:var(--s-white);
-  border:1px solid var(--s-line2);border-radius:10px;overflow:hidden;box-shadow:0 6px 18px -10px rgba(15,27,61,.25)}
-.ctrl button{width:34px;height:34px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--s-ink2)}
-.ctrl button+button{border-top:1px solid var(--s-line)}
-.ctrl button:hover{background:var(--s-soft);color:var(--s-blue)}
-.legend{position:absolute;left:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:6px 14px;max-width:calc(100% - 80px);
-  font-size:12px;color:var(--s-muted);pointer-events:none}
-.legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.legend i{width:10px;height:10px;border-radius:50%;border:1.5px solid;flex:none}
+/* canvas controls */
+.tools{position:absolute;left:16px;top:16px;display:flex;gap:8px;z-index:3}
+.tbtn,.zg{background:var(--s-white);border:1px solid var(--s-line2);border-radius:10px;box-shadow:0 6px 18px -12px rgba(15,27,61,.3)}
+.tbtn{height:36px;padding:0 12px;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--s-ink2);cursor:pointer}
+.tbtn:hover,.tbtn[aria-expanded="true"]{color:var(--s-blue);border-color:#b9cdfa}
+.tbtn .cnt{font-weight:500;color:var(--s-faint);font-variant-numeric:tabular-nums}
+.tbtn.part .cnt{color:var(--s-blue);font-weight:600}
+.zg{display:flex;overflow:hidden}
+.zg button{width:36px;height:34px;border:0;background:none;cursor:pointer;display:grid;place-items:center;color:var(--s-ink2)}
+.zg button+button{border-left:1px solid var(--s-line)}
+.zg button:hover{background:var(--s-soft);color:var(--s-blue)}
+.pop{position:absolute;left:0;top:44px;width:312px;max-width:calc(100vw - 32px);background:var(--s-white);border:1px solid var(--s-line2);
+  border-radius:14px;box-shadow:var(--shadow);padding:12px}
+.pop-h{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 8px}
+.pop-h h6{margin:0}
+.pop-h button{border:0;background:none;padding:0;color:var(--s-blue);font-size:12.5px;font-weight:600;cursor:pointer}
+.pop-g{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.ty{display:flex;align-items:center;gap:8px;border:0;background:none;text-align:left;cursor:pointer;padding:7px 8px;border-radius:8px;font-size:13px;color:var(--s-ink)}
+.ty:hover{background:var(--s-canvas)}
+.ty svg.i{color:var(--s-blue)}
+.ty .n{margin-left:auto;font-size:12px;color:var(--s-faint);font-variant-numeric:tabular-nums}
+.ty[aria-pressed="false"]{color:var(--s-faint)}
+.ty[aria-pressed="false"] svg.i{color:#b6c0d2}
+.ty[aria-pressed="false"] span:first-of-type{text-decoration:line-through}
+
+.risk{position:absolute;left:16px;bottom:16px;right:16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;z-index:2;pointer-events:none}
+.risk>*{pointer-events:auto}
+.risk .lab{font-size:12px;color:var(--s-muted);margin-right:4px}
+.rp{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--s-line2);
+  background:var(--s-white);font-size:12.5px;color:var(--s-ink2);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
+.rp i{width:9px;height:9px;border-radius:50%;flex:none}
+.rp .n{color:var(--s-faint);font-variant-numeric:tabular-nums}
+.rp:hover{border-color:#b9cdfa}
+.rp.on{background:var(--s-soft);border-color:var(--s-blue);color:var(--s-blue);font-weight:600}
+.rp.on .n{color:inherit}
+
 #tip{position:absolute;z-index:5;pointer-events:none;opacity:0;transition:opacity .12s;max-width:220px;
-  background:var(--s-white);border:1px solid var(--s-line2);border-radius:10px;padding:9px 11px;font-size:12.5px;
-  box-shadow:0 12px 28px -14px rgba(15,27,61,.35)}
+  background:var(--s-white);border:1px solid var(--s-line2);border-radius:10px;padding:9px 11px;font-size:12.5px;box-shadow:var(--shadow)}
 #tip.on{opacity:1}
 #tip b{display:block;font-weight:600;margin-bottom:5px}
 #tip small{color:var(--s-muted);font-size:12px;margin-left:6px}
 
-/* status chips */
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;line-height:1.3;padding:3px 10px;
   border-radius:999px;white-space:nowrap;background:var(--r-black-soft);color:var(--s-ink2)}
 .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
@@ -117,85 +137,92 @@ h6{margin:6px 8px 6px;font-size:11.5px;letter-spacing:.06em;text-transform:upper
 .chip.t-critical{background:var(--r-crit-soft);color:var(--r-crit)}
 .chip.t-blacklisted{background:var(--r-black);color:#fff}
 
-/* detail panel */
+/* node detail: floats over the canvas, only while a node is selected */
+.detail{position:absolute;top:16px;right:16px;width:340px;max-height:calc(100% - 32px);overflow:auto;z-index:4;
+  background:var(--s-white);border:1px solid var(--s-line2);border-radius:16px;box-shadow:var(--shadow);padding:18px 18px 8px;
+  opacity:0;transform:translateX(12px);visibility:hidden;transition:opacity .22s var(--ease-out),transform .3s var(--ease-out),visibility 0s .3s}
+.detail.open{opacity:1;transform:none;visibility:visible;transition-delay:0s}
 .dh{display:flex;gap:12px;align-items:flex-start;padding-bottom:16px}
 .dh .tile{width:40px;height:40px;border-radius:12px;background:var(--s-soft);color:var(--s-blue);display:grid;place-items:center;flex:none}
 .dh .tile svg.i{width:19px;height:19px}
+.dh .tx{flex:1;min-width:0}
 .dh h2{margin:0;font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
 .dh .sub{font-size:12.5px;color:var(--s-muted);margin:2px 0 8px}
-.back{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:0;margin:0 0 14px;
-  color:var(--s-blue);font-weight:600;font-size:13px;cursor:pointer}
+.x{width:30px;height:30px;margin:-4px -6px 0 0;border:0;background:none;border-radius:8px;cursor:pointer;display:grid;place-items:center;color:var(--s-muted);flex:none}
+.x:hover{background:var(--s-canvas);color:var(--s-ink)}
 .sec{border-top:1px solid var(--s-line);padding:14px 0}
-.sec>h6{margin:0 0 8px}
 .sec p{margin:0;font-size:13.5px;line-height:1.6;color:var(--s-ink2)}
+.sec p.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.more{border:0;background:none;padding:0;margin-top:6px;color:var(--s-blue);font-size:13px;font-weight:600;cursor:pointer}
 .met{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:2px 12px}
 .met+.met{margin-top:14px}
 .met .k{font-size:13px;color:var(--s-muted)}
 .met .v{font-size:22px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .met .v small{font-size:12px;font-weight:500;color:var(--s-faint);letter-spacing:0}
 .met .bar{grid-column:1/-1;height:4px;border-radius:2px;background:var(--s-line);overflow:hidden;margin-top:4px}
-.met .bar i{display:block;height:100%;border-radius:2px;transition:width .5s var(--ease-out)}
+.met .bar i{display:block;height:100%;border-radius:2px}
 .met .note{grid-column:1/-1;font-size:12.5px;color:var(--s-muted);margin-top:4px}
-.row{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;cursor:pointer;
-  padding:10px 8px;margin:0 -8px;width:calc(100% + 16px);border-radius:0;font-size:13.5px;color:var(--s-ink)}
+.row{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:left;cursor:pointer;
+  padding:9px 8px;margin:0 -8px;width:calc(100% + 16px);font-size:13.5px;color:var(--s-ink)}
 .row+.row{border-top:1px solid var(--s-line)}
 .row:hover{background:var(--s-canvas)}
-.row.on{background:var(--s-soft)}
 .row svg.i{color:#7c89a3}
-.row .nm{flex:1;min-width:0}
-.row .nm small{display:block;font-size:12px;color:var(--s-muted)}
-.dtitle{margin:0 0 4px;font-size:16px;font-weight:600;letter-spacing:-.01em}
-.dlead{margin:0 0 12px;font-size:13px;color:var(--s-muted);line-height:1.55}
-.sev{width:8px;height:8px;border-radius:50%;flex:none;margin:0 4px}
+.row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-@media (max-width:1100px){.stats{display:none}}
 @media (max-width:900px){
-  body{overflow:auto;display:block}
-  .topb{flex-wrap:wrap;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-  .ttl p{white-space:normal}
-  .shell{display:block}
-  .graph{height:62vh;min-height:380px;border-bottom:1px solid var(--s-line)}
-  .rail{border-right:0;border-bottom:1px solid var(--s-line);padding:12px 16px}
-  .rail .nsec{display:flex;flex-wrap:wrap;gap:4px;padding-bottom:8px}
-  .rail h6{width:100%;margin-left:0}
-  .rail .nit{width:auto;border:1px solid var(--s-line);border-radius:999px;padding:5px 11px}
-  .rail .nsec.how{display:none}
-  .detail{border-left:0;padding:18px 16px 28px}
+  body{overflow:auto}
+  .shell{display:flex;flex-direction:column;height:auto}
+  .side{display:contents}
+  .side-head{order:1;padding:18px max(16px,env(safe-area-inset-right,0px)) 18px max(16px,env(safe-area-inset-left,0px));
+    background:linear-gradient(180deg,var(--tint-1),var(--tint-2));border-bottom:1px solid var(--tint-line)}
+  .side h1{margin-top:16px}
+  .graph{order:2;height:64vh;min-height:400px;border-bottom:1px solid var(--s-line)}
+  .detail{order:3;position:static;width:auto;max-height:none;border-radius:0;border-width:0 0 1px;box-shadow:none;display:none;transform:none;padding:18px 16px 8px}
+  .detail.open{display:block}
+  .findings{order:4;padding:18px 8px 28px;background:var(--tint-3)}
+  .risk .lab{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
-<header class="topb">
-  <div class="lg">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5 20.2 7.2v9.6L12 21.5 3.8 16.8V7.2z"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg>
-    ConsentOS
-  </div>
-  <div class="ttl">
-    <h1>Enterprise Graph Intelligence</h1>
-    <p>How enterprises connect through directors, addresses, PANs, templates, brands and DLT behaviour</p>
-  </div>
-  <div class="stats" id="stats"></div>
-</header>
-
 <div class="shell">
-  <aside class="rail" aria-label="Filters">
-    <div class="nsec"><h6>Node types</h6><div id="typeList" style="display:contents"></div></div>
-    <div class="nsec"><h6>Highlight by risk</h6><div id="riskList" style="display:contents"></div></div>
-    <div class="nsec how"><h6>How to use</h6>
-      <p class="hint">Select a node to see its risk profile and connections. Drag a node to move it, scroll to zoom, and select the background to clear.</p>
+  <aside class="side">
+    <div class="side-head">
+      <div class="lg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5 20.2 7.2v9.6L12 21.5 3.8 16.8V7.2z"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg>
+        ConsentOS
+      </div>
+      <h1>Enterprise Graph Intelligence</h1>
+      <p class="lead">How enterprises connect through shared directors, addresses, PANs and messaging behaviour.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="findings">
+      <h6>Key findings</h6>
+      <div id="findList"></div>
     </div>
   </aside>
 
   <main class="graph" id="gwrap">
     <svg id="gsvg" role="img" aria-label="Network graph of enterprises and the identity, content and traffic signals that connect them"></svg>
-    <div class="legend" id="legend"></div>
-    <div class="ctrl">
-      <button id="zin" title="Zoom in" aria-label="Zoom in"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
-      <button id="zout" title="Zoom out" aria-label="Zoom out"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
-      <button id="zfit" title="Fit to screen" aria-label="Fit to screen"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <div class="tools">
+      <div style="position:relative">
+        <button class="tbtn" id="tyBtn" aria-expanded="false" aria-controls="tyPop">
+          <svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Node types <span class="cnt" id="tyCnt"></span>
+        </button>
+        <div class="pop" id="tyPop" hidden>
+          <div class="pop-h"><h6>Show on graph</h6><button id="tyAll">Show all</button></div>
+          <div class="pop-g" id="typeList"></div>
+        </div>
+      </div>
+      <div class="zg">
+        <button id="zin" title="Zoom in" aria-label="Zoom in"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button id="zout" title="Zoom out" aria-label="Zoom out"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+        <button id="zfit" title="Fit to screen" aria-label="Fit to screen"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
     </div>
+    <div class="risk" id="riskList"></div>
     <div id="tip"></div>
   </main>
 
@@ -330,20 +357,17 @@ $("stats").innerHTML = [
   [ents.length, "Enterprises", ""],
   [ents.filter(n => n.risk === "blacklisted").length, "Blacklisted", ""],
   [ents.filter(n => n.risk === "critical").length, "Critical", "crit"],
-  [nodes.filter(n => n.type === "cta" && n.risk === "blacklisted").length, "Blacklisted CTAs", ""],
-  [nodes.filter(n => n.risk === "farm").length, "Address farm", ""],
 ].map(([v, l, c]) => `<div class="stat ${c}"><b>${v}</b><span>${l}</span></div>`).join("");
 
 $("typeList").innerHTML = Object.entries(TYPES).map(([k, t]) =>
-  `<button class="nit ty" data-type="${k}" aria-pressed="true">${icon(k)}<span>${t.label}</span><span class="n">${nodes.filter(n => n.type === k).length}</span></button>`).join("");
-$("riskList").innerHTML = TIERS.map(t =>
-  `<button class="nit rk" data-tier="${t.k}" aria-pressed="false"><i class="sw" style="background:${t.c}"></i><span>${t.label}</span><span class="n">${nodes.filter(n => tier(n) === t.k).length}</span></button>`).join("");
-$("legend").innerHTML = TIERS.map(t =>
-  `<span><i style="border-color:${t.c};${t.k === "blacklisted" ? `background:${t.c}` : ""}"></i>${t.label}</span>`).join("")
-  + `<span><i style="border-color:var(--node-line);background:#fff"></i>No signal</span>`;
+  `<button class="ty" data-type="${k}" aria-pressed="true">${icon(k)}<span>${t.label}</span><span class="n">${nodes.filter(n => n.type === k).length}</span></button>`).join("");
+$("riskList").innerHTML = `<span class="lab">Highlight</span>` + TIERS.map(t =>
+  `<button class="rp" data-tier="${t.k}" aria-pressed="false"><i style="background:${t.c}"></i>${t.label}<span class="n">${nodes.filter(n => tier(n) === t.k).length}</span></button>`).join("");
+$("findList").innerHTML = FINDINGS.map((f, i) =>
+  `<button class="frow" data-finding="${i}" aria-pressed="false"><i class="sev" style="background:var(--r-${f.sev === "critical" ? "crit" : "med"}-ring)"></i><span>${esc(f.t)}<small>${esc(f.s)}</small></span></button>`).join("");
 
 // ───────────────────────────── GRAPH ─────────────────────────────
-const wrap = $("gwrap"), svg = d3.select("#gsvg"), tip = $("tip");
+const wrap = $("gwrap"), svg = d3.select("#gsvg"), tip = $("tip"), det = $("det");
 const g = svg.append("g");
 const zoom = d3.zoom().scaleExtent([.3, 3]).on("zoom", e => g.attr("transform", e.transform));
 svg.call(zoom).on("dblclick.zoom", null);
@@ -383,7 +407,7 @@ nodeSel.append("path").attr("class", "ic").attr("d", d => TYPES[d.type].d)
   .attr("transform", d => { const s = R(d) * 1.02 / 24; return `translate(${-12 * s},${-12 * s}) scale(${s})`; });
 nodeSel.append("text").attr("y", d => R(d) + 15).each(function (d) {
   d.name.split("\n").forEach((line, i) =>
-    d3.select(this).append("tspan").attr("class", i ? null : "l1").attr("x", 0).attr("dy", i ? "1.25em" : 0).text(line));
+    d3.select(this).append("tspan").attr("class", i ? "l2" : "l1").attr("x", 0).attr("dy", i ? "1.25em" : 0).text(line));
 });
 
 function draw() {
@@ -395,6 +419,7 @@ sim.on("tick", draw); draw();
 // ───────────────────────────── STATE ─────────────────────────────
 const hidden = new Set();          // hidden node types
 let mode = null;                   // null | {kind:"node",id} | {kind:"tier",k} | {kind:"finding",i}
+let wasOpen = false;
 
 function apply() {
   let ids = null, lit = () => false;
@@ -411,15 +436,26 @@ function apply() {
   const vis = d => !hidden.has(d.type);
   nodeSel.style("display", d => vis(d) ? null : "none")
     .classed("dim", d => ids && !ids.has(d.id))
+    .classed("foc", d => ids && ids.has(d.id))
     .classed("sel", d => mode?.kind === "node" && mode.id === d.id);
   linkSel.style("display", l => vis(l.source) && vis(l.target) ? null : "none")
     .classed("lit", l => ids && lit(l))
     .classed("dim", l => ids && !lit(l));
-  document.querySelectorAll(".rk").forEach(b => {
+  document.querySelectorAll(".rp").forEach(b => {
     const on = mode?.kind === "tier" && mode.k === b.dataset.tier;
     b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
   });
+  document.querySelectorAll(".frow").forEach(b => {
+    const on = mode?.kind === "finding" && mode.i === +b.dataset.finding;
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
+  });
+  const shown = Object.keys(TYPES).length - hidden.size;
+  $("tyCnt").textContent = hidden.size ? `${shown} of ${Object.keys(TYPES).length}` : "";
+  $("tyBtn").classList.toggle("part", hidden.size > 0);
+  $("tyAll").hidden = !hidden.size;
   renderDetail();
+  const open = mode?.kind === "node";
+  if (open !== wasOpen) { wasOpen = open; fit(true); }
 }
 
 function selectNode(id) { mode = { kind:"node", id }; apply(); }
@@ -434,67 +470,69 @@ $("typeList").addEventListener("click", e => {
   if (mode?.kind === "node" && hidden.has(byId.get(mode.id).type)) mode = null;
   apply();
 });
+$("tyAll").onclick = () => { hidden.clear(); document.querySelectorAll(".ty").forEach(b => b.setAttribute("aria-pressed", true)); apply(); };
+function pop(open) { $("tyPop").hidden = !open; $("tyBtn").setAttribute("aria-expanded", open); }
+$("tyBtn").onclick = e => { e.stopPropagation(); pop($("tyPop").hidden); };
+$("tyPop").addEventListener("click", e => e.stopPropagation());
+document.addEventListener("click", () => pop(false));
+document.addEventListener("keydown", e => { if (e.key === "Escape") { if (!$("tyPop").hidden) pop(false); else if (mode) clearMode(); } });
 $("riskList").addEventListener("click", e => {
-  const b = e.target.closest(".rk"); if (!b) return;
+  const b = e.target.closest(".rp"); if (!b) return;
   mode = mode?.kind === "tier" && mode.k === b.dataset.tier ? null : { kind:"tier", k:b.dataset.tier };
   apply();
 });
-$("det").addEventListener("click", e => {
-  const b = e.target.closest("[data-node],[data-finding],[data-back]"); if (!b) return;
+$("findList").addEventListener("click", e => {
+  const b = e.target.closest(".frow"); if (!b) return;
+  const i = +b.dataset.finding;
+  mode = mode?.kind === "finding" && mode.i === i ? null : { kind:"finding", i };
+  apply();
+});
+det.addEventListener("click", e => {
+  const b = e.target.closest("[data-node],[data-close],[data-more]"); if (!b) return;
   if (b.dataset.node) selectNode(b.dataset.node);
-  else if (b.dataset.finding !== undefined) {
-    const i = +b.dataset.finding;
-    mode = mode?.kind === "finding" && mode.i === i ? null : { kind:"finding", i };
-    apply();
-  } else clearMode();
+  else if (b.dataset.more) { const p = b.previousElementSibling, c = p.classList.toggle("clamp"); b.textContent = c ? "Read more" : "Show less"; }
+  else clearMode();
 });
 
 // ───────────────────────────── DETAIL PANEL ─────────────────────────────
-function findingsMarkup() {
-  return `<h2 class="dtitle">Key findings</h2>
-    <p class="dlead">Select a finding to see it on the graph, or select any node for its risk profile and connections.</p>
-    <div>${FINDINGS.map((f, i) => `
-      <button class="row${mode?.kind === "finding" && mode.i === i ? " on" : ""}" data-finding="${i}" aria-pressed="${mode?.kind === "finding" && mode.i === i}">
-        <i class="sev" style="background:var(--r-${f.sev === "critical" ? "crit" : "med"}-ring)"></i>
-        <span class="nm">${esc(f.t)}<small>${esc(f.s)}</small></span>
-      </button>`).join("")}</div>`;
-}
-
 function metric(label, v, color, note) {
   return `<div class="met"><span class="k">${label}</span><span class="v" style="color:${color}">${v}<small> / 100</small></span>
     <div class="bar"><i style="width:${v}%;background:${color}"></i></div><span class="note">${note}</span></div>`;
 }
+// the status chip already says it, so drop the shouted status the notes open with
+const tidy = s => { const t = s.replace(/^(critical|blacklisted|high|suspicious|anomaly|address farm|high-risk director)[:.]\s*/i, ""); return t[0].toUpperCase() + t.slice(1); };
 
 function renderDetail() {
-  const el = $("det");
-  if (mode?.kind !== "node") { el.innerHTML = findingsMarkup(); return; }
-  const d = byId.get(mode.id), [l1, ...rest] = d.name.split("\n");
-  let h = `<button class="back" data-back="1"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Key findings</button>
-    <div class="dh"><div class="tile">${icon(d.type)}</div>
-      <div><h2>${esc(l1)}${rest.length && d.type === "enterprise" ? " " + esc(rest.join(" ")) : ""}</h2>
-      <div class="sub">${TYPES[d.type].label}${rest.length && d.type !== "enterprise" ? " · " + esc(rest.join(" ")) : ""}${d.peId ? " · " + d.peId : ""}</div>${chip(d)}</div></div>`;
+  if (mode?.kind !== "node") { det.classList.remove("open"); return; }
+  const d = byId.get(mode.id), [l1, ...rest] = d.name.split("\n"), ent = d.type === "enterprise";
+  let h = `<div class="dh"><div class="tile">${icon(d.type)}</div>
+      <div class="tx"><h2>${esc(l1)}${rest.length && ent ? " " + esc(rest.join(" ")) : ""}</h2>
+      <div class="sub">${TYPES[d.type].label}${rest.length && !ent ? " · " + esc(rest.join(" ")) : ""}${d.peId ? " · " + d.peId : ""}</div>${chip(d)}</div>
+      <button class="x" data-close="1" aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>`;
 
-  if (d.type === "enterprise") {
+  if (ent) {
     const sc = d.shell >= 75 ? "var(--r-crit)" : d.shell >= 50 ? "var(--r-high)" : d.shell >= 30 ? "var(--r-med)" : "var(--r-low)";
     const tc = d.trust >= 70 ? "var(--r-low)" : d.trust >= 50 ? "var(--r-med)" : d.trust >= 30 ? "var(--r-high)" : "var(--r-crit)";
-    const st = d.shell >= 75 ? "Critical. Block and escalate" : d.shell >= 50 ? "High. Manual review" : d.shell >= 30 ? "Medium. Enhanced due diligence" : "Low. Standard onboarding";
+    const st = d.shell >= 75 ? "Block and escalate" : d.shell >= 50 ? "Manual review" : d.shell >= 30 ? "Enhanced due diligence" : "Standard onboarding";
     const tt = d.trust >= 70 ? "Trusted" : d.trust >= 50 ? "Moderate trust" : d.trust >= 30 ? "Low trust" : "Very low trust";
-    h += `<div class="sec"><h6>Scores</h6>${metric("Shell risk score", d.shell, sc, st)}${metric("Enterprise trust score", d.trust, tc, tt)}</div>`;
+    h += `<div class="sec">${metric("Shell risk score", d.shell, sc, st)}${metric("Enterprise trust score", d.trust, tc, tt)}</div>`;
   }
   if (d.type === "address" && d.cluster) {
     const pts = d.cluster >= 10 ? "+15 risk points" : d.cluster >= 5 ? "+10 risk points" : d.cluster >= 3 ? "+5 risk points" : "No risk points";
-    h += `<div class="sec"><h6>Signal F8</h6><div class="met"><span class="k">Entities at this address</span><span class="v">${d.cluster}</span><span class="note">${pts}</span></div></div>`;
+    h += `<div class="sec"><div class="met"><span class="k">Entities at this address</span><span class="v">${d.cluster}</span><span class="note">${pts} · signal F8</span></div></div>`;
   }
   if (d.type === "pan" && d.entityCount) {
-    h += `<div class="sec"><h6>Signal F9</h6><div class="met"><span class="k">Entities under this PAN</span><span class="v">${d.entityCount}</span><span class="note">${d.entityCount >= 3 ? "+10" : "+5"} risk points</span></div></div>`;
+    h += `<div class="sec"><div class="met"><span class="k">Entities under this PAN</span><span class="v">${d.entityCount}</span><span class="note">${d.entityCount >= 3 ? "+10" : "+5"} risk points · signal F9</span></div></div>`;
   }
-  h += `<div class="sec"><h6>Analysis</h6><p>${esc(d.desc)}</p></div>`;
+  const text = tidy(d.desc), long = text.length > 170;
+  h += `<div class="sec"><h6>Analysis</h6><p class="${long ? "clamp" : ""}">${esc(text)}</p>${long ? `<button class="more" data-more="1">Read more</button>` : ""}</div>`;
 
   const conns = adj.get(d.id).map(id => byId.get(id));
-  h += `<div class="sec"><h6>Connected nodes (${conns.length})</h6><div>${conns.map(n =>
-    `<button class="row" data-node="${n.id}">${icon(n.type)}<span class="nm">${esc(n.name.split("\n")[0])}<small>${TYPES[n.type].label}</small></span>${chip(n)}</button>`).join("")}</div></div>`;
-  el.innerHTML = h;
-  el.scrollTop = 0;
+  h += `<div class="sec"><h6>Connected to ${conns.length}</h6><div>${conns.map(n =>
+    `<button class="row" data-node="${n.id}" title="${TYPES[n.type].label}">${icon(n.type)}<span class="nm">${esc(n.name.split("\n")[0])}</span>${chip(n)}</button>`).join("")}</div></div>`;
+  det.innerHTML = h;
+  det.classList.add("open");
+  det.scrollTop = 0;
 }
 
 // ───────────────────────────── TOOLTIP ─────────────────────────────
@@ -514,10 +552,13 @@ function moveTip(e) {
 function fit(animate) {
   const W = wrap.clientWidth, H = wrap.clientHeight;
   const vis = nodes.filter(n => !hidden.has(n.type)); if (!vis.length || !W || !H) return;
-  const x0 = d3.min(vis, d => d.x - 70), x1 = d3.max(vis, d => d.x + 70);
-  const y0 = d3.min(vis, d => d.y - R(d) - 12), y1 = d3.max(vis, d => d.y + R(d) + 44);
-  const k = Math.min(1.25, (W - 32) / (x1 - x0), (H - 76) / (y1 - y0));
-  const t = d3.zoomIdentity.translate(W / 2, (H - 36) / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
+  // keep clear of the controls (top), the risk pills (bottom) and the detail card when it floats over the canvas
+  const floating = getComputedStyle(det).position === "absolute" && mode?.kind === "node";
+  const L = 20, T = 64, B = 60, Rt = floating ? 372 : 20;
+  const x0 = d3.min(vis, d => d.x - 60), x1 = d3.max(vis, d => d.x + 60);
+  const y0 = d3.min(vis, d => d.y - R(d) - 8), y1 = d3.max(vis, d => d.y + R(d) + 36);
+  const k = Math.min(1.25, (W - L - Rt) / (x1 - x0), (H - T - B) / (y1 - y0));
+  const t = d3.zoomIdentity.translate(L + (W - L - Rt) / 2, T + (H - T - B) / 2).scale(k).translate(-(x0 + x1) / 2, -(y0 + y1) / 2);
   (animate ? svg.transition().duration(450) : svg).call(zoom.transform, t);
 }
 $("zin").onclick  = () => svg.transition().duration(200).call(zoom.scaleBy, 1.35);
