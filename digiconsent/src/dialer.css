@@ -111,3 +111,7 @@
 /* consent option: a plain row under its heading, no box */
 .tray__revoke,.tray__revoke.is-on{margin-top:-4px;padding:0;border:0;border-radius:0;background:none}
 .dl-pad:empty{display:none}
+
+/* after submitting: a small "Reported" mark on the row; no receipt in this version */
+.dl-done{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:1px 7px;border-radius:999px;background:rgba(240,138,11,.14);font-size:10.5px;font-weight:700;color:#9a5a05;vertical-align:middle}
+.ms-reported{display:flex;align-items:center;justify-content:center;gap:5px;margin:0;font-size:12.5px;font-weight:700;color:#9a5a05}

@@ -599,6 +599,10 @@ body{background:hsl(var(--background));color:var(--ink)}
 /* consent option: a plain row under its heading, no box */
 .tray__revoke,.tray__revoke.is-on{margin-top:-4px;padding:0;border:0;border-radius:0;background:none}
 .dl-pad:empty{display:none}
+
+/* after submitting: a small "Reported" mark on the row; no receipt in this version */
+.dl-done{display:inline-flex;align-items:center;gap:3px;margin-left:6px;padding:1px 7px;border-radius:999px;background:rgba(240,138,11,.14);font-size:10.5px;font-weight:700;color:#9a5a05;vertical-align:middle}
+.ms-reported{display:flex;align-items:center;justify-content:center;gap:5px;margin:0;font-size:12.5px;font-weight:700;color:#9a5a05}
 </style></head>
 <body><div id="root"></div>
 <script>/**
@@ -1774,7 +1778,7 @@ const HAND = '<path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 
 const TRASH = '<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"/>';
 const svgi = (inner, size) => E("svg", { width: size || 18, height: size || 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, dangerouslySetInnerHTML: { __html: inner } });
 
-function CallRow({ call, open, setOpen, onReport, onRemove }) {
+function CallRow({ call, done, open, setOpen, onReport, onRemove }) {
   const [dx, setDx] = useState(null);                      // live drag offset, null when not dragging
   const drag = useRef(null);
   const base = open ? -ACT_W : 0, x = dx == null ? base : dx;
@@ -1809,7 +1813,7 @@ function CallRow({ call, open, setOpen, onReport, onRemove }) {
          : h("span", { className: "dl-av", style: { background: call.tint || "#98A1B0" } }, call.biz ? ic("phone", 17) : call.name.charAt(0)),
       h("span", { className: "dl-txt" },
         h("span", { className: "dl-name" + (call.biz && !br ? " is-unk" : "") }, call.name),
-        h("span", { className: "dl-sub" }, svgi(call.dir === "out" ? '<path d="M7 17 17 7M9 7h8v8"/>' : '<path d="M17 7 7 17M15 17H7V9"/>', 11), call.sub)),
+        h("span", { className: "dl-sub" }, svgi(call.dir === "out" ? '<path d="M7 17 17 7M9 7h8v8"/>' : '<path d="M17 7 7 17M15 17H7V9"/>', 11), call.sub, done && h("span", { className: "dl-done" }, svgi(HAND, 10), "Reported"))),
       h("span", { className: "dl-time" }, call.time),
       h("span", { className: "dl-info" }, "i")));
 }
@@ -1885,7 +1889,7 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
         h("button", { type: "button", className: "cta", disabled: !reason, onClick: submit }, "Submit complaint", ic("arrow", 17)))));
 }
 
-function Dialer({ calls, onReport, onRemove, fast, setFast }) {
+function Dialer({ calls, reported, onReport, onRemove }) {
   const [open, setOpen] = useState("c2");                  // one row starts open so the hand is visible
   return h("div", { className: "dl" },
     h("div", { className: "dl-top" },
@@ -1895,8 +1899,7 @@ function Dialer({ calls, onReport, onRemove, fast, setFast }) {
     h("h1", { className: "dl-h" }, "Recents"),
     h("p", { className: "dl-hint" }, svgi(HAND, 14), "Swipe a call left, or tap it, then tap the hand to report it."),
     h("ul", { className: "dl-list" }, calls.map(c =>
-      h(CallRow, { key: c.id, call: c, open: open === c.id, setOpen, onReport, onRemove }))),
-    h("div", { className: "dl-pad cx" }, h(Proto, { fast, setFast })),
+      h(CallRow, { key: c.id, call: c, done: !!reported[c.id], open: open === c.id, setOpen, onReport: x => { setOpen(null); onReport(x); }, onRemove }))),
     h("nav", { className: "dl-tabs", "aria-label": "Phone" },
       [["Favourites", '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.200 9.500l6.1-.9z"/>'], ["Recents", ICON.clock], ["Contacts", '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>'], ["Keypad", '<path d="M6 6h.01M12 6h.01M18 6h.01M6 12h.01M12 12h.01M18 12h.01M6 18h.01M12 18h.01M18 18h.01"/>'], ["Voicemail", '<circle cx="6.500" cy="12" r="3.5"/><circle cx="17.500" cy="12" r="3.5"/><path d="M6.500 15.500h11"/>']].map(([t, d]) =>
         h("span", { key: t, className: "dl-tab" + (t === "Recents" ? " is-on" : "") }, svgi(d, 22), t))));
@@ -1905,7 +1908,7 @@ function Dialer({ calls, onReport, onRemove, fast, setFast }) {
 /* ---- Messages: open a text, tap "Report Message" under it ---- */
 const THREADS = ["m1", "m2", "m3", "m4"].map(id => ITEMS[id]);
 const BUILDING = '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h.01M12 7h.01M15 7h.01M9 11h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01"/>';
-function Messages({ onReport, fast, setFast }) {
+function Messages({ onReport, reported }) {
   const [openId, setOpenId] = useState(null);
   const it = THREADS.find(t => t.id === openId);
   if (it) {
@@ -1919,7 +1922,9 @@ function Messages({ onReport, fast, setFast }) {
       h("p", { className: "ms-from" }, it.sender),
       h("div", { className: "ms-line" }, h("span", { className: "ms-mini" }, svgi(BUILDING, 13)), h("p", { className: "ms-bubble" }, it.text)),
       h("p", { className: "ms-note" }, "If you did not expect this message" + (br ? "" : " from an unknown sender") + ", it may be spam."),
-      h("button", { type: "button", className: "ms-report", onClick: () => onReport({ item: it, name: it.sender, source: "messages" }) }, "Report Message"));
+      reported[it.id]
+        ? h("p", { className: "ms-reported" }, svgi(HAND, 12), "Reported to DigiConsent")
+        : h("button", { type: "button", className: "ms-report", onClick: () => onReport({ item: it, name: it.sender, source: "messages" }) }, "Report Message"));
   }
   return h("div", { className: "dl ms" },
     h("div", { className: "dl-top" }, h("span", { className: "dl-edit" }, "Edit"), h("span", { className: "dl-edit dl-edit--r" }, svgi('<path d="M12 20h9M16.500 3.500a2.100 2.100 0 0 1 3 3L7 19l-4 1 1-4z"/>', 17))),
@@ -1930,40 +1935,34 @@ function Messages({ onReport, fast, setFast }) {
         h("button", { type: "button", className: "dl-main ms-row", onClick: () => setOpenId(t.id) },
           h("span", { className: "dl-av", style: { background: "#8E96A8" } }, svgi(BUILDING, 20)),
           h("span", { className: "dl-txt" },
-            h("span", { className: "ms-rowtop" }, h("span", { className: "dl-name" }, t.sender), h("span", { className: "dl-time" }, t.time)),
-            h("span", { className: "ms-prev" }, t.text)))))),
-    h("div", { className: "dl-pad cx" }, h(Proto, { fast, setFast })));
+            h("span", { className: "ms-rowtop" }, h("span", { className: "dl-name" }, t.sender, reported[t.id] && h("span", { className: "dl-done" }, svgi(HAND, 10), "Reported")), h("span", { className: "dl-time" }, t.time)),
+            h("span", { className: "ms-prev" }, t.text)))))));
 }
 
+/* In-app reporting only submits: no receipt or processing screen here. After Submit the subscriber is
+   back on the call log or message list with a short confirmation; tracking happens elsewhere. */
 function DialerApp() {
   const [calls, setCalls] = useState(CALL_LOG);
   const [app, setApp] = useState("phone");                 // phone | messages
   const [target, setTarget] = useState(null);              // { item, name, source }
-  const [filed, setFiled] = useState(null);
-  const [view, setView] = useState("home");                // home | receipt | history
-  const [fast, setFast] = useState(false);
-  const [pastId, setPastId] = useState(null);
-  window.__nav = to => {
-    if (to === "/complaint-history") setView("history");
-    else if (typeof to === "string" && to.indexOf("/past/") === 0) { setPastId(to.slice(6)); setView("past"); }
-    else if (typeof to === "number" && view === "past") setView("history");
-    else if (to === "/wallet") toast("My Wallet isn’t part of this prototype");
-    else if (typeof to === "number" && view === "history" && filed) setView("receipt");
-    else { setFiled(null); setView("home"); }
+  const [reported, setReported] = useState({});            // item id -> complaint id
+  const [msgKey, setMsgKey] = useState(0);
+  window.__nav = () => {};
+  useEffect(() => { window.scrollTo(0, 0); }, [app]);
+  const submitted = c => {
+    setTarget(null);
+    setReported(r => ({ ...r, [c.item.id]: c.id }));
+    if (c.source === "messages") setMsgKey(k => k + 1);    // back to the message list
+    toast("Complaint submitted · " + c.id);
   };
-  useEffect(() => { window.scrollTo(0, 0); }, [view, app]);
   return h(React.Fragment, null,
-    view === "home" && h("div", { className: "dl-switch", role: "tablist", "aria-label": "Where to report from" },
+    h("div", { className: "dl-switch", role: "tablist", "aria-label": "Where to report from" },
       [["phone", "Phone", ICON.phone], ["messages", "Messages", ICON.message]].map(([id, t, d]) =>
         h("button", { key: id, type: "button", role: "tab", "aria-selected": app === id, className: app === id ? "is-on" : "", onClick: () => setApp(id) }, svgi(d, 14), t))),
     /* both apps stay mounted so switching keeps your place */
-    view === "home" && h("div", { hidden: app !== "phone" }, h(Dialer, { calls, fast, setFast, onReport: c => setTarget({ item: c.item, name: c.name, source: "dialer" }), onRemove: id => setCalls(cs => cs.filter(c => c.id !== id)) })),
-    view === "home" && h("div", { hidden: app !== "messages" }, h(Messages, { fast, setFast, onReport: setTarget })),
-    target && view === "home" && h(ReportTray, { key: target.item.id, ...target, onClose: () => setTarget(null), onSubmit: c => { setTarget(null); setFiled(c); setView("receipt"); } }),
-    /* the receipt stays mounted under History so the investigation keeps running */
-    filed && h("div", { hidden: view !== "receipt" }, h(Receipt, { key: filed.id, c: filed, fast, setFast, onNew: () => { setFiled(null); setView("home"); } })),
-    view === "history" && h(History),
-    view === "past" && h(PastReceipt, { key: pastId, id: pastId }));
+    h("div", { hidden: app !== "phone" }, h(Dialer, { calls, reported, onReport: c => setTarget({ item: c.item, name: c.name, source: "dialer" }), onRemove: id => setCalls(cs => cs.filter(c => c.id !== id)) })),
+    h("div", { hidden: app !== "messages" }, h(Messages, { key: msgKey, reported, onReport: setTarget })),
+    target && h(ReportTray, { key: target.item.id, ...target, onClose: () => setTarget(null), onSubmit: submitted }));
 }
 ReactDOM.createRoot(document.getElementById("root")).render(h(DialerApp));
 </script></body></html>
