@@ -1857,7 +1857,7 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
       h("div", { className: "tray__bar" },
         h("button", { type: "button", className: "tray__x", "aria-label": "Close", onClick: () => close(onClose) }, svgi('<path d="M18 6 6 18M6 6l12 12"/>', 18)),
         h("span", { className: "tray__brand" }, h("svg", { viewBox: "0 0 26 26", width: 18, height: 18, fill: "var(--blue)", "aria-hidden": true, dangerouslySetInnerHTML: { __html: MARK } }), "DigiConsent"),
-        h("button", { type: "button", className: "tray__ok", disabled: !reason, onClick: submit, "aria-label": "Submit complaint" }, svgi('<path d="M20 6 9 17l-5-5"/>', 20))),
+        h("button", { type: "button", className: "tray__ok", disabled: !reason, onClick: submit, "aria-label": "Done" }, svgi('<path d="M20 6 9 17l-5-5"/>', 20))),
       h("div", { className: "tray__body" },
         h("div", { className: "tray__who" },
           h("span", { className: "tray__flag" }, svgi(HAND, 18)),
@@ -1892,7 +1892,7 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
           h("span", { className: "revoke__txt" },
             h("span", { className: "revoke__t" }, "Also revoke my consent"),
             h("span", { className: "revoke__s" }, "Stop " + it.permission.purpose + " from " + (br ? br.name : "this sender") + " by " + chan(it.permission.channels) + ".")))),
-      h("p", { className: "tray__hint" }, reason ? "To submit your complaint, tap the tick in the top right corner." : "Choose a reason, then tap the tick in the top right corner to submit.")));
+      h("p", { className: "tray__hint" }, reason ? "To report this, tap Done in the top right corner." : "Choose a reason, then tap Done in the top right corner.")));
 }
 
 function Dialer({ calls, reported, onReport, onRemove }) {
