@@ -683,7 +683,7 @@ function Receipt({ c, fast, setFast, onNew }) {
         review && h("p", { className: "banner" }, "We’ve opened a review on this case. You’ll see it in your complaint history."),
         h("div", { className: "btns" },
           h("button", { type: "button", className: "btn btn--primary", onClick: () => doNext(out.next) }, out.next.label),
-          h("button", { type: "button", className: "btn btn--ghost", onClick: onNew }, "Report another"))),
+          out.next.go !== "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: onNew }, "Report another"))),
 
       /* what the agent checked, as it happens */
       h("section", { className: "trail" },
