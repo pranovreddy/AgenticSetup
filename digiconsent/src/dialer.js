@@ -64,13 +64,17 @@ function CallRow({ call, open, setOpen, onReport, onRemove }) {
       h("span", { className: "dl-info" }, "i")));
 }
 
-/* the tray: reason, optional comment, optional consent revoke, submit */
+/* a dual-SIM phone: the subscriber says which number received it (numbers are invented) */
+const SIMS = [{ id: "sim1", slot: "SIM 1", number: "90000 12345", operator: "Airtel" }, { id: "sim2", slot: "SIM 2", number: "90000 67890", operator: "Jio" }];
+
+/* the tray: SIM, reason, optional comment, optional consent revoke, submit */
 function ReportTray({ item, name, source, onClose, onSubmit }) {
   const it = item, br = it.brandId && BRANDS[it.brandId], isCall = it.type === "call", noun = isCall ? "call" : "message";
   const reasons = reasonsFor(it.cls, it.type);
   const [reasonId, setReasonId] = useState(null);
   const [note, setNote] = useState("");
   const [revoke, setRevoke] = useState(false);
+  const [simId, setSimId] = useState(SIMS[0].id);
   const [shut, setShut] = useState(false);
   const locked = useRef(false);
   /* every reason is listed up front; "This looks like a scam" and "Something else" stay last */
@@ -83,7 +87,7 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
   const submit = () => {
     if (!reason || locked.current) return;
     locked.current = true;
-    close(() => onSubmit({ id: newId(), filedAt: new Date(), source, item: it, cls: it.cls, reasonId, reasonLabel: reason.label, note: reasonId === "else" ? note.trim() : "", revoke: !!it.permission && revoke, brandName: br ? br.name : "" }));
+    close(() => onSubmit({ id: newId(), filedAt: new Date(), source, sim: SIMS.find(x => x.id === simId), item: it, cls: it.cls, reasonId, reasonLabel: reason.label, note: reasonId === "else" ? note.trim() : "", revoke: !!it.permission && revoke, brandName: br ? br.name : "" }));
   };
   return h("div", { className: "tray-wrap" + (shut ? " is-shut" : "") },
     h("div", { className: "tray-dim", onClick: () => close(onClose) }),
@@ -100,6 +104,14 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
             h("span", { className: "tray__num" }, "Report " + name),
             h("span", { className: "tray__meta" }, [br && br.name, it.time, isCall ? it.text.replace(/^Incoming call · /, "") : "SMS"].filter(Boolean).join(" · "))),
           tag && h("span", { className: "tag tag--" + tag[1] }, tag[0])),
+
+        h("div", { className: "tray__sims" },
+          h("span", { className: "tray__lbl", id: "tray-sim-l" }, "Received on"),
+          h("div", { className: "sims", role: "radiogroup", "aria-labelledby": "tray-sim-l" }, SIMS.map(x =>
+            h("button", { key: x.id, type: "button", role: "radio", "aria-checked": simId === x.id, className: "sim" + (simId === x.id ? " is-on" : ""), onClick: () => setSimId(x.id) },
+              h("span", { className: "sim__slot" }, svgi('<path d="M7 3h7l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M9 12h6v5H9z"/>', 14), x.slot),
+              h("span", { className: "sim__num" }, x.number),
+              h("span", { className: "sim__op" }, x.operator))))),
 
         h("h2", { className: "tray__q" }, "Why are you reporting this " + noun + "?"),
         h("div", { className: "tray__reasons", role: "radiogroup", "aria-label": "Why are you reporting this " + noun + "?" },

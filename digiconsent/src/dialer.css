@@ -97,3 +97,14 @@
 .ms-report{display:block;margin:0 auto;min-height:36px;padding:0 14px;border:0;border-radius:999px;background:rgba(30,123,242,.12);font:700 13px var(--font-body);color:#1E7BF2;cursor:pointer}
 .ms-report:focus-visible{outline:2px solid #1E7BF2;outline-offset:2px}
 .tray__else{margin-top:-6px;animation:up 320ms var(--ease) both}
+
+/* which SIM received it */
+.tray__sims{display:flex;flex-direction:column;gap:8px}
+.tray__lbl{font-size:13px;font-weight:700}
+.sims{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sim{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;padding:10px 12px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--surface);color:var(--ink);text-align:left;transition:border-color var(--t2) var(--ease),background var(--t2) var(--ease),box-shadow var(--t2) var(--ease)}
+.sim.is-on{border-color:var(--blue);background:rgba(51,102,240,.06);box-shadow:0 0 0 3px var(--blue-soft)}
+.sim__slot{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+.sim.is-on .sim__slot{color:var(--blue)}
+.sim__num{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sim__op{font-size:12px;color:var(--mut)}

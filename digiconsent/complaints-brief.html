@@ -1454,6 +1454,7 @@ function Receipt({ c, fast, setFast, onNew }) {
         h("h3", null, "What you reported"),
         h(EventCard, { it: c.item, compact: true }),
         h("dl", { className: "facts" },
+          c.sim && h("div", null, h("dt", null, "Received on"), h("dd", null, c.sim.slot + " · " + c.sim.number + " (" + c.sim.operator + ")")),
           h("div", null, h("dt", null, "Reason"), h("dd", null, c.reasonLabel)),
           c.note && h("div", null, h("dt", null, "Your comment"), h("dd", null, c.note)),
           p && h("div", null, h("dt", null, "Consent"), h("dd", null, c.revoke ? "Revoke " + p.purpose + " by " + chan(p.channels) : "Keep as it is")))),
