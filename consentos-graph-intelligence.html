@@ -46,26 +46,9 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 .brand h1{margin:0;padding-left:14px;border-left:1px solid #c5d0e6;font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.3;white-space:nowrap}
 
 /* key findings (default content of the right panel) */
-.fhd{display:flex;align-items:center;gap:10px;margin:0 0 16px}
+.fhd{display:flex;align-items:center;gap:10px;margin:0}
 .dtitle{margin:0;font-size:18px;font-weight:650;letter-spacing:-.02em}
 .fcount{font-size:12px;font-weight:600;color:var(--s-blue);background:var(--s-white);border:1px solid #cfdcfb;border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums}
-/* enterprises at a glance: one segment per enterprise, coloured by risk, like a storage bar */
-.ent{position:relative;margin:0 0 2px}
-.ent-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 9px;font-size:12.5px;color:var(--s-muted)}
-.ent-h b{font-size:14px;font-weight:600;color:var(--s-ink);letter-spacing:-.005em}
-.ebar{display:flex;gap:2px;height:14px;border-radius:7px;overflow:hidden}
-.ebar button{flex:1;border:0;padding:0;cursor:pointer;background:var(--c);transition:opacity .15s}
-.ebar:hover button{opacity:.45} .ebar button:hover{opacity:1}
-.ebar button:focus-visible{outline-offset:-2px;outline-color:#fff}
-/* the hovered enterprise: a small white box floating under the bar, over whatever is below */
-.etip{position:absolute;top:calc(100% + 10px);left:0;z-index:6;pointer-events:none;white-space:nowrap;
-  background:var(--s-white);border:1px solid var(--s-line2);border-radius:10px;padding:8px 11px;box-shadow:var(--shadow);
-  font-size:13px;font-weight:600;color:var(--s-ink);opacity:0;transform:translateY(-3px);transition:opacity .12s,transform .15s var(--ease-out)}
-.etip.on{opacity:1;transform:none}
-.etip::before{content:"";position:absolute;top:-6px;left:var(--ax,20px);width:10px;height:10px;margin-left:-5px;transform:rotate(45deg);
-  background:var(--s-white);border:solid var(--s-line2);border-width:1px 0 0 1px;border-top-left-radius:2px}
-.etip small{display:flex;align-items:center;gap:6px;margin-top:2px;font-size:12px;font-weight:500;color:var(--s-muted)}
-.etip small i{width:8px;height:8px;border-radius:50%;background:var(--c)}
 .fgrp{display:flex;align-items:center;gap:8px;margin:20px 0 4px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .fgrp::after{content:"";flex:1;height:1px;background:var(--s-line)}
 .fgrp.crit{color:var(--r-crit)} .fgrp.med{color:var(--r-med)}
@@ -376,15 +359,6 @@ LINKS.forEach(([s, t]) => { adj.get(s).push(t); adj.get(t).push(s); });
 
 // ───────────────────────────── CHROME ─────────────────────────────
 const ents = nodes.filter(n => n.type === "enterprise");
-const TIER_C = Object.fromEntries(TIERS.map(t => [t.k, t.c]));
-const entSorted = TIERS.flatMap(t => ents.filter(n => tier(n) === t.k));
-const nLow = ents.filter(n => tier(n) === "low").length;
-const ENT_HTML = `<div class="ent">
-  <div class="ent-h"><b>Across ${ents.length} enterprises</b><span>${nLow} low risk, ${ents.length - nLow} at risk</span></div>
-  <div class="ebar">${entSorted.map(n => `<button data-node="${n.id}" style="--c:${TIER_C[tier(n)]}" aria-label="${esc(n.name.replace(/\n/g, " "))}, ${STATUS[n.risk]}"></button>`).join("")}</div>
-  <div class="etip" id="etip"></div>
-</div>`;
-
 $("typeList").innerHTML = Object.entries(TYPES).map(([k, t]) =>
   `<button class="ty" data-type="${k}" aria-pressed="true">${icon(k)}<span>${t.label}</span><span class="n">${nodes.filter(n => n.type === k).length}</span></button>`).join("");
 $("riskList").innerHTML = `<span class="lab">Highlight</span>` + TIERS.map(t =>
@@ -516,23 +490,6 @@ det.addEventListener("click", e => {
   else clearMode();
 });
 
-// hovering (or focusing) a bar segment names that enterprise in a small box floating under the bar
-function entInfo(e, on) {
-  const b = e.target.closest(".ebar button"), el = $("etip"); if (!b || !el) return;
-  if (!on) { el.classList.remove("on"); return; }
-  const n = byId.get(b.dataset.node), box = el.parentElement;
-  el.innerHTML = `${esc(n.name.replace(/\n/g, " "))}<small style="--c:${TIER_C[tier(n)]}"><i></i>${STATUS[n.risk]}</small>`;
-  const mid = b.offsetLeft + b.offsetWidth / 2;   // .ent is the offset parent
-  const x = Math.max(0, Math.min(box.clientWidth - el.offsetWidth, mid - el.offsetWidth / 2));
-  el.style.left = x + "px";
-  el.style.setProperty("--ax", Math.max(14, Math.min(el.offsetWidth - 14, mid - x)) + "px");   // arrow sits under the hovered colour
-  el.classList.add("on");
-}
-det.addEventListener("mouseover", e => entInfo(e, true));
-det.addEventListener("mouseout", e => entInfo(e, false));
-det.addEventListener("focusin", e => entInfo(e, true));
-det.addEventListener("focusout", e => entInfo(e, false));
-
 // ───────────────────────────── DETAIL PANEL ─────────────────────────────
 function metric(label, v, color, note) {
   return `<div class="met"><span class="k">${label}</span><span class="v" style="color:${color}">${v}<small> / 100</small></span>
@@ -547,7 +504,7 @@ function renderDetail() {
       return `<button class="frow ${c}${on ? " on" : ""}" data-finding="${i}" aria-pressed="${on}"><span class="tile">${icon(f.ic)}</span><span class="ft">${esc(f.t)}<small>${esc(f.s)}</small></span><svg class="i go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`; };
     const grp = (sev, label, c) => { const rows = FINDINGS.map((f, i) => f.sev === sev ? frow(f, i) : "").filter(Boolean);
       return rows.length ? `<div class="fgrp ${c}">${label}<b>${rows.length}</b></div>${rows.join("")}` : ""; };
-    det.innerHTML = `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>` + ENT_HTML + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
+    det.innerHTML = `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>` + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
     return;
   }
   const d = byId.get(mode.id), [l1, ...rest] = d.name.split("\n"), ent = d.type === "enterprise";
