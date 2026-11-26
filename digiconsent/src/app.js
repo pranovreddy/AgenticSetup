@@ -817,14 +817,6 @@ function PastReceipt({ id }) {
           c.note && h("div", null, h("dt", null, "Your comment"), h("dd", null, c.note)))),
       h("button", { type: "button", className: "btn btn--ghost", onClick: () => nav(-1) }, "Back to history")));
 }
-function Home() {
-  return h("div", { className: "cx min-h-screen bg-background" },
-    h(Header, { title: "DigiConsent", sub: "Complaints prototype", back: false }),
-    h("div", { className: "app-page px-5 md:px-8 cx-body" },
-      h("p", { className: "fine" }, "This stands in for the app’s home screen. The complaint flow starts below."),
-      h("button", { type: "button", className: "btn btn--primary", onClick: () => nav("/complaint") }, "Raise a complaint"),
-      h("button", { type: "button", className: "btn btn--ghost", onClick: () => nav("/complaint-history") }, "Complaint history")));
-}
 function Complaint() {
   const [filed, setFiled] = useState(null);
   const [fast, setFast] = useState(false);
@@ -835,7 +827,7 @@ function Complaint() {
     : h(ComplaintForm, { key: n, onSubmit: setFiled, fast, setFast });
 }
 function App() {
-  const [st, setSt] = useState({ stack: ["/complaint"], n: 0 });
+  const [st, setSt] = useState({ stack: ["/"], n: 0 });   // opens on the home screen
   window.__nav = to => setSt(s => {
     if (typeof to === "number") return s.stack.length > 1 ? { ...s, stack: s.stack.slice(0, -1) } : { ...s, stack: ["/"] };
     if (to === "/wallet") { toast("My Wallet isn’t part of this prototype"); return s; }

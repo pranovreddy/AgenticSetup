@@ -7,12 +7,15 @@
   src/app.css            complaints styles
   src/app.js             complaints flow, receipt, history
   src/dialer.css/.js     the report-from-dialer version
+  src/home.css/.js       the home screen (from the Consent OS Figma file), assets in src/assets/home
 
 Writes complaints-brief.html (screenshot flow) and complaints-dialer.html (report
 from the call log). Pass a folder as the first argument to also write body-only
 fragments (no doctype / html / head / body) for hosts that
 wrap the page themselves.
 """
+import base64
+import json
 import sys
 from pathlib import Path
 
@@ -24,6 +27,10 @@ def page(name, title, scripts, mount, fragment=None):
     title = "<title>" + title + "</title>"
     style = "<style>" + read("vendor/base.css") + "\n" + "\n".join(read(c) for c in scripts if c.endswith(".css")) + "</style>"
     js = "".join(read(c) for c in scripts if c.endswith(".js"))
+    if "home.js" in scripts:   # home-screen icons and logos from the Figma design, inlined as data URIs
+        mime = {".svg": "image/svg+xml", ".png": "image/png"}
+        assets = {f.stem: "data:" + mime[f.suffix] + ";base64," + base64.b64encode(f.read_bytes()).decode() for f in sorted((src / "assets/home").iterdir())}
+        js = "const HA = " + json.dumps(assets) + ";\n" + js
     body = ('<div id="root"></div>\n' + read("vendor/react.html") + "\n<script>\n" + read("vendor/data.js") + js
             + 'ReactDOM.createRoot(document.getElementById("root")).render(h(' + mount + "));\n</script>")
     (root / name).write_text(
@@ -37,5 +44,5 @@ def page(name, title, scripts, mount, fragment=None):
 
 out = sys.argv[1] if len(sys.argv) > 1 else None   # optional folder for body-only fragments
 frag = lambda n: str(Path(out) / n) if out else None
-page("complaints-brief.html", "DigiConsent Complaints", ["app.css", "app.js"], "App", frag("brief-artifact.html"))
+page("complaints-brief.html", "DigiConsent Complaints", ["app.css", "home.css", "app.js", "home.js"], "App", frag("brief-artifact.html"))
 page("complaints-dialer.html", "DigiConsent In-App Report", ["app.css", "dialer.css", "app.js", "dialer.js"], "DialerApp", frag("dialer-artifact.html"))
