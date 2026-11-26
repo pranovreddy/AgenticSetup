@@ -540,8 +540,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
 
       h(Proto, { fast, setFast })));
 }
-/* prototype controls are only shown in the in-app report version (dialer.js) */
-const SHOW_PROTO = typeof DialerApp === "function";
+/* prototype controls (fast preview, reset) are switched off in both versions; set true to bring them back */
+const SHOW_PROTO = false;
 function Proto({ fast, setFast, onReset }) {
   if (!SHOW_PROTO) return null;
   return h("details", { className: "proto" },

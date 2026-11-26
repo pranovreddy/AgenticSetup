@@ -567,6 +567,7 @@ body{background:hsl(var(--background));color:var(--ink)}
 .sim__op{font-size:12px;color:var(--mut)}
 /* consent option: a plain row under its heading, no box */
 .tray__revoke,.tray__revoke.is-on{margin-top:-4px;padding:0;border:0;border-radius:0;background:none}
+.dl-pad:empty{display:none}
 </style></head>
 <body><div id="root"></div>
 <script>/**
@@ -1414,8 +1415,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
 
       h(Proto, { fast, setFast })));
 }
-/* prototype controls are only shown in the in-app report version (dialer.js) */
-const SHOW_PROTO = typeof DialerApp === "function";
+/* prototype controls (fast preview, reset) are switched off in both versions; set true to bring them back */
+const SHOW_PROTO = false;
 function Proto({ fast, setFast, onReset }) {
   if (!SHOW_PROTO) return null;
   return h("details", { className: "proto" },
