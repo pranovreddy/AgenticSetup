@@ -112,6 +112,7 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
           h("label", { htmlFor: "tray-note", className: "bf-sr" }, "Tell us what happened"),
           h("textarea", { id: "tray-note", autoFocus: true, value: note, onChange: ev => setNote(ev.target.value.slice(0, 300)), rows: 3, className: "textarea", placeholder: isCall ? "Tell us what happened on the call" : "Tell us what bothered you about this message" }),
           h("span", { className: "field__count" }, note.length + "/300")),
+        it.permission && h("div", { className: "tray__sep" }, h("span", { className: "eyebrow" }, "Your consent · optional")),
         it.permission && h("label", { className: "revoke tray__revoke" + (revoke ? " is-on" : ""), htmlFor: "tray-revoke" },
           h("input", { id: "tray-revoke", type: "checkbox", checked: revoke, onChange: ev => setRevoke(ev.target.checked) }),
           h("span", { className: "revoke__box" }, ic("check", 12)),

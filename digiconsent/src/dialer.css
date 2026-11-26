@@ -66,7 +66,9 @@
 .tray__q{margin:2px 0 -6px;font-size:17px;font-weight:700;letter-spacing:-.015em}
 .tray__reasons .reason{padding-left:0;padding-right:0;animation:none}
 .tray__reasons .reason:hover,.tray__reasons .reason.is-on{background:none}
-.tray__revoke,.tray__revoke.is-on{padding:0;border:0;background:none;animation:none}
+.tray__sep{margin:10px -18px 0;padding:16px 18px 0;border-top:8px solid var(--surface-3)}
+.tray__revoke{margin-top:-4px;padding:14px;border:1.5px solid var(--line-2);border-radius:16px;background:var(--surface-2);animation:none}
+.tray__revoke.is-on{border-color:var(--blue);background:rgba(51,102,240,.05)}
 .tray__foot{padding:10px 18px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--surface)}
 @media (prefers-reduced-motion:reduce){.tray,.tray-dim,.dl-act,.dl-main{animation:none!important;transition:none!important}}
 
