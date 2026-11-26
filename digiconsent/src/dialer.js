@@ -69,19 +69,21 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
   const it = item, br = it.brandId && BRANDS[it.brandId], isCall = it.type === "call", noun = isCall ? "call" : "message";
   const reasons = reasonsFor(it.cls, it.type);
   const [reasonId, setReasonId] = useState(null);
-  const [moreOpen, setMoreOpen] = useState(false);
   const [note, setNote] = useState("");
   const [revoke, setRevoke] = useState(false);
   const [shut, setShut] = useState(false);
   const locked = useRef(false);
-  const reason = reasons.main.concat(reasons.more).find(r => r.id === reasonId);
+  /* every reason is listed up front; "This looks like a scam" and "Something else" stay last */
+  const tailIds = ["scam", "else"];
+  const list = reasons.main.filter(r => !tailIds.includes(r.id)).concat(reasons.more, reasons.main.filter(r => tailIds.includes(r.id)));
+  const reason = list.find(r => r.id === reasonId);
   const tag = CLS_TAG[it.cls];
   const close = fn => { setShut(true); setTimeout(fn, RM ? 0 : 240); };
   useEffect(() => { const k = ev => { if (ev.key === "Escape") close(onClose); }; window.addEventListener("keydown", k); return () => window.removeEventListener("keydown", k); }, []);
   const submit = () => {
     if (!reason || locked.current) return;
     locked.current = true;
-    close(() => onSubmit({ id: newId(), filedAt: new Date(), source, item: it, cls: it.cls, reasonId, reasonLabel: reason.label, note: note.trim(), revoke: !!it.permission && revoke, brandName: br ? br.name : "" }));
+    close(() => onSubmit({ id: newId(), filedAt: new Date(), source, item: it, cls: it.cls, reasonId, reasonLabel: reason.label, note: reasonId === "else" ? note.trim() : "", revoke: !!it.permission && revoke, brandName: br ? br.name : "" }));
   };
   return h("div", { className: "tray-wrap" + (shut ? " is-shut" : "") },
     h("div", { className: "tray-dim", onClick: () => close(onClose) }),
@@ -101,16 +103,14 @@ function ReportTray({ item, name, source, onClose, onSubmit }) {
 
         h("h2", { className: "tray__q" }, "Why are you reporting this " + noun + "?"),
         h("div", { className: "tray__reasons", role: "radiogroup", "aria-label": "Why are you reporting this " + noun + "?" },
-          reasons.main.concat(moreOpen || reasons.more.some(r => r.id === reasonId) ? reasons.more : []).map(r =>
+          list.map(r =>
             h("button", { key: r.id, type: "button", role: "radio", "aria-checked": reasonId === r.id, className: "reason" + (reasonId === r.id ? " is-on" : ""),
               onClick: () => { setReasonId(r.id); setRevoke(r.id === "agreed"); } },
               h("span", { className: "radio" + (reasonId === r.id ? " is-on" : "") }, reasonId === r.id ? ic("check", 12) : null),
               h("span", null, r.label)))),
-        reasons.more.length > 0 && !moreOpen && !reasons.more.some(r => r.id === reasonId) && h("button", { type: "button", className: "link", onClick: () => setMoreOpen(true) }, "More reasons", ic("chevron", 13)),
-
-        h("div", { className: "field" },
-          h("label", { htmlFor: "tray-note" }, "Comment ", h("span", null, "(optional)")),
-          h("textarea", { id: "tray-note", value: note, onChange: ev => setNote(ev.target.value.slice(0, 300)), rows: 2, className: "textarea", placeholder: isCall ? "For example, what the caller said or offered" : "Anything else we should know" }),
+        reasonId === "else" && h("div", { className: "field tray__else" },
+          h("label", { htmlFor: "tray-note", className: "bf-sr" }, "Tell us what happened"),
+          h("textarea", { id: "tray-note", autoFocus: true, value: note, onChange: ev => setNote(ev.target.value.slice(0, 300)), rows: 3, className: "textarea", placeholder: isCall ? "Tell us what happened on the call" : "Tell us what bothered you about this message" }),
           h("span", { className: "field__count" }, note.length + "/300")),
         it.permission && h("label", { className: "revoke tray__revoke" + (revoke ? " is-on" : ""), htmlFor: "tray-revoke" },
           h("input", { id: "tray-revoke", type: "checkbox", checked: revoke, onChange: ev => setRevoke(ev.target.checked) }),
