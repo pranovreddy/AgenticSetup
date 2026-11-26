@@ -213,7 +213,7 @@ body{background:hsl(var(--background));color:var(--ink)}
 .proc__bar{position:relative;display:block;height:3px;margin-top:7px;border-radius:3px;background:var(--surface-3);overflow:hidden}
 .proc__bar i{position:absolute;inset:0 auto 0 0;width:40%;border-radius:inherit;background:var(--blue);animation:indet 1.3s var(--ease-io) infinite}
 @keyframes indet{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
-.proc .core{flex:none;margin-right:4px}
+.proc .core{flex:none;margin:0 6px 0 2px}
 
 .evs{display:flex;flex-direction:column;gap:10px}
 .ev{display:flex;align-items:flex-start;gap:12px;width:100%;padding:13px;text-align:left;border-radius:16px;background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1.5px solid var(--line-2);color:var(--ink);animation:up 420ms var(--ease) both}
@@ -427,6 +427,17 @@ body{background:hsl(var(--background));color:var(--ink)}
 .verdict .btns{flex-direction:column;flex-wrap:nowrap}
 .verdict .btns .btn{flex:none;width:100%}
 @media (min-width:640px){.verdict .btns{flex-direction:row}.verdict .btns .btn{flex:1 1 0;width:auto}}
+
+/* submitted: the confirmation that opens the receipt */
+.rc__ok{display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:24px 24px 0 0;background:var(--green-soft);border-bottom:1px solid var(--green-line)}
+.rc__okmark{width:40px;height:40px;flex:none}
+.rc__okmark circle{fill:var(--green);transform-origin:center;animation:okpop 520ms var(--ease) both}
+.rc__okmark path{fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:28;stroke-dashoffset:28;animation:okdraw 420ms var(--ease) 300ms forwards}
+@keyframes okpop{from{transform:scale(.4);opacity:0}}
+@keyframes okdraw{to{stroke-dashoffset:0}}
+.rc__okt{margin:0;font-size:17px;font-weight:800;letter-spacing:-.015em;color:#0b6b4b}
+.rc__oks{margin:1px 0 0;font-size:12.5px;line-height:1.4;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){.rc__okmark path{stroke-dashoffset:0}}
 </style></head>
 <body><div id="root"></div>
 <script>/**
@@ -1008,7 +1019,7 @@ const buildPlan = c => {
    ================================================================== */
 const PAL = { blue: [24, 58, 214, 102, 156, 255], amber: [168, 98, 6, 246, 192, 92], green: [5, 118, 80, 92, 214, 160] };
 const SPEED = { think: 1, tool: 2.3, verify: 1.6, wait: .45, done: .35 };
-function Blob({ size, state, kick }) {
+function Blob({ size, state, kick, bare }) {
   const ref = useRef(null), st = useRef(state), inst = useRef(null);
   st.current = state;
   useEffect(() => { if (inst.current && kick) inst.current.kick = 1; }, [kick]);
@@ -1061,7 +1072,7 @@ function Blob({ size, state, kick }) {
   }, [size]);
   return h("div", { className: "core", style: { width: size, height: size } },
     h("canvas", { ref, "aria-hidden": true }),
-    h("span", { className: "core__mark" },
+    !bare && h("span", { className: "core__mark" },
       h("svg", { className: "m-logo", viewBox: "0 0 26 26", fill: "#fff", "aria-hidden": true, dangerouslySetInnerHTML: { __html: MARK } }),
       ic(state === "wait" ? "arrow" : "check", 14, "m-check")));
 }
@@ -1230,7 +1241,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("span", { className: "proc__t" }, "Processing your screenshot"),
                 h(Roll, { text: scan === "reading" ? "Reading the image" : "Finding the " + noun + "s in it", cls: "proc__s" }),
                 h("span", { className: "proc__bar" }, h("i", null))),
-              h(Blob, { size: 44, state: "tool" }))),
+              h(Blob, { size: 54, state: "tool", bare: true }))),
 
       /* 3. the messages / calls found in it */
       scan === "ready" && h(Step, { n: 3, done: !!sel, key: "found", id: "cx-found",
@@ -1332,7 +1343,7 @@ function Receipt({ c, fast, setFast, onNew }) {
     fileCase({ id: c.id, state: "under_review", mode: c.item.type === "call" ? "Call" : "SMS", desc: c.reasonLabel, brand: c.brandName });
     const tick = setInterval(() => setSecs(now()), 250);
     let t = 0;
-    at(500, () => up(p => ({ log: logRow(p, { icon: "receipt", name: "Complaint registered", text: "Case " + c.id + " opened and your screenshot saved.", tone: "ok" }) })));
+    at(500, () => up(p => ({ log: logRow(p, { icon: "receipt", name: "Complaint registered", text: "Case " + c.id + (c.source === "dialer" ? " opened from your call log." : c.source === "messages" ? " opened from your messages." : " opened and your screenshot saved."), tone: "ok" }) })));
     t += 2200;
     plan.src.forEach((x, i) => {
       at(t, () => up(p => ({ stage: "evidence", label: x.label, active: i, running: x, src: p.src.map((v, j) => (j === i ? "run" : v)) })));
@@ -1388,6 +1399,9 @@ function Receipt({ c, fast, setFast, onNew }) {
 
       /* the receipt: ID, time, live status and the agent */
       h("section", { className: "rc", "data-tone": tone },
+        h("div", { className: "rc__ok", role: "status" },
+          h("svg", { className: "rc__okmark", viewBox: "0 0 44 44", "aria-hidden": true }, h("circle", { cx: 22, cy: 22, r: 20 }), h("path", { d: "M13 22.500l6.200 6.200L31.500 16" })),
+          h("div", null, h("p", { className: "rc__okt" }, "Complaint submitted"), h("p", { className: "rc__oks" }, "We’ve registered it. Keep this ID for your records."))),
         h("div", { className: "rc__top" },
           h("div", { className: "rc__idw" },
             h("span", { className: "eyebrow" }, "Complaint ID"),

@@ -5,10 +5,12 @@
   src/vendor/react.html  React + ReactDOM, inlined
   src/vendor/data.js     demo screenshots and brand logos (base64)
   src/app.css            complaints styles
-  src/app.js             complaints flow
+  src/app.js             complaints flow, receipt, history
+  src/dialer.css/.js     the report-from-dialer version
 
-Writes complaints-brief.html (standalone). Pass a path as the first argument to
-also write a body-only fragment (no doctype / html / head / body) for hosts that
+Writes complaints-brief.html (screenshot flow) and complaints-dialer.html (report
+from the call log). Pass a folder as the first argument to also write body-only
+fragments (no doctype / html / head / body) for hosts that
 wrap the page themselves.
 """
 import sys
@@ -18,15 +20,22 @@ root = Path(__file__).parent
 src = root / "src"
 read = lambda p: (src / p).read_text()
 
-title = "<title>DigiConsent Complaints</title>"
-style = "<style>" + read("vendor/base.css") + "\n" + read("app.css") + "</style>"
-body = '<div id="root"></div>\n' + read("vendor/react.html") + "\n<script>\n" + read("vendor/data.js") + read("app.js") + "</script>"
+def page(name, title, scripts, mount, fragment=None):
+    title = "<title>" + title + "</title>"
+    style = "<style>" + read("vendor/base.css") + "\n" + "\n".join(read(c) for c in scripts if c.endswith(".css")) + "</style>"
+    js = "".join(read(c) for c in scripts if c.endswith(".js"))
+    body = ('<div id="root"></div>\n' + read("vendor/react.html") + "\n<script>\n" + read("vendor/data.js") + js
+            + 'ReactDOM.createRoot(document.getElementById("root")).render(h(' + mount + "));\n</script>")
+    (root / name).write_text(
+        '<!doctype html>\n<html lang="en"><head><meta charset="UTF-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n'
+        '<meta name="theme-color" content="#3868E0">' + title + "\n" + style + "</head>\n<body>" + body + "</body></html>\n")
+    if fragment:
+        Path(fragment).write_text(title + "\n" + style + "\n" + body + "\n")
+    print("built", name)
 
-(root / "complaints-brief.html").write_text(
-    '<!doctype html>\n<html lang="en"><head><meta charset="UTF-8">'
-    '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n'
-    '<meta name="theme-color" content="#3868E0">' + title + "\n" + style + "</head>\n<body>" + body + "</body></html>\n"
-)
-if len(sys.argv) > 1:
-    Path(sys.argv[1]).write_text(title + "\n" + style + "\n" + body + "\n")
-print("built complaints-brief.html")
+
+out = sys.argv[1] if len(sys.argv) > 1 else None   # optional folder for body-only fragments
+frag = lambda n: str(Path(out) / n) if out else None
+page("complaints-brief.html", "DigiConsent Complaints", ["app.css", "app.js"], "App", frag("brief-artifact.html"))
+page("complaints-dialer.html", "DigiConsent In-App Report", ["app.css", "dialer.css", "app.js", "dialer.js"], "DialerApp", frag("dialer-artifact.html"))

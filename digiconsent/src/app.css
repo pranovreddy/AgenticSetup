@@ -155,7 +155,7 @@ body{background:hsl(var(--background));color:var(--ink)}
 .proc__bar{position:relative;display:block;height:3px;margin-top:7px;border-radius:3px;background:var(--surface-3);overflow:hidden}
 .proc__bar i{position:absolute;inset:0 auto 0 0;width:40%;border-radius:inherit;background:var(--blue);animation:indet 1.3s var(--ease-io) infinite}
 @keyframes indet{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
-.proc .core{flex:none;margin-right:4px}
+.proc .core{flex:none;margin:0 6px 0 2px}
 
 .evs{display:flex;flex-direction:column;gap:10px}
 .ev{display:flex;align-items:flex-start;gap:12px;width:100%;padding:13px;text-align:left;border-radius:16px;background:linear-gradient(180deg,var(--surface),var(--surface-2));border:1.5px solid var(--line-2);color:var(--ink);animation:up 420ms var(--ease) both}
@@ -369,3 +369,14 @@ body{background:hsl(var(--background));color:var(--ink)}
 .verdict .btns{flex-direction:column;flex-wrap:nowrap}
 .verdict .btns .btn{flex:none;width:100%}
 @media (min-width:640px){.verdict .btns{flex-direction:row}.verdict .btns .btn{flex:1 1 0;width:auto}}
+
+/* submitted: the confirmation that opens the receipt */
+.rc__ok{display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:24px 24px 0 0;background:var(--green-soft);border-bottom:1px solid var(--green-line)}
+.rc__okmark{width:40px;height:40px;flex:none}
+.rc__okmark circle{fill:var(--green);transform-origin:center;animation:okpop 520ms var(--ease) both}
+.rc__okmark path{fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:28;stroke-dashoffset:28;animation:okdraw 420ms var(--ease) 300ms forwards}
+@keyframes okpop{from{transform:scale(.4);opacity:0}}
+@keyframes okdraw{to{stroke-dashoffset:0}}
+.rc__okt{margin:0;font-size:17px;font-weight:800;letter-spacing:-.015em;color:#0b6b4b}
+.rc__oks{margin:1px 0 0;font-size:12.5px;line-height:1.4;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){.rc__okmark path{stroke-dashoffset:0}}

@@ -274,7 +274,7 @@ const buildPlan = c => {
    ================================================================== */
 const PAL = { blue: [24, 58, 214, 102, 156, 255], amber: [168, 98, 6, 246, 192, 92], green: [5, 118, 80, 92, 214, 160] };
 const SPEED = { think: 1, tool: 2.3, verify: 1.6, wait: .45, done: .35 };
-function Blob({ size, state, kick }) {
+function Blob({ size, state, kick, bare }) {
   const ref = useRef(null), st = useRef(state), inst = useRef(null);
   st.current = state;
   useEffect(() => { if (inst.current && kick) inst.current.kick = 1; }, [kick]);
@@ -327,7 +327,7 @@ function Blob({ size, state, kick }) {
   }, [size]);
   return h("div", { className: "core", style: { width: size, height: size } },
     h("canvas", { ref, "aria-hidden": true }),
-    h("span", { className: "core__mark" },
+    !bare && h("span", { className: "core__mark" },
       h("svg", { className: "m-logo", viewBox: "0 0 26 26", fill: "#fff", "aria-hidden": true, dangerouslySetInnerHTML: { __html: MARK } }),
       ic(state === "wait" ? "arrow" : "check", 14, "m-check")));
 }
@@ -496,7 +496,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("span", { className: "proc__t" }, "Processing your screenshot"),
                 h(Roll, { text: scan === "reading" ? "Reading the image" : "Finding the " + noun + "s in it", cls: "proc__s" }),
                 h("span", { className: "proc__bar" }, h("i", null))),
-              h(Blob, { size: 44, state: "tool" }))),
+              h(Blob, { size: 54, state: "tool", bare: true }))),
 
       /* 3. the messages / calls found in it */
       scan === "ready" && h(Step, { n: 3, done: !!sel, key: "found", id: "cx-found",
@@ -598,7 +598,7 @@ function Receipt({ c, fast, setFast, onNew }) {
     fileCase({ id: c.id, state: "under_review", mode: c.item.type === "call" ? "Call" : "SMS", desc: c.reasonLabel, brand: c.brandName });
     const tick = setInterval(() => setSecs(now()), 250);
     let t = 0;
-    at(500, () => up(p => ({ log: logRow(p, { icon: "receipt", name: "Complaint registered", text: "Case " + c.id + " opened and your screenshot saved.", tone: "ok" }) })));
+    at(500, () => up(p => ({ log: logRow(p, { icon: "receipt", name: "Complaint registered", text: "Case " + c.id + (c.source === "dialer" ? " opened from your call log." : c.source === "messages" ? " opened from your messages." : " opened and your screenshot saved."), tone: "ok" }) })));
     t += 2200;
     plan.src.forEach((x, i) => {
       at(t, () => up(p => ({ stage: "evidence", label: x.label, active: i, running: x, src: p.src.map((v, j) => (j === i ? "run" : v)) })));
@@ -654,6 +654,9 @@ function Receipt({ c, fast, setFast, onNew }) {
 
       /* the receipt: ID, time, live status and the agent */
       h("section", { className: "rc", "data-tone": tone },
+        h("div", { className: "rc__ok", role: "status" },
+          h("svg", { className: "rc__okmark", viewBox: "0 0 44 44", "aria-hidden": true }, h("circle", { cx: 22, cy: 22, r: 20 }), h("path", { d: "M13 22.500l6.200 6.200L31.500 16" })),
+          h("div", null, h("p", { className: "rc__okt" }, "Complaint submitted"), h("p", { className: "rc__oks" }, "We’ve registered it. Keep this ID for your records."))),
         h("div", { className: "rc__top" },
           h("div", { className: "rc__idw" },
             h("span", { className: "eyebrow" }, "Complaint ID"),
@@ -767,4 +770,3 @@ function App() {
     inFlow && h("div", { hidden: r !== "/complaint" }, h(Complaint, { key: st.n })),
     r === "/complaint-history" ? h(History) : r === "/" ? h(Home) : null);
 }
-ReactDOM.createRoot(document.getElementById("root")).render(h(App));
