@@ -192,8 +192,11 @@ function DialerApp() {
   const [filed, setFiled] = useState(null);
   const [view, setView] = useState("home");                // home | receipt | history
   const [fast, setFast] = useState(false);
+  const [pastId, setPastId] = useState(null);
   window.__nav = to => {
     if (to === "/complaint-history") setView("history");
+    else if (typeof to === "string" && to.indexOf("/past/") === 0) { setPastId(to.slice(6)); setView("past"); }
+    else if (typeof to === "number" && view === "past") setView("history");
     else if (to === "/wallet") toast("My Wallet isn’t part of this prototype");
     else if (typeof to === "number" && view === "history" && filed) setView("receipt");
     else { setFiled(null); setView("home"); }
@@ -209,5 +212,6 @@ function DialerApp() {
     target && view === "home" && h(ReportTray, { key: target.item.id, ...target, onClose: () => setTarget(null), onSubmit: c => { setTarget(null); setFiled(c); setView("receipt"); } }),
     /* the receipt stays mounted under History so the investigation keeps running */
     filed && h("div", { hidden: view !== "receipt" }, h(Receipt, { key: filed.id, c: filed, fast, setFast, onNew: () => { setFiled(null); setView("home"); } })),
-    view === "history" && h(History));
+    view === "history" && h(History),
+    view === "past" && h(PastReceipt, { key: pastId, id: pastId }));
 }
