@@ -55,17 +55,28 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 .stat.crit b{color:var(--r-crit)}
 
 /* key findings (default content of the right panel) */
-.dtitle{margin:0 0 4px;font-size:17px;font-weight:650;letter-spacing:-.015em}
-.dlead{margin:0 0 12px;font-size:13px;line-height:1.5;color:var(--s-muted)}
-.frow{display:flex;align-items:flex-start;gap:10px;border:0;background:none;text-align:left;cursor:pointer;
-  padding:10px 8px;margin:0 -8px;width:calc(100% + 16px);border-radius:10px;font-size:13.5px;font-weight:500;transition:background .15s}
-.frow{position:relative;padding-top:12px;padding-bottom:12px}
-.frow+.frow::before{content:"";position:absolute;left:8px;right:8px;top:0;height:1px;background:var(--s-line)}
-.frow.on::before,.frow.on+.frow::before{display:none}
+.fhd{display:flex;align-items:center;gap:10px;margin:0 0 4px}
+.dtitle{margin:0;font-size:18px;font-weight:650;letter-spacing:-.02em}
+.fcount{font-size:12px;font-weight:600;color:var(--s-blue);background:var(--s-white);border:1px solid #cfdcfb;border-radius:999px;padding:1px 9px;font-variant-numeric:tabular-nums}
+.dlead{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--s-muted)}
+.fgrp{display:flex;align-items:center;gap:8px;margin:20px 0 4px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.fgrp::after{content:"";flex:1;height:1px;background:var(--s-line)}
+.fgrp.crit{color:var(--r-crit)} .fgrp.med{color:var(--r-med)}
+.fgrp b{font-weight:600;color:var(--s-faint);letter-spacing:0;font-variant-numeric:tabular-nums}
+.frow{position:relative;display:flex;align-items:center;gap:12px;border:0;background:none;text-align:left;cursor:pointer;
+  padding:10px 8px;margin:0 -8px;width:calc(100% + 16px);border-radius:12px;font-size:14px;font-weight:600;letter-spacing:-.005em;transition:background .15s}
+.frow+.frow::before{content:"";position:absolute;left:58px;right:8px;top:0;height:1px;background:var(--s-line)}
+.frow.on::before,.frow.on+.frow::before,.frow:hover::before,.frow:hover+.frow::before{display:none}
 .frow:hover{background:rgba(37,99,235,.06)}
 .frow.on{background:var(--s-soft);box-shadow:inset 0 0 0 1px #cfdcfb}
-.frow small{display:block;font-size:12.5px;font-weight:400;color:var(--s-muted);margin-top:1px}
-.frow .sev{width:8px;height:8px;border-radius:50%;flex:none;margin:6px 2px 0}
+.frow .ft{flex:1;min-width:0}
+.frow small{display:block;font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--s-muted);margin-top:1px}
+.frow .tile{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none}
+.frow .tile svg.i{width:18px;height:18px}
+.frow.crit .tile{background:var(--r-crit-soft);color:var(--r-crit)}
+.frow.med .tile{background:var(--r-med-soft);color:var(--r-med)}
+.frow .go{color:#b6c0d2;transition:transform .2s var(--ease-out),color .15s}
+.frow:hover .go,.frow.on .go{color:var(--s-blue);transform:translateX(2px)}
 
 /* graph canvas */
 .graph{position:relative;min-width:0;min-height:0;overflow:hidden;
@@ -300,12 +311,12 @@ const LINKS = [
 ];
 
 const FINDINGS = [
-  { sev:"critical", t:"Coordinated shell network", s:"3 enterprises share one director", ids:["d1","e2","e3","e4"] },
-  { sev:"critical", t:"Address farm", s:"3 entities registered at a single address", ids:["a1","e2","e3","e4"] },
-  { sev:"critical", t:"Blacklisted CTA domains", s:"3 domains in active DLT templates", ids:["cta1","cta2","cta3","e3","e4","e5"] },
-  { sev:"medium",   t:"Director Rajesh Kumar", s:"Spans high and critical entities", ids:["d1","e3","e4"] },
-  { sev:"medium",   t:"Brand impersonation confirmed", s:"YONO and Lotus365", ids:["b1","b2","cta2","e3","e5"] },
-  { sev:"medium",   t:"Template similarity", s:"Across 3 nominally independent entities", ids:["t1","e2","e3","e4"] },
+  { sev:"critical", ic:"director", t:"Coordinated shell network", s:"3 enterprises share one director", ids:["d1","e2","e3","e4"] },
+  { sev:"critical", ic:"address", t:"Address farm", s:"3 entities registered at a single address", ids:["a1","e2","e3","e4"] },
+  { sev:"critical", ic:"cta", t:"Blacklisted CTA domains", s:"3 domains in active DLT templates", ids:["cta1","cta2","cta3","e3","e4","e5"] },
+  { sev:"medium",   ic:"director", t:"Director Rajesh Kumar", s:"Spans high and critical entities", ids:["d1","e3","e4"] },
+  { sev:"medium",   ic:"brand", t:"Brand impersonation confirmed", s:"YONO and Lotus365", ids:["b1","b2","cta2","e3","e5"] },
+  { sev:"medium",   ic:"template", t:"Template similarity", s:"Across 3 nominally independent entities", ids:["t1","e2","e3","e4"] },
 ];
 
 // ───────────────────────────── CONFIG ─────────────────────────────
@@ -496,8 +507,12 @@ const tidy = s => { const t = s.replace(/^(critical|blacklisted|high|suspicious|
 
 function renderDetail() {
   if (mode?.kind !== "node") {
-    det.innerHTML = `<h2 class="dtitle">Key findings</h2><p class="dlead">Select a finding to see it on the graph.</p>` +
-      FINDINGS.map((f, i) => { const on = mode?.kind === "finding" && mode.i === i; return `<button class="frow${on ? " on" : ""}" data-finding="${i}" aria-pressed="${on}"><i class="sev" style="background:var(--r-${f.sev === "critical" ? "crit" : "med"}-ring)"></i><span>${esc(f.t)}<small>${esc(f.s)}</small></span></button>`; }).join("");
+    const frow = (f, i) => { const on = mode?.kind === "finding" && mode.i === i, c = f.sev === "critical" ? "crit" : "med";
+      return `<button class="frow ${c}${on ? " on" : ""}" data-finding="${i}" aria-pressed="${on}"><span class="tile">${icon(f.ic)}</span><span class="ft">${esc(f.t)}<small>${esc(f.s)}</small></span><svg class="i go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`; };
+    const grp = (sev, label, c) => { const rows = FINDINGS.map((f, i) => f.sev === sev ? frow(f, i) : "").filter(Boolean);
+      return rows.length ? `<div class="fgrp ${c}">${label}<b>${rows.length}</b></div>${rows.join("")}` : ""; };
+    det.innerHTML = `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>
+      <p class="dlead">Select a finding to see it on the graph.</p>` + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
     return;
   }
   const d = byId.get(mode.id), [l1, ...rest] = d.name.split("\n"), ent = d.type === "enterprise";
