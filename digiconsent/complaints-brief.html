@@ -423,6 +423,10 @@ body{background:hsl(var(--background));color:var(--ink)}
 .btns--stack{flex-direction:column}
 .btns--stack .btn{flex:none;width:100%}
 .banner--ok{background:var(--green-soft);color:#0b7a55!important}
+/* receipt CTAs: stacked on phones, side by side from tablet width up */
+.verdict .btns{flex-direction:column;flex-wrap:nowrap}
+.verdict .btns .btn{flex:none;width:100%}
+@media (min-width:640px){.verdict .btns{flex-direction:row}.verdict .btns .btn{flex:1 1 0;width:auto}}
 </style></head>
 <body><div id="root"></div>
 <script>/**
