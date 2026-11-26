@@ -58,8 +58,8 @@ function CallRow({ call, done, open, setOpen, onReport, onRemove }) {
       br ? h("span", { className: "dl-av", style: { background: BRAND_TINT[br.id] } }, br.name.charAt(0))
          : h("span", { className: "dl-av", style: { background: call.tint || "#98A1B0" } }, call.biz ? ic("phone", 17) : call.name.charAt(0)),
       h("span", { className: "dl-txt" },
-        h("span", { className: "dl-name" + (call.biz && !br ? " is-unk" : "") }, call.name),
-        h("span", { className: "dl-sub" }, svgi(call.dir === "out" ? '<path d="M7 17 17 7M9 7h8v8"/>' : '<path d="M17 7 7 17M15 17H7V9"/>', 11), call.sub, done && h("span", { className: "dl-done" }, svgi(HAND, 10), "Reported"))),
+        h("span", { className: "dl-name" + (call.biz && !br ? " is-unk" : "") }, call.name, done && h("span", { className: "dl-done" }, svgi(HAND, 10), "Reported")),
+        h("span", { className: "dl-sub" }, svgi(call.dir === "out" ? '<path d="M7 17 17 7M9 7h8v8"/>' : '<path d="M17 7 7 17M15 17H7V9"/>', 11), call.sub)),
       h("span", { className: "dl-time" }, call.time),
       h("span", { className: "dl-info" }, "i")));
 }
