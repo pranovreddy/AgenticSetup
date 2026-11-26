@@ -459,6 +459,13 @@ body{background:hsl(var(--background));color:var(--ink)}
 .rc__agent--done{align-items:stretch;gap:16px;padding:14px 18px 18px;animation:rack 560ms var(--ease) both}
 .rc__agent--done .track{padding:0}
 .verdict--in{padding:0;border:0;border-radius:0;background:none;box-shadow:none;animation:none}
+
+/* the centre mark shows what the agent is doing: logo while gathering, scales while deciding, lock while acting */
+.core__mark .m-stage{position:absolute;inset:0;display:grid;place-items:center;animation:rack 420ms var(--ease) both}
+.core__mark .m-stage svg{position:static;width:58%;height:58%;stroke-width:2.2}
+.core__mark.has-icon .m-logo{opacity:0;transform:scale(.6)}
+.stage[data-stage="done"] .core__mark .m-stage{display:none}
+.nd .ic{stroke-width:1.8}
 </style></head>
 <body><div id="root"></div>
 <script>/**
@@ -789,6 +796,12 @@ const RM = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: r
 
 /* ---- icons (stroke set shared with the loaders) ---- */
 const ICON = {
+  tower: '<path d="M12 12v9"/><path d="m8 21 4-9 4 9"/><circle cx="12" cy="9" r="1.6"/><path d="M8.200 12.800a5.400 5.400 0 0 1 0-7.600M15.800 5.200a5.400 5.400 0 0 1 0 7.600"/><path d="M5.400 15.600a9.400 9.400 0 0 1 0-13.200M18.600 2.400a9.400 9.400 0 0 1 0 13.200"/>',
+  funnel: '<path d="M3 4h18l-7 8.500V19l-4 2v-8.500z"/>',
+  signature: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 17c1.500-3 2.500-3 3 0 .400 1.500 1.200 1.500 2 0 .500-1 1.200-1 2 0"/>',
+  bellOff: '<path d="M8.700 3.800A6 6 0 0 1 18 9c0 2.300.500 4 1.200 5.300"/><path d="M6.300 6.300A6 6 0 0 0 6 9c0 5-2.500 7-2.500 7H17"/><path d="M10 20a2 2 0 0 0 4 0"/><path d="m3 3 18 18"/>',
+  route: '<circle cx="6" cy="19" r="2.500"/><circle cx="18" cy="5" r="2.500"/><path d="M8.500 19H15a3.500 3.500 0 0 0 0-7H9a3.500 3.500 0 0 1 0-7h6.500"/>',
+  textSearch: '<path d="M4 6h12M4 11h6M4 16h5"/><circle cx="16" cy="15" r="3.500"/><path d="m18.600 17.600 2.400 2.400"/>',
   back: '<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>',
   history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
@@ -1006,24 +1019,24 @@ const buildPlan = c => {
   const call = item.type === "call", p = item.permission, what = call ? "call" : "message", who = brandName || "the sender";
   const S = (key, icon, name, label, finding, tone) => ({ key, icon, name, label, finding, tone: tone || "ok" });
   const src = [];
-  src.push(S("cdr", "signal", "Network record", call ? "Matching your call" : "Matching your message",
+  src.push(S("cdr", "tower", "Network record", call ? "Matching your call" : "Matching your message",
     call ? "Call from " + item.sender + " reached your number at " + item.time + "." : "Delivered to your number at " + item.time + " from " + item.sender + "."));
   src.push(cls === "unknown"
-    ? S("scrub", "shield", "Delivery rules", "Checking delivery rules", "No scrub record. This came from a number that isn’t registered for business use.", "bad")
-    : S("scrub", "shield", "Delivery rules", "Checking delivery rules",
+    ? S("scrub", "funnel", "Delivery rules", "Checking delivery rules", "No scrub record. This came from a number that isn’t registered for business use.", "bad")
+    : S("scrub", "funnel", "Delivery rules", "Checking delivery rules",
         cls === "promo" ? (call ? "Placed as a promotional call from a registered telemarketer line." : "Sent as promotional under a registered header and template.")
         : cls === "otp" ? "Sent as an authentication message under a registered template." : "Sent under a registered " + (cls === "transactional" ? "transactional" : "service") + (call ? " line." : " template.")));
-  if (cls === "promo" && p) src.push(S("consent", "fileCheck", "Consent record", "Checking your consent",
+  if (cls === "promo" && p) src.push(S("consent", "signature", "Consent record", "Checking your consent",
     item.consent === "mismatch" ? item.record + " It was used for a " + item.used + "." : item.record, item.consent === "mismatch" ? "bad" : "ok"));
-  else if (cls === "unknown") src.push(S("route", "radio", "Originating route", "Checking the trigger", "Traced to the originating operator. The number is not a registered telemarketer.", "bad"));
-  else src.push(S("content", "tag", cls === "service" && reasonId === "offer" ? "Content check" : "Sender trigger", cls === "service" && reasonId === "offer" ? "Checking the offer" : "Checking the trigger",
+  else if (cls === "unknown") src.push(S("route", "route", "Originating route", "Checking the trigger", "Traced to the originating operator. The number is not a registered telemarketer.", "bad"));
+  else src.push(S("content", cls === "service" && reasonId === "offer" ? "textSearch" : "bolt", cls === "service" && reasonId === "offer" ? "Content check" : "Sender trigger", cls === "service" && reasonId === "offer" ? "Checking the offer" : "Checking the trigger",
     cls === "service" && reasonId === "offer" ? (call ? "You reported a sales pitch on a service call. That is outside its registered purpose." : "The reminder carries a top-up loan offer, which is outside its service purpose.")
     : "Asked " + who + " what triggered this " + what + " for your number.", cls === "service" && reasonId === "offer" ? "bad" : "warn"));
   src.push(S("prefs", "sliders", "Your preferences", "Checking your preferences",
     cls === "promo" ? "Your preferences allowed " + who + " offers by " + (call ? "call" : "SMS") + " when this was " + (call ? "made." : "sent.")
     : cls === "unknown" ? "Your preferences block promotional " + (call ? "calls" : "messages") + " from unregistered numbers."
     : "Service and security " + (call ? "calls" : "messages") + " are not limited by your promotional preferences."));
-  if (cls === "promo") src.push(S("optout", "ban", "Opt-out register", "Checking your opt-out",
+  if (cls === "promo") src.push(S("optout", "bellOff", "Opt-out register", "Checking your opt-out",
     reasonId === "optedout" ? "You opted out on " + OPT_OUT_DATE + ". This was " + (call ? "made" : "sent") + " 2 days later." : "No opt-out on record before this was " + (call ? "made." : "sent."), reasonId === "optedout" ? "bad" : "ok"));
 
   const out = outcome(c);
@@ -1040,7 +1053,7 @@ const buildPlan = c => {
    ================================================================== */
 const PAL = { blue: [24, 58, 214, 102, 156, 255], amber: [168, 98, 6, 246, 192, 92], green: [5, 118, 80, 92, 214, 160] };
 const SPEED = { think: 1, tool: 2.3, verify: 1.6, wait: .45, done: .35 };
-function Blob({ size, state, kick, bare }) {
+function Blob({ size, state, kick, bare, mark }) {
   const ref = useRef(null), st = useRef(state), inst = useRef(null);
   st.current = state;
   useEffect(() => { if (inst.current && kick) inst.current.kick = 1; }, [kick]);
@@ -1093,8 +1106,9 @@ function Blob({ size, state, kick, bare }) {
   }, [size]);
   return h("div", { className: "core", style: { width: size, height: size } },
     h("canvas", { ref, "aria-hidden": true }),
-    !bare && h("span", { className: "core__mark" },
+    !bare && h("span", { className: "core__mark" + (mark ? " has-icon" : "") },
       h("svg", { className: "m-logo", viewBox: "0 0 26 26", fill: "#fff", "aria-hidden": true, dangerouslySetInnerHTML: { __html: MARK } }),
+      mark && h("span", { className: "m-stage", key: mark }, ic(mark, 15)),
       ic(state === "wait" ? "arrow" : "check", 14, "m-check")));
 }
 const Spin = () => h("svg", { className: "spin", viewBox: "0 0 16 16", "aria-hidden": true }, h("circle", { className: "t", cx: 8, cy: 8, r: 6 }), h("circle", { className: "a", cx: 8, cy: 8, r: 6, pathLength: 100 }));
@@ -1337,7 +1351,7 @@ function AgentStage({ plan, src, active, stage, kick, tone }) {
     plan.src.map((s, i) => {
       const p = pos(i), st = src[i], top = p.y < CY0 - 10;
       return h("div", { key: s.key, className: "nd", "data-s": st, style: { left: p.x - 20, top: p.y - 20 } },
-        ic(s.icon, 17),
+        ic(s.icon, 19),
         h("span", { className: "nd__tasks" }, h("i", null), h("i", null)),
         h("span", { className: "nd__badge nd__badge--" + s.tone }, ic(s.tone === "ok" ? "check" : "alert", 9)),
         h("span", { className: "nd__chip" + (top ? " is-top" : ""), style: { left: 20 + Math.max(48, Math.min(STG - 48, p.x)) - p.x } }, s.name),
@@ -1345,7 +1359,7 @@ function AgentStage({ plan, src, active, stage, kick, tone }) {
     }),
     h("div", { className: "stage__core" },
       h("span", { className: "ripple", key: "r" + kick }),
-      h(Blob, { size: 96, state: blobState, kick })));
+      h(Blob, { size: 96, state: blobState, kick, mark: stage === "decide" ? "scale" : stage === "act" ? "lock" : stage === "wrap" ? "receipt" : null })));
 }
 const fmtClock = s => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(Math.floor(s % 60)).padStart(2, "0");
 function Receipt({ c, fast, setFast, onNew }) {
@@ -1452,8 +1466,7 @@ function Receipt({ c, fast, setFast, onNew }) {
         !(review || owned) && h("div", { className: "btns" + (out.next.go === "review" ? " btns--stack" : "") },
           h("button", { type: "button", className: "btn btn--primary", onClick: () => { setOwned(false); doNext(out.next); } }, out.next.label),
           out.next.go === "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: () => { setReview(false); setOwned(true); } }, "Yes, I gave this consent"),
-          out.next.go !== "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: onNew }, "Report another"))),
-              trackEl)
+          out.next.go !== "review" && h("button", { type: "button", className: "btn btn--ghost", onClick: onNew }, "Report another"))))
           : h("div", { className: "rc__agent" },
           h("h2", { className: "rc__title" }, h(Roll, { text: title, cls: "roll--title" })),
           h("p", { className: "rc__sub" }, done ? (out.state === "resolved" ? "Every check below ran against your records." : "We’ve done all we can without the sender.") : "Usually 30 to 60 seconds. You can leave this page."),
@@ -1470,8 +1483,7 @@ function Receipt({ c, fast, setFast, onNew }) {
         h("ol", { className: "trail__list" },
           s.log.map((r, i) => h("li", { key: i, className: "tr" + (r.strong ? " tr--strong" : "") },
             h("span", { className: "tr__ic tr__ic--" + r.tone }, ic(r.icon, 15)),
-            h("div", { className: "tr__b" }, h("span", { className: "tr__n" }, r.name), h("span", { className: "tr__t" }, r.text)),
-            h("span", { className: "tr__at num" }, "+" + r.at + "s"))),
+            h("div", { className: "tr__b" }, h("span", { className: "tr__n" }, r.name), h("span", { className: "tr__t" }, r.text)))),
           s.running && h("li", { key: "run-" + s.running.name, className: "tr tr--run" },
             h("span", { className: "tr__ic tr__ic--run" }, ic(s.running.icon, 15)),
             h("div", { className: "tr__b" }, h("span", { className: "tr__n" }, s.running.name), h("span", { className: "sk", style: { width: "82%" } }), h("span", { className: "sk", style: { width: "54%" } })),

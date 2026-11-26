@@ -401,3 +401,10 @@ body{background:hsl(var(--background));color:var(--ink)}
 .rc__agent--done{align-items:stretch;gap:16px;padding:14px 18px 18px;animation:rack 560ms var(--ease) both}
 .rc__agent--done .track{padding:0}
 .verdict--in{padding:0;border:0;border-radius:0;background:none;box-shadow:none;animation:none}
+
+/* the centre mark shows what the agent is doing: logo while gathering, scales while deciding, lock while acting */
+.core__mark .m-stage{position:absolute;inset:0;display:grid;place-items:center;animation:rack 420ms var(--ease) both}
+.core__mark .m-stage svg{position:static;width:58%;height:58%;stroke-width:2.2}
+.core__mark.has-icon .m-logo{opacity:0;transform:scale(.6)}
+.stage[data-stage="done"] .core__mark .m-stage{display:none}
+.nd .ic{stroke-width:1.8}
