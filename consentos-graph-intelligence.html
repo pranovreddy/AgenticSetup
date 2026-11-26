@@ -45,13 +45,13 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
 .brand img{display:block;height:24px;width:auto}
 .brand h1{margin:0;padding-left:14px;border-left:1px solid #c5d0e6;font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.3;white-space:nowrap}
 
-/* headline numbers: sit on the canvas, under the page name */
-.stats{position:absolute;top:62px;left:16px;z-index:2;display:flex;align-items:center;height:36px;padding:0 2px;border-radius:10px;
-  background:var(--s-white);border:1px solid var(--s-line2);box-shadow:0 6px 18px -12px rgba(15,27,61,.3)}
-.stat{display:flex;align-items:baseline;gap:6px;white-space:nowrap;padding:0 13px;border-left:1px solid var(--s-line)}
+/* headline numbers: top of the right panel, above the key findings */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin:0 0 22px;padding:12px 0;border-radius:14px;background:rgba(255,255,255,.78);
+  border:1px solid var(--tint-line);box-shadow:inset 0 1px 0 #fff,0 10px 24px -20px rgba(20,50,140,.55)}
+.stat{padding:0 14px;border-left:1px solid var(--tint-line);min-width:0}
 .stat:first-child{border-left:0}
-.stat b{font-size:16px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.stat span{font-size:12.5px;color:var(--s-muted)}
+.stat b{display:block;font-size:24px;font-weight:650;letter-spacing:-.025em;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--s-muted)}
 .stat.crit b{color:var(--r-crit)}
 
 /* key findings (default content of the right panel) */
@@ -194,7 +194,6 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
   .detail{order:3;flex:none;padding:18px 16px 28px;background:var(--s-white)}
   .tools{left:16px;right:auto;top:62px}
   .pop{left:0;right:auto}
-  .stats{top:106px}
   .brand{left:16px;gap:10px}
   .brand img{height:21px}
   .brand h1{padding-left:10px;font-size:15.5px}
@@ -226,7 +225,6 @@ h6{margin:0 0 8px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase
         <button id="zfit" title="Fit to screen" aria-label="Fit to screen"><svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
     </div>
-    <div class="stats" id="stats"></div>
     <div class="risk" id="riskList"></div>
     <div id="tip"></div>
   </main>
@@ -360,11 +358,11 @@ LINKS.forEach(([s, t]) => { adj.get(s).push(t); adj.get(t).push(s); });
 
 // ───────────────────────────── CHROME ─────────────────────────────
 const ents = nodes.filter(n => n.type === "enterprise");
-$("stats").innerHTML = [
+const STATS_HTML = `<div class="stats">` + [
   [ents.length, "Enterprises", ""],
   [ents.filter(n => n.risk === "blacklisted").length, "Blacklisted", ""],
   [ents.filter(n => n.risk === "critical").length, "Critical", "crit"],
-].map(([v, l, c]) => `<div class="stat ${c}"><b>${v}</b><span>${l}</span></div>`).join("");
+].map(([v, l, c]) => `<div class="stat ${c}"><b>${v}</b><span>${l}</span></div>`).join("") + `</div>`;
 
 $("typeList").innerHTML = Object.entries(TYPES).map(([k, t]) =>
   `<button class="ty" data-type="${k}" aria-pressed="true">${icon(k)}<span>${t.label}</span><span class="n">${nodes.filter(n => n.type === k).length}</span></button>`).join("");
@@ -511,7 +509,7 @@ function renderDetail() {
       return `<button class="frow ${c}${on ? " on" : ""}" data-finding="${i}" aria-pressed="${on}"><span class="tile">${icon(f.ic)}</span><span class="ft">${esc(f.t)}<small>${esc(f.s)}</small></span><svg class="i go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`; };
     const grp = (sev, label, c) => { const rows = FINDINGS.map((f, i) => f.sev === sev ? frow(f, i) : "").filter(Boolean);
       return rows.length ? `<div class="fgrp ${c}">${label}<b>${rows.length}</b></div>${rows.join("")}` : ""; };
-    det.innerHTML = `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>
+    det.innerHTML = STATS_HTML + `<div class="fhd"><h2 class="dtitle">Key findings</h2><span class="fcount">${FINDINGS.length}</span></div>
       <p class="dlead">Select a finding to see it on the graph.</p>` + grp("critical", "Critical", "crit") + grp("medium", "Needs attention", "med");
     return;
   }
@@ -563,8 +561,7 @@ function fit(animate) {
   const W = wrap.clientWidth, H = wrap.clientHeight;
   const vis = nodes.filter(n => !hidden.has(n.type)); if (!vis.length || !W || !H) return;
   // keep clear of the controls (top) and the risk pills (bottom)
-  const st = $("stats"), tl = document.querySelector(".tools"), L = 20, B = 60, Rt = 20;
-  const T = Math.max(tl.offsetTop + tl.offsetHeight, st.offsetTop > 30 ? st.offsetTop + st.offsetHeight : 0) + 14;
+  const tl = document.querySelector(".tools"), L = 20, B = 60, Rt = 20, T = tl.offsetTop + tl.offsetHeight + 14;
   const x0 = d3.min(vis, d => d.x - 60), x1 = d3.max(vis, d => d.x + 60);
   const y0 = d3.min(vis, d => d.y - R(d) - 8), y1 = d3.max(vis, d => d.y + R(d) + 36);
   const k = Math.min(1.25, (W - L - Rt) / (x1 - x0), (H - T - B) / (y1 - y0));
