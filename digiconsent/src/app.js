@@ -579,7 +579,6 @@ function AgentStage({ plan, src, active, stage, kick, tone }) {
     }),
     h("div", { className: "stage__core" },
       h("span", { className: "ripple", key: "r" + kick }),
-      h("span", { className: "reticle reticle--core" + (stage === "decide" ? " on" : "") }, h("i", null), h("i", null), h("i", null), h("i", null)),
       h(Blob, { size: 96, state: blobState, kick })));
 }
 const fmtClock = s => String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(Math.floor(s % 60)).padStart(2, "0");
@@ -673,7 +672,7 @@ function Receipt({ c, fast, setFast, onNew }) {
 
         h("div", { className: "rc__agent" },
           h("h2", { className: "rc__title" }, h(Roll, { text: title, cls: "roll--title" })),
-          h("p", { className: "rc__sub" }, done ? (out.state === "resolved" ? "Every check below ran against your records." : "We’ve done everything that can be done without the sender.") : "This usually takes 30 to 60 seconds. You can leave this page."),
+          h("p", { className: "rc__sub" }, done ? (out.state === "resolved" ? "Every check below ran against your records." : "We’ve done all we can without the sender.") : "Usually 30 to 60 seconds. You can leave this page."),
           h(AgentStage, { plan, src: s.src, active: s.active, stage: s.stage, kick: s.kick, tone }),
           h("div", { className: "status status--lg", "data-state": done ? (out.state === "resolved" ? "done" : "wait") : "work" },
             done ? okdot(out.state === "resolved" ? "ok" : "warn") : h(Spin),
