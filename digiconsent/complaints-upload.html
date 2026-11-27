@@ -530,6 +530,12 @@ body{background:hsl(var(--background));color:var(--ink)}
 .daysel__native::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;cursor:pointer}
 .daysel--date:focus-within .daysel__val{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
 
+/* date and time period side by side */
+.whenrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.whenrow .daysel{min-width:0;margin:0}
+.whenrow .daysel__val,.whenrow .daysel select{padding:0 34px 0 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.whenrow .daysel .ic{right:10px}
+
 /* ==========================================================================
    Home screen, from the Consent OS Figma file (node 17952:118133).
    Values are the design's: 430 frame, 20 gutters, #f6f7f9 ground, Inter.
@@ -1495,17 +1501,18 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("span", { className: "manual__lbl", id: "cx-when-l" }, evType === "call" ? "When did they call?" : "When did you get it?", h("span", null, " An approximate time is fine.")),
                 /* the phone's own calendar opens on tap. The real date input sits invisibly over a styled row,
                    so the row looks the same on every device and only the picker itself is native. */
+                h("div", { className: "whenrow" },
                 h("div", { className: "daysel daysel--date" },
-                  h("span", { className: "input daysel__val" }, (day === today ? "Today, " : "") + new Date(day + "T00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })),
+                  h("span", { className: "input daysel__val" }, new Date(day + "T00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })),
                   ic("calendar", 17),
                   h("input", { id: "cx-day", type: "date", className: "daysel__native", value: day, max: today, "aria-label": "Date",
                     onChange: ev => { if (ev.target.value) setDay(ev.target.value); },
                     onClick: ev => { try { if (ev.target.showPicker) ev.target.showPicker(); } catch (e) {} } })),
                 h("div", { className: "daysel" },
                   h("select", { id: "cx-period", className: "input" + (period ? "" : " is-empty"), value: period || "", onChange: ev => setPeriod(ev.target.value || null), "aria-label": "Time period" },
-                    h("option", { value: "" }, "Select a time period"),
+                    h("option", { value: "" }, "Time period"),
                     PERIODS.map(([id, t]) => h("option", { key: id, value: id }, t))),
-                  ic("chevron", 17)),
+                  ic("chevron", 17))),
                 h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")),
               h("div", { className: "or" }, h("span", null, "or add a screenshot")),
               h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
