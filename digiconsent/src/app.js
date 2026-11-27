@@ -561,13 +561,15 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("span", { className: "manual__lbl", id: "cx-when-l" }, evType === "call" ? "When did they call?" : "When did you get it?", h("span", null, " An approximate time is fine.")),
                 /* a plain list of the last 30 days: it looks and behaves the same on every phone, unlike the native date field */
                 h("div", { className: "daysel" },
-                  ic("calendar", 17),
                   h("select", { id: "cx-day", className: "input", value: day, onChange: ev => setDay(ev.target.value), "aria-label": "Date" },
                     Array.from({ length: 30 }, (_, k) => { const d = new Date(); d.setDate(d.getDate() - k); return d; }).map((d, k) =>
                       h("option", { key: k, value: isoDay(d) }, (k === 0 ? "Today, " : k === 1 ? "Yesterday, " : d.toLocaleDateString("en-GB", { weekday: "short" }) + ", ") + d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })))),
-                  ic("chevron", 16)),
-                h("div", { className: "periods", role: "radiogroup", "aria-labelledby": "cx-when-l" }, PERIODS.map(([id, t]) =>
-                  h("button", { key: id, type: "button", role: "radio", "aria-checked": period === id, className: "period" + (period === id ? " is-on" : ""), onClick: () => setPeriod(id) }, t))),
+                  ic("calendar", 17)),
+                h("div", { className: "daysel" },
+                  h("select", { id: "cx-period", className: "input" + (period ? "" : " is-empty"), value: period || "", onChange: ev => setPeriod(ev.target.value || null), "aria-label": "Time period" },
+                    h("option", { value: "" }, "Select a time period"),
+                    PERIODS.map(([id, t]) => h("option", { key: id, value: id }, t))),
+                  ic("clock", 17)),
                 h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")),
               h("div", { className: "or" }, h("span", null, "or add a screenshot")),
               h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
