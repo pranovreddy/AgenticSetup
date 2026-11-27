@@ -510,11 +510,13 @@ body{background:hsl(var(--background));color:var(--ink)}
 .period{min-height:44px;padding:0 10px;border-radius:12px;border:1.5px solid var(--line-2);background:var(--surface);font-size:13.5px!important;font-weight:600!important;color:var(--ink-2);transition:border-color var(--t1) var(--ease),background var(--t1) var(--ease),color var(--t1) var(--ease)}
 .period.is-on{border-color:var(--blue);background:rgba(51,102,240,.07);color:#2347D6;box-shadow:0 0 0 3px var(--blue-soft)}
 .manual .manual__go{width:100%;margin-top:6px}
-/* iOS gives date inputs their own width and centres the value; pin it to the row like the other fields */
+/* date: a styled list of recent days */
 .manual{min-width:0}
-.manual input[type="date"]{display:block;box-sizing:border-box;width:100%;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;text-align:left}
-.manual input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0}
-.manual input[type="date"]::-webkit-calendar-picker-indicator{margin-left:auto}
+.daysel{position:relative;display:block}
+.daysel select{display:block;width:100%;height:48px;padding:0 40px 0 42px;-webkit-appearance:none;appearance:none;line-height:normal;cursor:pointer;text-overflow:ellipsis}
+.daysel .ic{position:absolute;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--mut)}
+.daysel .ic:first-child{left:14px;color:var(--blue)}
+.daysel .ic:last-child{right:14px}
 
 /* ==========================================================================
    Home screen, from the Consent OS Figma file (node 17952:118133).
@@ -942,6 +944,7 @@ const RM = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: r
 
 /* ---- icons (stroke set shared with the loaders) ---- */
 const ICON = {
+  calendar: '<rect x="3" y="4.500" width="18" height="16.500" rx="2.500"/><path d="M3 9.500h18M8 2.500v4M16 2.500v4"/>',
   tower: '<path d="M12 12v9"/><path d="m8 21 4-9 4 9"/><circle cx="12" cy="9" r="1.6"/><path d="M8.200 12.800a5.400 5.400 0 0 1 0-7.600M15.800 5.200a5.400 5.400 0 0 1 0 7.600"/><path d="M5.400 15.600a9.400 9.400 0 0 1 0-13.200M18.600 2.400a9.400 9.400 0 0 1 0 13.200"/>',
   funnel: '<path d="M3 4h18l-7 8.500V19l-4 2v-8.500z"/>',
   signature: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 17c1.500-3 2.500-3 3 0 .400 1.500 1.200 1.500 2 0 .500-1 1.200-1 2 0"/>',
@@ -1477,7 +1480,13 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
                     onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "+91 98765 43210" : "VM-ABCDEF/140-1234567" }),
                 h("span", { className: "manual__lbl", id: "cx-when-l" }, evType === "call" ? "When did they call?" : "When did you get it?", h("span", null, " An approximate time is fine.")),
-                h("input", { id: "cx-day", type: "date", className: "input", value: day, max: today, onChange: ev => setDay(ev.target.value), "aria-label": "Date" }),
+                /* a plain list of the last 30 days: it looks and behaves the same on every phone, unlike the native date field */
+                h("div", { className: "daysel" },
+                  ic("calendar", 17),
+                  h("select", { id: "cx-day", className: "input", value: day, onChange: ev => setDay(ev.target.value), "aria-label": "Date" },
+                    Array.from({ length: 30 }, (_, k) => { const d = new Date(); d.setDate(d.getDate() - k); return d; }).map((d, k) =>
+                      h("option", { key: k, value: isoDay(d) }, (k === 0 ? "Today, " : k === 1 ? "Yesterday, " : d.toLocaleDateString("en-GB", { weekday: "short" }) + ", ") + d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })))),
+                  ic("chevron", 16)),
                 h("div", { className: "periods", role: "radiogroup", "aria-labelledby": "cx-when-l" }, PERIODS.map(([id, t]) =>
                   h("button", { key: id, type: "button", role: "radio", "aria-checked": period === id, className: "period" + (period === id ? " is-on" : ""), onClick: () => setPeriod(id) }, t))),
                 h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")),

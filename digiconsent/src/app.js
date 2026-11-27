@@ -23,6 +23,7 @@ const RM = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: r
 
 /* ---- icons (stroke set shared with the loaders) ---- */
 const ICON = {
+  calendar: '<rect x="3" y="4.500" width="18" height="16.500" rx="2.500"/><path d="M3 9.500h18M8 2.500v4M16 2.500v4"/>',
   tower: '<path d="M12 12v9"/><path d="m8 21 4-9 4 9"/><circle cx="12" cy="9" r="1.6"/><path d="M8.200 12.800a5.400 5.400 0 0 1 0-7.600M15.800 5.200a5.400 5.400 0 0 1 0 7.600"/><path d="M5.400 15.600a9.400 9.400 0 0 1 0-13.200M18.600 2.400a9.400 9.400 0 0 1 0 13.200"/>',
   funnel: '<path d="M3 4h18l-7 8.500V19l-4 2v-8.500z"/>',
   signature: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 17c1.500-3 2.500-3 3 0 .400 1.500 1.200 1.500 2 0 .500-1 1.200-1 2 0"/>',
@@ -558,7 +559,13 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
                     onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "+91 98765 43210" : "VM-ABCDEF/140-1234567" }),
                 h("span", { className: "manual__lbl", id: "cx-when-l" }, evType === "call" ? "When did they call?" : "When did you get it?", h("span", null, " An approximate time is fine.")),
-                h("input", { id: "cx-day", type: "date", className: "input", value: day, max: today, onChange: ev => setDay(ev.target.value), "aria-label": "Date" }),
+                /* a plain list of the last 30 days: it looks and behaves the same on every phone, unlike the native date field */
+                h("div", { className: "daysel" },
+                  ic("calendar", 17),
+                  h("select", { id: "cx-day", className: "input", value: day, onChange: ev => setDay(ev.target.value), "aria-label": "Date" },
+                    Array.from({ length: 30 }, (_, k) => { const d = new Date(); d.setDate(d.getDate() - k); return d; }).map((d, k) =>
+                      h("option", { key: k, value: isoDay(d) }, (k === 0 ? "Today, " : k === 1 ? "Yesterday, " : d.toLocaleDateString("en-GB", { weekday: "short" }) + ", ") + d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })))),
+                  ic("chevron", 16)),
                 h("div", { className: "periods", role: "radiogroup", "aria-labelledby": "cx-when-l" }, PERIODS.map(([id, t]) =>
                   h("button", { key: id, type: "button", role: "radio", "aria-checked": period === id, className: "period" + (period === id ? " is-on" : ""), onClick: () => setPeriod(id) }, t))),
                 h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")),

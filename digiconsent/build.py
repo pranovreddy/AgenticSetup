@@ -37,7 +37,9 @@ def page(name, title, scripts, mount, fragment=None, pre=""):
         '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">\n'
         '<meta name="theme-color" content="#3868E0">' + title + "\n" + style + "</head>\n<body>" + body + "</body></html>\n")
     if fragment:
-        Path(fragment).write_text(title + "\n" + style + "\n" + body + "\n")
+        # hosts that wrap the page already pad the root by the top safe area, so the header must not add it again
+        host = "<style>.cx .page-hero{top:env(safe-area-inset-top,0px);padding-top:1.5rem}</style>"
+        Path(fragment).write_text(title + "\n" + style + "\n" + host + "\n" + body + "\n")
     print("built", name)
 
 
