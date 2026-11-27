@@ -545,7 +545,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
 
       /* 2. the screenshot: upload, then a short "processing" state */
       evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: evType === "call" ? "Which call is it?" : "Which message is it?", label: shot && shot.manual ? "Entered manually" : "Screenshot",
-        hint: evType === "call" ? "Enter the number, or add a screenshot of the call." : "Enter the sender, or add a screenshot of the message.",
+        hint: evType === "call" ? "Add a screenshot of the call, or enter the number." : "Add a screenshot of the message, or enter the sender.",
         summary: scan === "ready" && shot.manual ? h("span", { className: "sum__col" }, h("span", { className: "sum__row" }, ic(evType === "call" ? "phone" : "message", 15), shot.items[0].sender),
             h("span", { className: "sum__sub" }, (CLS_TAG[shot.items[0].cls] ? CLS_TAG[shot.items[0].cls][0] + " · " : "") + shot.items[0].time))
           : scan === "ready" ? h("span", { className: "sum__row" },
@@ -554,6 +554,16 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
         onChange: clearShot, changeLabel: shot && shot.manual ? "Change" : "Replace" },
         !shot
           ? h("div", { className: "up" },
+              h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
+              h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
+                h("span", { className: "drop__ic" }, ic("upload", 22)),
+                h("span", { className: "drop__t" }, "Upload a screenshot"),
+                h("span", { className: "drop__s" }, "PNG or JPG, up to 10MB")),
+              !NO_DEMOS && h("div", { className: "samples" },
+                h("span", { className: "samples__l" }, "No screenshot handy? Try a demo one"),
+                h("div", { className: "samples__row" }, SAMPLES[evType].map(s =>
+                  h("button", { key: s.key, type: "button", className: "chipbtn", onClick: () => useSample(s) }, ic("image", 13), s.label)))),
+              h("div", { className: "or" }, h("span", null, "or enter the details")),
               h("form", { className: "manual", onSubmit: useManual },
                 h("label", { htmlFor: "cx-manual" }, evType === "call" ? "Phone number" : "Sender header or phone number"),
                 h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
@@ -573,17 +583,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                     h("option", { value: "" }, "Time period"),
                     PERIODS.map(([id, t]) => h("option", { key: id, value: id }, t))),
                   ic("chevron", 17))),
-                h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")),
-              h("div", { className: "or" }, h("span", null, "or add a screenshot")),
-              h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
-              h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
-                h("span", { className: "drop__ic" }, ic("upload", 22)),
-                h("span", { className: "drop__t" }, "Upload a screenshot"),
-                h("span", { className: "drop__s" }, "PNG or JPG, up to 10MB")),
-              !NO_DEMOS && h("div", { className: "samples" },
-                h("span", { className: "samples__l" }, "No screenshot handy? Try a demo one"),
-                h("div", { className: "samples__row" }, SAMPLES[evType].map(s =>
-                  h("button", { key: s.key, type: "button", className: "chipbtn", onClick: () => useSample(s) }, ic("image", 13), s.label)))))
+                h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")))
           : h("div", { className: "proc" },
               h("span", { className: "proc__thumb" }, thumb && h("img", { src: thumb, alt: "" })),
               h("div", { className: "proc__b" },
