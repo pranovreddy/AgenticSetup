@@ -1522,7 +1522,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                   h("select", { id: "cx-period", className: "input" + (period ? "" : " is-empty"), value: period || "", onChange: ev => setPeriod(ev.target.value || null), "aria-label": "Time period" },
                     h("option", { value: "" }, "Select a time period"),
                     PERIODS.map(([id, t]) => h("option", { key: id, value: id }, t))),
-                  ic("clock", 17)),
+                  ic("chevron", 17)),
                 h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")),
               h("div", { className: "or" }, h("span", null, "or add a screenshot")),
               h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
