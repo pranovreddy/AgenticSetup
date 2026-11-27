@@ -536,18 +536,17 @@ body{background:hsl(var(--background));color:var(--ink)}
 .whenrow .daysel__val,.whenrow .daysel select{padding:0 34px 0 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .whenrow .daysel .ic{right:10px}
 
-/* V2: choose one way, screenshot or details; only the chosen one is shown */
-.ways{display:flex;flex-direction:column;gap:8px}
-.way{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:16px;border:1.5px solid var(--line-2);background:var(--surface);text-align:left;color:var(--ink);transition:border-color var(--t2) var(--ease),background var(--t2) var(--ease),box-shadow var(--t2) var(--ease)}
-.way.is-on{border-color:var(--blue);background:rgba(51,102,240,.05);box-shadow:0 0 0 4px var(--blue-soft)}
-.way__b{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}
-.way__t{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14.5px;font-weight:700}
-.way__t em{padding:1px 7px;border-radius:999px;background:var(--green-soft);font-style:normal;font-size:10.5px;font-weight:700;color:#0b7a55}
-.way__s{font-size:12.5px;font-weight:400;line-height:1.4;color:var(--mut)}
-.way__ic{flex:none;color:var(--faint)}
-.way.is-on .way__ic{color:var(--blue)}
-.ways__note{margin:-4px 0 0;font-size:12px;color:var(--mut)}
-.manual--v2,.ways~.drop,.ways~.fine{animation:up 320ms var(--ease) both}
+/* V2: a two-tab switcher for screenshot or details; only the chosen tab's fields are shown */
+.tabsw{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:14px;background:var(--surface-3)}
+.tabsw__ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:var(--surface);box-shadow:0 1px 3px rgba(11,18,32,.14),0 0 0 1px var(--line);transition:transform var(--t2) var(--ease)}
+.tabsw[data-on="manual"] .tabsw__ind{transform:translateX(100%)}
+.tabsw__tab{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 8px;border:0;border-radius:10px;background:transparent;font-size:13.5px!important;font-weight:600!important;color:var(--mut);white-space:nowrap;transition:color var(--t2) var(--ease)}
+.tabsw__tab.is-on{color:var(--ink)}
+.tabsw__tab.is-on .ic{color:var(--blue)}
+.manual--v2,.tabsw~.drop,.tabsw~.fine{animation:up 320ms var(--ease) both}
+.tabsw__tab{gap:6px;padding:0 4px;font-size:13px!important;letter-spacing:-.005em;min-width:0}
+.tabsw__tab .ic{width:15px;height:15px}
+@media (max-width:379px){.tabsw__tab .ic{display:none}}
 
 /* ==========================================================================
    Home screen, from the Consent OS Figma file (node 17952:118133).
@@ -1511,13 +1510,11 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
         onChange: clearShot, changeLabel: shot && shot.manual ? "Change" : "Replace" },
         !shot
           ? h("div", { className: "up" },
-              V2 && h("div", { className: "ways", role: "radiogroup", "aria-label": "How do you want to share it?" },
-                [["shot", "upload", "Upload a screenshot", "Fastest. We read the details for you."], ["manual", "textSearch", "Enter the details", "Type the sender and when you got it."]].map(([id, icn, t, d]) =>
-                  h("button", { key: id, type: "button", role: "radio", "aria-checked": how === id, className: "way" + (how === id ? " is-on" : ""), onClick: () => setHow(id) },
-                    h("span", { className: "radio" + (how === id ? " is-on" : "") }, how === id ? ic("check", 12) : null),
-                    h("span", { className: "way__b" }, h("span", { className: "way__t" }, t, id === "shot" && h("em", null, "Recommended")), h("span", { className: "way__s" }, d)),
-                    ic(icn, 18, "way__ic")))),
-              V2 && h("p", { className: "ways__note" }, "You only need one of these."),
+              /* V2: a two-tab switcher; only the chosen tab's fields are shown below it */
+              V2 && h("div", { className: "tabsw", role: "tablist", "aria-label": "How do you want to share it?", "data-on": how },
+                h("span", { className: "tabsw__ind", "aria-hidden": true }),
+                [["shot", "upload", "Upload screenshot"], ["manual", "textSearch", "Enter details"]].map(([id, icn, t]) =>
+                  h("button", { key: id, type: "button", role: "tab", "aria-selected": how === id, className: "tabsw__tab" + (how === id ? " is-on" : ""), onClick: () => setHow(id) }, ic(icn, 16), t))),
               (!V2 || how === "shot") && h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
               (!V2 || how === "shot") && h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
                 h("span", { className: "drop__ic" }, ic("upload", 22)),

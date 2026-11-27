@@ -557,13 +557,11 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
         onChange: clearShot, changeLabel: shot && shot.manual ? "Change" : "Replace" },
         !shot
           ? h("div", { className: "up" },
-              V2 && h("div", { className: "ways", role: "radiogroup", "aria-label": "How do you want to share it?" },
-                [["shot", "upload", "Upload a screenshot", "Fastest. We read the details for you."], ["manual", "textSearch", "Enter the details", "Type the sender and when you got it."]].map(([id, icn, t, d]) =>
-                  h("button", { key: id, type: "button", role: "radio", "aria-checked": how === id, className: "way" + (how === id ? " is-on" : ""), onClick: () => setHow(id) },
-                    h("span", { className: "radio" + (how === id ? " is-on" : "") }, how === id ? ic("check", 12) : null),
-                    h("span", { className: "way__b" }, h("span", { className: "way__t" }, t, id === "shot" && h("em", null, "Recommended")), h("span", { className: "way__s" }, d)),
-                    ic(icn, 18, "way__ic")))),
-              V2 && h("p", { className: "ways__note" }, "You only need one of these."),
+              /* V2: a two-tab switcher; only the chosen tab's fields are shown below it */
+              V2 && h("div", { className: "tabsw", role: "tablist", "aria-label": "How do you want to share it?", "data-on": how },
+                h("span", { className: "tabsw__ind", "aria-hidden": true }),
+                [["shot", "upload", "Upload screenshot"], ["manual", "textSearch", "Enter details"]].map(([id, icn, t]) =>
+                  h("button", { key: id, type: "button", role: "tab", "aria-selected": how === id, className: "tabsw__tab" + (how === id ? " is-on" : ""), onClick: () => setHow(id) }, ic(icn, 16), t))),
               (!V2 || how === "shot") && h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
               (!V2 || how === "shot") && h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
                 h("span", { className: "drop__ic" }, ic("upload", 22)),
