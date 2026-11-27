@@ -1432,7 +1432,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("label", { htmlFor: "cx-manual" }, evType === "call" ? "Phone number" : "Sender header or phone number"),
                 h("div", { className: "manual__row" },
                   h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
-                    onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "+91 98765 43210" : "VM-ABCDEF" }),
+                    onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "+91 98765 43210" : "VM-ABCDEF/140-1234567" }),
                   h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue"))),
               h("div", { className: "or" }, h("span", null, "or add a screenshot")),
               h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
