@@ -536,6 +536,19 @@ body{background:hsl(var(--background));color:var(--ink)}
 .whenrow .daysel__val,.whenrow .daysel select{padding:0 34px 0 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .whenrow .daysel .ic{right:10px}
 
+/* V2: choose one way, screenshot or details; only the chosen one is shown */
+.ways{display:flex;flex-direction:column;gap:8px}
+.way{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:16px;border:1.5px solid var(--line-2);background:var(--surface);text-align:left;color:var(--ink);transition:border-color var(--t2) var(--ease),background var(--t2) var(--ease),box-shadow var(--t2) var(--ease)}
+.way.is-on{border-color:var(--blue);background:rgba(51,102,240,.05);box-shadow:0 0 0 4px var(--blue-soft)}
+.way__b{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}
+.way__t{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14.5px;font-weight:700}
+.way__t em{padding:1px 7px;border-radius:999px;background:var(--green-soft);font-style:normal;font-size:10.5px;font-weight:700;color:#0b7a55}
+.way__s{font-size:12.5px;font-weight:400;line-height:1.4;color:var(--mut)}
+.way__ic{flex:none;color:var(--faint)}
+.way.is-on .way__ic{color:var(--blue)}
+.ways__note{margin:-4px 0 0;font-size:12px;color:var(--mut)}
+.manual--v2,.ways~.drop,.ways~.fine{animation:up 320ms var(--ease) both}
+
 /* ==========================================================================
    Home screen, from the Consent OS Figma file (node 17952:118133).
    Values are the design's: 430 frame, 20 gutters, #f6f7f9 ground, Inter.
@@ -1118,6 +1131,8 @@ const drawShot = ids => {
 };
 /* the upload-only variant (complaints-upload.html): no demo chips; any uploaded image is read as the first demo screenshot */
 const NO_DEMOS = !!window.__CX_NO_DEMOS;
+/* V2 (complaints-v2.html): step 2 asks you to choose one way, screenshot or details, and shows only that one */
+const V2 = !!window.__CX_V2;
 /* any other upload: one placeholder event, since real screenshots are not read in this prototype */
 const generic = type => ({ id: "g1", type, cls: "unknown", sender: type === "call" ? "Unknown number" : "Unknown sender", brandId: null, time: "Today", generic: true,
   text: type === "call" ? "Call found in your screenshot" : "Message found in your screenshot" });
@@ -1392,6 +1407,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const [manual, setManual] = useState("");              // number or header typed in, instead of a screenshot
   const [day, setDay] = useState(() => isoDay(new Date()));   // approximate time for a typed-in entry
   const [period, setPeriod] = useState(null);
+  const [how, setHow] = useState("shot");                // V2: which of the two ways is open
   const fileRef = useRef(null), timers = useRef([]), listRef = useRef(null), locked = useRef(false);
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.current.push(id); };
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
@@ -1483,8 +1499,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
               h("span", { className: "kind__ck" }, ic("check", 11)))))),
 
       /* 2. the screenshot: upload, then a short "processing" state */
-      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: evType === "call" ? "Which call is it?" : "Which message is it?", label: shot && shot.manual ? "Entered manually" : "Screenshot",
-        hint: evType === "call" ? "Add a screenshot of the call, or enter the number." : "Add a screenshot of the message, or enter the sender.",
+      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: V2 ? "How do you want to share it?" : evType === "call" ? "Which call is it?" : "Which message is it?", label: shot && shot.manual ? "Entered manually" : "Screenshot",
+        hint: V2 ? "Choose one way to tell us which " + (evType === "call" ? "call" : "message") + " it is." : evType === "call" ? "Add a screenshot of the call, or enter the number." : "Add a screenshot of the message, or enter the sender.",
         summary: scan === "ready" && shot.manual ? h("span", { className: "sum__col" }, h("span", { className: "sum__row" }, ic(evType === "call" ? "phone" : "message", 15), shot.items[0].sender),
             h("span", { className: "sum__sub" }, (CLS_TAG[shot.items[0].cls] ? CLS_TAG[shot.items[0].cls][0] + " · " : "") + shot.items[0].time))
           : scan === "ready" ? h("span", { className: "sum__row" },
@@ -1493,17 +1509,24 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
         onChange: clearShot, changeLabel: shot && shot.manual ? "Change" : "Replace" },
         !shot
           ? h("div", { className: "up" },
-              h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
-              h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
+              V2 && h("div", { className: "ways", role: "radiogroup", "aria-label": "How do you want to share it?" },
+                [["shot", "upload", "Upload a screenshot", "Fastest. We read the details for you."], ["manual", "textSearch", "Enter the details", "Type the sender and when you got it."]].map(([id, icn, t, d]) =>
+                  h("button", { key: id, type: "button", role: "radio", "aria-checked": how === id, className: "way" + (how === id ? " is-on" : ""), onClick: () => setHow(id) },
+                    h("span", { className: "radio" + (how === id ? " is-on" : "") }, how === id ? ic("check", 12) : null),
+                    h("span", { className: "way__b" }, h("span", { className: "way__t" }, t, id === "shot" && h("em", null, "Recommended")), h("span", { className: "way__s" }, d)),
+                    ic(icn, 18, "way__ic")))),
+              V2 && h("p", { className: "ways__note" }, "You only need one of these."),
+              (!V2 || how === "shot") && h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
+              (!V2 || how === "shot") && h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
                 h("span", { className: "drop__ic" }, ic("upload", 22)),
                 h("span", { className: "drop__t" }, "Upload a screenshot"),
                 h("span", { className: "drop__s" }, "PNG or JPG, up to 10MB")),
-              !NO_DEMOS && h("div", { className: "samples" },
+              !NO_DEMOS && (!V2 || how === "shot") && h("div", { className: "samples" },
                 h("span", { className: "samples__l" }, "No screenshot handy? Try a demo one"),
                 h("div", { className: "samples__row" }, SAMPLES[evType].map(s =>
                   h("button", { key: s.key, type: "button", className: "chipbtn", onClick: () => useSample(s) }, ic("image", 13), s.label)))),
-              h("div", { className: "or" }, h("span", null, "or enter the details")),
-              h("form", { className: "manual", onSubmit: useManual },
+              !V2 && h("div", { className: "or" }, h("span", null, "or enter the details")),
+              (!V2 || how === "manual") && h("form", { className: "manual" + (V2 ? " manual--v2" : ""), onSubmit: useManual },
                 h("label", { htmlFor: "cx-manual" }, evType === "call" ? "Phone number" : "Sender header or phone number"),
                 h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
                     onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "+91 98765 43210" : "VM-ABCDEF/140-1234567" }),

@@ -48,4 +48,6 @@ frag = lambda n: str(Path(out) / n) if out else None
 page("complaints-brief.html", "DigiConsent Complaints", ["app.css", "home.css", "app.js", "home.js"], "App", frag("brief-artifact.html"))
 # same module without the demo screenshots: any uploaded image is read as the first demo screenshot
 page("complaints-upload.html", "DigiConsent Complaints Upload", ["app.css", "home.css", "app.js", "home.js"], "App", frag("upload-artifact.html"), pre="window.__CX_NO_DEMOS = true;\n")
+# V2: step 2 is an explicit choice between a screenshot and typed details; otherwise the same as complaints-upload
+page("complaints-v2.html", "DigiConsent Complaints V2", ["app.css", "home.css", "app.js", "home.js"], "App", frag("v2-artifact.html"), pre="window.__CX_NO_DEMOS = true;\nwindow.__CX_V2 = true;\n")
 page("complaints-dialer.html", "DigiConsent In-App Report", ["app.css", "dialer.css", "app.js", "dialer.js"], "DialerApp", frag("dialer-artifact.html"))
