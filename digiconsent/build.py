@@ -3,7 +3,6 @@
 
   src/vendor/base.css    the app's compiled stylesheet
   src/vendor/react.html  React + ReactDOM, inlined
-  src/vendor/data.js     demo screenshots and brand logos (base64)
   src/app.css            complaints styles
   src/app.js             complaints flow, receipt, history
   src/dialer.css/.js     the report-from-dialer version
@@ -31,7 +30,7 @@ def page(name, title, scripts, mount, fragment=None, pre=""):
         mime = {".svg": "image/svg+xml", ".png": "image/png"}
         assets = {f.stem: "data:" + mime[f.suffix] + ";base64," + base64.b64encode(f.read_bytes()).decode() for f in sorted((src / "assets/home").iterdir())}
         js = "const HA = " + json.dumps(assets) + ";\n" + js
-    body = ('<div id="root"></div>\n' + read("vendor/react.html") + "\n<script>\n" + pre + read("vendor/data.js") + js
+    body = ('<div id="root"></div>\n' + read("vendor/react.html") + "\n<script>\n" + pre + js
             + 'ReactDOM.createRoot(document.getElementById("root")).render(h(' + mount + "));\n</script>")
     (root / name).write_text(
         '<!doctype html>\n<html lang="en"><head><meta charset="UTF-8">'

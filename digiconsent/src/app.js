@@ -71,7 +71,9 @@ const toast = (() => {
 })();
 const nav = to => window.__nav(to);
 const BRANDS = {};
-Object.keys(LOGOS).forEach(id => { BRANDS[id] = { id, name: NAMES[id], logo: LOGOS[id] }; });
+/* the demo senders: the brands with the most complaints on DLT */
+const BRAND_TINT = { "bajaj-finserv": "#0072BC", flipkart: "#2874F0", nykaa: "#FC2779" };
+[["bajaj-finserv", "Bajaj Finserv"], ["flipkart", "Flipkart"], ["nykaa", "Nykaa"]].forEach(([id, name]) => { BRANDS[id] = { id, name }; });
 
 /* complaints filed in this session, shown on the history page */
 const C = (icon, name, text, tone) => ({ icon, name, text, tone: tone || "ok" });
@@ -100,63 +102,80 @@ const newId = () => "CMP-" + Array.from({ length: 8 }, () => "ABCDEFGHJKLMNPQRST
 /* ==================================================================
    Demo data: what the screenshot "reading" finds
    ================================================================== */
+/* Message headers follow the DLT format as phones show it: a six-letter header, then a suffix for the kind of
+   message: -P promotional, -S service, -T transactional. Numbers: 140 series = registered telemarketer,
+   1600 series = service line. */
 const ITEMS = {
-  m1: { id: "m1", type: "message", cls: "promo", sender: "VM-HDFCBK", brandId: "hdfc-bank", time: "10:42 AM",
-    text: "HDFC Bank: Pre-approved Personal Loan of Rs.5,00,000 at 10.49% p.a. Apply now: hdfcbank.co/pl",
+  m1: { id: "m1", type: "message", cls: "promo", sender: "BAJFIN-P", brandId: "bajaj-finserv", time: "10:42 AM",
+    text: "Bajaj Finserv: Pre-approved Personal Loan of Rs.5,00,000 at 10.49% p.a. Apply now: bajajfin.in/pl",
     permission: { purpose: "personal loan offers", channels: ["SMS"] }, consent: "valid",
-    record: "You agreed on 14 Mar 2024, in the HDFC Bank app, to receive personal loan offers by SMS." },
-  m2: { id: "m2", type: "message", cls: "promo", sender: "AX-HDFCBK", brandId: "hdfc-bank", time: "12:05 PM",
-    text: "HDFC Bank: Get the Millennia Credit Card with 5% cashback on every order. Apply in 2 minutes...",
-    permission: { purpose: "credit card offers", channels: ["SMS", "call"] }, consent: "mismatch",
-    record: "Your original permission covered personal loan offers.", used: "credit card offer" },
-  m3: { id: "m3", type: "message", cls: "service", sender: "HDFCBK", brandId: "hdfc-bank", time: "2:30 PM",
-    text: "HDFC Bank: Your EMI of Rs.12,450 is due on 5 Dec. Pay now and get 10% off a top-up loan: hdfc.co" },
-  m4: { id: "m4", type: "message", cls: "otp", sender: "VM-PAYTMB", brandId: "paytm", time: "4:10 PM",
-    text: "428193 is your OTP for Paytm login. Do not share this code with anyone. Valid for 10 minutes." },
-  c1: { id: "c1", type: "call", cls: "unknown", sender: "+91 98765 43210", brandId: null, time: "6:30 PM",
+    record: "You agreed on 14 Mar 2024, in the Bajaj Finserv app, to receive personal loan offers by SMS." },
+  m2: { id: "m2", type: "message", cls: "promo", sender: "FLPKRT-P", brandId: "flipkart", time: "12:05 PM",
+    text: "Flipkart: Big Billion Days are live. Extra 10% off on your wishlist with code BBD10. Shop now: fkrt.it/bbd",
+    permission: { purpose: "sale and offer alerts", channels: ["SMS", "call"] }, consent: "mismatch",
+    record: "Your original permission covered order updates only.", used: "sale offer" },
+  m3: { id: "m3", type: "message", cls: "service", sender: "BAJFIN-S", brandId: "bajaj-finserv", time: "2:30 PM",
+    text: "Bajaj Finserv: Your EMI of Rs.12,450 is due on 5 Dec. Pay now and get 10% off a top-up loan: bajajfin.in/emi" },
+  m4: { id: "m4", type: "message", cls: "otp", sender: "NYKAAS-T", brandId: "nykaa", time: "4:10 PM",
+    text: "428193 is your OTP for Nykaa login. Do not share this code with anyone. Valid for 10 minutes." },
+  c1: { id: "c1", type: "call", cls: "unknown", sender: "+91 73960 51842", brandId: null, time: "6:30 PM",
     text: "Incoming call · 1 min 05 sec", sub: "Mobile · Not in your contacts" },
-  c2: { id: "c2", type: "call", cls: "promo", sender: "1409 220 418", brandId: "hdfc-bank", time: "11:20 AM",
+  c2: { id: "c2", type: "call", cls: "promo", sender: "1401 356 780", brandId: "bajaj-finserv", time: "11:20 AM",
     text: "Incoming call · 2 min 12 sec", sub: "Registered telemarketer (140 series)",
-    permission: { purpose: "credit card offers", channels: ["call"] }, consent: "valid",
-    record: "You agreed on 2 Aug 2025, on hdfcbank.com, to receive credit card offers by call." },
-  c3: { id: "c3", type: "call", cls: "service", sender: "1600 412 208", brandId: "hdfc-bank", time: "3:05 PM",
+    permission: { purpose: "personal loan offers", channels: ["call"] }, consent: "valid",
+    record: "You agreed on 2 Aug 2025, on bajajfinserv.in, to receive personal loan offers by call." },
+  c3: { id: "c3", type: "call", cls: "service", sender: "1600 258 303", brandId: "flipkart", time: "3:05 PM",
     text: "Incoming call · 0 min 48 sec", sub: "Service line (1600 series)" },
 };
+/* sensitive details are never shown back: one-time codes, amounts, rates, offer codes and links */
+const SENSITIVE = /^\d{4,8}\b|Rs\.?\s?[\d,]+|\d+(?:\.\d+)?%|(?<=\bcode )(?=[A-Z0-9]*\d)[A-Z0-9]{4,}|\b[a-z0-9-]+\.(?:in|it|co|com)\/\S*/gi;
+const maskWord = m => (/^Rs/i.test(m) ? "Rs.•••••" : /%$/.test(m) ? "••%" : /\//.test(m) ? "[link hidden]" : "•".repeat(Math.min(6, m.length)));
 const rows = (n, of) => Array.from({ length: n }, (_, i) => ({ x: 0, y: +(i * 100 / of).toFixed(2), w: 100, h: +(100 / of).toFixed(2) }));
-const LIST5 = rows(5, 5);
-/* each demo screenshot: which events it shows, where each sits (percent), and any one-time code to hide */
+/* the demo screenshots: which events each one shows */
 const SAMPLES = {
   message: [
-    { key: "sample-many-whole-list", label: "Inbox, 4 messages", ids: ["m1", "m2", "m3", "m4"], boxes: LIST5.slice(0, 4), mask: { x: 13.4, y: 69.6, w: 10.4, h: 4.6 } },
-    { key: "sample-m1-promo-loan", label: "One loan offer", ids: ["m1"] },
-    { key: "sample-m3-service-emi", label: "EMI reminder", ids: ["m3"] },
-    { key: "sample-m4-otp", label: "One-time code", ids: ["m4"], mask: { x: 13.2, y: 49, w: 10.5, h: 19.5 } },
+    { key: "inbox", label: "Inbox, 4 messages", ids: ["m1", "m2", "m3", "m4"] },
+    { key: "loan", label: "One loan offer", ids: ["m1"] },
+    { key: "emi", label: "EMI reminder", ids: ["m3"] },
+    { key: "otp", label: "One-time code", ids: ["m4"] },
   ],
   call: [
-    { key: "gen-call-log", label: "Call log, 3 calls", ids: ["c2", "c3", "c1"], boxes: rows(3, 3) },
-    { key: "sample-c1-call", label: "One unknown call", ids: ["c1"] },
+    { key: "calls", label: "Call log, 3 calls", ids: ["c2", "c3", "c1"] },
+    { key: "call", label: "One unknown call", ids: ["c1"] },
   ],
 };
-/* the 3-call log is drawn here so the call path can show a list too */
-const drawCallLog = () => {
-  const list = ["c2", "c3", "c1"].map(id => ITEMS[id]), RH = 190, cv = document.createElement("canvas");
-  cv.width = 1080; cv.height = RH * list.length;
-  const g = cv.getContext("2d"), F = (w, s) => w + " " + s + 'px Inter, -apple-system, "Segoe UI", Roboto, sans-serif';
-  g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+/* a demo screenshot is drawn from its items, the way the phone's own list would show them. Returns the image
+   and where each sensitive detail sits (in percent), so those can be blacked out before anything is shared. */
+const drawShot = ids => {
+  const list = ids.map(id => ITEMS[id]), RH = 190, W = 1080, cv = document.createElement("canvas");
+  cv.width = W; cv.height = RH * list.length;
+  const g = cv.getContext("2d"), F = (w, s) => w + " " + s + 'px Inter, -apple-system, "Segoe UI", Roboto, sans-serif', masks = [];
+  g.fillStyle = "#fff"; g.fillRect(0, 0, W, cv.height);
+  const line = (txt, x, y, size) => {
+    g.font = F(400, size); g.fillStyle = "#334155"; g.fillText(txt, x, y);
+    for (const m of txt.matchAll(SENSITIVE)) {
+      const x0 = x + g.measureText(txt.slice(0, m.index)).width, w = g.measureText(m[0]).width;
+      masks.push({ x: (x0 - 6) / W * 100, y: (y - size) / cv.height * 100, w: (w + 12) / W * 100, h: (size * 1.35) / cv.height * 100 });
+    }
+  };
   list.forEach((it, i) => {
-    const y = i * RH, br = it.brandId;
-    g.fillStyle = br ? "#ed232a" : "#64748b"; g.beginPath(); g.arc(86, y + 62, 38, 0, 6.2832); g.fill();
-    g.fillStyle = "#fff"; g.font = F(700, 34); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(br ? "H" : "#", 86, y + 64);
+    const y = i * RH, br = it.brandId && BRANDS[it.brandId];
+    g.fillStyle = br ? BRAND_TINT[br.id] : "#64748b"; g.beginPath(); g.arc(86, y + 62, 38, 0, 6.2832); g.fill();
+    g.fillStyle = "#fff"; g.font = F(700, 34); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(br ? br.name.charAt(0) : "#", 86, y + 64);
     g.textAlign = "left"; g.textBaseline = "alphabetic";
     g.fillStyle = "#0f172a"; g.font = F(700, 38); g.fillText(it.sender, 150, y + 66);
-    g.fillStyle = "#334155"; g.font = F(400, 28); g.fillText(it.text, 150, y + 114);
-    g.fillStyle = "#64748b"; g.font = F(400, 25); g.fillText(it.sub, 150, y + 154);
-    g.textAlign = "right"; g.font = F(400, 27); g.fillText(it.time, 1030, y + 62);
+    if (it.type === "call") { line(it.text, 150, y + 114, 28); g.fillStyle = "#64748b"; g.font = F(400, 25); g.fillText(it.sub, 150, y + 154); }
+    else {
+      g.font = F(400, 28);
+      const words = it.text.split(" "), lines = [""];
+      words.forEach(w => { const t = lines[lines.length - 1] ? lines[lines.length - 1] + " " + w : w; if (g.measureText(t).width > 880 && lines[lines.length - 1]) lines.push(w); else lines[lines.length - 1] = t; });
+      lines.slice(0, 2).forEach((t, k) => line(t, 150, y + 114 + k * 40, 28));
+    }
+    g.fillStyle = "#64748b"; g.textAlign = "right"; g.font = F(400, 27); g.fillText(it.time, 1030, y + 62); g.textAlign = "left";
     if (i < list.length - 1) { g.fillStyle = "#e2e8f0"; g.fillRect(150, y + RH - 2, 930, 2); }
   });
-  return cv.toDataURL("image/png");
+  return { url: cv.toDataURL("image/png"), masks };
 };
-const sampleUrl = s => (s.key === "gen-call-log" ? drawCallLog() : window.__SAMPLES[s.key]);
 /* the upload-only variant (complaints-upload.html): no demo chips; any uploaded image is read as the first demo screenshot */
 const NO_DEMOS = !!window.__CX_NO_DEMOS;
 /* any other upload: one placeholder event, since real screenshots are not read in this prototype */
@@ -173,7 +192,7 @@ const manualItem = (type, raw) => {
     text: "Entered manually" + (known ? "" : type === "call" ? " · number" : /[A-Za-z]/.test(v) ? " · sender header" : " · number") };
 };
 /* hide a one-time code (box in percent of the image) before the image is shared */
-const maskImage = (url, box) => new Promise(res => {
+const maskImage = (url, boxes) => new Promise(res => {
   const im = new Image();
   im.onload = () => {
     const cv = document.createElement("canvas"), W = im.naturalWidth, H = im.naturalHeight;
@@ -181,8 +200,10 @@ const maskImage = (url, box) => new Promise(res => {
     const g = cv.getContext("2d");
     g.drawImage(im, 0, 0);
     g.fillStyle = "#0f172a";
-    const x = box.x / 100 * W, y = box.y / 100 * H, w = box.w / 100 * W, hh = box.h / 100 * H, r = Math.min(10, hh / 3);
-    g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + hh, r); g.arcTo(x + w, y + hh, x, y + hh, r); g.arcTo(x, y + hh, x, y, r); g.arcTo(x, y, x + w, y, r); g.fill();
+    boxes.forEach(box => {
+      const x = box.x / 100 * W, y = box.y / 100 * H, w = box.w / 100 * W, hh = box.h / 100 * H, r = Math.min(10, hh / 3);
+      g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + hh, r); g.arcTo(x + w, y + hh, x, y + hh, r); g.arcTo(x, y + hh, x, y, r); g.arcTo(x, y, x + w, y, r); g.fill();
+    });
     res(cv.toDataURL("image/png"));
   };
   im.onerror = () => res(url);
@@ -366,8 +387,7 @@ const Roll = ({ text, cls }) => h("span", { className: "roll " + (cls || "") }, 
 /* ==================================================================
    Shared pieces
    ================================================================== */
-const maskedText = it => (it.cls === "otp" ? it.text.replace(/^\d{4,8}/, "••••••") : it.text);
-const BRAND_TINT = { "hdfc-bank": "#ED232A", paytm: "#00B9F1", swiggy: "#FC8019" };
+const maskedText = it => (it.type === "call" ? it.text : it.text.replace(SENSITIVE, maskWord));
 function Avatar({ it }) {
   const br = it.brandId && BRANDS[it.brandId];
   if (br) return h("span", { className: "ev__av ev__av--brand", style: { background: BRAND_TINT[br.id] || "var(--blue)" } }, br.name.charAt(0));
@@ -385,7 +405,7 @@ function EventCard({ it, onPick, on, idx, compact }) {
       !compact && h("span", { className: "ev__tags" },
         br && h("span", { className: "tag" }, br.name),
         !it.generic && tag && h("span", { className: "tag tag--" + tag[1] }, tag[0]),
-        it.cls === "otp" && h("span", { className: "tag tag--green" }, ic("lock", 11), "Code hidden"))),
+        maskedText(it) !== it.text && h("span", { className: "tag tag--green" }, ic("lock", 11), "Details hidden"))),
     onPick && h("span", { className: "radio" + (on ? " is-on" : "") }, on ? ic("check", 12) : null));
 }
 function Header({ title, sub, back, right }) {
@@ -448,9 +468,9 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   /* the screenshot is read, the events in it are found, then they are listed below */
   const begin = (url, det) => {
     clearTimers(); resetChoices();
-    setShot({ url, shared: null, items: det.items, boxes: det.boxes || null, masked: !!det.mask });
+    setShot({ url, shared: null, items: det.items, boxes: null, masked: det.items.some(i => maskedText(i) !== i.text) });
     setScan("reading"); setAnnounce("Processing your screenshot");
-    (det.mask ? maskImage(url, det.mask) : Promise.resolve(url)).then(shared => setShot(s => (s && s.url === url ? { ...s, shared } : s)));
+    (det.masks && det.masks.length ? maskImage(url, det.masks) : Promise.resolve(url)).then(shared => setShot(s => (s && s.url === url ? { ...s, shared } : s)));
     later(() => setScan("finding"), RM ? 300 : 1300);
     later(() => {
       setScan("ready");
@@ -459,7 +479,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
       
     }, RM ? 600 : 2600);
   };
-  const useSample = s => begin(sampleUrl(s), { items: s.ids.map(id => ITEMS[id]), boxes: s.boxes, mask: s.mask });
+  const useSample = s => { const sh = drawShot(s.ids); begin(sh.url, { items: s.ids.map(id => ITEMS[id]), masks: sh.masks }); };
   const onFile = ev => {
     const file = ev.target.files && ev.target.files[0]; ev.target.value = "";
     if (!file) return;
@@ -521,7 +541,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
             CLS_TAG[shot.items[0].cls] && h("span", { className: "sum__sub" }, CLS_TAG[shot.items[0].cls][0]))
           : scan === "ready" ? h("span", { className: "sum__row" },
           h("img", { src: thumb || shot.url, alt: "", className: "sum__thumb" }),
-          h("span", { className: "sum__col" }, found, shot.masked && h("span", { className: "sum__sub" }, ic("lock", 11), "One-time code hidden"))) : null,
+          h("span", { className: "sum__col" }, found, shot.masked && h("span", { className: "sum__sub" }, ic("lock", 11), "Sensitive details hidden"))) : null,
         onChange: clearShot, changeLabel: shot && shot.manual ? "Change" : "Replace" },
         !shot
           ? h("div", { className: "up" },
