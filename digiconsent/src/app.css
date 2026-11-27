@@ -465,3 +465,9 @@ body{background:hsl(var(--background));color:var(--ink)}
 .daysel .ic,.daysel .ic:first-child,.daysel .ic:last-child{left:auto;right:14px;color:var(--mut)}
 .daysel select.is-empty{font-weight:400;color:var(--faint)}
 .daysel+.daysel{margin-top:1px}
+
+/* date row: styled value underneath, invisible native date input on top to open the calendar */
+.daysel__val{display:flex;align-items:center;width:100%;height:48px;padding:0 44px 0 14px}
+.daysel__native{position:absolute;inset:0;display:block;width:100%;height:100%;min-width:0;margin:0;padding:0;border:0;opacity:0;cursor:pointer;-webkit-appearance:none;appearance:none;font-size:16px}
+.daysel__native::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;cursor:pointer}
+.daysel--date:focus-within .daysel__val{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}

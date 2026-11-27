@@ -559,12 +559,14 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
                     onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "+91 98765 43210" : "VM-ABCDEF/140-1234567" }),
                 h("span", { className: "manual__lbl", id: "cx-when-l" }, evType === "call" ? "When did they call?" : "When did you get it?", h("span", null, " An approximate time is fine.")),
-                /* a plain list of the last 30 days: it looks and behaves the same on every phone, unlike the native date field */
-                h("div", { className: "daysel" },
-                  h("select", { id: "cx-day", className: "input", value: day, onChange: ev => setDay(ev.target.value), "aria-label": "Date" },
-                    Array.from({ length: 30 }, (_, k) => { const d = new Date(); d.setDate(d.getDate() - k); return d; }).map((d, k) =>
-                      h("option", { key: k, value: isoDay(d) }, (k === 0 ? "Today, " : k === 1 ? "Yesterday, " : d.toLocaleDateString("en-GB", { weekday: "short" }) + ", ") + d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })))),
-                  ic("calendar", 17)),
+                /* the phone's own calendar opens on tap. The real date input sits invisibly over a styled row,
+                   so the row looks the same on every device and only the picker itself is native. */
+                h("div", { className: "daysel daysel--date" },
+                  h("span", { className: "input daysel__val" }, (day === today ? "Today, " : "") + new Date(day + "T00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })),
+                  ic("calendar", 17),
+                  h("input", { id: "cx-day", type: "date", className: "daysel__native", value: day, max: today, "aria-label": "Date",
+                    onChange: ev => { if (ev.target.value) setDay(ev.target.value); },
+                    onClick: ev => { try { if (ev.target.showPicker) ev.target.showPicker(); } catch (e) {} } })),
                 h("div", { className: "daysel" },
                   h("select", { id: "cx-period", className: "input" + (period ? "" : " is-empty"), value: period || "", onChange: ev => setPeriod(ev.target.value || null), "aria-label": "Time period" },
                     h("option", { value: "" }, "Select a time period"),
