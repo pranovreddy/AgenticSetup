@@ -439,3 +439,7 @@ body{background:hsl(var(--background));color:var(--ink)}
 .manual__go:disabled{opacity:.42;box-shadow:none;cursor:not-allowed}
 .or{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line-2)}
+/* the field takes the full row on phones so its placeholder isn't clipped; Continue drops below */
+.manual__row{flex-wrap:wrap}
+.manual__row .input{flex:1 1 240px}
+.manual__row .manual__go{flex:1 1 auto}
