@@ -5,6 +5,7 @@ Three self-contained pages. Open any `.html` file in a browser; nothing to insta
 | File | What it is |
 |---|---|
 | `complaints-brief.html` | New complaints module: home screen, raise a complaint from a screenshot, complaint receipt with the agent animation, complaint history. |
+| `complaints-upload.html` | The same module without the demo screenshot chips. Any uploaded image is read as the first demo screenshot (an inbox with 4 messages, or a call log with 3 calls). |
 | `complaints-dialer.html` | In-app reporting: report a call from the Phone list (swipe left, tap the hand) or a text from Messages, through a bottom tray. Submit only, no receipt. |
 | `complaints-v1.html` | The original v1 prototype, unchanged. |
 

@@ -23,7 +23,7 @@ root = Path(__file__).parent
 src = root / "src"
 read = lambda p: (src / p).read_text()
 
-def page(name, title, scripts, mount, fragment=None):
+def page(name, title, scripts, mount, fragment=None, pre=""):
     title = "<title>" + title + "</title>"
     style = "<style>" + read("vendor/base.css") + "\n" + "\n".join(read(c) for c in scripts if c.endswith(".css")) + "</style>"
     js = "".join(read(c) for c in scripts if c.endswith(".js"))
@@ -31,7 +31,7 @@ def page(name, title, scripts, mount, fragment=None):
         mime = {".svg": "image/svg+xml", ".png": "image/png"}
         assets = {f.stem: "data:" + mime[f.suffix] + ";base64," + base64.b64encode(f.read_bytes()).decode() for f in sorted((src / "assets/home").iterdir())}
         js = "const HA = " + json.dumps(assets) + ";\n" + js
-    body = ('<div id="root"></div>\n' + read("vendor/react.html") + "\n<script>\n" + read("vendor/data.js") + js
+    body = ('<div id="root"></div>\n' + read("vendor/react.html") + "\n<script>\n" + pre + read("vendor/data.js") + js
             + 'ReactDOM.createRoot(document.getElementById("root")).render(h(' + mount + "));\n</script>")
     (root / name).write_text(
         '<!doctype html>\n<html lang="en"><head><meta charset="UTF-8">'
@@ -45,4 +45,6 @@ def page(name, title, scripts, mount, fragment=None):
 out = sys.argv[1] if len(sys.argv) > 1 else None   # optional folder for body-only fragments
 frag = lambda n: str(Path(out) / n) if out else None
 page("complaints-brief.html", "DigiConsent Complaints", ["app.css", "home.css", "app.js", "home.js"], "App", frag("brief-artifact.html"))
+# same module without the demo screenshots: any uploaded image is read as the first demo screenshot
+page("complaints-upload.html", "DigiConsent Complaints Upload", ["app.css", "home.css", "app.js", "home.js"], "App", frag("upload-artifact.html"), pre="window.__CX_NO_DEMOS = true;\n")
 page("complaints-dialer.html", "DigiConsent In-App Report", ["app.css", "dialer.css", "app.js", "dialer.js"], "DialerApp", frag("dialer-artifact.html"))

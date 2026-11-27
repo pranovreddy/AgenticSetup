@@ -1086,6 +1086,8 @@ const drawCallLog = () => {
   return cv.toDataURL("image/png");
 };
 const sampleUrl = s => (s.key === "gen-call-log" ? drawCallLog() : window.__SAMPLES[s.key]);
+/* the upload-only variant (complaints-upload.html): no demo chips; any uploaded image is read as the first demo screenshot */
+const NO_DEMOS = !!window.__CX_NO_DEMOS;
 /* any other upload: one placeholder event, since real screenshots are not read in this prototype */
 const generic = type => ({ id: "g1", type, cls: "unknown", sender: type === "call" ? "Unknown number" : "Unknown sender", brandId: null, time: "Today", generic: true,
   text: type === "call" ? "Call found in your screenshot" : "Message found in your screenshot" });
@@ -1393,7 +1395,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
     if (!file.type.startsWith("image/")) return toast("Please choose an image file");
     if (file.size > 10 * 1024 * 1024) return toast("The file must be under 10MB");
     const rd = new FileReader();
-    rd.onload = e2 => begin(e2.target.result, { items: [generic(evType)] });
+    rd.onload = e2 => begin(e2.target.result, NO_DEMOS ? { items: SAMPLES[evType][0].ids.map(id => ITEMS[id]) } : { items: [generic(evType)] });
     rd.readAsDataURL(file);
   };
   const manualOk = manual.trim().replace(/[^A-Za-z0-9]/g, "").length >= 4;
@@ -1464,7 +1466,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
                 h("span", { className: "drop__ic" }, ic("upload", 22)),
                 h("span", { className: "drop__t" }, "Upload a screenshot"),
                 h("span", { className: "drop__s" }, "PNG or JPG, up to 10MB")),
-              h("div", { className: "samples" },
+              !NO_DEMOS && h("div", { className: "samples" },
                 h("span", { className: "samples__l" }, "No screenshot handy? Try a demo one"),
                 h("div", { className: "samples__row" }, SAMPLES[evType].map(s =>
                   h("button", { key: s.key, type: "button", className: "chipbtn", onClick: () => useSample(s) }, ic("image", 13), s.label)))))
