@@ -1415,7 +1415,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   };
 
   const stepsDone = [!!evType, scan === "ready" && !!sel, !!reason];
-  const progress = [!!evType, scan === "ready", !!sel, !!reason, !!reason && (note.trim().length > 0 || revoke)];   // one bar per step
+  const isManual = !!(shot && shot.manual), off = isManual ? 1 : 0;   // typed-in details skip the "which one" step
+  const progress = [!!evType, scan === "ready"].concat(isManual ? [] : [!!sel], [!!reason, !!reason && (note.trim().length > 0 || revoke)]);   // one bar per step
   const found = items.length === 1 ? "1 " + noun + " found" : items.length + " " + noun + "s found";
   const thumb = shot ? (shot.masked ? shot.shared : shot.url) : null;
   const clearShot = () => { clearTimers(); setShot(null); setScan("idle"); resetChoices(); };
@@ -1488,7 +1489,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
           items.map((it, i) => h(EventCard, { key: it.id, it, idx: i, on: selId === it.id, onPick: () => pickItem(it.id) })))),
 
       /* 4. reason */
-      sel && h(Step, { n: 4, done: !!reason, key: "why-" + sel.id, title: "What bothered you?", label: "Reason",
+      sel && h(Step, { n: 4 - off, done: !!reason, key: "why-" + sel.id, title: "What bothered you?", label: "Reason",
         summary: reason && edit !== 4 ? reason.label : null, onChange: () => setEdit(4) },
         h("div", { className: "reasons", role: "radiogroup", "aria-label": "What bothered you?" },
           reasons.main.concat(moreOpen || reasons.more.some(r => r.id === reasonId) ? reasons.more : []).map((r, i) =>
@@ -1498,7 +1499,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
         reasons.more.length > 0 && !moreOpen && !reasons.more.some(r => r.id === reasonId) && h("button", { type: "button", className: "link", onClick: () => setMoreOpen(true) }, "More reasons", ic("chevron", 13))),
 
       /* 5. comment and consent, both optional */
-      reason && h(Step, { n: 5, key: "more-" + sel.id, title: "Anything to add?", hint: "Both are optional." },
+      reason && h(Step, { n: 5 - off, key: "more-" + sel.id, title: "Anything to add?", hint: "Both are optional." },
         h("div", { className: "field" },
           h("label", { htmlFor: "cx-note" }, "Comment"),
           h("textarea", { id: "cx-note", value: note, onChange: ev => setNote(ev.target.value.slice(0, 300)), rows: 3, className: "textarea",
