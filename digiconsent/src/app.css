@@ -452,3 +452,8 @@ body{background:hsl(var(--background));color:var(--ink)}
 .period{min-height:44px;padding:0 10px;border-radius:12px;border:1.5px solid var(--line-2);background:var(--surface);font-size:13.5px!important;font-weight:600!important;color:var(--ink-2);transition:border-color var(--t1) var(--ease),background var(--t1) var(--ease),color var(--t1) var(--ease)}
 .period.is-on{border-color:var(--blue);background:rgba(51,102,240,.07);color:#2347D6;box-shadow:0 0 0 3px var(--blue-soft)}
 .manual .manual__go{width:100%;margin-top:6px}
+/* iOS gives date inputs their own width and centres the value; pin it to the row like the other fields */
+.manual{min-width:0}
+.manual input[type="date"]{display:block;box-sizing:border-box;width:100%;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;text-align:left}
+.manual input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0}
+.manual input[type="date"]::-webkit-calendar-picker-indicator{margin-left:auto}
