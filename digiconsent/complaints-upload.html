@@ -502,6 +502,15 @@ body{background:hsl(var(--background));color:var(--ink)}
 .manual__row .input{flex:1 1 240px}
 .manual__row .manual__go{flex:1 1 auto}
 
+/* approximate time for a typed-in entry: a date and one of four periods */
+.manual .input{flex:none;width:100%}
+.manual__lbl{margin-top:8px;font-size:13px;font-weight:700}
+.manual__lbl span{font-weight:500;color:var(--mut)}
+.periods{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.period{min-height:44px;padding:0 10px;border-radius:12px;border:1.5px solid var(--line-2);background:var(--surface);font-size:13.5px!important;font-weight:600!important;color:var(--ink-2);transition:border-color var(--t1) var(--ease),background var(--t1) var(--ease),color var(--t1) var(--ease)}
+.period.is-on{border-color:var(--blue);background:rgba(51,102,240,.07);color:#2347D6;box-shadow:0 0 0 3px var(--blue-soft)}
+.manual .manual__go{width:100%;margin-top:6px}
+
 /* ==========================================================================
    Home screen, from the Consent OS Figma file (node 17952:118133).
    Values are the design's: 430 frame, 20 gutters, #f6f7f9 ground, Inter.
@@ -1089,12 +1098,17 @@ const generic = type => ({ id: "g1", type, cls: "unknown", sender: type === "cal
   text: type === "call" ? "Call found in your screenshot" : "Message found in your screenshot" });
 /* details typed in instead of a screenshot. A known header is matched to its sender; otherwise the
    number series decides the kind: 140 = registered telemarketer, 1600 = service line, anything else unregistered. */
-const manualItem = (type, raw) => {
+/* an approximate time for typed-in details: a date and one of four six-hour periods */
+const PERIODS = [["am", "6am to 12pm"], ["pm", "12pm to 6pm"], ["eve", "6pm to 12am"], ["night", "12am to 6am"]];
+const isoDay = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const manualItem = (type, raw, day, period) => {
+  const dayLabel = new Date(day + "T00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  const periodLabel = (PERIODS.find(x => x[0] === period) || [])[1] || "";
   const v = raw.trim().replace(/\s+/g, " "), key = v.toUpperCase().replace(/[^A-Z0-9]/g, "");
   const known = Object.values(ITEMS).find(i => i.type === type && i.sender.toUpperCase().replace(/[^A-Z0-9]/g, "") === key);
   const digits = v.replace(/\D/g, "");
   const cls = known ? known.cls : /^(91)?140/.test(digits) ? "promo" : /^(91)?1600/.test(digits) ? "service" : "unknown";
-  return { ...(known || {}), id: "manual", type, cls, sender: known ? known.sender : v, brandId: known ? known.brandId : null, time: "", manual: true,
+  return { ...(known || {}), id: "manual", type, cls, sender: known ? known.sender : v, brandId: known ? known.brandId : null, time: dayLabel + ", " + periodLabel, when: "on " + dayLabel + " between " + periodLabel.replace(" to ", " and "), manual: true,
     text: "Entered manually" + (known ? "" : type === "call" ? " · number" : /[A-Za-z]/.test(v) ? " · sender header" : " · number") };
 };
 /* hide a one-time code (box in percent of the image) before the image is shared */
@@ -1195,7 +1209,7 @@ const buildPlan = c => {
   const S = (key, icon, name, label, finding, tone) => ({ key, icon, name, label, finding, tone: tone || "ok" });
   const src = [];
   src.push(S("cdr", "tower", "Network record", call ? "Matching your call" : "Matching your message",
-    item.manual ? "Found a recent " + (call ? "call" : "message") + " from " + item.sender + " to your number."
+    item.manual ? "Found a " + (call ? "call" : "message") + " from " + item.sender + " to your number " + item.when + "."
       : call ? "Call from " + item.sender + " reached your number at " + item.time + "." : "Delivered to your number at " + item.time + " from " + item.sender + "."));
   src.push(cls === "unknown"
     ? S("scrub", "funnel", "Delivery rules", "Checking delivery rules", "No scrub record. This came from a number that isn’t registered for business use.", "bad")
@@ -1351,6 +1365,8 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const [announce, setAnnounce] = useState("");
   const [edit, setEdit] = useState(null);                // a finished step reopened with "Change"
   const [manual, setManual] = useState("");              // number or header typed in, instead of a screenshot
+  const [day, setDay] = useState(() => isoDay(new Date()));   // approximate time for a typed-in entry
+  const [period, setPeriod] = useState(null);
   const fileRef = useRef(null), timers = useRef([]), listRef = useRef(null), locked = useRef(false);
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.current.push(id); };
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
@@ -1395,11 +1411,12 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
     rd.onload = e2 => begin(e2.target.result, NO_DEMOS ? { items: SAMPLES[evType][0].ids.map(id => ITEMS[id]) } : { items: [generic(evType)] });
     rd.readAsDataURL(file);
   };
-  const manualOk = manual.trim().replace(/[^A-Za-z0-9]/g, "").length >= 4;
+  const today = isoDay(new Date());
+  const manualOk = manual.trim().replace(/[^A-Za-z0-9]/g, "").length >= 4 && !!period && !!day && day <= today;
   const useManual = ev => {
     if (ev) ev.preventDefault();
     if (!manualOk) return;
-    const it = manualItem(evType, manual);
+    const it = manualItem(evType, manual, day, period);
     clearTimers(); resetChoices();
     setShot({ url: null, shared: null, items: [it], boxes: null, masked: false, manual: true });
     setScan("ready"); setSelId(it.id);
@@ -1444,7 +1461,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
       evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: evType === "call" ? "Which call is it?" : "Which message is it?", label: shot && shot.manual ? "Entered manually" : "Screenshot",
         hint: evType === "call" ? "Enter the number, or add a screenshot of the call." : "Enter the sender, or add a screenshot of the message.",
         summary: scan === "ready" && shot.manual ? h("span", { className: "sum__col" }, h("span", { className: "sum__row" }, ic(evType === "call" ? "phone" : "message", 15), shot.items[0].sender),
-            CLS_TAG[shot.items[0].cls] && h("span", { className: "sum__sub" }, CLS_TAG[shot.items[0].cls][0]))
+            h("span", { className: "sum__sub" }, (CLS_TAG[shot.items[0].cls] ? CLS_TAG[shot.items[0].cls][0] + " · " : "") + shot.items[0].time))
           : scan === "ready" ? h("span", { className: "sum__row" },
           h("img", { src: thumb || shot.url, alt: "", className: "sum__thumb" }),
           h("span", { className: "sum__col" }, found, shot.masked && h("span", { className: "sum__sub" }, ic("lock", 11), "Sensitive details hidden"))) : null,
@@ -1453,10 +1470,13 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
           ? h("div", { className: "up" },
               h("form", { className: "manual", onSubmit: useManual },
                 h("label", { htmlFor: "cx-manual" }, evType === "call" ? "Phone number" : "Sender header or phone number"),
-                h("div", { className: "manual__row" },
-                  h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
+                h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
                     onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "+91 98765 43210" : "VM-ABCDEF/140-1234567" }),
-                  h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue"))),
+                h("span", { className: "manual__lbl", id: "cx-when-l" }, evType === "call" ? "When did they call?" : "When did you get it?", h("span", null, " An approximate time is fine.")),
+                h("input", { id: "cx-day", type: "date", className: "input", value: day, max: today, onChange: ev => setDay(ev.target.value), "aria-label": "Date" }),
+                h("div", { className: "periods", role: "radiogroup", "aria-labelledby": "cx-when-l" }, PERIODS.map(([id, t]) =>
+                  h("button", { key: id, type: "button", role: "radio", "aria-checked": period === id, className: "period" + (period === id ? " is-on" : ""), onClick: () => setPeriod(id) }, t))),
+                h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue")),
               h("div", { className: "or" }, h("span", null, "or add a screenshot")),
               h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
               h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },

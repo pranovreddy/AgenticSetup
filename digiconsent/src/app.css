@@ -443,3 +443,12 @@ body{background:hsl(var(--background));color:var(--ink)}
 .manual__row{flex-wrap:wrap}
 .manual__row .input{flex:1 1 240px}
 .manual__row .manual__go{flex:1 1 auto}
+
+/* approximate time for a typed-in entry: a date and one of four periods */
+.manual .input{flex:none;width:100%}
+.manual__lbl{margin-top:8px;font-size:13px;font-weight:700}
+.manual__lbl span{font-weight:500;color:var(--mut)}
+.periods{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.period{min-height:44px;padding:0 10px;border-radius:12px;border:1.5px solid var(--line-2);background:var(--surface);font-size:13.5px!important;font-weight:600!important;color:var(--ink-2);transition:border-color var(--t1) var(--ease),background var(--t1) var(--ease),color var(--t1) var(--ease)}
+.period.is-on{border-color:var(--blue);background:rgba(51,102,240,.07);color:#2347D6;box-shadow:0 0 0 3px var(--blue-soft)}
+.manual .manual__go{width:100%;margin-top:6px}
