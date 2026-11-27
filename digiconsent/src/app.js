@@ -574,7 +574,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
         h("div", { className: "field" },
           h("label", { htmlFor: "cx-note" }, "Comment"),
           h("textarea", { id: "cx-note", value: note, onChange: ev => setNote(ev.target.value.slice(0, 300)), rows: 3, className: "textarea",
-            placeholder: sel.type === "call" ? "For example, what the caller said or offered" : "Anything else we should know" }),
+            placeholder: sel.type === "call" ? "What the caller said or offered" : "Anything else we should know" }),
           h("span", { className: "field__count" }, note.length + "/300")),
         canRevoke && h("label", { className: "revoke" + (revoke ? " is-on" : ""), htmlFor: "cx-revoke" },
           h("input", { id: "cx-revoke", type: "checkbox", checked: revoke, onChange: ev => setRevoke(ev.target.checked) }),
