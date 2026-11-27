@@ -486,6 +486,18 @@ body{background:hsl(var(--background));color:var(--ink)}
 .tr__ic--wait{background:var(--amber-soft);color:var(--amber)}
 .tr--run .tr__b{gap:3px}
 
+/* enter the number or header by hand, or add a screenshot */
+.manual{display:flex;flex-direction:column;gap:7px}
+.manual label{font-size:13px;font-weight:700}
+.manual__row{display:flex;gap:8px}
+.input{flex:1;min-width:0;height:48px;padding:0 14px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface);font:inherit;font-size:15px;font-weight:600;color:var(--ink);transition:border-color var(--t1) var(--ease),box-shadow var(--t1) var(--ease)}
+.input::placeholder{font-weight:400;color:var(--faint)}
+.input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.manual__go{flex:none}
+.manual__go:disabled{opacity:.42;box-shadow:none;cursor:not-allowed}
+.or{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line-2)}
+
 /* ==========================================================================
    Home screen, from the Consent OS Figma file (node 17952:118133).
    Values are the design's: 430 frame, 20 gutters, #f6f7f9 ground, Inter.
@@ -1051,6 +1063,16 @@ const sampleUrl = s => (s.key === "gen-call-log" ? drawCallLog() : window.__SAMP
 /* any other upload: one placeholder event, since real screenshots are not read in this prototype */
 const generic = type => ({ id: "g1", type, cls: "unknown", sender: type === "call" ? "Unknown number" : "Unknown sender", brandId: null, time: "Today", generic: true,
   text: type === "call" ? "Call found in your screenshot" : "Message found in your screenshot" });
+/* details typed in instead of a screenshot. A known header is matched to its sender; otherwise the
+   number series decides the kind: 140 = registered telemarketer, 1600 = service line, anything else unregistered. */
+const manualItem = (type, raw) => {
+  const v = raw.trim().replace(/\s+/g, " "), key = v.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const known = Object.values(ITEMS).find(i => i.type === type && i.sender.toUpperCase().replace(/[^A-Z0-9]/g, "") === key);
+  const digits = v.replace(/\D/g, "");
+  const cls = known ? known.cls : /^(91)?140/.test(digits) ? "promo" : /^(91)?1600/.test(digits) ? "service" : "unknown";
+  return { ...(known || {}), id: "manual", type, cls, sender: known ? known.sender : v, brandId: known ? known.brandId : null, time: "", manual: true,
+    text: "Entered manually" + (known ? "" : type === "call" ? " · number" : /[A-Za-z]/.test(v) ? " · sender header" : " · number") };
+};
 /* hide a one-time code (box in percent of the image) before the image is shared */
 const maskImage = (url, box) => new Promise(res => {
   const im = new Image();
@@ -1147,7 +1169,8 @@ const buildPlan = c => {
   const S = (key, icon, name, label, finding, tone) => ({ key, icon, name, label, finding, tone: tone || "ok" });
   const src = [];
   src.push(S("cdr", "tower", "Network record", call ? "Matching your call" : "Matching your message",
-    call ? "Call from " + item.sender + " reached your number at " + item.time + "." : "Delivered to your number at " + item.time + " from " + item.sender + "."));
+    item.manual ? "Found a recent " + (call ? "call" : "message") + " from " + item.sender + " to your number."
+      : call ? "Call from " + item.sender + " reached your number at " + item.time + "." : "Delivered to your number at " + item.time + " from " + item.sender + "."));
   src.push(cls === "unknown"
     ? S("scrub", "funnel", "Delivery rules", "Checking delivery rules", "No scrub record. This came from a number that isn’t registered for business use.", "bad")
     : S("scrub", "funnel", "Delivery rules", "Checking delivery rules",
@@ -1302,6 +1325,7 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
   const [revoke, setRevoke] = useState(false);
   const [announce, setAnnounce] = useState("");
   const [edit, setEdit] = useState(null);                // a finished step reopened with "Change"
+  const [manual, setManual] = useState("");              // number or header typed in, instead of a screenshot
   const fileRef = useRef(null), timers = useRef([]), listRef = useRef(null), locked = useRef(false);
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.current.push(id); };
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = []; };
@@ -1346,6 +1370,16 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
     rd.onload = e2 => begin(e2.target.result, { items: [generic(evType)] });
     rd.readAsDataURL(file);
   };
+  const manualOk = manual.trim().replace(/[^A-Za-z0-9]/g, "").length >= 4;
+  const useManual = ev => {
+    if (ev) ev.preventDefault();
+    if (!manualOk) return;
+    const it = manualItem(evType, manual);
+    clearTimers(); resetChoices();
+    setShot({ url: null, shared: null, items: [it], boxes: null, masked: false, manual: true });
+    setScan("ready"); setSelId(it.id);
+    setAnnounce("Details added. Choose what bothered you.");
+  };
   const pickItem = id => { setEdit(null); setSelId(id); setReasonId(null); setMoreOpen(false); setRevoke(false); };
   const pickReason = id => { setEdit(null); setReasonId(id); setRevoke(id === "agreed"); };
   const submit = () => {
@@ -1381,14 +1415,24 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
               h("span", { className: "kind__ck" }, ic("check", 11)))))),
 
       /* 2. the screenshot: upload, then a short "processing" state */
-      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: "Add a screenshot", label: "Screenshot",
-        hint: evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report.",
-        summary: scan === "ready" ? h("span", { className: "sum__row" },
+      evType && h(Step, { n: 2, done: stepsDone[1], key: "shot-" + evType, title: evType === "call" ? "Which call is it?" : "Which message is it?", label: shot && shot.manual ? "Entered manually" : "Screenshot",
+        hint: evType === "call" ? "Enter the number, or add a screenshot of the call." : "Enter the sender, or add a screenshot of the message.",
+        summary: scan === "ready" && shot.manual ? h("span", { className: "sum__col" }, h("span", { className: "sum__row" }, ic(evType === "call" ? "phone" : "message", 15), shot.items[0].sender),
+            CLS_TAG[shot.items[0].cls] && h("span", { className: "sum__sub" }, CLS_TAG[shot.items[0].cls][0]))
+          : scan === "ready" ? h("span", { className: "sum__row" },
           h("img", { src: thumb || shot.url, alt: "", className: "sum__thumb" }),
           h("span", { className: "sum__col" }, found, shot.masked && h("span", { className: "sum__sub" }, ic("lock", 11), "One-time code hidden"))) : null,
-        onChange: clearShot, changeLabel: "Replace" },
+        onChange: clearShot, changeLabel: shot && shot.manual ? "Change" : "Replace" },
         !shot
           ? h("div", { className: "up" },
+              h("form", { className: "manual", onSubmit: useManual },
+                h("label", { htmlFor: "cx-manual" }, evType === "call" ? "Phone number" : "Sender header or phone number"),
+                h("div", { className: "manual__row" },
+                  h("input", { id: "cx-manual", type: "text", inputMode: evType === "call" ? "tel" : "text", autoComplete: "off", className: "input", value: manual, maxLength: 24,
+                    onChange: ev => setManual(ev.target.value), placeholder: evType === "call" ? "1409 220 418" : "VM-HDFCBK" }),
+                  h("button", { type: "submit", className: "btn btn--primary manual__go", disabled: !manualOk }, "Continue"))),
+              h("div", { className: "or" }, h("span", null, "or add a screenshot")),
+              h("p", { className: "fine" }, ic("image", 12), evType === "call" ? "Include the number and the date or time of the call." : "Include the sender, time and the message you want to report."),
               h("button", { type: "button", className: "drop", onClick: () => fileRef.current && fileRef.current.click() },
                 h("span", { className: "drop__ic" }, ic("upload", 22)),
                 h("span", { className: "drop__t" }, "Upload a screenshot"),
@@ -1406,12 +1450,13 @@ function ComplaintForm({ onSubmit, fast, setFast }) {
               h(Blob, { size: 54, state: "tool", bare: true }))),
 
       /* 3. the messages / calls found in it */
-      scan === "ready" && h(Step, { n: 3, done: !!sel, key: "found", id: "cx-found",
+      /* typed-in details are already the one thing being reported, so this step is skipped for them */
+      scan === "ready" && !shot.manual && h(Step, { n: 3, done: !!sel, key: "found", id: "cx-found",
         title: "Which " + noun + " do you want to report?", label: sel && sel.type === "call" ? "Call" : "Message",
         hint: "We found " + items.length + " in your screenshot. Pick one.",
         summary: sel && (!multi || edit !== 3) ? h("span", { className: "sum__col" },
-          h("span", { className: "sum__row" }, sel.sender, h("span", { className: "sum__time" }, sel.time)),
-          h("span", { className: "sum__sub sum__sub--clip" }, sel.generic ? "Placeholder: this prototype can’t read your own screenshots yet." : maskedText(sel))) : null,
+          h("span", { className: "sum__row" }, sel.sender, sel.time && h("span", { className: "sum__time" }, sel.time)),
+          h("span", { className: "sum__sub sum__sub--clip" }, sel.generic ? "Placeholder: this prototype can’t read your own screenshots yet." : sel.manual ? (CLS_TAG[sel.cls] ? CLS_TAG[sel.cls][0] + " · entered manually" : "Entered manually") : maskedText(sel))) : null,
         onChange: multi ? () => setEdit(3) : null },
         h("div", { className: "evs", role: "radiogroup", ref: listRef },
           items.map((it, i) => h(EventCard, { key: it.id, it, idx: i, on: selId === it.id, onPick: () => pickItem(it.id) })))),
@@ -1508,7 +1553,7 @@ function Receipt({ c, fast, setFast, onNew }) {
     fileCase({ id: c.id, state: "under_review", mode: c.item.type === "call" ? "Call" : "SMS", desc: c.reasonLabel, brand: c.brandName, sender: c.item.sender, reason: c.reasonLabel, note: c.note, live: "Registering your complaint" });
     const tick = setInterval(() => setSecs(now()), 250);
     let t = 0;
-    at(500, () => up(p => ({ log: logRow(p, { icon: "receipt", name: "Complaint registered", text: "Case " + c.id + (c.source === "dialer" ? " opened from your call log." : c.source === "messages" ? " opened from your messages." : " opened and your screenshot saved."), tone: "ok" }) })));
+    at(500, () => up(p => ({ log: logRow(p, { icon: "receipt", name: "Complaint registered", text: "Case " + c.id + (c.source === "dialer" ? " opened from your call log." : c.source === "messages" ? " opened from your messages." : c.item.manual ? " opened with the details you entered." : " opened and your screenshot saved."), tone: "ok" }) })));
     t += 2200;
     plan.src.forEach((x, i) => {
       at(t, () => up(p => ({ stage: "evidence", label: x.label, active: i, running: x, src: p.src.map((v, j) => (j === i ? "run" : v)) })));
